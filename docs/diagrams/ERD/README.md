@@ -19,7 +19,7 @@ Sơ đồ ERD này mô tả cấu trúc cơ sở dữ liệu cho hệ thống Qu
 1. Liên hệ với https://github.com/HaojackYT
 2. Chỉnh sửa sơ đồ theo yêu cầu.
 3. File > Export > chọn định dạng PNG.
-4. Cập nhật lại repo với comment: Update ERD to version 1.x
+4. Cập nhật lại repo với commit: Update ERD to version 1.x
 
 ## Notes:
 - Mọi thay đổi cần export lại file hình ảnh (PNG).
