@@ -4,61 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuizClear</title>
-    <link rel="stylesheet" href="../Static/fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="../Static/header.css">
-    <link rel="stylesheet" href="../Static/footer.css">
-    <!-- Font Awesome CDN for icons (fallback if local fails) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-papm1p2vQnQw5XgkQw5XgkQw5XgkQw5XgkQw5XgkQw5XgkQw5XgkQw5XgkQw5XgkQw5XgkQw5XgkQw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Main page CSS -->
     <link rel="stylesheet" href="../Static/CLO_list.css">
-   
+    <!-- Header CSS -->
+    <link rel="stylesheet" href="../Static/header.css">
+    <!-- Footer CSS -->
+    <link rel="stylesheet" href="../Static/footer.css">
+    <link rel="stylesheet" href="../Static/fontawesome/css/all.css">
+
 </head>
 <body>
-    <!-- Header -->
+    <!-- Header include -->
     <div id="header">
-        <p id="LOGO">QuizClear</p>
+        <p id="LOGO"> QuizClear</p>
         <div id="element">
-            <a class="Menu_elements" href="">Introduction</a>
-            <a class="Menu_elements" href="">Features</a>
-            <a class="Menu_elements" href="">Contact</a>
-            <a class="Menu_elements" href="">Login</a>
-            <div class="user-profile">
-                <i class="fa-solid fa-bell notification-icon"></i>
-                <div class="user-avatar">RD</div>
-            </div>
+            <a class="Menu_elements" href="#">Introduction</a>
+            <a class="Menu_elements" href="#">Features</a>
+            <a class="Menu_elements" href="#">Contact</a>
+            <a class="Menu_elements" href="#">Login</a>
+            <i class="fa-solid fa-user icon-user"></i>
         </div>
     </div>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <a href="#" class="sidebar-item">
-            <div class="sidebar-icon"><i class="fa-solid fa-chart-bar"></i></div>
-            <span>Dashboard</span>
-        </a>
-        <a href="#" class="sidebar-item active">
-            <div class="sidebar-icon"><i class="fa-solid fa-book"></i></div>
-            <span>Subject Management</span>
-        </a>
-        <a href="#" class="sidebar-item">
-            <div class="sidebar-icon"><i class="fa-solid fa-pen"></i></div>
-            <span>Question Planning</span>
-        </a>
-        <a href="#" class="sidebar-item">
-            <div class="sidebar-icon"><i class="fa-solid fa-copy"></i></div>
-            <span>Duplication Check</span>
-        </a>
-        <a href="#" class="sidebar-item">
-            <div class="sidebar-icon"><i class="fa-solid fa-file-alt"></i></div>
-            <span>Exam Management</span>
-        </a>
-        <a href="#" class="sidebar-item">
-            <div class="sidebar-icon"><i class="fa-solid fa-chart-line"></i></div>
-            <span>Statistics & Reporting</span>
-        </a>
-    </div>
-
     <!-- Main Content -->
     <div class="main-content">
         <!-- Top Controls -->
@@ -214,7 +182,6 @@
                 <div class="activity-item">
                     <div class="activity-content">
                         <h4>
-                            <i class="fa-solid fa-circle-plus activity-icon"></i>
                             New CLO: CLO1 – Apply OOP principles
                         </h4>
                         <p>The CLO has been created by Nguyễn Văn A</p>
@@ -226,7 +193,6 @@
                 <div class="activity-item">
                     <div class="activity-content">
                         <h4>
-                            <i class="fa-solid fa-circle-plus activity-icon"></i>
                             New CLO: CLO1 – Apply OOP principles
                         </h4>
                         <p>The CLO has been created by Nguyễn Văn A</p>
@@ -238,7 +204,6 @@
                 <div class="activity-item">
                     <div class="activity-content">
                         <h4>
-                            <i class="fa-solid fa-circle-plus activity-icon"></i>
                             New CLO: CLO1 – Apply OOP principles
                         </h4>
                         <p>The CLO has been created by Nguyễn Văn A</p>
@@ -305,6 +270,54 @@
         </div>
     </div>
 
+    <!-- Footer include -->
+    <div id="footer">
+        <div id="top_footer">
+            <div class="elements" id="QuizClear">
+                <p class="tieude special1">QuizClear</p>
+                <div class="thongtinlienhe" style="margin-top: 0;">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <p>TP.Hồ Chí Minh</p>
+                </div>
+                <div class="thongtinlienhe">
+                    <i class="fa-solid fa-phone-volume"></i>
+                    <p>034600797</p>
+                </div>
+                <div class="thongtinlienhe">
+                    <i class="fa-solid fa-envelope"></i>
+                    <p>QuizClear</p>
+                </div>
+            </div>
+            <div class="elements">
+                <p class="tieude">Features</p>
+                <p class="element">Question Bank</p>
+                <p class="element">Duplicate Check</p>
+                <p class="element">Exam Export</p>
+                <p class="element">Approval Workflow</p>
+            </div>
+            <div class="elements">
+                <p class="tieude">Roles</p>
+                <p class="element">Lecturer</p>
+                <p class="element">Subject Leader</p>
+                <p class="element">Head of Department</p>
+                <p class="element">R&D Staff</p>
+                <p class="element">Head of Examination Department</p>
+            </div>
+            <div class="elements">
+                <p class="tieude special2">Contact Us</p>
+                <div id="icon">
+                    <i class="fa-brands fa-facebook icon"></i>
+                    <i class="fa-brands fa-twitter icon"></i>
+                    <i class="fa-brands fa-instagram icon"></i>
+                </div>
+            </div>
+        </div>
+        <div id="line"></div>
+        <div id="bottom_footer">
+            <i class="fa-regular fa-copyright"></i>
+            <p>2025 QuizClear.All right reserved</p>
+        </div>
+    </div>
     <script src="../Static/CLO_list.js"></script>
 </body>
 </html>
