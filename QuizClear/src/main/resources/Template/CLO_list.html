@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizClear</title>
+    <link rel="stylesheet" href="../Static/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../Static/header.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Header */
+        #header {
+            background: linear-gradient(90deg, #4c5fd7 0%, #3b4cca 100%);
+            color: white;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        #LOGO {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        #element {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .Menu_elements {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .Menu_elements:hover {
+            color: #ffdd57;
+        }
+
+        .icon-user {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            padding-top: 70px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-right: 3px solid transparent;
+        }
+
+        .sidebar-item:hover {
+            background: #f8f9fa;
+            color: #4c5fd7;
+        }
+
+        .sidebar-item.active {
+            background: #e3f2fd;
+            color: #4c5fd7;
+            border-right-color: #4c5fd7;
+        }
+
+        .sidebar-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 100px 30px 30px;
+            flex: 1;
+            background: #f5f5f5;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .page-subtitle {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .new-clo-btn {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .new-clo-btn:hover {
+            background: #1976d2;
+        }
+
+        /* Toggle Button Group */
+        .toggle-group {
+            display: flex;
+            gap: 0;
+            margin-bottom: 30px;
+            border: 3px solid #a084f7;
+            border-radius: 8px;
+            width: fit-content;
+            background: #f6f8ff;
+            padding: 4px;
+        }
+
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 17px;
+            color: #2d2170;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .toggle-btn.active {
+            background: #fff;
+            color: #2d2170;
+            box-shadow: 0 2px 8px rgba(160,132,247,0.08);
+        }
+
+        .toggle-btn:not(.active) {
+            background: transparent;
+            color: #2d2170;
+        }
+
+        .toggle-btn:focus {
+            outline: none;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 300px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .filter-select {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table td {
+            padding: 15px;
+            border-bottom: 1px solid #f5f5f5;
+            vertical-align: middle;
+        }
+
+        .table tr:hover {
+            background: #fafafa;
+        }
+
+        /* Status badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+            min-width: 80px;
+            display: inline-block;
+        }
+
+        .status-approved {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-draft {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        /* Difficulty badges */
+        .difficulty-badge {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 500;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .difficulty-recognition {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .difficulty-comprehension {
+            background: #e8f5e8;
+            color: #388e3c;
+        }
+
+        .difficulty-basic {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .difficulty-advanced {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        /* Action buttons */
+        .action-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .action-btn.edit {
+            color: #2196f3;
+        }
+
+        .action-btn.delete {
+            color: #f44336;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .pagination-info {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .pagination-btn {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+            color: #666;
+        }
+
+        .pagination-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .pagination-btn.active {
+            background: #2196f3;
+            color: white;
+            border-color: #2196f3;
+        }
+
+        /* Recent Activities */
+        .recent-activities {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-top: 30px;
+            padding: 25px;
+        }
+
+        .activities-header {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .activities-subtitle {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-content h4 {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .activity-content p {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .check-btn {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (include từ header-home.html) -->
+    <div id="header">
+        <p id="LOGO"> QuizClear</p>
+        <div id="element">
+            <a class="Menu_elements" href="">Introduction</a>
+            <a class="Menu_elements" href="">Features</a>
+            <a class="Menu_elements" href="">Contact</a>
+            <a class="Menu_elements" href="">Login</a>
+            <i class="fa-solid fa-user icon-user"></i>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="#" class="sidebar-item">
+            <div class="sidebar-icon"><i class="fa-solid fa-chart-bar"></i></div>
+            Dashboard
+        </a>
+        <a href="#" class="sidebar-item active">
+            <div class="sidebar-icon"><i class="fa-solid fa-book"></i></div>
+            Subject Management
+        </a>
+        <a href="#" class="sidebar-item">
+            <div class="sidebar-icon"><i class="fa-solid fa-pen"></i></div>
+            Question Planning
+        </a>
+        <a href="#" class="sidebar-item">
+            <div class="sidebar-icon"><i class="fa-solid fa-copy"></i></div>
+            Duplication Check
+        </a>
+        <a href="#" class="sidebar-item">
+            <div class="sidebar-icon"><i class="fa-solid fa-file-alt"></i></div>
+            Exam Management
+        </a>
+        <a href="#" class="sidebar-item">
+            <div class="sidebar-icon"><i class="fa-solid fa-chart-line"></i></div>
+            Statistics & Reporting
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Toggle Button Group for Course/CLO -->
+        <div class="toggle-group">
+            <button class="toggle-btn">Course</button>
+            <button class="toggle-btn active">CLO</button>
+        </div>
+
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">CLOs List</h1>
+                <p class="page-subtitle">Manage Course Learning Outcomes (CLOs) by course</p>
+            </div>
+            <button class="new-clo-btn">
+                <i class="fa-solid fa-plus"></i> New CLOs
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search...">
+                <div class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+            </div>
+            <select class="filter-select">
+                <option>All departments</option>
+            </select>
+            <select class="filter-select">
+                <option>All Difficulty Level</option>
+            </select>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>CLO code</th>
+                        <th>Description</th>
+                        <th>Course</th>
+                        <th>Difficulty Level</th>
+                        <th>Questions</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CLO1</td>
+                        <td>Understand web fundamentals and core concepts</td>
+                        <td>Web Programming</td>
+                        <td><span class="difficulty-badge difficulty-recognition">Recognition</span></td>
+                        <td>256</td>
+                        <td><span class="status-badge status-approved">Approved</span></td>
+                        <td>
+                            <button class="action-btn edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="action-btn delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>CLO1</td>
+                        <td>Understand web fundamentals and core concepts</td>
+                        <td>Web Programming</td>
+                        <td><span class="difficulty-badge difficulty-comprehension">Comprehension</span></td>
+                        <td>256</td>
+                        <td><span class="status-badge status-approved">Approved</span></td>
+                        <td>
+                            <button class="action-btn edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="action-btn delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>CLO1</td>
+                        <td>Understand web fundamentals and core concepts</td>
+                        <td>Web Programming</td>
+                        <td><span class="difficulty-badge difficulty-basic">Basic Application</span></td>
+                        <td>256</td>
+                        <td><span class="status-badge status-approved">Approved</span></td>
+                        <td>
+                            <button class="action-btn edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="action-btn delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>CLO1</td>
+                        <td>Understand web fundamentals and core concepts</td>
+                        <td>Web Programming</td>
+                        <td><span class="difficulty-badge difficulty-advanced">Advanced Application</span></td>
+                        <td>256</td>
+                        <td><span class="status-badge status-draft">Draft</span></td>
+                        <td>
+                            <button class="action-btn edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="action-btn delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>CLO1</td>
+                        <td>Understand web fundamentals and core concepts</td>
+                        <td>Web Programming</td>
+                        <td><span class="difficulty-badge difficulty-basic">Basic Application</span></td>
+                        <td>256</td>
+                        <td><span class="status-badge status-approved">Approved</span></td>
+                        <td>
+                            <button class="action-btn edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="action-btn delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>CLO1</td>
+                        <td>Understand web fundamentals and core concepts</td>
+                        <td>Web Programming</td>
+                        <td><span class="difficulty-badge difficulty-advanced">Advanced Application</span></td>
+                        <td>256</td>
+                        <td><span class="status-badge status-draft">Draft</span></td>
+                        <td>
+                            <button class="action-btn edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="action-btn delete"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    <i class="fa-solid fa-angle-left"></i> Total Pages: 9
+                </div>
+                <div class="pagination-controls">
+                    <button class="pagination-btn"><i class="fa-solid fa-angle-left"></i> Previous</button>
+                    <button class="pagination-btn active">1</button>
+                    <button class="pagination-btn">Next <i class="fa-solid fa-angle-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="recent-activities">
+            <h2 class="activities-header">Recent Activities</h2>
+            <p class="activities-subtitle">Activities related to CLOs in the last 30 days</p>
+            
+            <div class="activity-item">
+                <div class="activity-content">
+                    <h4><i class="fa-solid fa-circle-plus" style="color:#2196f3"></i> New CLO: CLO1 - Apply OOP principles</h4>
+                    <p>The CLO has been created by Nguyên Văn A</p>
+                </div>
+                <button class="check-btn"><i class="fa-solid fa-check"></i> Check</button>
+            </div>
+            <div class="activity-item">
+                <div class="activity-content">
+                    <h4><i class="fa-solid fa-circle-plus" style="color:#2196f3"></i> New CLO: CLO1 - Apply OOP principles</h4>
+                    <p>The CLO has been created by Nguyên Văn A</p>
+                </div>
+                <button class="check-btn"><i class="fa-solid fa-check"></i> Check</button>
+            </div>
+            <div class="activity-item">
+                <div class="activity-content">
+                    <h4><i class="fa-solid fa-circle-plus" style="color:#2196f3"></i> New CLO: CLO1 - Apply OOP principles</h4>
+                    <p>The CLO has been created by Nguyên Văn A</p>
+                </div>
+                <button class="check-btn"><i class="fa-solid fa-check"></i> Check</button>
+            </div>
+            <p style="color: #2196f3; cursor: pointer; margin-top: 15px; font-size: 14px;">See more...</p>
+        </div>
+    </div>
+
+    <script>
+        // Add interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            searchInput.addEventListener('input', function() {
+                // Add search logic here
+                console.log('Searching for:', this.value);
+            });
+
+            // Table row interactions
+            const tableRows = document.querySelectorAll('.table tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('click', function() {
+                    console.log('Row clicked:', this);
+                });
+            });
+
+            // Action buttons
+            const editBtns = document.querySelectorAll('.action-btn.edit');
+            const deleteBtns = document.querySelectorAll('.action-btn.delete');
+            
+            editBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    console.log('Edit clicked');
+                });
+            });
+            
+            deleteBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    console.log('Delete clicked');
+                });
+            });
+
+            // New CLO button
+            document.querySelector('.new-clo-btn').addEventListener('click', function() {
+                console.log('New CLO clicked');
+            });
+
+            // Check buttons in activities
+            const checkBtns = document.querySelectorAll('.check-btn');
+            checkBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    console.log('Check activity clicked');
+                });
+            });
+
+            // Toggle buttons
+            const toggleBtns = document.querySelectorAll('.toggle-btn');
+            toggleBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    toggleBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to the clicked button
+                    this.classList.add('active');
+                    // Add toggle logic here
+                    console.log('Toggle to:', this.textContent);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
