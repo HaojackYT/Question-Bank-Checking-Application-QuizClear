@@ -131,7 +131,8 @@ select {
 
 .modal-content {
   background-color: #fff;
-  margin: 5% auto;
+  margin-top: 160px;
+  margin-left: 410px;
   padding: 30px;
   border: 1px solid #ccc;
   border-radius: 10px;
