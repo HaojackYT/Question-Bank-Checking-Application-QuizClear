@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Question Management</title>
+        <link rel="stylesheet" href="../Static/staffQuestionBank.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    </head>
+    <body>
+        <!-- MENU: Gắn phần menu vào đây -->
+        <div id="header-placeholder"></div>
+
+        <div class="main-container">
+            <h1 class="page-title">Question Management</h1>
+            <p class="subtitle">
+                Manage, review, and organize questions in the question bank
+            </p>
+
+            <div class="tabs">
+                <button class="tab active">Question Bank</button>
+                <button class="tab" onclick="location.href='submission.html'">
+                    Submission Table
+                </button>
+                <button class="tab" onclick="location.href='planning.html'">
+                    Question Planning
+                </button>
+                <button class="tab" onclick="location.href='duplication.html'">
+                    Duplication Check
+                </button>
+                <button class="tab" onclick="location.href='statistics.html'">
+                    Reports & Statistics
+                </button>
+                <button class="export-btn">
+                    <i class="fa-solid fa-download"></i> Export
+                </button>
+            </div>
+
+            <div class="filters">
+                <input
+                    type="text"
+                    placeholder="Search questions..."
+                    class="search-box" />
+                <select>
+                    <option>Subject</option>
+                    <option>Computer Science</option>
+                    <option>Mathematics</option>
+                    <option>Biology</option>
+                </select>
+                <select>
+                    <option>CLO</option>
+                    <option>CLO1</option>
+                    <option>CLO2</option>
+                    <option>CLO3</option>
+                </select>
+                <select>
+                    <option>Difficulty</option>
+                    <option>Easy</option>
+                    <option>Advanced</option>
+                    <option>Comprehension</option>
+                </select>
+                <select>
+                    <option>Creator</option>
+                    <option>Dr. Nguyen</option>
+                    <option>Dr. Tran</option>
+                    <option>Dr. Hoang</option>
+                </select>
+            </div>
+
+            <table class="question-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Question Content</th>
+                        <th>Subject</th>
+                        <th>CLO</th>
+                        <th>Difficulty</th>
+                        <th>Creator</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Q1001</td>
+                        <td>What is the primary function ...</td>
+                        <td>Computer Science</td>
+                        <td>CLO1</td>
+                        <td>Recognition</td>
+                        <td>Dr. Nguyen</td>
+                        <td>2023-05-15</td>
+                        <td>
+                            <i class="fa-solid fa-eye"
+                                onclick="showModal()"></i>
+                            <i class="fa-solid fa-lock"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Q1002</td>
+                        <td>Explain the concept of inhe ...</td>
+                        <td>Programming</td>
+                        <td>CLO2</td>
+                        <td>Advanced</td>
+                        <td>Dr. Tran</td>
+                        <td>2023-05-16</td>
+                        <td>
+                            <i class="fa-solid fa-eye"
+                                onclick="showModal()"></i>
+                            <i class="fa-solid fa-lock"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Q1003</td>
+                        <td>What is the difference between ...</td>
+                        <td>Networking</td>
+                        <td>CLO3</td>
+                        <td>Comprehension</td>
+                        <td>Dr. Le</td>
+                        <td>2023-05-17</td>
+                        <td>
+                            <i class="fa-solid fa-eye"
+                                onclick="showModal()"></i>
+                            <i class="fa-solid fa-lock"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Q1004</td>
+                        <td>Describe the process of photo...</td>
+                        <td>Biology</td>
+                        <td>CLO1</td>
+                        <td>Easy</td>
+                        <td>Dr. Pham</td>
+                        <td>2023-05-18</td>
+                        <td>
+                            <i class="fa-solid fa-eye"
+                                onclick="showModal()"></i>
+                            <i class="fa-solid fa-lock"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Q1005</td>
+                        <td>Solve the equation: 2x + 5 = 15</td>
+                        <td>Mathematics</td>
+                        <td>CLO2</td>
+                        <td>Easy</td>
+                        <td>Dr. Hoang</td>
+                        <td>2023-05-19</td>
+                        <td>
+                            <i class="fa-solid fa-eye"
+                                onclick="showModal()"></i>
+                            <i class="fa-solid fa-lock"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <span>Total Pages : <strong>9</strong></span>
+                <div>
+                    <button class="page-btn">< Previous</button>
+                    <button class="page-number active">1</button>
+                    <button class="page-btn">Next ></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal chi tiết câu hỏi -->
+        <div class="modal" id="questionModal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Question Details</h2>
+                <label>Question Content</label>
+                <textarea
+                    readonly>What is the primary function of an operating system is the primary function of an operating system is the primary function of an operating system</textarea>
+
+                <label>Subject</label>
+                <input type="text" value="Computer Science" readonly />
+
+                <div class="modal-row">
+                    <div>
+                        <label>Difficulty</label>
+                        <input type="text" value="Advanced Application"
+                            readonly />
+                    </div>
+                    <div>
+                        <label>CLO</label>
+                        <input type="text" value="CLO1" readonly />
+                    </div>
+                </div>
+
+                <div class="modal-row">
+                    <div>
+                        <label>Status</label>
+                        <input type="text" value="Approved" readonly
+                            class="status-approved" />
+                    </div>
+                    <div>
+                        <label>Creator</label>
+                        <input type="text" value="Dr. Tran" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER: Gắn phần footer vào đây -->
+        <script>
+      fetch("header-home.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("header-placeholder").innerHTML = data;
+        });
+
+      function showModal() {
+        document.getElementById("questionModal").style.display = "block";
+      }
+
+      function closeModal() {
+        document.getElementById("questionModal").style.display = "none";
+      }
+    </script>
+    </body>
+</html>

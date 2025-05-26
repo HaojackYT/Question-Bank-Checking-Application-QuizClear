@@ -1,0 +1,408 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #f9fafb;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.dashboard-container {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh + 200px); /* thêm chiều cao để có khoảng trống */
+  padding-top: 68px;
+  box-sizing: border-box;
+  padding-bottom: 90px;
+}
+
+
+
+
+/* Statistics Cards */
+.stats-container {
+  position: absolute;
+  left: 390px;
+  /* Điều chỉnh top để gần header hơn */
+  top: 68px;
+  width: 1003px;
+  height: 140px;
+  display: flex;
+  gap: 50px;
+}
+
+.stat-card {
+  position: relative;
+  width: 200px;
+  height: 120px;
+  background-color: #e0eafa;
+  border-radius: 10px;
+}
+
+.stat-title {
+  position: absolute;
+  left: 40px;
+  top: 16px;
+  width: 144px;
+  height: 21px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #120368;
+}
+
+.stat-value {
+  position: absolute;
+  left: 40px;
+  top: 37px;
+  width: 59px;
+  height: 32px;
+  font-weight: 700;
+  font-size: 40px;
+  color: #120368;
+}
+
+.stat-change {
+  position: absolute;
+  left: 45px;
+  top: 89px;
+  width: 114px;
+  height: 19px;
+  font-weight: 400;
+  font-size: 11px;
+  color: #70757d;
+}
+
+/* Charts Section */
+.charts-container {
+  position: absolute;
+  left: 396px;
+  /* Điều chỉnh top để phù hợp với stats-container mới */
+  top: 250px;
+  width: 948px;
+  height: 413px;
+  display: flex;
+  gap: 44px;
+}
+
+.chart-card {
+  position: relative;
+  width: 452px;
+  height: 413px;
+  background-color: #ffffff;
+  border: 2px solid #e0eafa;
+  border-radius: 15px;
+}
+
+.chart-title {
+  position: absolute;
+  left: 37px;
+  top: 20px;
+  width: 370px;
+  height: 68px;
+  font-weight: 900;
+  font-size: 26px;
+  color: #120368;
+}
+
+.chart-subtitle {
+  position: absolute;
+  left: 37px;
+  top: 57px;
+  width: 288px;
+  height: 42px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #70757d;
+}
+
+.chart-wrapper {
+  position: absolute;
+  left: 30px;
+  top: 107px;
+  width: 383px;
+  height: 282px;
+}
+
+/* Recent Tasks Section */
+.recent-tasks-container {
+  position: absolute;
+  left: 396px;
+  /* Điều chỉnh top để phù hợp với charts-container mới */
+  top: 730px;
+  width: 948px;
+  height: 565px;
+  background-color: #ffffff;
+  border: 2px solid #e0eafa;
+  border-radius: 15px;
+}
+
+.section-title {
+  position: absolute;
+  left: 41px;
+  top: 35px;
+  width: 600px;
+  height: 68px;
+  font-weight: 900;
+  font-size: 26px;
+  color: #120368;
+}
+
+.section-subtitle {
+  position: absolute;
+  left: 41px;
+  top: 70px;
+  width: 600px;
+  height: 42px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #70757d;
+}
+
+.task-item {
+  position: absolute;
+  left: 41px;
+  width: 826px;
+  height: 92px;
+  background-color: #ffffff;
+  border: 2px solid #e0eafa;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.task-item:nth-child(3) {
+  top: 124px;
+}
+
+.task-item:nth-child(4) {
+  top: 261px;
+}
+
+.task-item:nth-child(5) {
+  top: 398px;
+}
+
+.task-icon {
+  position: absolute;
+  left: 25px;
+  top: 31px;
+  width: 30px;
+  height: 30px;
+}
+
+.task-content {
+  position: absolute;
+  left: 83px;
+}
+
+.task-title {
+  width: 600px;
+  height: 40px;
+  font-weight: 500;
+  font-size: 20px;
+  color: #000000;
+  margin-top: 20px;
+}
+
+.task-due {
+  width: 140px;
+  height: 31px;
+  font-weight: 500;
+  font-size: 16px;
+  color: #70757d;
+  padding-bottom: 20px;
+}
+
+.task-status {
+  position: absolute;
+  right: 25px;
+  top: 29px;
+  width: 180px;
+  height: 38px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.task-status.in-progress {
+  background-color: #0088f0;
+}
+
+.task-status.pending {
+  background-color: #ffa500;
+}
+
+.see-more {
+  position: absolute;
+  left: 49px;
+  top: 510px;
+  width: 111px;
+  height: 38px;
+  font-weight: 400;
+  font-size: 20px;
+  color: #70757d;
+  cursor: pointer;
+}
+
+/* Duplicate Question Warning Section */
+.duplicate-warning-container {
+  position: absolute;
+  left: 394px;
+  /* Điều chỉnh top để phù hợp với recent-tasks-container mới */
+  top: 1360px;
+  width: 948px;
+  height: 600px;
+  background-color: #ffffff;
+  border: 2px solid #e0eafa;
+  border-radius: 15px;
+ margin-bottom: 60px;
+}
+
+.duplicate-count {
+  position: absolute;
+  left: 759px;
+  top: 20px;
+  width: 80px;
+  height: 76px;
+  background-color: #e0eafa;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.count-value {
+  font-weight: 900;
+  font-size: 40px;
+  color: #120368;
+}
+
+.duplicate-item {
+  position: absolute;
+  left: 41px;
+  width: 826px;
+  height: 191px;
+  background-color: #ffffff;
+  border: 2px solid #e0eafa;
+  border-radius: 15px;
+}
+
+.duplicate-item:nth-child(4) {
+  top: 124px;
+}
+
+.duplicate-item:nth-child(5) {
+  top: 343px;
+}
+
+.duplicate-header {
+  position: relative;
+  height: 52px;
+}
+
+.similarity-text {
+  position: absolute;
+  left: 29px;
+  top: 16px;
+  width: 200px;
+  height: 36px;
+  font-weight: 900;
+  font-size: 26px;
+  color: #ef2a2d;
+}
+
+.warning-icon {
+  position: absolute;
+  right: 12px;
+  top: 16px;
+  width: 30px;
+  height: 30px;
+}
+
+.question-box {
+  position: relative;
+  left: 29px;
+  width: 724px;
+  height: 38px;
+  background-color: #e0eafa;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.question-text {
+  padding-left: 9px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #000000;
+}
+
+.duplicate-warning-container .see-more {
+  left: 70px;
+  top: 553px;
+  width: 115px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1400px) {
+  .stats-container,
+  .charts-container,
+  .recent-tasks-container,
+  .duplicate-warning-container {
+    left: 50px;
+    width: calc(100% - 100px);
+  }
+
+  .chart-card {
+    width: calc(50% - 22px);
+  }
+
+  .task-item,
+  .duplicate-item {
+    width: calc(100% - 82px);
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-container {
+    flex-direction: column;
+    height: auto;
+    gap: 20px;
+    top: 20px;
+  }
+
+  .charts-container {
+    flex-direction: column;
+    height: auto;
+    gap: 20px;
+    top: 400px;
+  }
+
+  .chart-card {
+    width: 100%;
+  }
+
+  .recent-tasks-container {
+    top: 900px;
+    height: auto;
+    padding-bottom: 50px;
+  }
+
+  .duplicate-warning-container {
+    top: 1500px;
+    height: auto;
+    padding-bottom: 50px;
+  }
+}

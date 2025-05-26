@@ -1,0 +1,88 @@
+/* Nền tối */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Form popup */
+.modal-content {
+  background-color: #fff;
+  padding: 30px 50px;
+  border-radius: 16px;
+  width: 600px;
+  max-width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Nút đóng (x) */
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Tiêu đề */
+.modal-content h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Nhãn và input */
+.modal-content label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+}
+.modal-content input[type="text"],
+.modal-content input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* 2 cột */
+.flex-row {
+  display: flex;
+  gap: 16px;
+}
+.flex-row > div {
+  flex: 1;
+}
+
+/* Nút Save */
+.save-button {
+  background-color: #00b0f0;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  margin-left: 530px;
+}
+.save-button:hover {
+  background-color: #0090cc;
+}

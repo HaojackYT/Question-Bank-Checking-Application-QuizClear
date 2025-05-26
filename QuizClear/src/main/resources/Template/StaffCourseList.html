@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>staffCourseList</title>
+    <link rel="stylesheet" href="../Static/fontawesome/css/all.css">
+     <link rel="stylesheet" href="../Static/StaffCourseList.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+    </style>
+</head>
+
+<body>
+    <div class="main-context">
+        <button class="new-course-btn">+ New Course</button>
+
+        <div class="title">Course List</div>
+        <div class="subtitle">Manage courses, learning outcomes (CLOs), and difficulty levels.</div>
+        <div class="filter-select">
+            <div class="search-container">
+                <input type="text" id="search" placeholder="Search...">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <label for="department"></label>
+            <select id="department" name="departments">
+                <option value="AllDepartment">All Departments</option>
+                <option value="IT">Information Technology</option>
+                <option value="DB">Database</option>
+            </select>
+        </div>
+        <table class="course-table">
+            <thead>
+                <tr>
+                    <th>Course ID</th>
+                    <th>Course Name</th>
+                    <th>Credits</th>
+                    <th>Department</th>
+                    <th>CLOs</th>
+                    <th>Questions</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>CS101</td>
+                    <td>Introduction to Computer Science</td>
+                    <td>3</td>
+                    <td>Computer Science</td>
+                    <td>5</td>
+                    <td>256</td>
+                    <td>
+                        <i class="fa-solid fa-eye" style="margin-right: 20px;"></i>
+                        <i class="fa-solid fa-trash"></i>
+                    </td>
+                </tr>
+                <!-- More rows can be added here -->
+                <tr>
+                    <td>CS102</td>
+                    <td>Data Structures</td>
+                    <td>4</td>
+                    <td>Computer Science</td>
+                    <td>4</td>
+                    <td>128</td>
+                    <td>
+                        <i class="fa-solid fa-eye" style="margin-right: 20px;"></i>
+                        <i class="fa-solid fa-trash"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>CS103</td>
+                    <td>Algorithms</td>
+                    <td>3</td>
+                    <td>Computer Science</td>
+                    <td>6</td>
+                    <td>192</td>
+                    <td>
+                        <i class="fa-solid fa-eye" style="margin-right: 20px;"></i>
+                        <i class="fa-solid fa-trash"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>CS104</td>
+                    <td>Database Systems</td>
+                    <td>3</td>
+                    <td>Computer Science</td>
+                    <td>3</td>
+                    <td>64</td>
+                    <td>
+                        <i class="fa-solid fa-eye" style="margin-right: 20px;"></i>
+                        <i class="fa-solid fa-trash"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>CS105</td>
+                    <td>Operating Systems</td>
+                    <td>4</td>
+                    <td>Computer Science</td>
+                    <td>5</td>
+                    <td>160</td>
+                    <td>
+                        <i class="fa-solid fa-eye" style="margin-right: 20px;"></i>
+                        <i class="fa-solid fa-trash"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>CS106</td>
+                    <td>Software Engineering</td>
+                    <td>3</td>
+                    <td>Computer Science</td>
+                    <td>4</td>
+                    <td>96</td>
+                    <td>
+                        <i class="fa-solid fa-eye" style="margin-right: 20px;"></i>
+                        <i class="fa-solid fa-trash"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>CS107</td>
+                    <td>Computer Networks</td>
+                    <td>3</td>
+                    <td>Computer Science</td>
+                    <td>5</td>
+                    <td>128</td>
+                    <td>
+                        <i class="fa-solid fa-eye" style="margin-right: 20px;"></i>
+                        <i class="fa-solid fa-trash"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>CS108</td>
+                    <td>Web Development</td>
+                    <td>3</td>
+                    <td>Computer Science</td>
+                    <td>4</td>
+                    <td>80</td>
+                    <td>
+                        <i class="fa-solid fa-eye" style="margin-right: 20px;"></i>
+                        <i class="fa-solid fa-trash"></i>
+                    </td>
+                </tr>
+                <tr>
+                    <td>CS109</td>
+                    <td>Machine Learning</td>
+                    <td>4</td>
+                    <td>Computer Science</td>
+                    <td>6</td>
+                    <td>144</td>
+                    <td>
+                        <i class="fa-solid fa-eye" style="margin-right: 20px;"></i>
+                        <i class="fa-solid fa-trash"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="pagination">
+            <i class="fa-solid fa-bullhorn" style="padding: 20px;"></i>
+            <p class="page-info" style="padding: 10px;">Total Pages:</p>
+            <p class="page-info">9</p>
+            <div class="page-controls">
+                <button class="prev-btn"><i class="fa-solid fa-square-caret-left"></i> Previous</button>
+                <input type="number" id="pageInput" value="1" min="1" style="width: 50px; text-align: center;">
+                <button class="next-btn">Next <i class="fa-solid fa-square-caret-right"></i></button>
+            </div>
+        </div>
+        <div class="activity">
+            <h2>Recent Activities</h2>
+            <p class="activities-subtitle">Activities related to the course in the last 30 days</p>
+            <div class="activity-item">
+                <div class="activity-info">
+                    <p class="activity-text"><strong>New course: Java Program</strong></p>
+                    <p class="activity-caption">The course has been created by Nguyễn Văn A</p>
+                </div>
+                <div class="check-btn">Check</div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-info">
+                    <p class="activity-text"><strong>New course: Database Management</strong></p>
+                    <p class="activity-caption">The course has been created by Trần Thị B</p>
+                </div>
+                <div class="check-btn">Check</div>
+            </div>
+             <div class="activity-item">
+                <div class="activity-info">
+                    <p class="activity-text"><strong>New course: Java Program</strong></p>
+                    <p class="activity-caption">The course has been created by Nguyễn Văn A</p>
+                </div>
+                <div class="check-btn">Check</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
