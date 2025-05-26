@@ -428,6 +428,168 @@
             cursor: pointer;
             font-size: 12px;
         }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(44, 44, 44, 0.25);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 20px;
+            max-width: 700px;
+            width: 90%;
+            padding: 40px 40px 30px 40px;
+            box-shadow: 0 8px 32px rgba(44, 44, 44, 0.18);
+            position: relative;
+        }
+
+        #close-modal {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #222;
+            cursor: pointer;
+        }
+
+        @media (max-width: 900px) {
+            .modal-content {
+                max-width: 98vw;
+                width: 98vw;
+                padding: 20px 5vw 20px 5vw;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .modal-content {
+                max-width: 100vw;
+                width: 100vw;
+                padding: 10px 2vw 10px 2vw;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 200px;
+                padding: 80px 20px 20px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .page-subtitle {
+                font-size: 14px;
+            }
+
+            .new-clo-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .toggle-btn {
+                padding: 10px 24px;
+                font-size: 16px;
+            }
+
+            .filters {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .filter-select {
+                min-width: 100%;
+            }
+
+            .table th, .table td {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .status-badge, .difficulty-badge {
+                font-size: 10px;
+                padding: 4px 8px;
+            }
+
+            .action-btn {
+                padding: 6px;
+            }
+
+            .pagination-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .recent-activities {
+                padding: 20px;
+            }
+
+            .activities-header {
+                font-size: 18px;
+            }
+
+            .activities-subtitle {
+                font-size: 12px;
+            }
+
+            .activity-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px 0;
+            }
+
+            .activity-content h4 {
+                font-size: 14px;
+            }
+
+            .activity-content p {
+                font-size: 12px;
+            }
+
+            .check-btn {
+                padding: 6px 12px;
+                font-size: 10px;
+            }
+
+            .modal-content {
+                padding: 30px;
+            }
+
+            #close-modal {
+                top: 16px;
+                right: 16px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -634,6 +796,55 @@
             </div>
             <p style="color: #2196f3; cursor: pointer; margin-top: 15px; font-size: 14px;">See more...</p>
         </div>
+
+        <!-- Modal for Create CLO -->
+        <div id="clo-modal" class="modal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100vw; height:100vh; background:rgba(44,44,44,0.25); align-items:center; justify-content:center;">
+            <div class="modal-content" style="background:#fff; border-radius:20px; max-width:700px; width:90%; padding:40px 40px 30px 40px; box-shadow:0 8px 32px rgba(44,44,44,0.18); position:relative;">
+                <button id="close-modal" style="position:absolute; top:24px; right:24px; background:none; border:none; font-size:28px; color:#222; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+                <h2 style="color:#2d2170; font-size:2rem; font-weight:700; margin-bottom:32px;">Create CLO</h2>
+                <form id="clo-form">
+                    <div style="display:flex; gap:24px; margin-bottom:24px;">
+                        <div style="flex:1;">
+                            <label style="font-weight:500; margin-bottom:8px; display:block;">Course Name *</label>
+                            <input type="text" required style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; font-size:16px;">
+                        </div>
+                        <div style="flex:1;">
+                            <label style="font-weight:500; margin-bottom:8px; display:block;">Difficulty Level *</label>
+                            <select required style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; font-size:16px;">
+                                <option>Recognition</option>
+                                <option>Comprehension</option>
+                                <option>Basic Application</option>
+                                <option>Advanced Application</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:24px;">
+                        <label style="font-weight:500; margin-bottom:8px; display:block;">Description *</label>
+                        <textarea required style="width:100%; min-height:100px; padding:12px; border-radius:8px; border:1px solid #ccc; font-size:16px;"></textarea>
+                    </div>
+                    <div style="display:flex; gap:24px; margin-bottom:24px;">
+                        <div style="flex:1;">
+                            <label style="font-weight:500; margin-bottom:8px; display:block;">Created By *</label>
+                            <input type="text" required style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; font-size:16px;">
+                        </div>
+                        <div style="flex:1;">
+                            <label style="font-weight:500; margin-bottom:8px; display:block;">Status *</label>
+                            <select required style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; font-size:16px;">
+                                <option>Approved</option>
+                                <option>Draft</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:32px;">
+                        <label style="font-weight:500; margin-bottom:8px; display:block;">Notes</label>
+                        <input type="text" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; font-size:16px;">
+                    </div>
+                    <div style="text-align:right;">
+                        <button type="submit" style="background:#19a7f7; color:#fff; border:none; border-radius:8px; padding:12px 36px; font-size:18px; font-weight:600; cursor:pointer;">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -657,24 +868,27 @@
             // Action buttons
             const editBtns = document.querySelectorAll('.action-btn.edit');
             const deleteBtns = document.querySelectorAll('.action-btn.delete');
-            
+            const modal = document.getElementById('clo-modal');
+            const openBtn = document.querySelector('.new-clo-btn');
+            const closeBtn = document.getElementById('close-modal');
+            // Mở modal khi nhấn New CLOs
+            openBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                modal.style.display = 'flex';
+            });
+            // Mở modal khi nhấn Edit
             editBtns.forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    console.log('Edit clicked');
+                    modal.style.display = 'flex';
                 });
             });
-            
-            deleteBtns.forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    console.log('Delete clicked');
-                });
+            // Đóng modal
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
             });
-
-            // New CLO button
-            document.querySelector('.new-clo-btn').addEventListener('click', function() {
-                console.log('New CLO clicked');
+            window.addEventListener('click', function(e) {
+                if (e.target === modal) modal.style.display = 'none';
             });
 
             // Check buttons in activities
