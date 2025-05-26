@@ -1,0 +1,36 @@
+* {
+    font-family: 'roboto', sans-serif;
+    margin: 0;
+    border: 0;
+}
+
+#Menu-Staff {
+    width: 23vw;
+    height: 100vh;
+    background-color: #E0EAFA;
+}
+
+#Menu-Staff .elements {
+    padding: 1rem ;
+    display: flex;
+    border-radius: 20px;
+}
+#Menu-Staff a,#Menu-Staff i {
+    text-decoration: none;
+    color: black;
+    font-size: 1.5rem;
+}
+#Menu-Staff a {
+    margin-left: 1em;
+}
+
+/* #Menu-Staff .elements {
+    background-color: #C6DCFF;
+
+}
+#Menu-Staff a,#Menu-Staff i {
+    text-decoration: none;
+    color: #0088F0;
+    font-weight: 600;
+    font-size: 1.5rem;
+} */
