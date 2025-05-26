@@ -1,0 +1,86 @@
+* {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#footer {
+    width: 100%;
+    background-color: #120368;
+    display: flex;
+    flex-direction: column;
+    padding: 5vh 5vw;
+}
+
+#top_footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 5vh;
+    gap: 4vw;
+}
+
+#top_footer p {
+    color: white;
+    font-size: 1.2rem;
+}
+
+#top_footer .tieude {
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+}
+#top_footer .special1 {
+    margin-bottom: 4rem;
+}
+#top_footer .special2 {
+    margin-top: 3rem;
+    margin-bottom: 2.5rem;
+}
+
+#top_footer .thongtinlienhe {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+#top_footer i {
+    color: white;
+    margin-right: 0.8rem;
+    font-size: 1.2rem;
+}
+
+#top_footer #icon {
+    display: flex;
+    gap: 1rem;
+}
+
+#top_footer .icon {
+    font-size: 2.2rem;
+    width: 2.2rem;
+    height: 2.2rem;
+}
+
+#top_footer .element {
+    margin-top: 1.5rem;
+}
+
+#line {
+    margin: 3rem 0;
+    border-top: 1px solid white;
+}
+
+#bottom_footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+#bottom_footer i,
+#bottom_footer p {
+    color: white;
+    font-size: 1rem;
+}

@@ -4,45 +4,64 @@
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
 }
-#header {
-    margin: 0;
-    border: 0;
+
+/* HEADER CHUNG */
+#header, #header-user {
     width: 100%;
-    height: 98px;
+    height: 6.5vh; /* Tự co theo chiều cao màn hình */
+    min-height: 70px; /* Đảm bảo không quá nhỏ */
     background-color: #120368;
     display: flex;
     flex-direction: row;
     align-items: center;
+    padding: 0 5vw;
+    gap: 5vw;
 }
+
+
 #LOGO {
-    margin: 0;
     color: white;
-    margin-left: 135px;
-    font-size: 32px;
+    font-size: 2rem; 
+    font-weight: bold;
+    margin-right: 20vw;
 }
-#header #element {
-    margin-left: 250px;
+
+/* NAVIGATION (phần menu) */
+#header #element, #header-user #element {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap : 100px;
+    gap: 7vw; 
+    flex-wrap: wrap;
 }
+
+/* MỤC MENU */
 .Menu_elements {
     color: white;
     text-decoration: none;
-    font-size: 24px;
+    font-size: 1.2rem;
     font-weight: 600;
 }
-.icon-user {
-    width: 40px;
-    height: 40px;
-    display: flex;                  /* BẮT BUỘC để căn giữa */
-    justify-content: center;        /* Căn giữa ngang */
-    align-items: center;            /* Căn giữa dọc */
-    
-    border: 3px solid rgb(255, 255, 255);
-    border-radius: 100px;      /* Thêm nền nếu cần nhìn rõ icon */
-    color: white;
-    font-size: 18px;                /* Tuỳ chỉnh kích thước icon */
-}
 
+/* ICON USER (AVATAR) */
+.icon-user {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid white;
+    border-radius: 50%;
+    color: white;
+    font-size: 1rem;
+}
+#header-user #element {
+    margin-left: 45vw;
+}
+#header-user #element {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 3vw; 
+    flex-wrap: wrap;
+}
