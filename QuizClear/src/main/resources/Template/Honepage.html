@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../Static/header.css">
+    <link rel="stylesheet" href="../Static/homepage.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Homepage</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+    <!-- main conten -->
+    <div id="Main-container">
+        <img src="../img/home01.jpg" alt="" style="width: 100vw;height: auto;">
+        <div id="body-content">
+            <div>
+                <p class="title">Introduction</p>
+                <p class="text">QuizClear is a leading solution for optimizing and enhancing the quality of question
+                    banks.
+                    <br>Utilizing advanced AI technology, it detects duplicate questions not only by
+                    <br> text but also by meaning. Ensure clarity, uniqueness, and academic standards in your
+                    assessments.
+                </p>
+                <p class="title" style="color: #172755;">Target users</p>
+            </div>
+            <img src="../img/home02.jpg" alt="">
+
+            <p class="title" style="color: #172755;">How it works?</p>
+            <div>
+                <p class="mini-title">Update Questions</p>
+                <p class="mini-text">Create or import questions into your secure bank.</p>
+            </div>
+            <img src="../img/home03.jpg" alt="">
+
+            <div>
+                <p class="mini-title">AI Duplicate Check</p>
+                <p class="mini-text">Detect duplicate questions with AI based on content and meaning.</p>
+            </div>
+            <img src="../img/home04.jpg" alt="" style="width: 50vw;display: block;margin: 0 auto;">
+
+            <div>
+                <p class="mini-title">Approve & Export</p>
+                <p class="mini-text">Approve and export exam sets with clean, accurate data.</p>
+            </div>
+            <img src="../img/home05.jpg" alt="" style="width: 50vw;display: block;margin: 0 auto;">
+
+            <p class="title">Key Features</p>
+            <div>
+                <p class="mini-title">Question Bank</p>
+                <p class="mini-text">Organized repository with smart search and categorization.</p>
+            </div>
+            <img src="../img/home06.jpg" alt="" style="width: 50vw;display: block;margin: 0 auto;">
+
+            <div>
+                <p class="mini-title">Detailed Statistics</p>
+                <p class="mini-text">Track task status, completion rates.</p>
+            </div>
+            <img src="../img/home07.jpg" alt="" style="width: 50vw;display: block;margin: 0 auto;">
+
+            <div>
+                <p class="mini-title">Approval Workflow</p>
+                <p class="mini-text">Assign and approve questions and exams efficiently.</p>
+            </div>
+
+            <p style="font-size: 64px; color: #E66A63;font-weight: bold;">Contact</p>
+            <div id="Infor-Container">
+                <div id="right">
+                    <p class="text1">Keep in touch with us.</p>
+                    <div class="elememnts">
+                        <i class="fa-solid fa-location-dot icon"></i>
+                        <p>TP. Hồ Chí Minh</p>
+                    </div>
+                    <div class="elememnts">
+                        <i class="fa-solid fa-phone icon"></i>
+                        <p>0346007979</p>
+                    </div>
+                    <div class="elememnts">
+                        <i class="fa-solid fa-envelope icon"></i>
+                        <p>QuizClear@gmail.com</p>
+                    </div>
+                </div>
+
+                <div id="left">
+                    <p class="text1">Send a message</p>
+                    <div class="elements short">
+                        <div id="name">
+                            <p>Full Name *</p>
+                            <input type="text" placeholder="Your Name">
+                        </div>
+                        <div id="phone">
+                            <p>Phone Number *</p>
+                        <input type="text" placeholder="Your Phone Number">
+                        </div>
+                    </div>
+                    <div class="elements">
+                        <p>Subject</p>
+                        <input type="text" placeholder="Subject">
+                    </div>
+                    <div class="elements">
+                        <p>Message</p>
+                        <input type="text" placeholder="Your Message">
+                    </div>
+                    <button>Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <div id="footer-placeholder"></div>
+
+
+
+    <!-- ma nhung header vs menu -->
+    <script>
+        // Load header
+        fetch('../Template/header-home.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        // Load menu
+        fetch('../Template/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+
+    </script>
+</body>
+
+</html>
