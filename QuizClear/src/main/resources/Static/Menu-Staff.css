@@ -5,7 +5,7 @@
 }
 
 #Menu-Staff {
-    width: 23vw;
+    width: 18vw;
     height: 100vh;
     background-color: #E0EAFA;
 }
@@ -18,7 +18,7 @@
 #Menu-Staff a,#Menu-Staff i {
     text-decoration: none;
     color: black;
-    font-size: 1.3rem;
+    font-size: 1rem;
 }
 #Menu-Staff a {
     margin-left: 1em;
