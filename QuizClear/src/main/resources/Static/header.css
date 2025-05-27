@@ -47,13 +47,12 @@
 .icon-user {
     width: 2.5rem;
     height: 2.5rem;
-    display: flex;
+    display: flex !important;
     justify-content: center;
     align-items: center;
     border: 2px solid white;
     border-radius: 50%;
     color: white;
-    font-size: 1rem;
 }
 #header-user #element {
     margin-left: 45vw;
