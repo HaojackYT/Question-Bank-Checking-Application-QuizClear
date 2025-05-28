@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../Static/header.css">
+    <link rel="stylesheet" href="../Static/web_styles.css">
+    <link rel="stylesheet" href="../Static/Staff_Exammanage.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Template</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- noi dung duoc nhap trong day -->
+            <div id="title-container">
+                <div class="title">
+                    <p style="font-size: 32px;font-weight: 600;color: #120368;">Exam Management</p>
+                    <p style="color: #4B5563;font-size: 14px;font-weight: 400;">Create, review, and manage exams across all subjects</p>
+                </div>
+                <button type="button" title="Create New Exam">Create New Exam</button>
+            </div>
+            <div>
+                <div id="box-container">
+                    <div class="box">
+                        <p class="text">Total Exams</p>
+                        <span class="number">128%</span>
+                        <p class="text"><span>+6.2</span>% from last month</p>
+                    </div>
+                    <div class="box">
+                        <p class="text">Pending Approval</p>
+                        <span class="number">24</span>
+                        <p class="text">(2 urgent due in 48h)</p>
+                    </div>
+                    <div class="box">
+                        <p class="text">Approved</p>
+                        <span class="number">96</span>
+                        <p class="text">Ready for distribution</p>
+                    </div>
+                    <div class="box">
+                        <p class="text">Rejected</p>
+                        <span class="number">8</span>
+                        <p class="text">Needs revision</p>
+                    </div>
+                </div>
+            </div>
+            <div id="filter-container">
+                <input type="text" placeholder="Search exams...">
+                <select name="status" id="status">
+                    <option value="all">All status</option>
+                </select>
+                <select name="Subject" id="Subject">
+                    <option value="all">All Subject</option>
+                </select>
+                <i class="fa-solid fa-filter icon"></i>
+            </div>
+            <div id="menu-container">
+                <p>All Exams</p>
+                <p>Pending Approval</p>
+                <p>Approved</p>
+                <p>Needs Revision</p>
+            </div>
+            <div id="garph-container">
+                <div>
+                    <p style="font-size: 32px;font-weight: 600;color: #120368;">Pending Approval</p>
+                    <p style="color: #4B5563;font-size: 14px;font-weight: 400; margin-bottom: 20px;">Exams waiting for review and approval</p>
+                </div>
+                <div class="subject-row" data-duplicates="200" data-total="400">
+                    <div class="subject-header">
+                        <span class="title">Data Structures</span>
+                        <button type="button" title="review">Review</button>
+                    </div>
+                    <div class="subject-infor">
+                        <span class="subject-name">Computer Science</span>
+                        <div class="create">Create: <span>2023-06-15</span></div>
+                        <div class="Due">Due: <span>2023-06-20</span></div>
+                        <div class="Assigned">Assigned to: <span>Dr. Smith</span></div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 50%;"></div>
+                    </div>
+                    <span class="under">50%</span>
+                </div>
+
+                <div class="subject-row" data-duplicates="200" data-total="400">
+                    <div class="subject-header">
+                        <span class="title">Data Structures</span>
+                        <button type="button" title="review">Review</button>
+                    </div>
+                    <div class="subject-infor">
+                        <span class="subject-name">Computer Science</span>
+                        <div class="create">Create: <span>2023-06-15</span></div>
+                        <div class="Due">Due: <span>2023-06-20</span></div>
+                        <div class="Assigned">Assigned to: <span>Dr. Smith</span></div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 50%;"></div>
+                    </div>
+                    <span class="under">50%</span>
+                </div>
+
+
+                <div class="subject-row" data-duplicates="200" data-total="400">
+                    <div class="subject-header">
+                        <span class="title">Data Structures</span>
+                        <button type="button" title="review">Review</button>
+                    </div>
+                    <div class="subject-infor">
+                        <span class="subject-name">Computer Science</span>
+                        <div class="create">Create: <span>2023-06-15</span></div>
+                        <div class="Due">Due: <span>2023-06-20</span></div>
+                        <div class="Assigned">Assigned to: <span>Dr. Smith</span></div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 50%;"></div>
+                    </div>
+                    <span class="under">50%</span>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ma nhung header vs menu -->
+    <script>
+        // Load header
+        fetch('../Template/header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        // Load menu
+        fetch('../Template/Menu-Staff.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+
+    </script>
+</body>
+
+</html>
