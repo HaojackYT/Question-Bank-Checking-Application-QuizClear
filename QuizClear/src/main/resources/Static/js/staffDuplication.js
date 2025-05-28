@@ -139,3 +139,115 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector(".tab.active") || document.querySelector(".tab");
   if (firstTab) firstTab.click();
 });
+
+// Dữ liệu mẫu cho log details
+const logDetails = {
+  L1001: {
+    id: "L1001",
+    date: "2023-05-18 14:32",
+    question:
+      "S1005: Explain the concept of inheritance in object-oriented programming.",
+    duplicate:
+      "Q1002: Describe inheritance and its importance in object-oriented programming paradigms.",
+    similarity: "85%",
+    action: "Rejected",
+    reason: "High semantic similarity with existing question",
+    feedback:
+      "This question is too similar to an existing one. Please revise to focus on a specific aspect of inheritance.",
+    processor: "Dr. Admin",
+  },
+  L1002: {
+    id: "L1002",
+    date: "2023-05-20 10:15",
+    question:
+      "S1008: Describe the process of photosynthesis and its significance.",
+    duplicate:
+      "Q1078: Explain how photosynthesis works and why it's essential for plant life.",
+    similarity: "88%",
+    action: "Merged",
+    reason: "Overlapping content with minor rephrasing",
+    feedback:
+      "The questions are essentially the same, only minor wording differences exist.",
+    processor: "Dr. Admin",
+  },
+  L1003: {
+    id: "L1003",
+    date: "2023-05-22 16:45",
+    question:
+      "S1012: What is the role of DNS in computer networking architecture.",
+    duplicate:
+      "Q1034: Explain the function of DNS servers in network architecture.",
+    similarity: "75%",
+    action: "Sent Back",
+    reason: "Insufficient justification for duplicate status",
+    feedback:
+      "Please clarify the distinction between the two questions more clearly.",
+    processor: "Dr. Admin",
+  },
+  L1004: {
+    id: "L1004",
+    date: "2023-05-25 09:20",
+    question:
+      "S1015: What are the key differences between procedural and object-oriented programming?",
+    duplicate:
+      "Q1045: Explain the main differences between procedural programming and object-oriented programming.",
+    similarity: "92%",
+    action: "Rejected",
+    reason: "Complete conceptual overlap",
+    feedback:
+      "Too similar. Suggest focusing on specific language examples to differentiate.",
+    processor: "Dr. Admin",
+  },
+};
+
+// Show log details in a modal
+function showDetails(logId) {
+  const data = logDetails[logId];
+  if (!data) return;
+
+  const modalContent = `
+      <div class="info-row">
+        <div class="info-label">Log ID</div>
+        <div class="info-value">${data.id}</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Processed At</div>
+        <div class="info-value">${data.date}</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Question</div>
+        <div class="info-value">${data.question}</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Duplicate</div>
+        <div class="info-value">${data.duplicate}</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Similarity</div>
+        <div class="info-value">${data.similarity}</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Action</div>
+        <div class="info-value">${data.action}</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Reason</div>
+        <div class="info-value">${data.reason}</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Feedback</div>
+        <div class="info-value">${data.feedback}</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Processor</div>
+        <div class="info-value">${data.processor}</div>
+      </div>
+    `;
+
+  document.getElementById("modalContent").innerHTML = modalContent;
+  document.getElementById("logDetailModal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("logDetailModal").style.display = "none";
+}

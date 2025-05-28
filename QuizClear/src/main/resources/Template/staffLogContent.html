@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="../Static/staffLogs.css" />
+<link rel="stylesheet" href="../Static/staffLogsDetails.css" />
 <div class="search-export">
   <input type="text" class="search-input" placeholder="Search logs..." />
   <button class="export-btn">
@@ -132,5 +133,18 @@
         </tr>
       </tbody>
     </table>
+  </div>
+</div>
+
+<!-- Modal for Log Details -->
+<div class="modal-overlay" id="logDetailModal" style="display: none">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Processing Log Details</h3>
+      <button class="close-button" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalContent">
+      <!-- Data here -->
+    </div>
   </div>
 </div>
