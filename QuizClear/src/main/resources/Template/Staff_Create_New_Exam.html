@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+        <link rel="stylesheet" href="../Static/header.css">
+        <link rel="stylesheet" href="../Static/web_styles.css">
+        <link rel="stylesheet" href="../Static/Staff_Create_New_Exam.css">
+        <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+        <title>Template</title>
+    </head>
+
+    <body>
+        <!--header-->
+        <div id="header-placeholder"></div>
+
+
+
+        <!-- body -->
+        <div id="Container-body">
+            <!-- Menu -->
+            <div id="menu-HTML"></div>
+
+
+            <!-- Main content -->
+            <div id="main">
+               <!-- noi dung duoc nhap trong day -->
+
+               <!-- khoi tieu de va quay lai -->
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <a href="#!" style="color: black;width: 40px;height: 40px; font-size: 40px;"><i class="fa-solid fa-arrow-left"></i></a>
+                    <p style="color: #120368;font-size: 36px;font-weight: 600;">Create New Exam</p>
+                </div>
+
+                <!-- khoi cac buoc -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <!-- buoc 1 -->
+                    <div class="Step-Container Step-Container_continue">
+                        <i class="fa-solid fa-1 step Step_continue"></i>
+                        <p class="p_continue">Basic info</p>
+                    </div>
+
+                    <!-- buoc 2 -->
+                    <div class="Step-Container">
+                        <i class="fa-solid fa-2 step"></i>
+                        <p>Structure</p>
+                    </div>
+
+                    <!-- buoc 3 -->
+                    <div class="Step-Container">
+                        <i class="fa-solid fa-3 step"></i>
+                        <p>Assignment</p>
+                    </div>
+
+                    <!-- buoc 4-->
+                    <div class="Step-Container">
+                        <i class="fa-solid fa-4 step"></i>
+                        <p>Review</p>
+                    </div>
+                </div>
+
+                <!-- khoi noi dung -->
+                <div id="content-container" style="display: flex; flex-direction: column; gap: 20px;">
+
+                    <!-- khoi tieu de -->
+                    <div>
+                        <p style="font-size: 17px;font-weight: 600;">Exam Details</p>
+                        <p style="font-size: 12px;color: #6B7280;">Enter the basic information about the exam</p>
+                    </div>
+
+                    <!-- khoi noi dung -->
+                    <div id="content">
+                        <!-- khoi tren -->
+                        <div id="top-content" >
+                            <!-- khoi trai -->
+                            <div id="left-content">
+                                <div>
+                                    <p>Exam Title</p>
+                                    <input type="text" placeholder="e.g., Midterm Exam, Final Exam">
+                                </div>
+                                <div>
+                                    <p>Subject</p>
+                                    <select name="Subject" id="Subject" title="Subject">
+                                        <option value="Select_Subject">select Subject</option>
+                                    </select>                                       
+                                </div>
+                                <div>
+                                    <p>Semester</p>
+                                    <select name="Semester" id="Semester" title="Semester">
+                                        <option value="Select_Semester">Select_Semester</option>
+                                    </select>                                   
+                                </div>
+                                <div>
+                                    <p>Exam Type</p>
+                                    <select name="Exam_Type" id="Exam_Type" title="Exam_Type">
+                                        <option value="Select_Exam_Type">Select_Exam_Type</option>
+                                    </select>                                   
+                                </div>
+                            </div>
+
+                            <!-- khoi phai -->
+                            <div id="right-content">
+                                <div>
+                                    <p>Exam Code</p>
+                                    <input type="text" placeholder="e.g., CS101-FINAL-2023">
+                                </div>
+                                <div>
+                                    <p>Course/Module</p>
+                                    <select name="course" id="course" title="Course">
+                                        <option value="Select_course">Select_course</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <p>Deadline Date</p>
+                                    <input type="date" title="Deadline_Date">
+                                </div>
+                                <div>
+                                    <p>Duration (minutes)</p>
+                                    <input type="text" placeholder="e.g., 120" title="Duration">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- khoi duoi -->
+                        <div  style="padding-right: 35px;">
+                            <div>
+                                <p style="font-size: 12px;">Exam Description</p>
+                                <input type="text" name="Description" id="Description" placeholder="Enter a brief description of the exam">
+                            </div>
+                            <div>
+                                <p style="font-size: 12px;">Exam Instructions</p>
+                                <textarea name="Instructions" id="Instructions" placeholder="
+                            1. Read all questions carefully before answering.
+                            2. Each question has only one correct answer.
+                            3. There is no negative marking for wrong answers.
+                            4. You have the entire duration to complete the exam."
+                             style="min-height: 114px;"></textarea>
+                            </div>
+                            <div id="button-container">
+                                <button title="Cancel">Cancel</button>
+                                <button title="Next">Next
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- ma nhung header vs menu -->
+        <script>
+            // Load header
+            fetch('../Template/header_user.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
+
+            // Load menu
+            fetch('../Template/Menu-Staff.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('menu-HTML').innerHTML = data;
+                });
+
+        </script>
+    </body>
+</html>
