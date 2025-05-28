@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+        <link rel="stylesheet" href="../../Static/header.css">
+        <link rel="stylesheet" href="../../Static/web_styles.css">
+        <link rel="stylesheet" href="../../Static/Menu-Staff.css">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../../Static/staffSubmissionTable.css">
+    <link rel="stylesheet" href="../../Static/css/staffQuestionManagement.css">
+    <title>Question Planning</title>
+    
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <div class="main-content-wrapper">
+                <div class="page-title">
+                    <h1>Question Management</h1>
+                    <p>Manage, review, and organize questions in the question bank</p>
+                </div>
+
+                <div class="tab-buttons">
+                    <button class="tab-button" onclick="location.href='staffQuestionBank.html'">
+                        <i class="fas fa-folder"></i>
+                        Question Bank
+                    </button>
+                    <button class="tab-button" onclick="location.href='staffSubmissionTable.html'">
+                        <i class="fas fa-table"></i>
+                        Submission Table
+                    </button>
+                    <button class="tab-button active">
+                        <i class="fas fa-calendar-alt"></i>
+                        Question Planning
+                    </button>
+                    <button class="tab-button" onclick="location.href='staffDuplicationCheck.html'">
+                        <i class="fas fa-search"></i>
+                        Duplication Check
+                    </button>
+                    <button class="tab-button" onclick="location.href='staffQMReportsStatistics.html'">
+                        <i class="fas fa-chart-bar"></i>
+                        Reports & Statistics
+                    </button>
+                </div>
+
+                <div class="action-bar">
+                    <div class="filter-bar">
+                        <select class="filter-select">
+                            <option>Filter by Subject</option>
+                            <option>Computer Science</option>
+                            <option>Mathematics</option>
+                            <option>Biology</option>
+                        </select>
+                        <select class="filter-select">
+                            <option>Filter by Department</option>
+                            <option>Computer Science</option>
+                            <option>Information Technology</option>
+                            <option>Life Sciences</option>
+                        </select>
+                        <select class="filter-select">
+                            <option>Filter by Status</option>
+                            <option>In Progress</option>
+                            <option>Completed</option>
+                            <option>Overdue</option>
+                        </select>
+                    </div>
+                    <button class="create-plan-btn" id="openCreateModal">
+                        <i class="fas fa-plus"></i>
+                        Create New Plan
+                    </button>
+                </div>
+
+                <div class="subject-cards">
+                    <!-- Programming Card -->
+                    <div class="subject-card">
+                        <div class="subject-header">
+                            <div class="subject-title">Programming</div>
+                            <div class="subject-id">#P1001</div>
+                        </div>
+                        <div class="subject-info">
+                            <div class="subject-info-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>Due: 2023-06-30</span>
+                            </div>
+                            <div class="subject-info-item">
+                                <i class="fas fa-building"></i>
+                                <span>Computer Science</span>
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <div class="progress-label">Progress</div>
+                                <div class="progress-percent">65%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill medium" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        <div class="question-distribution">
+                            <div class="question-type">
+                                <div class="question-type-value">25</div>
+                                <div class="question-type-label">Recognition</div>
+                                <div class="question-type-bar recognition"></div>
+                            </div>
+                            <div class="question-type">
+                                <div class="question-type-value">25</div>
+                                <div class="question-type-label">Comprehension</div>
+                                <div class="question-type-bar comprehension"></div>
+                            </div>
+                            <div class="question-type">
+                                <div class="question-type-value">30</div>
+                                <div class="question-type-label">Basic App</div>
+                                <div class="question-type-bar basic"></div>
+                            </div>
+                            <div class="question-type">
+                                <div class="question-type-value">20</div>
+                                <div class="question-type-label">Advanced</div>
+                                <div class="question-type-bar advanced"></div>
+                            </div>
+                        </div>
+                        <div class="card-details">
+                            <div class="detail-row">
+                                <div class="detail-label">Total Questions:</div>
+                                <div class="detail-value">100</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Received:</div>
+                                <div class="detail-value">65</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Remaining:</div>
+                                <div class="detail-value">35</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Assigned To:</div>
+                                <div class="detail-value">Dr. Nguyen</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="action-btn view-btn" onclick="openViewModal()">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                            <button class="action-btn reminder-btn">
+                                <i class="fas fa-bell"></i>
+                                Send Reminder
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Networking Card -->
+                    <div class="subject-card">
+                        <div class="subject-header">
+                            <div class="subject-title">Networking</div>
+                            <div class="subject-id">#P1002</div>
+                        </div>
+                        <div class="subject-info">
+                            <div class="subject-info-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>Due: 2023-07-15</span>
+                            </div>
+                            <div class="subject-info-item">
+                                <i class="fas fa-building"></i>
+                                <span>Information Technology</span>
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <div class="progress-label">Progress</div>
+                                <div class="progress-percent">40%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill low" style="width: 40%"></div>
+                            </div>
+                        </div>
+                        <div class="question-distribution">
+                            <div class="question-type">
+                                <div class="question-type-value">20</div>
+                                <div class="question-type-label">Recognition</div>
+                                <div class="question-type-bar recognition"></div>
+                            </div>
+                            <div class="question-type">
+                                <div class="question-type-value">20</div>
+                                <div class="question-type-label">Comprehension</div>
+                                <div class="question-type-bar comprehension"></div>
+                            </div>
+                            <div class="question-type">
+                                <div class="question-type-value">25</div>
+                                <div class="question-type-label">Basic App</div>
+                                <div class="question-type-bar basic"></div>
+                            </div>
+                            <div class="question-type">
+                                <div class="question-type-value">15</div>
+                                <div class="question-type-label">Advanced</div>
+                                <div class="question-type-bar advanced"></div>
+                            </div>
+                        </div>
+                        <div class="card-details">
+                            <div class="detail-row">
+                                <div class="detail-label">Total Questions:</div>
+                                <div class="detail-value">80</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Received:</div>
+                                <div class="detail-value">32</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Remaining:</div>
+                                <div class="detail-value">48</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Assigned To:</div>
+                                <div class="detail-value">Dr. Le</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="action-btn view-btn" onclick="openViewModal()">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                            <button class="action-btn reminder-btn">
+                                <i class="fas fa-bell"></i>
+                                Send Reminder
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Biology Card -->
+                    <div class="subject-card">
+                        <div class="subject-header">
+                            <div class="subject-title">Biology</div>
+                            <div class="subject-id">#P1003</div>
+                        </div>
+                        <div class="subject-info">
+                            <div class="subject-info-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>Due: 2023-07-30</span>
+                            </div>
+                            <div class="subject-info-item">
+                                <i class="fas fa-building"></i>
+                                <span>Life Sciences</span>
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <div class="progress-label">Progress</div>
+                                <div class="progress-percent">25%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill low" style="width: 25%"></div>
+                            </div>
+                        </div>
+                        <div class="question-distribution">
+                            <div class="question-type">
+                                <div class="question-type-value">30</div>
+                                <div class="question-type-label">Recognition</div>
+                                <div class="question-type-bar recognition"></div>
+                            </div>
+                            <div class="question-type">
+                                <div class="question-type-value">35</div>
+                                <div class="question-type-label">Comprehension</div>
+                                <div class="question-type-bar comprehension"></div>
+                            </div>
+                            <div class="question-type">
+                                <div class="question-type-value">35</div>
+                                <div class="question-type-label">Basic App</div>
+                                <div class="question-type-bar basic"></div>
+                            </div>
+                            <div class="question-type">
+                                <div class="question-type-value">20</div>
+                                <div class="question-type-label">Advanced</div>
+                                <div class="question-type-bar advanced"></div>
+                            </div>
+                        </div>
+                        <div class="card-details">
+                            <div class="detail-row">
+                                <div class="detail-label">Total Questions:</div>
+                                <div class="detail-value">120</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Received:</div>
+                                <div class="detail-value">30</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Remaining:</div>
+                                <div class="detail-value">90</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Assigned To:</div>
+                                <div class="detail-value">Dr. Pham</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="action-btn view-btn" onclick="openViewModal()">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                            <button class="action-btn reminder-btn">
+                                <i class="fas fa-bell"></i>
+                                Send Reminder
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Question Plan Modal -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Question Plan</h2>
+                <span class="close-modal" id="closeCreateModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <select class="form-control">
+                                <option>Select Subject</option>
+                                <option>Programming</option>
+                                <option>Networking</option>
+                                <option>Biology</option>
+                                <option>Mathematics</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">Department</label>
+                            <select class="form-control">
+                                <option>Select Department</option>
+                                <option>Computer Science</option>
+                                <option>Information Technology</option>
+                                <option>Life Sciences</option>
+                                <option>Mathematics</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">Assign To</label>
+                            <select class="form-control">
+                                <option>Select Department Head</option>
+                                <option>Dr. Nguyen</option>
+                                <option>Dr. Le</option>
+                                <option>Dr. Pham</option>
+                                <option>Dr. Hoang</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">Deadline</label>
+                            <input type="date" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Total Questions Required</label>
+                    <input type="number" class="form-control" placeholder="Enter total number of questions">
+                </div>
+                <div class="distribution-section">
+                    <div class="distribution-title">Question Distribution</div>
+                    <div class="distribution-grid">
+                        <div class="distribution-item">
+                            <div class="distribution-label">Recognition</div>
+                            <input type="number" class="distribution-input" value="40">
+                        </div>
+                        <div class="distribution-item">
+                            <div class="distribution-label">Comprehension</div>
+                            <input type="number" class="distribution-input" value="30">
+                        </div>
+                        <div class="distribution-item">
+                            <div class="distribution-label">Basic Application</div>
+                            <input type="number" class="distribution-input" value="20">
+                        </div>
+                        <div class="distribution-item">
+                            <div class="distribution-label">Advanced Application</div>
+                            <input type="number" class="distribution-input" value="10">
+                        </div>
+                    </div>
+                </div>
+                <div class="distribution-section">
+                    <div class="distribution-title">CLO Distribution</div>
+                    <div class="distribution-grid">
+                        <div class="distribution-item">
+                            <div class="distribution-label">CLO1</div>
+                            <input type="text" class="distribution-input" value="CN01">
+                        </div>
+                        <div class="distribution-item">
+                            <div class="distribution-label">CLO2</div>
+                            <input type="text" class="distribution-input" value="CN02">
+                        </div>
+                        <div class="distribution-item">
+                            <div class="distribution-label">CLO3</div>
+                            <input type="text" class="distribution-input" value="CN02">
+                        </div>
+                        <div class="distribution-item">
+                            <div class="distribution-label">CLO4</div>
+                            <input type="text" class="distribution-input" value="CN02">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary">Cancel</button>
+                <button class="btn btn-primary">
+                    <i class="fas fa-check"></i>
+                    Create and Assign
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Details Modal -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>View Details</h2>
+                <span class="close-modal" id="closeViewModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <select class="form-control" >
+                                <option>Select Subject</option>
+                                <option selected>Programming</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">Department</label>
+                            <select class="form-control" >
+                                <option>Select Department</option>
+                                <option selected>Computer Science</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">Assign To</label>
+                            <select class="form-control" >
+                                <option>Select Department Head</option>
+                                <option selected>Dr. Nguyen</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label class="form-label">Deadline</label>
+                            <input type="date" class="form-control" value="2023-06-30" >
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Total Questions Required</label>
+                    <input type="number" class="form-control" value="100" >
+                </div>
+                <div class="distribution-section">
+                    <div class="distribution-title">Question Distribution</div>
+                    <div class="distribution-grid">
+                        <div class="distribution-item">
+                            <div class="distribution-label">Recognition</div>
+                            <input type="number" class="distribution-input" value="25" >
+                        </div>
+                        <div class="distribution-item">
+                            <div class="distribution-label">Comprehension</div>
+                            <input type="number" class="distribution-input" value="25" >
+                        </div>
+                        <div class="distribution-item">
+                            <div class="distribution-label">Basic Application</div>
+                            <input type="number" class="distribution-input" value="30" >
+                        </div>
+                        <div class="distribution-item">
+                            <div class="distribution-label">Advanced Application</div>
+                            <input type="number" class="distribution-input" value="20" >
+                        </div>
+                    </div>
+                </div>
+                <div class="distribution-section">
+                    <div class="distribution-title">CLO Distribution</div>
+                    <div class="distribution-grid">
+                        <div class="distribution-item">
+                            <div class="distribution-label">CLO1</div>
+                            <input type="text" class="distribution-input" value="CN01" >
+                        </div>
+                        <div class="distribution-item">
+                            <div class="distribution-label">CLO2</div>
+                            <input type="text" class="distribution-input" value="CN02" >
+                        </div>
+                        <div class="distribution-item">
+                            <div class="distribution-label">CLO3</div>
+                            <input type="text" class="distribution-input" value="CN02" >
+                        </div>
+                        <div class="distribution-item">
+                            <div class="distribution-label">CLO4</div>
+                            <input type="text" class="distribution-input" value="CN02" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="closeViewBtn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ma nhung header vs menu -->
+    <script>
+        // Load header
+        fetch('../../Template/header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        // Load menu
+        fetch('../../Template/Menu-Staff.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+
+        // Modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const createModal = document.getElementById('createModal');
+            const viewModal = document.getElementById('viewModal');
+            const openCreateModalBtn = document.getElementById('openCreateModal');
+            const closeCreateModalBtn = document.getElementById('closeCreateModal');
+            const closeViewModalBtn = document.getElementById('closeViewModal');
+            const closeViewBtn = document.getElementById('closeViewBtn');
+            
+            // Open create modal
+            openCreateModalBtn.addEventListener('click', function() {
+                createModal.style.display = 'block';
+            });
+            
+            // Close create modal
+            closeCreateModalBtn.addEventListener('click', function() {
+                createModal.style.display = 'none';
+            });
+            
+            // Close view modal
+            closeViewModalBtn.addEventListener('click', function() {
+                viewModal.style.display = 'none';
+            });
+            
+            closeViewBtn.addEventListener('click', function() {
+                viewModal.style.display = 'none';
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === createModal) {
+                    createModal.style.display = 'none';
+                }
+                if (event.target === viewModal) {
+                    viewModal.style.display = 'none';
+                }
+            });
+            
+            // Function to open view modal
+            window.openViewModal = function() {
+                viewModal.style.display = 'block';
+            };
+        });
+    </script>
+</body>
+</html>

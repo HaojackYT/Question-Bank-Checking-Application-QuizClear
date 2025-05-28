@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../Static/header.css">
+    <link rel="stylesheet" href="../static/web_styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Template</title>
+    <style>
+        /* Main content */
+        #main {
+            width: 100vw;
+            padding: 30px;
+        }
+
+        .main-content {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #E0EAFA;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #120368;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 8px 14px;
+            background: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            background: #2e2e8a;
+            color: white;
+        }
+
+        .tab:hover {
+            background: #d1d5db;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        thead {
+            background-color: #F3F4F6;
+            text-align: left;
+        }
+
+        th,
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #E5E7EB;
+            font-size: 14px;
+        }
+
+        td {
+            vertical-align: top;
+            vertical-align: middle;
+        }
+
+        /* Similarity badge */
+        .check-percent-btn {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 70px;
+            font-weight: bold;
+            font-size: 13px;
+            line-height: 1;
+            text-align: center;
+        }
+
+        td i {
+            font-size: 16px;
+            margin: 0 8px;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .line {
+            width: 100%;
+            height: 1px;
+            background-color: #E5E7EB;
+            margin: 0px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+
+        <!-- Main content -->
+        <div id="main">
+            <div class="title">Question Management</div>
+            <div class="subtitle">Manage, review, and organize questions in the question bank</div>
+
+            <div class="tabs">
+                <button class="tab" onclick="location.href='staffQuestionBank.html'"><i class="fa-regular fa-file"
+                        style="padding:0px 5px" ;></i>
+                    Question Bank
+                </button>
+                <button class="tab" onclick="location.href='submission.html'"><i class="fa-regular fa-folder-closed"
+                        style="padding:0px 5px" ;></i>
+                    Submission Table
+                </button>
+                <button class="tab" onclick="location.href='planning.html'"><i class="fa-regular fa-calendar"
+                        style="padding:0px 5px" ;></i>
+                    Question Planning
+                </button>
+                <button class="tab active"><i class="fa-solid fa-magnifying-glass"
+                        style="color: #ffffff; padding:0px 5px" ;></i> Duplication Check</button>
+                <button class="tab" onclick="location.href='statistics.html'"><i class="fa-solid fa-chart-line"
+                        style="padding:0px 5px" ;></i>
+                    Reports & Statistics
+                </button>
+                <div class="line"></div>
+            </div>
+            <div class="main-content">
+                <div class="content">
+                    <h3>Automatic Duplication Detection</h3>
+                    <p style="color:#555; font-size: 13px; margin-top: 4px;";>Review questions that our AI system has flagged as potential duplicates</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Question Context</th>
+                                <th>Similarity To</th>
+                                <th>Similarity</th>
+                                <th>Submitter</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>S1001</td>
+                                <td>What are the key difference procedural and object-oriented programming paradigms?
+                                </td>
+                                <td>Q1045: Explain the main procedural programming and programming. </td>
+                                <td>
+                                    <div class="check-percent-btn" style="background-color: #FEE2E2; color: #991B1B" ;>
+                                        High (92%)</div>
+                                </td>
+                                <td>Dr. Nguyen</td>
+                                <td>
+                                    <div class="action-btn">
+                                        <i class="fa-solid fa-check" style="color: #16A34A;"></i>
+                                        <i class="fa-solid fa-xmark" style="color: #ff0000;"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>S1008</td>
+                                <td>Describe the process of ph plants and its importance.</td>
+                                <td>Q1078: Explain how photo why it is essential for plant life.</td>
+                                <td>
+                                    <div class="check-percent-btn" style="background-color: #FEE2E2; color: #991B1B" ;>
+                                        High (88%)</div>
+                                </td>
+                                <td>Dr. Pham</td>
+                                <td>
+                                    <div class="action-btn">
+                                        <i class="fa-solid fa-check" style="color: #16A34A;"></i>
+                                        <i class="fa-solid fa-xmark" style="color: #ff0000;"></i>
+                                    </div>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>S1012</td>
+                                <td>What is the role of DNS in computer networks?</td>
+                                <td>Q1034: Explain the function of internet architecture.</td>
+                                <td>
+                                    <div class="check-percent-btn" style="background-color: #FEF9C3; color: #991B1B" ;>
+                                        Medium (60%)</div>
+                                </td>
+                                <td>Dr. Le</td>
+                                <td>
+                                    <div class="action-btn">
+                                        <i class="fa-solid fa-check" style="color: #16A34A;"></i>
+                                        <i class="fa-solid fa-xmark" style="color: #ff0000;"></i>
+                                    </div>
+                                </td>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- footer -->
+    <!-- ma nhung header vs menu -->
+    <script>
+        // Load header
+        fetch('../Template/header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        // Load menu
+        fetch('../Template/Menu-Staff.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+
+    </script>
+</body>
+
+</html>

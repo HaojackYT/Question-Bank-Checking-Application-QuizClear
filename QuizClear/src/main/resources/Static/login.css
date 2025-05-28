@@ -1,0 +1,313 @@
+body {
+    background: #e6f0fa;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-box {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    width: 700px;
+    max-width: 98vw;
+    margin: 60px auto 0 auto;
+    padding: 40px 40px 30px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.logo-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.logo {
+    margin-right: 10px;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2196F3;
+    letter-spacing: 0.5px;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: #222;
+    margin-bottom: 18px;
+    margin-left: 2px;
+}
+
+.login-header {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 18px 0;
+    color: #111;
+}
+
+form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid #cfd8dc;
+    border-radius: 7px;
+    font-size: 1rem;
+    outline: none;
+    background: #f7fbff;
+    transition: border 0.2s;
+}
+
+.input-field:focus {
+    border: 1.5px solid #2196F3;
+    background: #fff;
+}
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 13px 0;
+    background: #2196F3;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s;
+}
+
+.login-btn:hover {
+    background: #1976d2;
+}
+
+.forgot {
+    margin-top: 12px;
+    font-size: 1rem;
+    color: #222;
+}
+
+.password-link {
+    color: #2196F3;
+    text-decoration: none;
+}
+
+.password-link:hover {
+    text-decoration: underline;
+}
+
+.footer {
+    width: 700px;
+    max-width: 98vw;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #888;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+.language {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dropdown {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+    color: #222;
+}
+
+.support {
+    cursor: pointer;
+    color: #888;
+}
+
+/* Modal overlay */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background: rgba(44, 62, 80, 0.25);
+}
+
+/* Modal box */
+.forgot-modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 24px;
+    width: 600px;
+    max-width: 98vw;
+    box-shadow: 0 2px 24px rgba(0,0,0,0.13);
+    padding: 0;
+    animation: modalIn 0.2s;
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: translate(-50%, -46%);}
+    to   { opacity: 1; transform: translate(-50%, -50%);}
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 28px 0 28px;
+}
+
+.modal-title {
+    font-size: 2rem;
+    font-weight: 700;
+    flex: 1;
+    text-align: left;
+    margin-left: 10px;
+}
+
+.modal-back, .modal-close {
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+.modal-back:hover, .modal-close:hover {
+    opacity: 1;
+}
+
+.modal-content {
+    padding: 0 28px 28px 28px;
+}
+
+.modal-content p {
+    margin: 10px 0 24px 0;
+    color: #222;
+    font-size: 1.08rem;
+}
+
+.forgot-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.input-group input[type="email"],
+.input-group input[type="text"] {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    padding: 12px 16px;
+    border: 1.5px solid #cfd8dc;
+    border-radius: 7px;
+    font-size: 1rem;
+    outline: none;
+    background: #f7fbff;
+    transition: border 0.2s;
+}
+
+.input-group input:focus {
+    border: 1.5px solid #2196F3;
+    background: #fff;
+}
+
+.input-group .send-code-btn {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    background: #1cb0f6;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 0.98rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background 0.2s;
+}
+.input-group .send-code-btn:hover {
+    background: #2196F3;
+}
+
+.forgot-form .submit-btn {
+    width: 100%;
+    padding: 13px 0;
+    background: #1cb0f6;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s;
+}
+.forgot-form .submit-btn:hover {
+    background: #2196F3;
+}
+
+.modal-note {
+    margin-top: 18px;
+    color: #888;
+    font-size: 0.98rem;
+    text-align: left;
+}
+
+@media (max-width: 900px) {
+    .login-box, .footer {
+        width: 98vw;
+        padding: 20px 8px 20px 8px;
+    }
+    .forgot-modal {
+        width: 98vw;
+        padding: 0;
+    }
+    .container {
+        padding: 0 0 30px 0;
+    }
+    .modal-header, .modal-content {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}

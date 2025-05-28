@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+        <link rel="stylesheet" href="../Static/header.css">
+        <link rel="stylesheet" href="../Static/web_styles.css">
+        <link rel="stylesheet" href="easdasdasd.css">
+        <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+        <title>Template</title>
+    </head>
+
+    <body>
+        <!--header-->
+        <div id="header-placeholder"></div>
+
+
+
+        <!-- body -->
+        <div id="Container-body">
+            <!-- Menu -->
+            <div id="menu-HTML"></div>
+
+
+            <!-- Main content -->
+            <div id="main">
+               <div class="exam-management">
+                    <div>
+                        <h2>Exam Management</h2>
+                    </div>
+                    <p>Create, review, and manage exams across all subjects</p>
+
+                    <div class="summary">
+                        <div class="box">
+                            <p>Total Exams</p>
+                            <h3>128</h3>
+                            <span>+6.2% from last month</span>
+                        </div>
+                        <div class="box">
+                            <p>Pending Approval</p>
+                            <h3>24</h3>
+                            <span>(2 urgent due in 48h)</span>
+                        </div>
+                        <div class="box">
+                            <p>Approved</p>
+                            <h3>96</h3>
+                            <span>Ready for distribution</span>
+                        </div>
+                        <div class="box">
+                            <p>Rejected</p>
+                            <h3>8</h3>
+                            <span>Needs revision</span>
+                        </div>
+                    </div>
+
+                    <div class="filters">
+                        <div>
+                            <input class="search-box" type="text" placeholder="Search exams...">
+                        </div>
+                        <div class="filter-section">
+                            <button class="btn-status">All Statuses</button>
+                            <button class="btn-subject">All Subjects</button>
+                            <button class="btn-filter-icon">
+                                <i class="fas fa-filter"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="tab-container">
+                        <a class="tab" href="#">All Exams</a>
+                        <a class="tab" href="#">Pending Approval</a>
+                        <a class="tab" href="#">Approved</a>
+                        <a class="tab" href="#">Needs Revision</a>
+                    </div>
+
+                    <h2>All Exams</h2>
+                    <p>Manage all exams in the system</p>
+
+                    <div class="exam-list">
+                        <div class="exam pending">
+                            <div class="item-box">
+                                <div>
+                                    <i class="fas fa-clock status-icon orange-icon"></i> <strong>Data Structures Final</strong><br>
+                                    <small class="item-meta">Computer Science • Created: 2023-06-15 • Due: 2023-06-20</small>
+                                    </i> <div class="progress orange"></div>
+                                </div>
+                                <div class="actions">
+                                    <span class="status-pending">
+                                        <i class="fas fa-clock status-icon orange-icon"></i>
+                                        Pending
+                                    </span>
+                                        
+                                    <button class="view">View</button>
+                                    <button class="review">Review</button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="item-box">
+                                <div>
+                                    <i class="fas fa-check-circle status-icon green-icon"></i> <strong>Calculus Midterm</strong><br>
+                                    <small class="item-meta">Mathematics • Created: 2023-06-10 • Due: 2023-06-15</small>
+                                    <div class="progress green"></div>
+                                </div>
+                                <div class="actions">
+                                    <span class="status-approved">
+                                        <i class="fas fa-check-circle status-icon green-icon"> </i>
+                                        Approved
+                                    </span>
+                                    <button class="view">View</button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="item-box">
+                                <div>
+                                    <i class="fas fa-times-circle status-icon red-icon"></i> <strong>Database Systems Quiz</strong><br>
+                                    <small class="item-meta">Information Technology • Created: 2023-06-08 • Due: 2023-06-13</small>
+                                    <div class="progress red"></div>
+                                </div>
+                                <div class="actions">
+                                    <span class="status-revision">
+                                        <i class="fas fa-times-circle status-icon red-icon"></i>
+                                        Needs Revision
+                                    </span>
+                                    <button class="view">View</button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="item-box">
+                                <div>
+                                    <i class="fas fa-check-circle status-icon green-icon"></i> <strong>Organic Chemistry Final</strong><br>
+                                    <small class="item-meta">Chemistry • Created: 2023-06-05 • Due: 2023-06-10</small>
+                                    <div class="progress green"></div>
+                                </div>
+                                <div class="actions">
+                                    <span class="status-approved">
+                                        <i class="fas fa-check-circle status-icon green-icon"></i>
+                                        Approved
+                                    </span>
+                                    <button class="view">View</button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="item-box">
+                                <div>
+                                    <i class="fas fa-clock status-icon orange-icon"></i> <strong>Microeconomics Midterm</strong><br>
+                                    <small class="item-meta">Economics • Created: 2023-08-01 • Due: 2023-08-10</small>
+                                    <div class="progress orange"></div>
+                                </div>
+                                <div class="actions">
+                                    <span class="status-pending">
+                                        <i class="fas fa-clock status-icon orange-icon"></i>
+                                        Pending
+                                    </span>
+                                    <button class="review">Review</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ma nhung header vs menu -->
+        <script>
+            // Load header
+            fetch('../Template/header_user.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
+
+            // Load menu
+            fetch('../Template/Menu-Staff.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('menu-HTML').innerHTML = data;
+                });
+        </script>
+    </body>
+</html>
