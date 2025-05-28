@@ -1,0 +1,151 @@
+<!-- Filters -->
+<div class="filters">
+  <select class="filter-select">
+    <option>All Subjects</option>
+    <option>Programming Java</option>
+    <option>Computer Science</option>
+  </select>
+  <select class="filter-select">
+    <option>All Submitter</option>
+    <option>Dr. Nguyen</option>
+    <option>Dr. Pham</option>
+    <option>Dr. Le</option>
+  </select>
+  <button class="export-btn">
+    <span>📤</span>
+    Export
+  </button>
+</div>
+
+<!-- Detection Section -->
+<div class="detection-section">
+  <h2 class="section-title">AI-Powered Duplicate Detection</h2>
+  <p class="section-subtitle">
+    Our AI system has identified these questions as potential duplicates based
+    on lexical and semantic analysis
+  </p>
+
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>New Question</th>
+          <th>Similar To</th>
+          <th>Similarity</th>
+          <th>Subjects</th>
+          <th>Submitter</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="question-cell">
+            What are the key differences between procedural and object-oriented
+            paradigms?
+          </td>
+          <td class="question-cell">
+            Explain the main differences between programming and object-oriented
+            programming.
+          </td>
+          <td>
+            <div class="similarity-badge similarity-complete">
+              Complete Duplicate (92%)
+            </div>
+          </td>
+          <td><span class="subject-badge">Programming Java</span></td>
+          <td class="submitter-name">Dr. Nguyen</td>
+          <td>
+            <div class="action-buttons">
+              <button class="action-btn btn-view">🔍</button>
+              <button class="action-btn btn-approve">✓</button>
+              <button class="action-btn btn-reject">✗</button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="question-cell">
+            Describe the process of photosynthesis and its importance.
+          </td>
+          <td class="question-cell">
+            Explain how photosynthesis works essential for plant life.
+          </td>
+          <td>
+            <div class="similarity-badge similarity-high">
+              High Similarity (88%)
+            </div>
+          </td>
+          <td><span class="subject-badge">Programming Java</span></td>
+          <td class="submitter-name">Dr. Pham</td>
+          <td>
+            <div class="action-buttons">
+              <button class="action-btn btn-view">🔍</button>
+              <button class="action-btn btn-approve">✓</button>
+              <button class="action-btn btn-reject">✗</button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="question-cell">
+            What is the role of DNS in computer architecture.
+          </td>
+          <td class="question-cell">
+            Explain the function of DNS servers architecture.
+          </td>
+          <td>
+            <div class="similarity-badge similarity-high">
+              High Similarity (75%)
+            </div>
+          </td>
+          <td><span class="subject-badge">Programming Java</span></td>
+          <td class="submitter-name">Dr. Le</td>
+          <td>
+            <div class="action-buttons">
+              <button class="action-btn btn-view">🔍</button>
+              <button class="action-btn btn-approve">✓</button>
+              <button class="action-btn btn-reject">✗</button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="question-cell">
+            Explain the concept of polymorphism in programming with examples.
+          </td>
+          <td class="question-cell">
+            What is polymorphism? Provide polymorphism in Java programming.
+          </td>
+          <td>
+            <div class="similarity-badge similarity-complete">
+              Complete Duplicate (95%)
+            </div>
+          </td>
+          <td><span class="subject-badge">Programming Java</span></td>
+          <td class="submitter-name">Dr. Nguyen</td>
+          <td>
+            <div class="action-buttons">
+              <button class="action-btn btn-view">🔍</button>
+              <button class="action-btn btn-approve">✓</button>
+              <button class="action-btn btn-reject">✗</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script>
+  document.querySelectorAll(".action-btn").forEach((btn) => {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      const row = this.closest("tr");
+      if (this.classList.contains("btn-approve")) {
+        row.style.backgroundColor = "#f0fdf4";
+        setTimeout(() => (row.style.opacity = "0.5"), 500);
+      } else if (this.classList.contains("btn-reject")) {
+        row.style.backgroundColor = "#fef2f2";
+        setTimeout(() => (row.style.opacity = "0.5"), 500);
+      } else if (this.classList.contains("btn-view")) {
+        alert("View question details functionality would be implemented here");
+      }
+    });
+  });
+</script>
