@@ -1,0 +1,140 @@
+#main {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 70vw;
+}
+
+.Step-Container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 20%;
+    margin: 20px auto;
+}
+
+.Step-Container .step {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #E5E7EB;
+    color: #4B5563;
+    margin-bottom: 10px;
+}
+
+.Step-Container p {
+    color: #4B5563;
+    font-size: 12px;
+}
+
+/* buoc dang duoc thuc thi */
+.Step-Container .Step_continue {
+    background-color: #3B82F6;
+    color: white;
+}
+
+.Step-Container_continue {
+    border-bottom: 2px solid #2563EB
+}
+
+.Step-Container .p_continue {
+    color: #2563EB;
+}
+
+/* buoc da duoc thuc thi */
+.Step-Container .Step_done {
+    background-color: #22C55E;
+    color: white;
+}
+
+.Step-Container_done {
+    border-bottom: 2px solid #22C55E
+}
+
+.Step-Container .p_done {
+    color: #22C55E;
+}
+
+#content-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+}
+
+#content-container #content {
+    margin-left: 30px;
+}
+
+#content-container #top-content {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+}
+
+#content-container #left-content,
+#content-container #right-content {
+    width: 48%;
+    margin-right: 4%;
+}
+
+#content-container p {
+    font-size: 12px;
+}
+
+#top-content input,
+#top-content select {
+    width: 100%;
+    padding: 8px;
+    padding-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #D1D5DB;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#Description,
+#Instructions {
+    width: 100%;
+    max-width: 100%;
+    border: 1px solid #D1D5DB;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+#Description {
+    box-sizing: border-box;
+    vertical-align: top;
+}
+
+#button-container{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+#button-container button {
+    height: 42px;
+    width: 100px;
+    padding: 10px 20px;
+    font-size: 14px;
+    color: white;
+    background-color: #2563EB;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+#button-container button[title="Cancel"] {
+    background-color: white;
+    color: #374151;
+    border: 1px solid #D1D5DB;
+}
