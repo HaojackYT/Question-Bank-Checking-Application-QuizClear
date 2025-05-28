@@ -1,0 +1,150 @@
+<link rel="stylesheet" href="../Static/staffLogs.css" />
+<link rel="stylesheet" href="../Static/staffLogsDetails.css" />
+<div class="search-export">
+  <input type="text" class="search-input" placeholder="Search logs..." />
+  <button class="export-btn">
+    <span>📤</span>
+    Export
+  </button>
+</div>
+
+<!-- Processing Section -->
+<div class="processing-section">
+  <h2 class="section-title">Processing History</h2>
+  <p class="section-subtitle">
+    Complete log of all duplicate processing actions
+  </p>
+
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Log ID</th>
+          <th>Question</th>
+          <th>Duplicate</th>
+          <th>Similarity</th>
+          <th>Action</th>
+          <th>Processor</th>
+          <th>Date</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="log-id">L1001</td>
+          <td class="question-cell">
+            S1005: Explain the concept of inheritance in object-oriented
+            programming.
+          </td>
+          <td class="question-cell">
+            Q1002: Describe inheritance and its importance in object-oriented
+            programming paradigms.
+          </td>
+          <td>
+            <div class="similarity-badge similarity-high">
+              High Similarity (85%)
+            </div>
+          </td>
+          <td>
+            <div class="action-badge action-rejected">Rejected</div>
+          </td>
+          <td class="processor-name">Dr. Admin</td>
+          <td class="date-cell">2023-05-18 14:32</td>
+          <td>
+            <button class="details-btn" onclick="showDetails('L1001')">
+              👁
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td class="log-id">L1002</td>
+          <td class="question-cell">
+            S1008: Describe the process of photosynthesis and its significance.
+          </td>
+          <td class="question-cell">
+            Q1078: Explain how photosynthesis works and why it's essential for
+            plant life.
+          </td>
+          <td>
+            <div class="similarity-badge similarity-high">
+              High Similarity (88%)
+            </div>
+          </td>
+          <td>
+            <div class="action-badge action-merged">Merged</div>
+          </td>
+          <td class="processor-name">Dr. Admin</td>
+          <td class="date-cell">2023-05-20 10:15</td>
+          <td>
+            <button class="details-btn" onclick="showDetails('L1002')">
+              👁
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td class="log-id">L1003</td>
+          <td class="question-cell">
+            S1012: What is the role of DNS in computer networking architecture.
+          </td>
+          <td class="question-cell">
+            Q1034: Explain the function of DNS servers in network architecture.
+          </td>
+          <td>
+            <div class="similarity-badge similarity-high">
+              High Similarity (75%)
+            </div>
+          </td>
+          <td>
+            <div class="action-badge action-sent-back">Sent Back</div>
+          </td>
+          <td class="processor-name">Dr. Admin</td>
+          <td class="date-cell">2023-05-22 16:45</td>
+          <td>
+            <button class="details-btn" onclick="showDetails('L1003')">
+              👁
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td class="log-id">L1004</td>
+          <td class="question-cell">
+            S1015: What are the key differences between procedural and
+            object-oriented programming?
+          </td>
+          <td class="question-cell">
+            Q1045: Explain the main differences between procedural programming
+            and object-oriented programming.
+          </td>
+          <td>
+            <div class="similarity-badge similarity-complete">
+              Complete Duplicate (92%)
+            </div>
+          </td>
+          <td>
+            <div class="action-badge action-rejected">Rejected</div>
+          </td>
+          <td class="processor-name">Dr. Admin</td>
+          <td class="date-cell">2023-05-25 09:20</td>
+          <td>
+            <button class="details-btn" onclick="showDetails('L1004')">
+              👁
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal for Log Details -->
+<div class="modal-overlay" id="logDetailModal" style="display: none">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Processing Log Details</h3>
+      <button class="close-button" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalContent">
+      <!-- Data here -->
+    </div>
+  </div>
+</div>

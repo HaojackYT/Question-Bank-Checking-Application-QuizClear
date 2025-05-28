@@ -1,0 +1,105 @@
+.subject-row {
+  margin-bottom: 24px;
+  font-family: sans-serif;
+}
+
+.subject-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 6px;
+  color: black;
+}
+.subject-percent {
+    color: #6B7280;
+    font-weight: 400;
+}
+.progress-bar {
+  height: 8px;
+  background-color: #e2e4ea;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #3730A3;
+  transition: width 0.3s ease-in-out;
+}
+
+.subject-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #6B7280;
+  margin-top: 6px;
+}
+
+#main {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 70vw;
+}
+#menu-inStactic {
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 2rem;
+    height: 39px;
+    border-bottom: 1px solid #E5E7EB;
+    padding-bottom: 50px;
+    
+}
+#menu-inStactic p {
+    font-size: 13.6px;
+    color: #6B7280;
+    width: 110px;    
+    margin-top: 20px;
+    align-items: center;
+}
+
+#box-Container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 1rem;
+}
+.box {
+    width: 260px;
+    height: 110px;
+    padding: auto;
+    border: 1px solid #E0EAFA;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.box p {
+    font-size: 15px;
+
+}
+.box span {
+    font-size: 32px;
+    color: #120368;
+    font-weight: bold;
+}
+
+.container-graph {
+    display: flex;
+    flex-direction: column;
+    width: 93.5%;
+    padding: 3%;
+    border: 2px solid #E0EAFA;
+    margin-left: 33px;
+    margin-top: 30px;
+    border-radius: 8px;
+}
+
+.subject-container {
+    width: 90%;
+    margin-left: 5%;
+}
