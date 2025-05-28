@@ -8,13 +8,7 @@ body {
     display: flex;
     flex-direction: column;
 }
-body {
-  overflow: auto;
-}
 
-body::-webkit-scrollbar {
-  display: none;
-}
 #Container-body {
     display: flex;
     flex-direction: row;
