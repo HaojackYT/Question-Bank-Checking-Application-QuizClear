@@ -1,0 +1,298 @@
+/* Import Roboto font */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap");
+
+/* Main content styles */
+#main {
+  font-family: "Roboto", sans-serif;
+  padding: 20px;
+  margin-left: 20px;
+  max-width: calc(100vw - 320px); /* Account for sidebar width */
+  background-color: #ffffff; /* Changed from #F4F4F4 to #FFFFFF */
+}
+
+.qm-title {
+  margin: 20px 0 10px 0;
+  font-size: 36px;
+  font-weight: bold;
+  color: #120368;
+}
+
+.qm-subtitle {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  color: #64748b;
+}
+
+.qm-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 20px 0;
+  padding: 5px;
+  border: 1px solid #e2e8f0;
+  width: 100%;
+  max-width: 895px;
+  height: 41px;
+  align-items: center;
+  border-radius: 6px;
+}
+
+.qm-tab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 32px;
+  border: none;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  padding: 0 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  flex: 1;
+  justify-content: center;
+  min-width: 120px;
+}
+
+.qm-tab i {
+  width: 16px;
+  height: 16px;
+}
+
+.qm-tab.active {
+  background-color: #120368;
+  color: #fff;
+}
+
+.qm-tab:hover:not(.active) {
+  background-color: #f1f5f9;
+}
+
+.qm-stats {
+  display: flex;
+  gap: 20px;
+  margin: 30px 0;
+  width: 100%;
+  max-width: 1000px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 200px;
+  height: 120px;
+  background: #e0eafa;
+  border-radius: 10px;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stat-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #120368;
+}
+
+.stat-value {
+  font-size: 40px;
+  font-weight: bold;
+  color: #120368;
+  text-align: center;
+  margin: 5px 0;
+  line-height: 1;
+}
+
+.stat-note {
+  font-size: 11px;
+  color: #70757d;
+  text-align: center;
+}
+
+.qm-charts {
+  display: flex;
+  gap: 20px;
+  margin: 70px 0;
+  width: 100%;
+  max-width: 1200px;
+  flex-wrap: wrap;
+}
+
+.chart-box {
+  background: #fff;
+  border: 2px solid #e0eafa;
+  border-radius: 15px;
+  padding: 20px;
+  box-sizing: border-box;
+  flex: 1;
+  width: 495px;
+  margin-top: 5px;
+}
+
+#chart-progress {
+  min-height: 400px;
+}
+
+#chart-difficulty {
+  min-height: 400px;
+}
+
+.chart-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #120368;
+  margin-bottom: 8px;
+}
+
+.chart-subtitle {
+  font-size: 14px;
+  color: #70757d;
+  margin-bottom: 15px;
+}
+
+.full-width {
+  margin: 40px 0;
+  width: 100%;
+  max-width: 1200px;
+}
+
+#chart-status {
+  min-height: 500px;
+}
+
+canvas {
+  width: 100% !important;
+  height: 300px !important;
+  max-height: 300px;
+}
+
+#chart-status canvas {
+  height: 400px !important;
+  max-height: 400px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  #main {
+    margin-left: 10px;
+    max-width: calc(100vw - 300px);
+  }
+
+  .qm-stats {
+    gap: 15px;
+  }
+
+  .stat-card {
+    min-width: 180px;
+  }
+
+  .qm-charts {
+    flex-direction: column;
+  }
+
+  .chart-box {
+    min-width: 100%;
+  }
+
+  .chart-title {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  #main {
+    margin-left: 5px;
+    max-width: calc(100vw - 20px);
+    padding: 10px;
+  }
+
+  .qm-title {
+    font-size: 28px;
+  }
+
+  .qm-tabs {
+    flex-wrap: wrap;
+    height: auto;
+    gap: 5px;
+  }
+
+  .qm-tab {
+    min-width: 100px;
+    font-size: 12px;
+    padding: 0 8px;
+  }
+
+  .qm-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .stat-card {
+    min-width: 100%;
+  }
+
+  .chart-box {
+    padding: 15px;
+    min-width: 100%;
+  }
+
+  canvas {
+    height: 250px !important;
+  }
+
+  #chart-status canvas {
+    height: 300px !important;
+  }
+}
+
+/* Chart legend styling */
+.chartjs-legend {
+  margin-top: 15px;
+}
+
+.chartjs-legend ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.chartjs-legend li {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.chartjs-legend li span {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  border-radius: 50%;
+}
+
+/* Ensure content doesn't overflow */
+* {
+  box-sizing: border-box;
+}
+
+/* Add this to reduce the bar width in the Question Status Distribution chart */
+/*
+#statusChart {
+  max-width: 66.7%;
+  margin: 0 auto;
+}
+*/
+
+/* Add this to ensure the chart can be wider */
+#statusChart {
+  max-width: 100%;
+  margin: 0 auto;
+}

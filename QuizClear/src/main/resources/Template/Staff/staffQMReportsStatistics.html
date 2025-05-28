@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+        <link rel="stylesheet" href="../../Static/header.css">
+        <link rel="stylesheet" href="../../Static/web_styles.css">
+        <link rel="stylesheet" href="../../Static/Menu-Staff.css">
+        <link rel="stylesheet" href="../../Static/css/staffQMReportsStatistics.css">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <title>Question Management - Reports & Statistics</title>
+    </head>
+
+    <body>
+        <!--header-->
+        <div id="header-placeholder"></div>
+
+        <!-- body -->
+        <div id="Container-body">
+            <!-- Menu -->
+            <div id="menu-HTML"></div>
+
+            <!-- Main content -->
+            <div id="main">
+                <!-- Page Title -->
+                <div class="qm-title">Question Management</div>
+                <div class="qm-subtitle">Manage, review, and organize questions in the question bank</div>
+
+                <!-- Navigation Tabs -->
+                <div class="qm-tabs">
+                    <button class="qm-tab">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Question Bank</span>
+                    </button>
+                    <button class="qm-tab">
+                        <i class="fas fa-table"></i>
+                        <span>Submission Table</span>
+                    </button>
+                    <button class="qm-tab">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Question Planning</span>
+                    </button>
+                    <button class="qm-tab">
+                        <i class="fas fa-copy"></i>
+                        <span>Duplication Check</span>
+                    </button>
+                    <button class="qm-tab active">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Reports & Statistics</span>
+                    </button>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="qm-stats">
+                    <div class="stat-card">
+                        <div class="stat-title">Total subjects</div>
+                        <div class="stat-value">12</div>
+                        <div class="stat-note">+2 this month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Total Questions</div>
+                        <div class="stat-value">1,245</div>
+                        <div class="stat-note">+18 this month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Approved</div>
+                        <div class="stat-value">987</div>
+                        <div class="stat-note">79% of total</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Pending</div>
+                        <div class="stat-value">156</div>
+                        <div class="stat-note">13% of total</div>
+                    </div>
+                </div>
+
+                <!-- Charts Row 1 -->
+                <div class="qm-charts">
+                    <div class="chart-box" id="chart-progress">
+                        <div class="chart-title">Question Progress by Subject</div>
+                        <div class="chart-subtitle">Number of Questions Created vs. Target</div>
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                    <div class="chart-box" id="chart-difficulty">
+                        <div class="chart-title">Question difficulty ratio</div>
+                        <div class="chart-subtitle">The proportion of questions by difficulty level</div>
+                        <canvas id="difficultyChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Question Status Distribution -->
+                <div class="chart-box full-width" id="chart-status">
+                    <div class="chart-title">Question Status Distribution</div>
+                    <canvas id="statusChart"></canvas>
+                </div>
+
+                <!-- Question Duplication Analysis -->
+                <div class="chart-box full-width">
+                    <div class="chart-title">Question Duplication Analysis</div>
+                    <canvas id="duplicationChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ma nhung header vs menu -->
+        <script>
+            // Load header
+            fetch('../../Template/header_user.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
+
+            // Load menu
+            fetch('../../Template/Menu-Staff.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('menu-HTML').innerHTML = data;
+                });
+        </script>
+
+        <!-- Chart initialization -->
+        <script>
+            // Initialize Charts
+            document.addEventListener('DOMContentLoaded', function() {
+                // Progress Chart
+                const progressCtx = document.getElementById('progressChart').getContext('2d');
+                new Chart(progressCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Math', 'Physics', 'Chemistry', 'Biology'],
+                        datasets: [{
+                            label: 'Created',
+                            data: [45, 70, 65, 80],
+                            backgroundColor: '#8979FF',
+                            barThickness: 13
+                        }, {
+                            label: 'Target',
+                            data: [60, 80, 75, 90],
+                            backgroundColor: '#FF928A',
+                            barThickness: 13
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                align: 'center',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: function(context) {
+                                        return context[0].label;
+                                    },
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += context.parsed.y;
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    stepSize: 20
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Difficulty Chart
+                const difficultyCtx = document.getElementById('difficultyChart').getContext('2d');
+                new Chart(difficultyCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Recognition 1000', 'Comprehension 700', 'Basic Application 400', 'Advanced Application 406'],
+                        datasets: [{
+                            data: [1000, 700, 400, 406],
+                            backgroundColor: ['#8979FF', '#FF928A', '#3CC3DF', '#FFAE4C']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                align: 'center',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 15
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Status Chart
+                const statusCtx = document.getElementById('statusChart').getContext('2d');
+                new Chart(statusCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Programming', 'Networking', 'Biology', 'Mathematics', 'Physics'],
+                        datasets: [{
+                            label: 'Approved',
+                            data: [250, 180, 200, 170, 160],
+                            backgroundColor: '#10B981',
+                            barThickness: 50  // Increased to 2x size
+                        }, {
+                            label: 'Pending',
+                            data: [80, 60, 70, 50, 40],
+                            backgroundColor: '#F59E0B',
+                            barThickness: 50  // Increased to 2x size
+                        }, {
+                            label: 'Rejected',
+                            data: [40, 30, 35, 25, 20],
+                            backgroundColor: '#EF4444',
+                            barThickness: 50  // Increased to 2x size
+                        }, {
+                            label: 'Needed',
+                            data: [100, 80, 90, 70, 60],
+                            backgroundColor: '#E5E7EB',
+                            barThickness: 50  // Increased to 2x size
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                align: 'center',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 20
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true
+                            },
+                            y: {
+                                stacked: true,
+                                beginAtZero: true,
+                                max: 600,
+                                ticks: {
+                                    stepSize: 150
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Duplication Chart
+                const duplicationCtx = document.getElementById('duplicationChart').getContext('2d');
+                new Chart(duplicationCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Non-duplicate 75%', 'Suspected duplicate 15%', 'High similarity 10%'],
+                        datasets: [{
+                            data: [75, 15, 10],
+                            backgroundColor: ['#10B981', '#F59E0B', '#EF4444']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                align: 'center',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 20
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+    </body>
+<style>
+    body {
+        background-color: #FFFFFF !important;
+    }
+    
+    #Container-body {
+        background-color: #FFFFFF !important;
+    }
+    
+    /* Remove the width restriction to allow columns to be larger */
+    #chart-status {
+        max-width: 100%;
+    }
+    
+    #chart-status canvas {
+        max-width: 100% !important; /* Allow full width */
+        margin: 0 auto !important;
+    }
+</style>
+</html>

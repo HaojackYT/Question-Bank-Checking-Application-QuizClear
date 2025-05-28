@@ -31,9 +31,9 @@ html, body {
 /* Statistics Cards */
 .stats-container {
   position: absolute;
-  left: 390px;
+  left: 440px;
   /* Điều chỉnh top để gần header hơn */
-  top: 68px;
+  top: 150px;
   width: 1003px;
   height: 140px;
   display: flex;
@@ -84,9 +84,9 @@ html, body {
 /* Charts Section */
 .charts-container {
   position: absolute;
-  left: 396px;
+  left: 440px;
   /* Điều chỉnh top để phù hợp với stats-container mới */
-  top: 250px;
+  top: 330px;
   width: 948px;
   height: 413px;
   display: flex;
@@ -135,9 +135,9 @@ html, body {
 /* Recent Tasks Section */
 .recent-tasks-container {
   position: absolute;
-  left: 396px;
+  left: 440px;
   /* Điều chỉnh top để phù hợp với charts-container mới */
-  top: 730px;
+  top: 800px;
   width: 948px;
   height: 565px;
   background-color: #ffffff;
@@ -259,9 +259,9 @@ html, body {
 /* Duplicate Question Warning Section */
 .duplicate-warning-container {
   position: absolute;
-  left: 394px;
+  left: 440px;
   /* Điều chỉnh top để phù hợp với recent-tasks-container mới */
-  top: 1360px;
+  top: 1420px;
   width: 948px;
   height: 600px;
   background-color: #ffffff;
@@ -406,3 +406,4 @@ html, body {
     padding-bottom: 50px;
   }
 }
+
