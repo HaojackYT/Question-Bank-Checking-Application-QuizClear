@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+        <link rel="stylesheet" href="../Static/header.css">
+        <link rel="stylesheet" href="../Static/web_styles.css">
+        <link rel="stylesheet" href="staffFeedback.css">
+        <link
+            href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
+            rel="stylesheet">
+        <title>Staff Feedback</title>
+    </head>
+
+    <body>
+        <!--header-->
+        <div id="header-placeholder"></div>
+
+        <!-- body -->
+        <div id="Container-body">
+            <!-- Menu -->
+            <div id="menu-HTML"></div>
+
+            <!-- Main content -->
+            <div id="main">
+                <!-- Main Container wraps all sections -->
+                <div class="main-container">
+                    <!-- Exam Header Section -->
+                    <div class="exam-header">
+                        <div class="back-arrow">
+                            <i class="fas fa-arrow-left"></i>
+                        </div>
+                        <div class="exam-title">
+                            <h1>Data Structures Final Exam</h1>
+                            <div class="exam-meta">
+                                <span
+                                    class="course-code">CS301-FINAL-2023</span>
+                                <span class="separator">•</span>
+                                <span class="subject">Computer Science</span>
+                                <span class="separator">•</span>
+                                <span class="semester">Fall 2023</span>
+                            </div>
+                        </div>
+                        <div class="exam-actions">
+                            <span class="status-badge">Pending Approval</span>
+                            <button class="export-btn">
+                                <i class="fas fa-download"></i>
+                                Export
+                            </button>
+                            <button class="edit-btn">Edit</button>
+                        </div>
+                    </div>
+
+                    <!-- Exam Info Row -->
+                    <div class="exam-info-row">
+                        <div class="info-item">
+                            <div class="info-label">Questions</div>
+                            <div class="info-value">50</div>
+                            <div class="info-sub">12 versions</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Deadline</div>
+                            <div class="info-value">2023-06-20</div>
+                            <div class="info-sub">Created on 2023-06-01</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Assigned To</div>
+                            <div class="info-value">3</div>
+                            <div class="info-sub">Dr. Smith, Prof Davis, Dr.
+                                Brown</div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Tabs -->
+                    <div class="nav-tabs">
+                        <button class="nav-tab">Overview</button>
+                        <button class="nav-tab">Questions</button>
+                        <button class="nav-tab active">Feedback</button>
+                    </div>
+
+                    <!-- Feedback Section -->
+                    <div class="feedback-section">
+                        <div class="feedback-header">
+                            <h2>Feedback & Comments</h2>
+                            <p>Review feedback from reviewers</p>
+                        </div>
+
+                        <div class="feedback-content">
+                            <div class="no-feedback">
+                                <div class="feedback-icon">
+                                    <i class="far fa-comment-dots"></i>
+                                </div>
+                                <h3>No Feedback Yet</h3>
+                                <p>This exam hasn't received any feedback
+                                    yet.</p>
+                                <button class="add-feedback-btn">Add
+                                    Feedback</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ma nhung header vs menu -->
+        <script>
+            // Load header
+            fetch('../Template/header_user.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
+
+            // Load menu
+            fetch('../Template/Menu-Staff.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('menu-HTML').innerHTML = data;
+                });
+
+        </script>
+    </body>
+</html>
