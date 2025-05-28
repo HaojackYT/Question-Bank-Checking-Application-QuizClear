@@ -1,37 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+<head>    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuizClear - CLO Management</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../Static/css/staffCLOList.css">
     <link rel="stylesheet" href="../../Static/Menu-Staff.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+
+
 </head>
 <body>
-    <div id="header">
-        <p id="LOGO">QuizClear</p>
-        <div id="element">
-            <a class="Menu_elements" href="#">Introduction</a>
-            <a class="Menu_elements" href="#">Features</a>
-            <a class="Menu_elements" href="#">Contact</a>
-            <a class="Menu_elements" href="#">Login</a>
-            <i class="fa-solid fa-user icon-user"></i>
-        </div>
-    </div>
-    <div class="layout">
-        <div id="Menu-Staff">
-            <div class="sidebar-content">
-                <div class="elements"><i class="fa-solid fa-house"></i><a href="#">Dashboard</a></div>
-                <div class="elements"><i class="fa-solid fa-book"></i><a href="#">Subject Management</a></div>
-                <div class="elements"><i class="fa-solid fa-file-circle-question"></i><a href="#">Question Management</a></div>
-                <div class="elements"><i class="fa-solid fa-copy"></i><a href="#">Duplication</a></div>
-                <div class="elements"><i class="fa-solid fa-file"></i><a href="#">Exam Management</a></div>
-                <div class="elements active"><i class="fa-solid fa-chart-simple"></i><a href="#">Statistics & Reporting</a></div>
-            </div>
-        </div>
-        <div class="main-content">
+   <div id="header-placeholder"></div>
+   <!-- body -->
+        <div id="Container-body">
+            <!-- Menu -->
+            <div id="menu-HTML"></div>
+            <!-- Main content -->
+            <div id="main">
+            <div class="main-content">
             <!-- Top Controls -->
             <div class="top-controls">
                 <div class="toggle-group">
@@ -242,7 +234,23 @@
                 </div>
             </div>
         </div>
+            </div>
     </div>
     <script src="../../Static/js/staffCLOList.js"></script>
+    <script>
+        // Load header
+        fetch('../header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        // Load menu
+        fetch('../Menu-Staff.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+    </script>
 </body>
 </html>
