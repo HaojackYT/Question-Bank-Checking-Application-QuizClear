@@ -9,13 +9,13 @@ body {
   display: flex;
   justify-content: center;
   padding-top: 60px;
-  padding-left: 180px;
+  padding-left: 60px;
   background-color: #f8f9fb;
 }
 
 .main-content-wrapper {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1900px;
   padding: 30px 0px;
 }
 

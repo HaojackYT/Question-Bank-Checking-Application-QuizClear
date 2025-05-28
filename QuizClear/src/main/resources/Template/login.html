@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>QuizClear - Login</title>
+        <link rel="stylesheet" href="../Static/login.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="login-box">
+                <div class="logo-title">
+                    <span class="logo">
+                        <svg width="40" height="40" viewBox="0 0 24 24"
+                            fill="none">
+                            <path
+                                d="M4 7V17C4 18.1046 5.79086 19 8 19C10.2091 19 12 18.1046 12 17V7"
+                                stroke="#2196F3" stroke-width="2"
+                                stroke-linecap="round" />
+                            <path
+                                d="M12 7V17C12 18.1046 13.7909 19 16 19C18.2091 19 20 18.1046 20 17V7"
+                                stroke="#2196F3" stroke-width="2"
+                                stroke-linecap="round" />
+                            <ellipse cx="12" cy="7" rx="8" ry="3"
+                                stroke="#2196F3" stroke-width="2" />
+                        </svg>
+                    </span>
+                    <span class="title">QuizClear</span>
+                </div>
+                <div class="subtitle">No Duplicates. Clear Quizzes.
+                    QuizClear.</div>
+                <h1 class="login-header">Login</h1>
+                <form>
+                    <input type="email" placeholder="Enter email"
+                        class="input-field" required>
+                    <div class="password-wrapper">
+                        <input type="password" placeholder="Enter password"
+                            class="input-field" required>
+                        <span class="toggle-password">
+                            <svg width="22" height="22" viewBox="0 0 24 24"
+                                fill="none">
+                                <path
+                                    d="M1 12C1 12 5 5 12 5C19 5 23 12 23 12C23 12 19 19 12 19C5 19 1 12 1 12Z"
+                                    stroke="#222" stroke-width="2" />
+                                <circle cx="12" cy="12" r="3" stroke="#222"
+                                    stroke-width="2" />
+                            </svg>
+                        </span>
+                    </div>
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
+                <div class="forgot">
+                    Forgot your <a href="#" class="password-link">password</a> ?
+                </div>
+            </div>
+            <div class="footer">
+                <div class="language">
+                    Language
+                    <span class="dropdown">
+                        English
+                        <svg width="12" height="12" viewBox="0 0 24 24"
+                            fill="none">
+                            <path d="M7 10l5 5 5-5" stroke="#888"
+                                stroke-width="2" fill="none" />
+                        </svg>
+                    </span>
+                </div>
+                <div class="support">Support</div>
+            </div>
+        </div>
+
+        <!-- Forgot Password Modal -->
+        <div class="modal-overlay" id="forgot-modal-overlay"></div>
+        <div class="forgot-modal" id="forgot-modal">
+            <div class="modal-header">
+                <span class="modal-back" id="modal-back">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18l-6-6 6-6" stroke="#222" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </span>
+                <span class="modal-title">Forgot Password?</span>
+                <span class="modal-close" id="modal-close">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="#222"
+                            stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </span>
+            </div>
+            <div class="modal-content">
+                <p>Please fill in your account information.</p>
+                <form class="forgot-form" autocomplete="off"
+                    onsubmit="return false;">
+                    <div class="input-group">
+                        <input type="email" placeholder="Enter your email"
+                            required>
+                        <button type="button" class="send-code-btn">Send
+                            code</button>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" placeholder="Enter code" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Submit</button>
+                </form>
+                <div class="modal-note">
+                    If you do not receive the code, please contact us for
+                    assistance.
+                </div>
+            </div>
+        </div>
+
+        <script>
+        // JavaScript để bật/tắt modal
+        const forgotLink = document.querySelector('.password-link');
+        const modal = document.getElementById('forgot-modal');
+        const overlay = document.getElementById('forgot-modal-overlay');
+        const closeBtn = document.getElementById('modal-close');
+        const backBtn = document.getElementById('modal-back');
+
+        function openModal() {
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal() {
+            modal.style.display = 'none';
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        forgotLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            openModal();
+        });
+        closeBtn.addEventListener('click', closeModal);
+        backBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+    </script>
+    </body>
+</html>
