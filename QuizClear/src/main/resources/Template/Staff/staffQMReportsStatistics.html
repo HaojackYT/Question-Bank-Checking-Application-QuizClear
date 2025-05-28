@@ -3,10 +3,11 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-        <link rel="stylesheet" href="../Static/header.css">
-        <link rel="stylesheet" href="../Static/web_styles.css">
-        <link rel="stylesheet" href="../Static/staffQMReportsStatistics.css">
+        <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+        <link rel="stylesheet" href="../../Static/header.css">
+        <link rel="stylesheet" href="../../Static/web_styles.css">
+        <link rel="stylesheet" href="../../Static/Menu-Staff.css">
+        <link rel="stylesheet" href="../../Static/css/staffQMReportsStatistics.css">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <title>Question Management - Reports & Statistics</title>
@@ -106,14 +107,14 @@
         <!-- ma nhung header vs menu -->
         <script>
             // Load header
-            fetch('../Template/header_user.html')
+            fetch('../../Template/header_user.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('header-placeholder').innerHTML = data;
                 });
 
             // Load menu
-            fetch('../Template/Menu-Staff.html')
+            fetch('../../Template/Menu-Staff.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('menu-HTML').innerHTML = data;
@@ -218,19 +219,23 @@
                         datasets: [{
                             label: 'Approved',
                             data: [250, 180, 200, 170, 160],
-                            backgroundColor: '#10B981'
+                            backgroundColor: '#10B981',
+                            barThickness: 50  // Increased to 2x size
                         }, {
                             label: 'Pending',
                             data: [80, 60, 70, 50, 40],
-                            backgroundColor: '#F59E0B'
+                            backgroundColor: '#F59E0B',
+                            barThickness: 50  // Increased to 2x size
                         }, {
                             label: 'Rejected',
                             data: [40, 30, 35, 25, 20],
-                            backgroundColor: '#EF4444'
+                            backgroundColor: '#EF4444',
+                            barThickness: 50  // Increased to 2x size
                         }, {
                             label: 'Needed',
                             data: [100, 80, 90, 70, 60],
-                            backgroundColor: '#E5E7EB'
+                            backgroundColor: '#E5E7EB',
+                            barThickness: 50  // Increased to 2x size
                         }]
                     },
                     options: {
@@ -291,4 +296,23 @@
             });
         </script>
     </body>
+<style>
+    body {
+        background-color: #FFFFFF !important;
+    }
+    
+    #Container-body {
+        background-color: #FFFFFF !important;
+    }
+    
+    /* Remove the width restriction to allow columns to be larger */
+    #chart-status {
+        max-width: 100%;
+    }
+    
+    #chart-status canvas {
+        max-width: 100% !important; /* Allow full width */
+        margin: 0 auto !important;
+    }
+</style>
 </html>

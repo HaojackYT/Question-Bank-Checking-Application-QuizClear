@@ -98,3 +98,22 @@
   font-size: 0.8rem;
   color: #777;
 }
+
+/* Đảm bảo tab-content chiếm đủ không gian */
+.tab-content {
+  flex: 1;
+  width: 100%;
+  display: block;
+}
+
+/* Đảm bảo main nội dung hiển thị đầy đủ */
+#main {
+  width: 100%;
+  overflow: visible;
+}
+
+/* Fix vấn đề nếu tab-content bị co lại */
+#tab-content.active {
+  display: block;
+  width: 100%;
+}
