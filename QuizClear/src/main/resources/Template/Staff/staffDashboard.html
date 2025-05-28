@@ -1,175 +1,194 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuizClear - Staff Dashboard</title>
-    <link rel="stylesheet" href="../../Static/css/staffDashboard.css">
-    <link rel="stylesheet" href="../../Static/fontawesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
- </head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>QuizClear - Staff Dashboard</title>
+        <link rel="stylesheet" href="../../Static/css/staffDashboard.css">
+        <link rel="stylesheet" href="../../Static/fontawesome/css/all.css">
+        <link rel="stylesheet" href="../../Static/header.css">
+        <link rel="stylesheet" href="../../Static/Menu-Staff.css">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"
+            rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
 
     <body>
         <!--header-->
         <div id="header-placeholder"></div>
 
-
-
         <!-- body -->
         <div id="Container-body">
             <!-- Menu -->
             <div id="menu-HTML"></div>
-            
+
             <!-- Main content -->
             <div id="main">
-               <!-- noi dung duoc nhap trong day -->
+                <!-- noi dung duoc nhap trong day -->
                 <div class="stats-container">
-            <div class="stat-card">
-                <div class="stat-title">Total subjects</div>
-                <div class="stat-value">12</div>
-                <div class="stat-change">+2 this month</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">Total Questions</div>
-                <div class="stat-value">2,506</div>
-                <div class="stat-change">+123 this month</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">Duplicate Questions</div>
-                <div class="stat-value">14</div>
-                <div class="stat-change">Needs review</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-title">Exams Created</div>
-                <div class="stat-value">32</div>
-                <div class="stat-change">+8 this month</div>
-            </div>
-        </div>
-
-        <!-- Charts Section -->
-        <div class="charts-container">
-            <!-- Bar Chart -->
-            <div class="chart-card">
-                <div class="chart-title">Question Progress by Subject</div>
-                <div class="chart-subtitle">Number of Questions Created vs. Target</div>
-                <div class="chart-wrapper">
-                    <canvas id="barChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Pie Chart -->
-            <div class="chart-card">
-                <div class="chart-title">Question difficulty ratio</div>
-                <div class="chart-subtitle">The proportion of questions by difficulty level</div>
-                <div class="chart-wrapper">
-                    <canvas id="pieChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Tasks Section -->
-        <div class="recent-tasks-container">
-            <div class="section-title">Recent Tasks</div>
-            <div class="section-subtitle">Tasks to be completed</div>
-            
-            <div class="task-item">
-                <div class="task-icon">
-                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0088F0" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <polyline points="12,6 12,12 16,14"/>
-                    </svg>
-                </div>
-                <div class="task-content">
-                    <div class="task-title">Create questions for Web Programming</div>
-                    <div class="task-due">Due: 20/05/2025</div>
-                </div>
-                <div class="task-status in-progress">In Progress</div>
-            </div>
-
-            <div class="task-item">
-                <div class="task-icon">
-                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFA500" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <polyline points="12,6 12,12 16,14"/>
-                    </svg>
-                </div>
-                <div class="task-content">
-                    <div class="task-title">Check for duplicate questions in Database Systems</div>
-                    <div class="task-due">Due: 25/05/2025</div>
-                </div>
-                <div class="task-status pending">Pending</div>
-            </div>
-
-            <div class="task-item">
-                <div class="task-icon">
-                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFA500" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <polyline points="12,6 12,12 16,14"/>
-                    </svg>
-                </div>
-                <div class="task-content">
-                    <div class="task-title">Approve the exam for Software Engineering</div>
-                    <div class="task-due">Due: 30/05/2025</div>
-                </div>
-                <div class="task-status pending">Pending</div>
-            </div>
-
-            <div class="see-more">See more...</div>
-        </div>
-
-        <!-- Duplicate Question Warning Section -->
-        <div class="duplicate-warning-container">
-            <div class="section-title">Duplicate Question Warning</div>
-            <div class="section-subtitle">Questions with high similarity should be reviewed.</div>
-            
-            <div class="duplicate-count">
-                <div class="count-value">14</div>
-            </div>
-
-            <div class="duplicate-item">
-                <div class="duplicate-header">
-                    <div class="similarity-text">Similarity: 92%</div>
-                    <div class="warning-icon">
-                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#EF2A2D" stroke-width="2">
-                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
-                            <path d="M12 9v4"/>
-                            <path d="m12 17 .01 0"/>
-                        </svg>
+                    <div class="stat-card">
+                        <div class="stat-title">Total subjects</div>
+                        <div class="stat-value">12</div>
+                        <div class="stat-change">+2 this month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Total Questions</div>
+                        <div class="stat-value">2,506</div>
+                        <div class="stat-change">+123 this month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Duplicate Questions</div>
+                        <div class="stat-value">14</div>
+                        <div class="stat-change">Needs review</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Exams Created</div>
+                        <div class="stat-value">32</div>
+                        <div class="stat-change">+8 this month</div>
                     </div>
                 </div>
-                <div class="question-box">
-                    <div class="question-text">What is the purpose of the HTTP protocol?</div>
-                </div>
-                <div class="question-box">
-                    <div class="question-text">What is the main function of HTTP in web communication?</div>
-                </div>
-            </div>
 
-            <div class="duplicate-item">
-                <div class="duplicate-header">
-                    <div class="similarity-text">Similarity: 88%</div>
-                    <div class="warning-icon">
-                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#EF2A2D" stroke-width="2">
-                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
-                            <path d="M12 9v4"/>
-                            <path d="m12 17 .01 0"/>
-                        </svg>
+                <!-- Charts Section -->
+                <div class="charts-container">
+                    <!-- Bar Chart -->
+                    <div class="chart-card">
+                        <div class="chart-title">Question Progress by
+                            Subject</div>
+                        <div class="chart-subtitle">Number of Questions Created
+                            vs. Target</div>
+                        <div class="chart-wrapper">
+                            <canvas id="barChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Pie Chart -->
+                    <div class="chart-card">
+                        <div class="chart-title">Question difficulty ratio</div>
+                        <div class="chart-subtitle">The proportion of questions
+                            by difficulty level</div>
+                        <div class="chart-wrapper">
+                            <canvas id="pieChart"></canvas>
+                        </div>
                     </div>
                 </div>
-                <div class="question-box">
-                    <div class="question-text">Explain the concept of database normalization.</div>
-                </div>
-                <div class="question-box">
-                    <div class="question-text">What is database normalization and why is it important?</div>
-                </div>
-            </div>
 
-            <div class="see-more">See more...</div>
-        </div>
+                <!-- Recent Tasks Section -->
+                <div class="recent-tasks-container">
+                    <div class="section-title">Recent Tasks</div>
+                    <div class="section-subtitle">Tasks to be completed</div>
+
+                    <div class="task-item">
+                        <div class="task-icon">
+                            <svg width="30" height="30" viewBox="0 0 24 24"
+                                fill="none" stroke="#0088F0" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12,6 12,12 16,14" />
+                            </svg>
+                        </div>
+                        <div class="task-content">
+                            <div class="task-title">Create questions for Web
+                                Programming</div>
+                            <div class="task-due">Due: 20/05/2025</div>
+                        </div>
+                        <div class="task-status in-progress">In Progress</div>
+                    </div>
+
+                    <div class="task-item">
+                        <div class="task-icon">
+                            <svg width="30" height="30" viewBox="0 0 24 24"
+                                fill="none" stroke="#FFA500" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12,6 12,12 16,14" />
+                            </svg>
+                        </div>
+                        <div class="task-content">
+                            <div class="task-title">Check for duplicate
+                                questions in Database Systems</div>
+                            <div class="task-due">Due: 25/05/2025</div>
+                        </div>
+                        <div class="task-status pending">Pending</div>
+                    </div>
+
+                    <div class="task-item">
+                        <div class="task-icon">
+                            <svg width="30" height="30" viewBox="0 0 24 24"
+                                fill="none" stroke="#FFA500" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12,6 12,12 16,14" />
+                            </svg>
+                        </div>
+                        <div class="task-content">
+                            <div class="task-title">Approve the exam for
+                                Software Engineering</div>
+                            <div class="task-due">Due: 30/05/2025</div>
+                        </div>
+                        <div class="task-status pending">Pending</div>
+                    </div>
+
+                    <div class="see-more">See more...</div>
+                </div>
+
+                <!-- Duplicate Question Warning Section -->
+                <div class="duplicate-warning-container">
+                    <div class="section-title">Duplicate Question Warning</div>
+                    <div class="section-subtitle">Questions with high similarity
+                        should be reviewed.</div>
+
+                    <div class="duplicate-count">
+                        <div class="count-value">14</div>
+                    </div>
+
+                    <div class="duplicate-item">
+                        <div class="duplicate-header">
+                            <div class="similarity-text">Similarity: 92%</div>
+                            <div class="warning-icon">
+                                <svg width="30" height="30" viewBox="0 0 24 24"
+                                    fill="none" stroke="#EF2A2D"
+                                    stroke-width="2">
+                                    <path
+                                        d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                                    <path d="M12 9v4" />
+                                    <path d="m12 17 .01 0" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="question-box">
+                            <div class="question-text">What is the purpose of
+                                the HTTP protocol?</div>
+                        </div>
+                        <div class="question-box">
+                            <div class="question-text">What is the main function
+                                of HTTP in web communication?</div>
+                        </div>
+                    </div>
+
+                    <div class="duplicate-item">
+                        <div class="duplicate-header">
+                            <div class="similarity-text">Similarity: 88%</div>
+                            <div class="warning-icon">
+                                <svg width="30" height="30" viewBox="0 0 24 24"
+                                    fill="none" stroke="#EF2A2D"
+                                    stroke-width="2">
+                                    <path
+                                        d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                                    <path d="M12 9v4" />
+                                    <path d="m12 17 .01 0" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="question-box">
+                            <div class="question-text">Explain the concept of
+                                database normalization.</div>
+                        </div>
+                        <div class="question-box">
+                            <div class="question-text">What is database
+                                normalization and why is it important?</div>
+                        </div>
+                    </div>
+
+                    <div class="see-more">See more...</div>
+                </div>
             </div>
         </div>
         <script>
@@ -239,14 +258,14 @@
         <!-- ma nhung header vs menu -->
         <script>
             // Load header
-            fetch('../../Template/header_user.html')
+            fetch('../Template/header_user.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('header-placeholder').innerHTML = data;
                 });
 
             // Load menu
-            fetch('../../Template/Menu-Staff.html')
+            fetch('../Template/Menu-Staff.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('menu-HTML').innerHTML = data;
@@ -254,4 +273,4 @@
 
         </script>
     </body>
-</html> 
+</html>
