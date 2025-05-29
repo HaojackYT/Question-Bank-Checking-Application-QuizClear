@@ -3,11 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css" />
-    <link rel="stylesheet" href="../Static/header.css" />
-    <link rel="stylesheet" href="../Static/web_styles.css" />
-    <link rel="stylesheet" href="../Static/staffDup.css" />
-    <link rel="stylesheet" href="../Static/Menu-Staff.css" />
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css" />
+    <link rel="stylesheet" href="../../Static/header.css" />
+    <link rel="stylesheet" href="../../Static/web_styles.css" />
+    <link rel="stylesheet" href="../../Static/staffDup.css" />
+    <link rel="stylesheet" href="../../Static/Menu-Staff.css" />
+    <link rel="stylesheet" href="../../Static/staffLogsDetails.css" />
     <!-- Thêm style riêng -->
     <link
       href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
@@ -50,16 +51,28 @@
         </div>
       </div>
     </div>
+    <!-- Modal Log Detail -->
+    <div class="modal-overlay" id="logDetailModal" style="display: none">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title">Processing Log Details</h3>
+          <button class="close-button" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body" id="modalContent">
+          <!-- Data here -->
+        </div>
+      </div>
+    </div>
 
     <!-- Tải header và menu -->
     <script>
-      fetch("header_user.html")
+      fetch("../header_user.html")
         .then((response) => response.text())
         .then((data) => {
           document.getElementById("header-placeholder").innerHTML = data;
         });
 
-      fetch("Menu-Staff.html")
+      fetch("../Menu-Staff.html")
         .then((response) => response.text())
         .then((data) => {
           document.getElementById("menu-HTML").innerHTML = data;
@@ -67,27 +80,6 @@
     </script>
 
     <!-- Script riêng -->
-    <script src="../Static/js/staffDuplication.js"></script>
-
-    <!-- Các chức năng tương tác -->
-    <script>
-      document.querySelectorAll(".action-btn").forEach((btn) => {
-        btn.addEventListener("click", function (e) {
-          e.preventDefault();
-          const row = this.closest("tr");
-          if (this.classList.contains("btn-approve")) {
-            row.style.backgroundColor = "#f0fdf4";
-            setTimeout(() => (row.style.opacity = "0.5"), 500);
-          } else if (this.classList.contains("btn-reject")) {
-            row.style.backgroundColor = "#fef2f2";
-            setTimeout(() => (row.style.opacity = "0.5"), 500);
-          } else if (this.classList.contains("btn-view")) {
-            alert(
-              "View question details functionality would be implemented here"
-            );
-          }
-        });
-      });
-    </script>
+    <script src="../../Static/js/staffDuplication.js"></script>
   </body>
 </html>
