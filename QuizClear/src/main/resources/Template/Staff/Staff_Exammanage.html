@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../Static/header.css">
-    <link rel="stylesheet" href="../Static/web_styles.css">
-    <link rel="stylesheet" href="../Static/Staff_Exammanage.css">
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../header_user.html">
+    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
+    <link rel="stylesheet" href="../../Static/Staff_Exammanage.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Template</title>
 </head>
@@ -30,7 +32,8 @@
             <div id="title-container">
                 <div class="title">
                     <p style="font-size: 32px;font-weight: 600;color: #120368;">Exam Management</p>
-                    <p style="color: #4B5563;font-size: 14px;font-weight: 400;">Create, review, and manage exams across all subjects</p>
+                    <p style="color: #4B5563;font-size: 14px;font-weight: 400;">Create, review, and manage exams across
+                        all subjects</p>
                 </div>
                 <button type="button" title="Create New Exam">Create New Exam</button>
             </div>
@@ -77,7 +80,8 @@
             <div id="garph-container">
                 <div>
                     <p style="font-size: 32px;font-weight: 600;color: #120368;">Pending Approval</p>
-                    <p style="color: #4B5563;font-size: 14px;font-weight: 400; margin-bottom: 20px;">Exams waiting for review and approval</p>
+                    <p style="color: #4B5563;font-size: 14px;font-weight: 400; margin-bottom: 20px;">Exams waiting for
+                        review and approval</p>
                 </div>
                 <div class="subject-row" data-duplicates="200" data-total="400">
                     <div class="subject-header">
@@ -141,14 +145,14 @@
     <!-- ma nhung header vs menu -->
     <script>
         // Load header
-        fetch('../Template/header_user.html')
+        fetch('../header_user.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
             });
 
         // Load menu
-        fetch('../Template/Menu-Staff.html')
+        fetch('../Menu-Staff.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
