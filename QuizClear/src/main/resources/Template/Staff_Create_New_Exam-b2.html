@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../Static/header.css">
+    <link rel="stylesheet" href="../Static/web_styles.css">
+    <link rel="stylesheet" href="../Static/Staff_Create_New_Exam.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Template</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+
+        <!-- Main content -->
+        <div id="main">
+
+            <!-- khoi tieu de va quay lai -->
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <a href="#!" style="color: black;width: 40px;height: 40px; font-size: 40px;"><i
+                        class="fa-solid fa-arrow-left"></i></a>
+                <p style="color: #120368;font-size: 36px;font-weight: 600;">Create New Exam</p>
+            </div>
+
+            <!-- khoi cac buoc -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <!-- buoc 1 -->
+                <div class="Step-Container Step-Container_done">
+                    <i class="fa-solid fa-check step Step_done"></i>
+                    <p class="p_done">Basic info</p>
+                </div>
+
+                <!-- buoc 2 -->
+                <div class="Step-Container Step-Container_continue">
+                    <i class="fa-solid fa-2 step Step_continue"></i>
+                    <p class="p_continue">Structure</p>
+                </div>
+
+                <!-- buoc 3 -->
+                <div class="Step-Container">
+                    <i class="fa-solid fa-3 step"></i>
+                    <p>Assignment</p>
+                </div>
+
+                <!-- buoc 4-->
+                <div class="Step-Container">
+                    <i class="fa-solid fa-4 step"></i>
+                    <p>Review</p>
+                </div>
+            </div>
+
+            <!-- khoi noi dung -->
+            <div id="content-container" style="display: flex; flex-direction: column; gap: 20px;">
+
+                <!-- khoi tieu de -->
+                <div>
+                    <p style="font-size: 17px;font-weight: 600;">Exam Structure</p>
+                    <p style="font-size: 12px;color: #6B7280;">Define the structure and question distribution</p>
+                </div>
+
+                <!-- khoi noi dung -->
+                <div id="content" style="margin: 0;">
+                    <!-- khoi noi dung -->
+                    <div id="conten-container">
+                        <div class="to-work">
+                            <p class="work">Difficulty Distribution</p>
+                            <p class="work">CLO Mapping</p>
+                        </div>
+
+                        <!-- total container-->
+                        <div id="total-container">
+                            <div class="total">
+                                <p>Total Number of Questions</p>
+                                <input type="text" id="total-questions" placeholder="50">
+                            </div>
+                            <div class="total">
+                                <p>Number of Versions</p>
+                                <input type="text" id="total-versions" placeholder="2">
+                            </div>
+                        </div>
+
+                        <!-- chon so luong cau o moi lv -->
+                        <div>
+                            <div
+                                style="display: flex;flex-direction: row; justify-content: space-between; margin-bottom: 20px;">
+                                <p style="font-size: 14px;font-weight: 500;">Difficulty Distribution</p>
+                                <p style="font-size: 12px;color: #2563EB;">Total <span>100</span>%</p>
+                            </div>
+
+                            <div class="range-container">
+                                <div style="display: flex; flex-direction: row; gap: 10px; margin-bottom: 5px;">
+                                    <p>Basic (Recognition)</p>
+                                    <p>-<span>25</span>%</p>
+                                </div>
+                                <p class="range-value"><span id="range-value-basic">13</span> question</p>
+                                <input type="range" id="range-basic" min="0" max="100" value="25" style="width: 100%;"
+                                    title="Basic Difficulty Range" class="custom-slider cross1">
+                            </div>
+
+
+                            <div class="range-container">
+                                <div style="display: flex; flex-direction: row; gap: 10px; margin-bottom: 5px;">
+                                    <p>Intermediate (Understanding)</p>
+                                    <p>-<span>25</span>%</p>
+                                </div>
+                                <p class="range-value"><span id="range-value-Intermediate">13</span> question</p>
+                                <input type="range" id="range-Intermediate" min="0" max="100" value="25"
+                                    style="width: 100%;" title="Intermediate (Understanding)"
+                                    class="custom-slider cross2">
+                            </div>
+
+
+                            <div class="range-container">
+                                <div style="display: flex; flex-direction: row; gap: 10px; margin-bottom: 5px;">
+                                    <p>Advanced (Application)</p>
+                                    <p>-<span>25</span>%</p>
+                                </div>
+                                <p class="range-value"><span id="range-value-Advanced">13</span> question</p>
+                                <input type="range" id="range-Advanced" min="0" max="100" value="25"
+                                    style="width: 100%;" title="Advanced (Application)" class="custom-slider cross3">
+                            </div>
+
+
+                            <div class="range-container">
+                                <div style="display: flex; flex-direction: row; gap: 10px; margin-bottom: 5px;">
+                                    <p>Expert (High Application)</p>
+                                    <p>-<span>25</span>%</p>
+                                </div>
+                                <p class="range-value"><span id="range-value-Expert">13</span> question</p>
+                                <input type="range" id="range-Expert" min="0" max="100" value="25" style="width: 100%;"
+                                    title="Expert (High Application)" class="custom-slider cross4">
+                            </div>
+                        </div>
+
+                        <!-- cot phan tram da chon cau hoi theo lv -->
+                        <div style="display: flex;flex-direction: column;">
+                            <p style="font-size: 14px;font-weight: 500;">Difficulty Distribution Preview</p>
+                            <div style="padding:0 40px;display: flex; flex-direction: row;justify-content: space-around;border: 1px solid #E5E7EB; border-radius: 6px;">
+                                <div class="colum-container">
+                                    <div class="colum" id="Basic"></div>
+                                    <p>Basic</p>
+                                    <p><span id="value-basic">25</span>%</p>
+                                </div>
+                                <div class="colum-container">
+                                    <div class="colum" id="Intermediate"></div>
+                                    <p>Intermediate</p>
+                                    <p><span id="value-intermediate">25</span>%</p>
+                                </div>
+                                <div class="colum-container">
+                                    <div class="colum" id="Advanced"></div>
+                                    <p>Advanced</p>
+                                    <p><span id="value-advanced">25</span>%</p>
+                                </div>
+                                <div class="colum-container">
+                                    <div class="colum" id="Expert"></div>
+                                    <p>Expert</p>
+                                    <p><span id="value-expert">25</span>%</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 14px;font-weight: 500; margin-top: 20px; margin-bottom: 10px;">Question Sources</p>
+                        <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 20px;">
+                            <div class="Question-container" style="margin-right: 2%;">
+                                <p>Primary Question Source</p>
+                                <select name="PrimaryQuestionSource" id="PrimaryQuestionSource"
+                                    title="PrimaryQuestionSource">
+                                    <option value="Question_Bank">Question_Bank</option>
+                                </select>
+                            </div>
+                            <div class="Question-container">
+                                <p>Question Bank Filter</p>
+                                <select name="Question_Bank_Filter" id="Question_Bank_Filter"
+                                    title="Question_Bank_Filter">
+                                    <option value="All_Question">All_Question</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 20px; margin-top: 30px;">
+                            <div class="tick-container">
+                                <p>Additional Settings</p>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+
+                            </div>
+                            <div class="tick-container">
+                                <div class="text">
+                                    <p class="text-title">Check for Duplicate Questions</p>
+                                    <p class="text-conten">Automatically check for similar questions in the database</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="tick-container">
+                                <div class="text">
+                                    <p class="text-title">Check CLO Coverage</p>
+                                    <p class="text-conten">Ensure all Course Learning Outcomes are covered</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="tick-container">
+                                <div class="text">
+                                    <p class="text-title">Randomize Question Order</p>
+                                    <p class="text-conten">Questions will appear in random order for each exam version
+                                    </p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="tick-container">
+                                <div class="text">
+                                    <p class="text-title">Randomize Answer Options</p>
+                                    <p class="text-conten">Answer options will be shuffled for each question</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- khoi nut -->
+                    <div id="button-container">
+                        <button title="Cancel">
+                            <i class="fa-solid fa-chevron-left"></i>
+                            Previous
+                        </button>
+                        <button title="Next">
+                            Next
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+    <!-- ma nhung header vs menu -->
+    <script>
+        // Load header
+        fetch('../Template/header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        // Load menu
+        fetch('../Template/Menu-Staff.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+    </script>
+
+    <!-- value thanh keo -->
+    <script>
+        // Lấy input tổng số câu hỏi
+const totalQuestionsInput = document.getElementById("total-questions");
+
+// Cấu hình các slider và cột tương ứng
+const sliders = [
+    { 
+        range: document.getElementById("range-basic"), 
+        valueEl: document.getElementById("range-value-basic"), 
+        percentEl: document.querySelector("#range-basic").parentElement.querySelector("p span"),
+        columEl: document.getElementById("Basic"),
+        valuePercentEl: document.getElementById("value-basic")
+    },
+    { 
+        range: document.getElementById("range-Intermediate"), 
+        valueEl: document.getElementById("range-value-Intermediate"), 
+        percentEl: document.querySelector("#range-Intermediate").parentElement.querySelector("p span"),
+        columEl: document.getElementById("Intermediate"),
+        valuePercentEl: document.getElementById("value-intermediate")
+    },
+    { 
+        range: document.getElementById("range-Advanced"), 
+        valueEl: document.getElementById("range-value-Advanced"), 
+        percentEl: document.querySelector("#range-Advanced").parentElement.querySelector("p span"),
+        columEl: document.getElementById("Advanced"),
+        valuePercentEl: document.getElementById("value-advanced")
+    },
+    { 
+        range: document.getElementById("range-Expert"), 
+        valueEl: document.getElementById("range-value-Expert"), 
+        percentEl: document.querySelector("#range-Expert").parentElement.querySelector("p span"),
+        columEl: document.getElementById("Expert"),
+        valuePercentEl: document.getElementById("value-expert")
+    }
+];
+
+// Lấy thẻ hiển thị tổng phần trăm
+const totalPercentageDisplay = document.querySelector("p[style*='color: #2563EB'] span");
+
+// Hàm tính tổng số câu hỏi từ các thanh kéo
+function getTotalSliderValue() {
+    return sliders.reduce((sum, s) => sum + parseInt(s.range.value), 0);
+}
+
+// Hàm cập nhật phần trăm, số câu hỏi và độ cao cột
+function updateSliderValues(sliderObj, totalQuestions) {
+    const value = parseInt(sliderObj.range.value);
+    sliderObj.valueEl.textContent = value; // Hiển thị số câu hỏi
+    const percentage = totalQuestions > 0 ? ((value / totalQuestions) * 100).toFixed(1) : 0;
+    sliderObj.percentEl.textContent = percentage; // Hiển thị phần trăm trên thanh kéo
+    sliderObj.valuePercentEl.textContent = percentage; // Hiển thị phần trăm dưới cột
+    sliderObj.columEl.style.height = `${percentage}px`; // Cập nhật độ cao cột (1% = 1px)
+}
+
+// Hàm cập nhật tổng phần trăm
+function updateTotalPercentage() {
+    const totalQuestions = parseInt(totalQuestionsInput.value) || 0;
+    const totalSliderValue = getTotalSliderValue();
+    const totalPercentage = totalQuestions > 0 ? ((totalSliderValue / totalQuestions) * 100).toFixed(1) : 0;
+    totalPercentageDisplay.textContent = totalPercentage; // Cập nhật tổng phần trăm
+}
+
+// Hàm cập nhật màu nền thanh kéo
+function updateSliderBackground(slider) {
+    const min = slider.min ? parseFloat(slider.min) : 0;
+    const max = slider.max ? parseFloat(slider.max) : 100;
+    const val = ((slider.value - min) / (max - min)) * 100;
+    slider.style.background = `linear-gradient(to right, #3B82F6 ${val}%, #DBEAFE ${val}%)`;
+}
+
+// Xử lý sự kiện cho từng thanh kéo
+sliders.forEach((sliderObj) => {
+    sliderObj.range.addEventListener("input", () => {
+        const totalQuestions = parseInt(totalQuestionsInput.value) || 0;
+        const currentTotal = getTotalSliderValue();
+        const previousValue = parseInt(sliderObj.valueEl.textContent);
+        const currentValue = parseInt(sliderObj.range.value);
+
+        // Nếu tổng bằng hoặc vượt quá totalQuestions và đang tăng, giữ nguyên giá trị cũ
+        if (currentValue > previousValue && currentTotal > totalQuestions) {
+            sliderObj.range.value = previousValue;
+            return;
+        }
+
+        // Cập nhật giá trị hiển thị, phần trăm và độ cao cột
+        updateSliderValues(sliderObj, totalQuestions);
+        updateTotalPercentage();
+        updateSliderBackground(sliderObj.range);
+    });
+
+    // Cập nhật màu nền ban đầu
+    updateSliderBackground(sliderObj.range);
+});
+
+// Xử lý khi nhập total-questions
+totalQuestionsInput.addEventListener("input", () => {
+    const total = parseInt(totalQuestionsInput.value);
+    if (isNaN(total) || total < 0) {
+        totalQuestionsInput.value = 0;
+    }
+    const totalQuestions = parseInt(totalQuestionsInput.value) || 0;
+    const currentTotal = getTotalSliderValue();
+
+    // Nếu tổng câu hỏi hiện tại vượt quá totalQuestions, giảm giá trị các thanh kéo
+    if (currentTotal > totalQuestions) {
+        let excess = currentTotal - totalQuestions;
+        for (let i = sliders.length - 1; i >= 0 && excess > 0; i--) {
+            const currentValue = parseInt(sliders[i].range.value);
+            const reduction = Math.min(currentValue, excess);
+            sliders[i].range.value = currentValue - reduction;
+            excess -= reduction;
+            updateSliderValues(sliders[i], totalQuestions);
+            updateSliderBackground(sliders[i].range);
+        }
+    }
+
+    // Cập nhật lại tất cả giá trị hiển thị và độ cao cột
+    sliders.forEach(sliderObj => updateSliderValues(sliderObj, totalQuestions));
+    updateTotalPercentage();
+});
+
+// Khởi tạo giá trị ban đầu
+sliders.forEach(sliderObj => updateSliderValues(sliderObj, parseInt(totalQuestionsInput.value) || 0));
+updateTotalPercentage();
+    </script>
+
+
+
+</body>
+
+</html>
