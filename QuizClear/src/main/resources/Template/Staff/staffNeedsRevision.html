@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
+    <link rel="stylesheet" href="../../Static/StaffNeedsRevision.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>staffNeedsRevision</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <div class="header-bar">
+                <div>
+                    <div class="title">Exam Management</div>
+                    <div class="subtitle">Create, review, and manage exams across all subjects</div>
+                </div>
+                <button class="create-exam-btn">Create New Exam</button>
+            </div>
+            <div class="exam-status">
+                <div class="status-item">
+                    <div class="status-label">Total Exams</div>
+                    <div class="status-count">128</div>
+                    <div class="status-label"> +6.2% form last month </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Pending Approval</div>
+                    <div class="status-count">24</div>
+                    <div class="status-label"> (2 urgent due in 48h) </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Approved</div>
+                    <div class="status-count">96</div>
+                    <div class="status-label"> Ready for distribution </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Rejected</div>
+                    <div class="status-count">8</div>
+                    <div class="status-label"> Needs revision </div>
+                </div>
+            </div>
+            <div class="search-filter-bar">
+                <input type="text" id="search" placeholder="Search exam">
+                <div class="filters">
+                    <button class="filter">All Statuses</button>
+                    <button class="filter">All Subjects</button>
+                    <button class="filter"><i class="fa-solid fa-filter"></i></button>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab" onclick="location.href='staffQuestionBank.html'">
+                    All Exams
+                </button>
+                <button class="tab" onclick="location.href='submission.html'">
+                    Peding Approval
+                </button>
+                <button class="tab" onclick="location.href='planning.html'">
+                    Approved
+                </button>
+                <button class="tab active">Needs Revision</button>
+                <div class="line"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="content">
+                    <h3>Needs Revision</h3>
+                    <p style="color:#555; font-size: 13px; margin-top: 4px;" ;>Exams that require changes before
+                        approval</p>
+                    <div class="line2"></div>
+                    <div class="exam-list">
+                        <div class="exam-item">
+                            <div class="left-right-wrapper">
+                                <!-- Left: icon + info + feedback -->
+                                <div class="exam-left">
+                                    <div class="icon-wrapper">
+                                        <i class="fa-solid fa-circle-exclamation"></i>
+                                    </div>
+                                    <div class="exam-info">
+                                        <h4>Database Systems Quiz</h4>
+                                        <p><strong>Information Technology</strong> • Created: 2023-06-08 • Rejected by
+                                            Dr. Williams on 2023-06-10</p>
+                                        <div class="feedback-noti">
+                                            <i class="fa-solid fa-circle-exclamation"></i>
+                                            <span style="margin-left: 6px;">Feedback: Insufficient advanced
+                                                questions</span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- Right: Buttons -->
+                                <div class="exam-actions">
+                                    <button class="edit-exam">Edit</button>
+                                    <button class="view-details">View</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="exam-list">
+                        <div class="exam-item">
+                            <div class="left-right-wrapper">
+                                <!-- Left: icon + info + feedback -->
+                                <div class="exam-left">
+                                    <div class="icon-wrapper">
+                                        <i class="fa-solid fa-circle-exclamation"></i>
+                                    </div>
+                                    <div class="exam-info">
+                                        <h4>Database Systems Quiz</h4>
+                                        <p><strong>Information Technology</strong> • Created: 2023-06-08 • Rejected by
+                                            Dr. Williams on 2023-06-10</p>
+                                        <div class="feedback-noti">
+                                            <i class="fa-solid fa-circle-exclamation"></i>
+                                            <span style="margin-left: 6px;">Feedback: Insufficient advanced
+                                                questions</span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- Right: Buttons -->
+                                <div class="exam-actions">
+                                    <button class="edit-exam">Edit</button>
+                                    <button class="view-details">View</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+         <script>
+        fetch("../header_user.html")
+            .then((response) => response.text())
+            .then((data) => {
+                document.getElementById("header-placeholder").innerHTML = data;
+            });
+
+        fetch("../Menu-Staff.html")
+            .then((response) => response.text())
+            .then((data) => {
+                document.getElementById("menu-HTML").innerHTML = data;
+            });
+    </script>
+</body>
+
+</html>

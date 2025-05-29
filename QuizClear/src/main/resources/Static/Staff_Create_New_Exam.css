@@ -117,15 +117,16 @@
     vertical-align: top;
 }
 
-#button-container{
+#button-container {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
 }
+
 #button-container button {
     height: 42px;
     width: 100px;
-    padding: 10px 20px;
+    padding: 10px 5px;
     font-size: 14px;
     color: white;
     background-color: #2563EB;
@@ -133,8 +134,230 @@
     border-radius: 6px;
     cursor: pointer;
 }
+
 #button-container button[title="Cancel"] {
     background-color: white;
     color: #374151;
     border: 1px solid #D1D5DB;
+}
+
+/* ======================================= */
+
+
+
+/* buoc 2 */
+.range-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.range-value {
+    position: absolute;
+    top: -2px;
+    left: 92%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #6B7280;
+}
+
+.to-work,
+#total-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 20px;
+}
+
+.to-work .work {
+    width: 49%;
+    height: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+#total-container .total {
+    width: 49%;
+    height: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 12px;
+}
+
+#total-container input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #D1D5DB;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.custom-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(to right, #3B82F6 50%, #DBEAFE 50%);
+    border-radius: 5px;
+    outline: none;
+    transition: background 0.3s ease;
+}
+
+/* Chrome, Safari, Edge */
+.custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 17px;
+    height: 17px;
+    background: #fff;
+    border: 2px solid #3B82F6;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -3px;
+    /* để thumb nằm giữa track */
+}
+
+/* Firefox */
+.custom-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border: 2px solid #3B82F6;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Firefox track */
+.custom-slider::-moz-range-track {
+    background: #DBEAFE;
+    height: 8px;
+    border-radius: 5px;
+}
+
+.colum-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: end;
+    width: 100%;
+    height: 150px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.colum-container .colum {
+    max-height: 100px;
+    height: 20px;
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+    background-color: #3B82F6;
+}
+
+.colum-container p {
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.Question-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 40px;
+}
+
+.Question-container p {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.Question-container select {
+    width: 99%;
+    padding: 8px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #D1D5DB;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.tick-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 40px;
+}
+
+/* Kiểu dáng tổng thể */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+/* Ẩn checkbox gốc */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Thanh trượt */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+/* Nút tròn bên trong */
+.slider::before {
+    position: absolute;
+    content: "";
+    height: 15px;
+    width: 15px;
+    left: 3px;
+    top: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+/* Khi checkbox được bật (checked) */
+input:checked+.slider {
+    background-color: #2563EB;
+}
+
+/* Di chuyển nút tròn sang phải */
+input:checked+.slider::before {
+    transform: translateX(18px);
+}
+
+.text .text-title {
+    font-size: 14px;
+    font-weight: 400;
+}
+.text .text-conten {
+    font-size: 11px;
+    font-weight: 400;
+    color: #6B7280;
 }

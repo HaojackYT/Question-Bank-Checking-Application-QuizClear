@@ -31,16 +31,16 @@ function handleTabClick(tab) {
 
   const tabConfig = {
     detection: {
-      file: "../Template/staffDupContent.html",
-      css: "../staffDup.css",
+      file: "../../Template/staffDupContent.html",
+      css: "../../Static/staffDup.css",
     },
     stat: {
-      file: "../Template/staffStatContent.html",
-      css: "../staffStats.css",
+      file: "../../Template/staffStatContent.html",
+      css: "../../Static/staffStats.css",
     },
     proc_log: {
-      file: "../Template/staffLogContent.html",
-      css: "../staffLogs.css",
+      file: "../../Template/staffLogContent.html",
+      css: "../../Static/staffLogs.css",
     },
   };
 
@@ -100,7 +100,7 @@ function handleViewDetail() {
 
   tabContent.style.display = "none";
 
-  fetch("../Template/staffDupDetails.html")
+  fetch("../../Template/staffDupDetails.html")
     .then((res) => res.text())
     .then((html) => {
       comparisonContainer.innerHTML = html;
