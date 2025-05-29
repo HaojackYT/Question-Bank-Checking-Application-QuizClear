@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../header_user.html">
+    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
+    <link rel="stylesheet" href="../../Static/Staff_Create_New_Exam.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Staff_Create_New_Exam-b3</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- noi dung duoc nhap trong day -->
+
+            <!-- khoi tieu de va quay lai -->
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <a href="#!" style="color: black;width: 40px;height: 40px; font-size: 40px;"><i
+                        class="fa-solid fa-arrow-left"></i></a>
+                <p style="color: #120368;font-size: 36px;font-weight: 600;">Create New Exam</p>
+            </div>
+
+            <!-- khoi cac buoc -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <!-- buoc 1 -->
+                <div class="Step-Container Step-Container_done">
+                    <i class="fa-solid fa-check step Step_done"></i>
+                    <p class="p_done">Basic info</p>
+                </div>
+
+                <!-- buoc 2 -->
+                <div class="Step-Container Step-Container_done">
+                    <i class="fa-solid fa-check step Step_done"></i>
+                    <p class="p_done">Structure</p>
+                </div>
+
+                <!-- buoc 3 -->
+                <div class="Step-Container Step-Container_done">
+                    <i class="fa-solid fa-check step Step_done"></i>
+                    <p class="p_done">Assignment</p>
+                </div>
+
+                <!-- buoc 4-->
+                <div class="Step-Container Step-Container_continue">
+                    <i class="fa-solid fa-3 step Step_continue"></i>
+                    <p class="p_continue">Review</p>
+                </div>
+            </div>
+
+            <!-- khoi noi dung -->
+            <div id="content-container" style="display: flex; flex-direction: column; gap: 20px;">
+
+                <!-- khoi tieu de -->
+                <div>
+                    <p style="font-size: 17px;font-weight: 600;">Review & Create</p>
+                    <p style="font-size: 12px;color: #6B7280;">Review your exam details before creating</p>
+                </div>
+
+                <!-- khoi noi dung -->
+                <div id="content" style="margin: 0;">
+
+                    <div id="infor-Container">
+                        <div id="left-infor">
+                            <div>
+                                <p class="title">Exam Title</p>
+                                <p class="content">Data Structures Final Exam</p>
+                            </div>
+                            <div>
+                                <p class="title">Subject</p>
+                                <p class="content">Computer Science</p>
+                            </div>
+                            <div>
+                                <p class="title">Semester</p>
+                                <p class="content">Fall 2023</p>
+                            </div>
+                            <div>
+                                <p class="title">Total Questions</p>
+                                <p class="content">50</p>
+                            </div>
+                        </div>
+
+                        <div id="right-infor">
+                            <div>
+                                <p class="title">Exam Code</p>
+                                <p class="content">CS301-FINAL-2023</p>
+                            </div>
+                            <div>
+                                <p class="title">Course</p>
+                                <p class="content">Data Structures</p>
+                            </div>
+                            <div>
+                                <p class="title">Deadline</p>
+                                <p class="content">June 20, 2023</p>
+                            </div>
+                            <div>
+                                <p class="title">Number of Versions</p>
+                                <p class="content">2</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="colum-container">
+                        <div id="left-container">
+                            <p>Difficulty Distribution</p>
+                            <div>
+                                <div>
+                                    <div></div>
+                                    <p>Basic</p>
+                                    <p><span id="value-basic">25%</span>%</p>
+                                </div>
+                                <div>
+                                    <div></div>
+                                    <p>Intermediate</p>
+                                    <p><span id="value-Intermediate">40%</span>%</p>
+                                </div>
+                                <div>
+                                    <div></div>
+                                    <p>Advanced</p>
+                                    <p><span id="value-Advanced">25%</span>%</p>
+                                </div>
+                                <div>
+                                    <div></div>
+                                    <p>Expert</p>
+                                    <p><span id="value-Expert"></span>%</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="right-container">
+                            <p>CLO Distribution</p>
+                            <div>
+                                <div>
+                                    <div></div>
+                                    <p>CLO 1</p>
+                                    <p><span id="value-CLO1">20%</span>%</p>
+                                </div>
+                                <div>
+                                    <div></div>
+                                    <p>CLO 2</p>
+                                    <p><span id="value-CLO2">30%</span>%</p>
+                                </div>
+                                <div>
+                                    <div></div>
+                                    <p>CLO 3</p>
+                                    <p><span id="value-CLO3">25</span>%</p>
+                                </div>
+                                <div>
+                                    <div></div>
+                                    <p>CLO 4</p>
+                                    <p><span id="value-CLO4">25%</span>%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="assigned-container">
+                        <p>Assigned Team</p>
+                        <div>
+                            <div>
+                                <img src="" alt="">
+                                <div class="infor-user">
+                                    <p class="name-user">Dr. Smith</p>
+                                    <p class="Assign-name">Department Head</p>
+                                </div>
+                                
+                            </div>
+                            <div><p class="Assign-name">Department Head</p></div>
+                        </div>
+                        <div>
+                            <div>
+                                <img src="" alt="">
+                                <div class="infor-user">
+                                    <p class="name-user">Prof. Davis</p>
+                                    <p class="Assign-name">Subject Expert</p>
+                                </div>
+                                
+                            </div>
+                            <div><p class="Assign-name">Subject Expert</p></div>
+                        </div>
+                        <div>
+                            <div>
+                                <img src="" alt="">
+                                <div class="infor-user">
+                                    <p class="name-user">Dr. Brown</p>
+                                    <p class="Assign-name">Reviewer</p>
+                                </div>
+                                
+                            </div>
+                            <div><p class="Assign-name">Reviewer</p></div>
+                        </div>
+                    </div>
+
+                    <!-- khoi nutnut -->
+                    <div id="button-container">
+                        <button title="Cancel">
+                            <i class="fa-solid fa-chevron-left"></i>
+                            Previous
+                        </button>
+                        <button title="Next">
+                            Next
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ma nhung header vs menu -->
+    <script>
+        // Load header
+        fetch('../header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        // Load menu
+        fetch('../Menu-Staff.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+
+    </script>
+</body>
+
+</html>
