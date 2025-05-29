@@ -4,124 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../Static/header.css">
-    <link rel="stylesheet" href="../static/web_styles.css">
+    <link rel="stylesheet" href="../../static/fontawesome/css/all.css">
+    <link rel="stylesheet" href="../../static/header.css">
+    <link rel="stylesheet" href="../../static/web_styles.css">
+    <link rel="stylesheet" href="../../static/Menu-Staff.css">
+    <link rel="stylesheet" href="../../static/staffQuestionDupliCheck.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Template</title>
-    <style>
-        /* Main content */
-        #main {
-            width: 100vw;
-            padding: 30px;
-        }
-
-        .main-content {
-            width: 100%;
-            margin: 0 auto;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-            border: 1px solid #E0EAFA;
-        }
-
-        .title {
-            font-size: 36px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #120368;
-        }
-
-        .subtitle {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: #555;
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-        }
-
-        .tab {
-            padding: 8px 14px;
-            background: #ffffff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .tab.active {
-            background: #2e2e8a;
-            color: white;
-        }
-
-        .tab:hover {
-            background: #d1d5db;
-        }
-
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 16px;
-            background-color: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        thead {
-            background-color: #F3F4F6;
-            text-align: left;
-        }
-
-        th,
-        td {
-            padding: 16px;
-            border-bottom: 1px solid #E5E7EB;
-            font-size: 14px;
-        }
-
-        td {
-            vertical-align: top;
-            vertical-align: middle;
-        }
-
-        /* Similarity badge */
-        .check-percent-btn {
-            border: none;
-            padding: 10px 16px;
-            border-radius: 70px;
-            font-weight: bold;
-            font-size: 13px;
-            line-height: 1;
-            text-align: center;
-        }
-
-        td i {
-            font-size: 16px;
-            margin: 0 8px;
-            cursor: pointer;
-            vertical-align: middle;
-        }
-
-        .action-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .line {
-            width: 100%;
-            height: 1px;
-            background-color: #E5E7EB;
-            margin: 0px 0;
-        }
-    </style>
+    <title>Duplication Check</title>
 </head>
 
 <body>
@@ -163,7 +52,8 @@
             <div class="main-content">
                 <div class="content">
                     <h3>Automatic Duplication Detection</h3>
-                    <p style="color:#555; font-size: 13px; margin-top: 4px;";>Review questions that our AI system has flagged as potential duplicates</p>
+                    <p style="color:#555; font-size: 13px; margin-top: 4px;" ;>Review questions that our AI system has
+                        flagged as potential duplicates</p>
                     <table>
                         <thead>
                             <tr>
@@ -235,20 +125,17 @@
     <!-- footer -->
     <!-- ma nhung header vs menu -->
     <script>
-        // Load header
-        fetch('../Template/header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
+        fetch("../header_user.html")
+            .then((response) => response.text())
+            .then((data) => {
+                document.getElementById("header-placeholder").innerHTML = data;
             });
 
-        // Load menu
-        fetch('../Template/Menu-Staff.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
+        fetch("../Menu-Staff.html")
+            .then((response) => response.text())
+            .then((data) => {
+                document.getElementById("menu-HTML").innerHTML = data;
             });
-
     </script>
 </body>
 
