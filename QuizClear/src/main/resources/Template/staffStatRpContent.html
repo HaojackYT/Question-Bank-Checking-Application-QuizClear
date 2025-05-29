@@ -1,0 +1,237 @@
+<link rel="stylesheet" href="../Static/staffStatRp.css" />
+<div class="main-content">
+  <!-- Header Section -->
+  <div class="header-section">
+    <h1 class="page-title">Statistics & Reporting</h1>
+    <p class="page-description">
+      Comprehensive analytics and reports for question bank, exams, and creator
+      performance
+    </p>
+
+    <div class="tab-navigation">
+      <button class="tab-button active" data-tab="question-bank">
+        Question Bank
+      </button>
+      <button class="tab-button" data-tab="exams">Exams</button>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value" id="total-questions">2,847</div>
+      <div class="stat-label">Total Questions</div>
+      <div class="stat-change positive">+164 this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="approved-questions">2,156</div>
+      <div class="stat-label">Approved</div>
+      <div class="stat-change positive">75.7% of total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="pending-questions">342</div>
+      <div class="stat-label">Pending</div>
+      <div class="stat-change neutral">Awaiting review</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="rejected-questions">189</div>
+      <div class="stat-label">Rejected</div>
+      <div class="stat-change neutral">Need revision</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="duplicate-questions">160</div>
+      <div class="stat-label">Duplicates</div>
+      <div class="stat-change neutral">5.6% duplicate rate</div>
+    </div>
+  </div>
+
+  <!-- Question Bank Tab -->
+  <div id="question-bank-content" class="tab-content">
+    <div class="chart-section">
+      <!-- Bar Chart -->
+      <div class="chart-card">
+        <h3 class="chart-title">Questions by Subject</h3>
+        <p class="chart-subtitle">
+          Distribution of questions across different subjects
+        </p>
+        <div class="chart-container">
+          <canvas id="subjectChart"></canvas>
+        </div>
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #10b981"></div>
+            <span>Approved</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #f59e0b"></div>
+            <span>Pending</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #ef4444"></div>
+            <span>Rejected</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #8b5cf6"></div>
+            <span>Duplicate</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pie Chart -->
+      <div class="chart-card">
+        <h3 class="chart-title">Difficulty Distribution</h3>
+        <p class="chart-subtitle">Questions categorized by difficulty level</p>
+        <div class="chart-container">
+          <canvas id="difficultyChart"></canvas>
+        </div>
+        <div class="pie-legend">
+          <div class="pie-legend-item">
+            <div class="pie-legend-label">
+              <div class="legend-color" style="background-color: #3b82f6"></div>
+              <span>Recognition</span>
+            </div>
+            <span class="pie-legend-value">25%</span>
+          </div>
+          <div class="pie-legend-item">
+            <div class="pie-legend-label">
+              <div class="legend-color" style="background-color: #10b981"></div>
+              <span>Comprehension</span>
+            </div>
+            <span class="pie-legend-value">50%</span>
+          </div>
+          <div class="pie-legend-item">
+            <div class="pie-legend-label">
+              <div class="legend-color" style="background-color: #f59e0b"></div>
+              <span>Basic Application</span>
+            </div>
+            <span class="pie-legend-value">20%</span>
+          </div>
+          <div class="pie-legend-item">
+            <div class="pie-legend-label">
+              <div class="legend-color" style="background-color: #ef4444"></div>
+              <span>Advanced Application</span>
+            </div>
+            <span class="pie-legend-value">5%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exams Tab -->
+  <div id="exams-content" class="tab-content" style="display: none">
+    <div class="chart-card" style="margin-bottom: 32px">
+      <h3 class="chart-title">Exam Creation Trend</h3>
+      <p class="chart-subtitle">Monthly exam creation and approval trends</p>
+      <div class="chart-container">
+        <canvas id="trendChart"></canvas>
+      </div>
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-color" style="background-color: #3b82f6"></div>
+          <span>Created</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color: #10b981"></div>
+          <span>Approved</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color: #ef4444"></div>
+          <span>Rejected</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3 class="chart-title">Exam Status by Subject</h3>
+      <div class="table-container">
+        <table class="status-table">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Total</th>
+              <th>Draft</th>
+              <th>Pending</th>
+              <th>Approved</th>
+              <th>Rejected</th>
+              <th>Approval Rate</th>
+              <th>Progress</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Programming</td>
+              <td>45</td>
+              <td>8</td>
+              <td>5</td>
+              <td>26</td>
+              <td>6</td>
+              <td>81.3%</td>
+              <td>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 81.3%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Networking</td>
+              <td>32</td>
+              <td>6</td>
+              <td>4</td>
+              <td>19</td>
+              <td>3</td>
+              <td>78.3%</td>
+              <td>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 78.3%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Biology</td>
+              <td>28</td>
+              <td>4</td>
+              <td>3</td>
+              <td>16</td>
+              <td>5</td>
+              <td>76.2%</td>
+              <td>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 76.2%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Mathematics</td>
+              <td>26</td>
+              <td>3</td>
+              <td>3</td>
+              <td>15</td>
+              <td>5</td>
+              <td>75.0%</td>
+              <td>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 75%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Database</td>
+              <td>25</td>
+              <td>3</td>
+              <td>3</td>
+              <td>14</td>
+              <td>5</td>
+              <td>73.7%</td>
+              <td>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 73.7%"></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
