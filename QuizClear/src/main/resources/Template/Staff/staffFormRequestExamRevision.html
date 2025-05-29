@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
+    <link rel="stylesheet" href="../../Static/StaffFormRequestExamRevision.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Template</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- noi dung duoc nhap trong day -->
+            <div class="exam-revision">
+                <div class="title-content">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <div class="title-group">
+                        <div class="title">Exam Revision Request</div>
+                        <div class="exam-title">Data Structures Final • CS301-FINAL-2023</div>
+                    </div>
+                </div>
+
+
+                <form class="revision-form">
+                    <div class="form-group">
+                        <label>Revision Requester</label>
+                        <input type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Exam Editor</label>
+                        <input type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Exam Title</label>
+                        <input type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Exam Code</label>
+                        <input type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Course</label>
+                        <input type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Submission Date</label>
+                        <input type="date" value="2005-06-25">
+                    </div>
+                    <div class="form-group">
+                        <label>Due Date</label>
+                        <input type="date" value="2025-06-25">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Feedback for Revision</label>
+                        <textarea>Give a feedback for exam</textarea>
+                    </div>
+                    <div class="pending-box">
+                        <h3>Exam Pending Revisions</h3>
+                        <p>50 Questions Available • CS301-FINAL-2023</p>
+                        <button type="button" class="view-btn">👁 View Questions</button>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Request</button>
+                </form>
+
+                <div class="history-box">
+                    <h3>Exam History</h3>
+                    <p style="margin-bottom: 20px ;">Track all changes and activities</p>
+                    <ul>
+                        <li class="approved"> <i class="fa-regular fa-circle-check"
+                                style="color: #16A34A; border-radius: 1000px; background-color: #DCFCE7;"></i>Exam
+                            approved <span>By Dr. Smith</span> <em>2023-06-12</em></li>
+                        <li><i class="fa-regular fa-clock"
+                                style="color: #2563EB; border-radius: 1000px; background-color: #DBEAFE;"></i> Submitted
+                            for review <span>By Prof. Davis</span> <em>2023-06-08</em></li>
+                        <li><i class="fa-regular fa-clock"
+                                style="color: #2563EB; border-radius: 1000px; background-color: #DBEAFE;"></i> Questions
+                            finalized <span>By Prof. Davis</span> <em>2023-06-05</em></li>
+                        <li><i class="fa-regular fa-clock"
+                                style="color: #2563EB; border-radius: 1000px; background-color: #DBEAFE;"></i> Exam
+                            created <span>By Admin</span> <em>2023-06-01</em></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <!-- ma nhung header vs menu -->
+    <script>
+        fetch("../header_user.html")
+            .then((response) => response.text())
+            .then((data) => {
+                document.getElementById("header-placeholder").innerHTML = data;
+            });
+
+        fetch("../Menu-Staff.html")
+            .then((response) => response.text())
+            .then((data) => {
+                document.getElementById("menu-HTML").innerHTML = data;
+            });
+    </script>
+</body>
+
+</html>
