@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+        <link rel="stylesheet" href="../../Static/header.css">
+        <link rel="stylesheet" href="../../Static/web_styles.css">
+        <link rel="stylesheet" href="../../Static/Menu-Staff.css">
+        <link rel="stylesheet" href="../../Static/css/staff/staffExportExam.css">
+        <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+        <title>Template</title>
+    </head>
+
+    <body>
+        <!--header-->
+        <div id="header-placeholder"></div>
+
+        <!-- body -->
+        <div id="Container-body">
+            <!-- Menu -->
+            <div id="menu-HTML"></div>
+
+            <!-- Main content -->
+            <div id="main">
+                <div id="export-exam-container">
+                    <div class="header-content">
+                        <h1><i class="fas fa-arrow-left back-arrow"></i> Export Exam</h1>
+                        <p>Data Structures Final Exam • CS301-FINAL-2023</p>
+                    </div>
+
+                    <div class="main-content">
+                        <div class="export-options card">
+                            <h2>Export Options</h2>
+                            <p class="card-subtitle">Configure how you want to export the exam</p>
+
+                            <div class="form-group">
+                                <label for="export-format">Export Format</label>
+                                <div class="custom-select">
+                                    <select id="export-format">
+                                        <option value="pdf">PDF Document</option>
+                                        <option value="word">Word Document</option>
+                                        <option value="html">HTML Document</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down select-arrow"></i>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="export-version">Export Version</label>
+                                <div class="custom-select">
+                                    <select id="export-version">
+                                        <option value="all">All Versions</option>
+                                        <option value="latest">Latest Version</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down select-arrow"></i>
+                                </div>
+                            </div>
+
+                            <h3>Content Options</h3>
+
+                            <div class="toggle-group">
+                                <div>
+                                    <label for="include-answer-key">Include Answer Key</label>
+                                <p class="toggle-description">Export with correct answers marked</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="include-answer-key" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <div class="toggle-group">
+                                <div>
+                                    <label for="include-metadata">Include Metadata</label>
+                                <p class="toggle-description">Include exam details and information</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="include-metadata">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <h3>Distribution</h3>
+                            <div class="distribution-buttons">
+                                <button class="icon-button"><i class="fas fa-print"></i> Print</button>
+                                <button class="icon-button"><i class="fas fa-envelope"></i> Email</button>
+                                <button class="icon-button"><i class="fas fa-hdd"></i> Save to System</button>
+                            </div>
+
+                            <button class="export-button primary-button">
+                                <i class="fas fa-download"></i> Export Exam
+                            </button>
+                        </div>
+
+                        <div class="preview card">
+                            <h2>Preview</h2>
+                            <p class="card-subtitle">Preview how your exam will look</p>
+
+                            <div class="preview-tabs">
+                                <button class="tab-button active">Exam</button>
+                                <button class="tab-button">Answer Key</button>
+                            </div>
+
+                            <div class="exam-preview-content">
+                                <h4 class="exam-info">Data Structures Final Exam</h4>
+                                <p class="exam-info">CS301-FINAL-2023</p>
+                                <p class="exam-info">Course: Data Structures</p>
+                                <p class="exam-info">Semester: Fall 2023</p>
+
+                                <div class="question">
+                                    <p class="question-number">Question 1</p>
+                                    <p class="question-text">What is the time complexity of binary search?</p>
+                                    <div class="options-grid">
+                                        <div class="option">A. O(1)</div>
+                                        <div class="option">B. O(log n)</div>
+                                        <div class="option">C. O(n)</div>
+                                        <div class="option">D. O(n log n)</div>
+                                    </div>
+                                </div>
+
+                                <div class="question">
+                                    <p class="question-number">Question 2</p>
+                                    <p class="question-text">Explain the difference between a stack and a queue data structure.</p>
+                                    <div class="options-grid">
+                                        <div class="option">A. Option A</div>
+                                        <div class="option">B. Option B</div>
+                                        <div class="option">C. Option C</div>
+                                        <div class="option">D. Option D</div>
+                                    </div>
+                                </div>
+
+                                <button class="view-full-preview-button">
+                                    <i class="fas fa-eye"></i> View Full Preview
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <!-- ma nhung header vs menu -->
+        <script>
+            // Load header
+            fetch('../header_user.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
+
+            // Load menu
+            fetch('../Menu-Staff.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('menu-HTML').innerHTML = data;
+                });
+
+        </script>
+    </body>
+</html>
