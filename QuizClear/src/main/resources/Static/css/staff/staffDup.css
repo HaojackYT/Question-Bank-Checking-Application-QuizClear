@@ -151,6 +151,8 @@ body {
   border-radius: 4px;
   font-size: 12px;
   font-weight: 600;
+  white-space: nowrap; /* Ngăn xuống dòng */
+  display: inline-block;
 }
 
 .similarity-complete {
@@ -171,6 +173,11 @@ body {
   border-radius: 12px;
   font-size: 12px;
   font-weight: 500;
+  white-space: nowrap; /* Ngăn xuống dòng */
+  display: inline-block; /* Cho phép kiểm soát khối */
+  max-width: 100%; /* Không vượt quá chiều rộng cột */
+  overflow: hidden; /* Ẩn phần dư nếu vượt */
+  text-overflow: ellipsis; /* Thêm dấu "..." nếu bị cắt */
 }
 
 /* Action Buttons */

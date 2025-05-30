@@ -32,7 +32,7 @@ body {
 .page-description {
   font-size: 16px;
   color: #64748b;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
 }
 
 .tab-navigation {
@@ -252,9 +252,6 @@ body {
     transform: translateY(0);
   }
 }
-.main-content {
-  padding: 16px;
-}
 
 .chart-section {
   grid-template-columns: 1fr;
@@ -292,15 +289,36 @@ body {
 }
 
 #main {
-  margin-top: 30px !important;
-  flex-grow: 1 !important;
-  padding: 0 !important;
-  overflow: auto;
+  padding: 30px !important;
+  box-sizing: border-box;
+  width: 100%;
+  overflow: visible;
 }
 
-/* Ghi đè .main-content nếu cần mở rộng */
 .main-content {
-  max-width: unset !important;
-  margin: 0 !important;
-  width: 100% !important;
+  padding: 30px;
+  margin: 0;
+  box-sizing: border-box;
+  width: 100%;
+  flex: 1;
+}
+
+.main-content,
+#main {
+  padding-top: 15px !important;
+}
+
+.header-section {
+  margin-bottom: 30px !important;
+  margin-top: 0 !important;
+}
+
+.tab-navigation {
+  margin-top: 30px !important;
+  margin-bottom: 30px !important;
+}
+
+.tab-content {
+  padding-top: 0 !important;
+  padding-bottom: 30px !important;
 }
