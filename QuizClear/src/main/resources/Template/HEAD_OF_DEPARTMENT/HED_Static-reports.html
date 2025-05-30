@@ -16,19 +16,16 @@
     <!--header-->
     <div id="header-placeholder"></div>
 
-
-
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
         <div id="menu-HTML"></div>
 
-
         <!-- Main content -->
         <div id="main">
             <!-- noi dung duoc nhap trong day -->
 
-            <p style="font-size: 40px;font-weight: bolder;margin-bottom: 30px;">Statistics & Reports</p>
+            <p style="font-size: 2.5rem; font-weight: bolder; margin-bottom: 1.875rem;">Statistics & Reports</p>
 
             <div id="specifications-container">
                 <div class="box_specifications">
@@ -58,13 +55,11 @@
 
             <div id="map-container">
                 <div id="Question_Progress_container">
-                    <p style="font-size: 26px;font-weight: bolder;margin-bottom: 10px;">Question Progress by Subject</p>
-                    <p style="font-size: 14px;opacity: 60%;margin-bottom: 30px;">Number of Questions Created vs. Target
-                    </p>
-                    <div id="Question_Progress" style="width: 100%; height: 400px; display: flex; flex-direction: row;">
+                    <p style="font-size: 1.625rem; font-weight: bolder; margin-bottom: 0.625rem;">Question Progress by Subject</p>
+                    <p style="font-size: 0.875rem; opacity: 60%; margin-bottom: 1.875rem;">Number of Questions Created vs. Target</p>
+                    <div id="Question_Progress" style="width: 100%; height: 25rem; display: flex; flex-direction: row;">
                         <!-- Trục Y -->
-                        <div class="y-axis"
-                            style="width: 40px; display: flex; flex-direction: column; justify-content: space-between; font-size: 12px; color: #6B7280;">
+                        <div class="y-axis" style="width: 2.5rem; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.75rem; color: #6B7280;">
                             <span>100</span>
                             <span>80</span>
                             <span>60</span>
@@ -74,31 +69,27 @@
                         </div>
                         <!-- Khu vực cột và đường kẻ -->
                         <div class="chart-content" style="flex: 1; display: flex; flex-direction: column;">
-                            <div class="grid-overlay"
-                                style="flex: 1; display: flex; justify-content: space-around; align-items: flex-end; border-left: 1px solid #E0EAFA; border-bottom: 1px solid #E0EAFA;">
-                                <div class="bars" id="bars"
-                                    style="width: 100%; height: 100%; display: flex; justify-content: space-around; align-items: flex-end; margin-left: 20px;">
+                            <div class="grid-overlay" style="flex: 1; display: flex; justify-content: space-around; align-items: flex-end; border-left: 0.0625rem solid #E0EAFA; border-bottom: 0.0625rem solid #E0EAFA;">
+                                <div class="bars" id="bars" style="width: 100%; height: 100%; display: flex; justify-content: space-around; align-items: flex-end; margin-left: 1.25rem;">
                                 </div>
                             </div>
                         </div>
                     </div>
                     <!-- Phần chú thích (legend) -->
-                    <div class="legend" style="display: flex; justify-content: center; margin-top: 10px;">
-                        <div style="display: flex; align-items: center; margin: 0 10px;">
-                            <span class="legend-color created"
-                                style="width: 15px; height: 15px; background-color: #8979FF; display: inline-block; margin-right: 5px;"></span>
+                    <div class="legend" style="display: flex; justify-content: center; margin-top: 0.625rem;">
+                        <div style="display: flex; align-items: center; margin: 0 0.625rem;">
+                            <span class="legend-color created" style="width: 0.9375rem; height: 0.9375rem; background-color: #8979FF; display: inline-block; margin-right: 0.3125rem;"></span>
                             Created
                         </div>
-                        <div style="display: flex; align-items: center; margin: 0 10px;">
-                            <span class="legend-color target"
-                                style="width: 15px; height: 15px; background-color: #FF928A; display: inline-block; margin-right: 5px;"></span>
+                        <div style="display: flex; align-items: center; margin: 0 0.625rem;">
+                            <span class="legend-color target" style="width: 0.9375rem; height: 0.9375rem; background-color: #FF928A; display: inline-block; margin-right: 0.3125rem;"></span>
                             Target
                         </div>
                     </div>
                 </div>
 
                 <div id="Overall_Progress_container">
-                    <p style="font-size: 26px;font-weight: bolder;margin-bottom: 40px;">Overall Progress</p>
+                    <p style="font-size: 1.625rem; font-weight: bolder; margin-bottom: 2.5rem;">Overall Progress</p>
                     <div id="Overall_Progress">
                         <p><span id="Completed"></span>% Completed</p>
                         <div id="container"></div>
@@ -107,15 +98,13 @@
             </div>
 
             <div id="Progress-container">
-                <p style="font-size: 26px;color: #120368;font-weight: bolder;margin-bottom: 30px;">Lecturer Question
-                    Progress per Subject</p>
-                <p style="font-size: 14px;opacity: 60%;margin-bottom: 10px;">Number of Lecturer Question</p>
+                <p style="font-size: 1.625rem; color: #120368; font-weight: bolder; margin-bottom: 1.875rem;">Lecturer Question Progress per Subject</p>
+                <p style="font-size: 0.875rem; opacity: 60%; margin-bottom: 0.625rem;">Number of Lecturer Question</p>
                 <div id="find">
-                    <input type="text" id="searchInput" title="find" placeholder="Enter search content ...."
-                        oninput="filterByUsername()">
+                    <input type="text" id="searchInput" title="find" placeholder="Enter search content ...." oninput="filterByUsername()">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
-                <div id="cross_bar" style="margin-top: 20px;">
+                <div id="cross_bar" style="margin-top: 1.25rem;">
                     <!-- Danh sách các thanh ngang sẽ được tạo bởi JavaScript -->
                 </div>
                 <div class="description">
@@ -139,8 +128,6 @@
             </div>
         </div>
     </div>
-
-
 
     <!-- ma nhung header vs menu -->
     <script>
@@ -196,11 +183,10 @@
                 barsContainer.appendChild(barGroup);
             });
         }
-
     </script>
 
     <script>
-        // Dữ liệu mẫu cho biểu đồ vòng (có thể thay đổi bằng Java )
+        // Dữ liệu mẫu cho biểu đồ vòng (có thể thay đổi bằng Java)
         const progressData = {
             completed: 75,
             remaining: 25
@@ -218,9 +204,9 @@
             const doughnutChart = document.createElement('div');
             doughnutChart.classList.add('doughnut-chart');
             doughnutChart.style.background = `conic-gradient(
-        #22c55e 0% ${progressData.completed}%,
-        #d1d5db ${progressData.completed}% 100%
-    )`;
+                #22c55e 0% ${progressData.completed}%,
+                #d1d5db ${progressData.completed}% 100%
+            )`;
             container.innerHTML = ''; // Xóa nội dung cũ
             container.appendChild(doughnutChart);
 
@@ -228,21 +214,20 @@
             const legend = document.createElement('div');
             legend.classList.add('legend');
             legend.innerHTML = `
-        <div style="display: flex; align-items: center; margin: 0 10px;">
-            <span class="legend-color completed" style="width: 15px; height: 15px; background-color: #22c55e; display: inline-block; margin-right: 5px;"></span>
-            Completed
-        </div>
-        <div style="display: flex; align-items: center; margin: 0 10px;">
-            <span class="legend-color remaining" style="width: 15px; height: 15px; background-color: #d1d5db; display: inline-block; margin-right: 5px;"></span>
-            Remaining
-        </div>
-    `;
+                <div style="display: flex; align-items: center; margin: 0 0.625rem;">
+                    <span class="legend-color completed" style="width: 0.9375rem; height: 0.9375rem; background-color: #22c55e; display: inline-block; margin-right: 0.3125rem;"></span>
+                    Completed
+                </div>
+                <div style="display: flex; align-items: center; margin: 0 0.625rem;">
+                    <span class="legend-color remaining" style="width: 0.9375rem; height: 0.9375rem; background-color: #d1d5db; display: inline-block; margin-right: 0.3125rem;"></span>
+                    Remaining
+                </div>
+            `;
             container.appendChild(legend);
         }
-
-
     </script>
-    <script>// Dữ liệu mẫu cho biểu đồ thanh ngang (có thể thay đổi bằng Java sau này)
+
+    <script>
         // Dữ liệu mẫu cho biểu đồ thanh ngang (có thể thay đổi bằng Java sau này)
         let barData = [
             { userName: "Nguyen Van A", completed: 80, inProgress: 10, overdue: 5, remaining: 5 },
