@@ -1,85 +1,85 @@
 .exam-header {
     display: flex;
     align-items: center;
-    margin-bottom: 30px;
-    padding: 20px 0;
+    margin-bottom: 1.875rem; /* 30px */
+    padding: 1.25rem 0; /* 20px 0 */
 }
 
 .back-arrow {
-    margin-right: 20px;
-    font-size: 24px;
+    margin-right: 1.25rem; /* 20px */
+    font-size: 1.5rem; /* 24px */
     color: #6c757d;
     cursor: pointer;
 }
 
 .exam-title h1 {
-    font-size: 36px;
+    font-size: 2.25rem; /* 36px */
     font-weight: 600;
     color: #120368;
-    margin: 0 0 8px 0;
+    margin: 0 0 0.5rem 0; /* 0 0 8px 0 */
 }
 
 .exam-meta {
     display: flex;
     align-items: center;
-    font-size: 14px;
+    font-size: 0.875rem; /* 14px */
     color: #6B7280;
 }
 
 .separator {
-    margin: 0 10px;
+    margin: 0 0.625rem; /* 0 10px */
 }
 
 .exam-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 60px;
-    margin-bottom: 30px;
-    padding: 8px 0;
+    gap: 3.75rem; /* 60px */
+    margin-bottom: 1.875rem; /* 30px */
+    padding: 0.5rem 0; /* 8px 0 */
 }
 
 .stat-item {
     text-align: center;
     border: 2px solid #E0EAFA;
-    border-radius: 8px;
-    padding: 20px;
+    border-radius: 0.5rem; /* 8px */
+    padding: 1.25rem; /* 20px */
     background-color: #ffffff;
 }
 
 .stat-label {
-    font-size: 16px;
+    font-size: 1rem; /* 16px */
     color: #000;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem; /* 8px */
     display: block;
 }
 
 .stat-value {
-    font-size: 32px;
+    font-size: 2rem; /* 32px */
     font-weight: 600;
     color: #120368;
-    margin-bottom: 5px;
+    margin-bottom: 0.3125rem; /* 5px */
 }
 
 .stat-subtext {
-    font-size: 14px;
+    font-size: 0.875rem; /* 14px */
     color: #95a5a6;
 }
 
 .exam-tabs {
     display: flex;
     border-bottom: 2px solid #e9ecef;
-    margin-bottom: 30px;
+    margin-bottom: 1.875rem; /* 30px */
 }
 
 .tab-btn {
-    padding: 12px 24px;
+    padding: 0.75rem 1.5rem; /* 12px 24px */
     background: none;
     border: none;
-    font-size: 16px;
+    font-size: 1rem; /* 16px */
     font-weight: 500;
     color: #6c757d;
     cursor: pointer;
-    border-bottom: 3px solid transparent;
+    border-bottom: 0.1875rem solid transparent; /* 3px */
     transition: all 0.3s ease;
 }
 
@@ -103,45 +103,43 @@
 .row-flex {
     display: flex;
     flex-direction: column;
-    gap: 60px;
+    gap: 3.75rem; /* 60px */
 }
-
 
 .overview-box {
     flex: 1 1 48%;
     background: #ffffff;
-    padding: 20px;
+    padding: 1.25rem; /* 20px */
     border: 1px solid #E0EAFA;
-    border-radius: 8px;
+    border-radius: 0.5rem; /* 8px */
     width: 100%;
-
 }
 
 .exam-structure h3,
 .assigned-team h3 {
-    font-size: 20px;
+    font-size: 1.25rem; /* 20px */
     font-weight: 600;
     color: #2c3e50;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem; /* 8px */
 }
 
 .structure-subtitle,
 .team-subtitle {
-    font-size: 14px;
+    font-size: 0.875rem; /* 14px */
     color: #6c757d;
-    margin-bottom: 25px;
+    margin-bottom: 1.5625rem; /* 25px */
 }
 
 .difficulty-bars {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1.25rem; /* 20px */
 }
 
 .difficulty-item {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0.5rem; /* 8px */
 }
 
 .difficulty-info {
@@ -151,26 +149,26 @@
 }
 
 .difficulty-label {
-    font-size: 14px;
+    font-size: 0.875rem; /* 14px */
     font-weight: 500;
     color: #2c3e50;
 }
 
 .difficulty-percentage {
-    font-size: 14px;
+    font-size: 0.875rem; /* 14px */
     color: #6c757d;
 }
 
 .progress-bar {
-    height: 8px;
+    height: 0.5rem; /* 8px */
     background-color: #e9ecef;
-    border-radius: 4px;
+    border-radius: 0.25rem; /* 4px */
     overflow: hidden;
 }
 
 .progress-fill {
     height: 100%;
-    border-radius: 4px;
+    border-radius: 0.25rem;
     transition: width 0.3s ease;
 }
 
@@ -193,16 +191,16 @@
 .team-members {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 0.9375rem; /* 15px */
 }
 
 .team-member {
     display: flex;
     align-items: center;
-    gap: 15px;
-    padding: 15px;
+    gap: 0.9375rem; /* 15px */
+    padding: 0.9375rem; /* 15px */
     background: #f8f9fa;
-    border-radius: 8px;
+    border-radius: 0.5rem; /* 8px */
     transition: background-color 0.3s ease;
 }
 
@@ -211,8 +209,8 @@
 }
 
 .member-avatar {
-    width: 40px;
-    height: 40px;
+    width: 2.5rem; /* 40px */
+    height: 2.5rem;
     border-radius: 50%;
     background-color: #6c757d;
     color: white;
@@ -220,7 +218,7 @@
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 1rem; /* 16px */
 }
 
 .member-info {
@@ -228,23 +226,23 @@
 }
 
 .member-name {
-    font-size: 16px;
+    font-size: 1rem; /* 16px */
     font-weight: 500;
     color: #2c3e50;
-    margin-bottom: 2px;
+    margin-bottom: 0.125rem; /* 2px */
 }
 
 .member-role {
-    font-size: 14px;
+    font-size: 0.875rem; /* 14px */
     color: #6c757d;
 }
 
 .contact-btn {
-    padding: 8px 16px;
+    padding: 0.5rem 1rem; /* 8px 16px */
     background: none;
     border: 1px solid #dee2e6;
-    border-radius: 4px;
-    font-size: 14px;
+    border-radius: 0.25rem; /* 4px */
+    font-size: 0.875rem; /* 14px */
     color: #6c757d;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -257,14 +255,14 @@
 }
 
 #main {
-    padding-left: 55px;
+    padding-left: 3.4375rem; /* 55px */
     width: 75%;
 }
 
 @media (max-width: 768px) {
     .exam-stats {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 1.25rem; /* 20px */
     }
 
     .row-flex {
