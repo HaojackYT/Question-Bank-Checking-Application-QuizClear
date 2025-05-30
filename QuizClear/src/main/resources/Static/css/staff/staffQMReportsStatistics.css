@@ -1,0 +1,297 @@
+/* Import Roboto font */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap");
+
+:root {
+  font-size: 16px;
+}
+
+/* Main content styles */
+#main {
+  font-family: "Roboto", sans-serif;
+  padding: 1.25rem;
+  margin-left: 3.25rem;
+  max-width: calc(100vw - 20rem); /* 320px */
+  background-color: #ffffff;
+}
+
+.qm-title {
+  margin: 1.25rem 0 0.625rem 0;
+  font-size: 2.25rem; /* 36px */
+  font-weight: bold;
+  color: #120368;
+}
+
+.qm-subtitle {
+  margin: 0 0 1.25rem 0;
+  font-size: 1rem; /* 16px */
+  color: #64748b;
+}
+
+.qm-tabs {
+  display: flex;
+  gap: 0.5rem; /* 8px */
+  margin: 1.25rem 0;
+  padding: 0.3125rem; /* 5px */
+  border: 1px solid #e2e8f0;
+  width: 100%;
+  max-width: 55.9375rem; /* 895px */
+  height: 2.5625rem; /* 41px */
+  align-items: center;
+  border-radius: 0.375rem; /* 6px */
+}
+
+.qm-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem; /* 10px */
+  height: 2rem; /* 32px */
+  border: none;
+  background: #fff;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  color: #000;
+  padding: 0 0.75rem; /* 12px */
+  cursor: pointer;
+  border-radius: 0.25rem; /* 4px */
+  transition: all 0.3s ease;
+  flex: 1;
+  justify-content: center;
+  min-width: 7.5rem; /* 120px */
+}
+
+.qm-tab i {
+  width: 1rem; /* 16px */
+  height: 1rem;
+}
+
+.qm-tab.active {
+  background-color: #120368;
+  color: #fff;
+}
+
+.qm-tab:hover:not(.active) {
+  background-color: #f1f5f9;
+}
+
+.qm-stats {
+  display: flex;
+  gap: 1.25rem; /* 20px */
+  margin: 1.875rem 0; /* 30px */
+  width: 100%;
+  max-width: 62.5rem; /* 1000px */
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 12.5rem; /* 200px */
+  height: 7.5rem; /* 120px */
+  background: #e0eafa;
+  border-radius: 0.625rem; /* 10px */
+  padding: 0.75rem 1.25rem; /* 12px 20px */
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;        /* căn giữa ngang */
+  justify-content: center;    /* căn giữa dọc */
+  text-align: center;         /* căn giữa văn bản */
+}
+
+
+.stat-title {
+  font-size: 0.875rem; /* 14px */
+  font-weight: 600;
+  color: #120368;
+}
+
+.stat-value {
+  font-size: 2.5rem; /* 40px */
+  font-weight: bold;
+  color: #120368;
+  text-align: center;
+  margin: 0.3125rem 0; /* 5px */
+  line-height: 1;
+}
+
+.stat-note {
+  font-size: 0.6875rem; /* 11px */
+  color: #70757d;
+  text-align: center;
+}
+
+.qm-charts {
+  display: flex;
+  gap: 1.25rem; /* 20px */
+  margin: 1.375rem 0; /* 70px */
+  width: 100%;
+  max-width: 75rem; /* 1200px */
+  flex-wrap: wrap;
+}
+
+.chart-box {
+  background: #fff;
+  border: 0.125rem solid #e0eafa; /* 2px */
+  border-radius: 0.9375rem; /* 15px */
+  padding: 1.25rem; /* 20px */
+  box-sizing: border-box;
+  flex: 1;
+  width: 30.9375rem; /* 495px */
+  margin-top: 0.3125rem; /* 5px */
+}
+
+#chart-progress {
+  min-height: 25rem; /* 400px */
+}
+
+#chart-difficulty {
+  min-height: 25rem;
+}
+
+.chart-title {
+  font-size: 1.5rem; /* 24px */
+  font-weight: 800;
+  color: #120368;
+  margin-bottom: 0.5rem; /* 8px */
+}
+
+.chart-subtitle {
+  font-size: 0.875rem; /* 14px */
+  color: #70757d;
+  margin-bottom: 0.9375rem; /* 15px */
+}
+
+.full-width {
+  margin: 1.9rem 0; /* 40px */
+  width: 100%;
+  max-width: 75rem; /* 1200px */
+}
+
+#chart-status {
+  min-height: 31.25rem; /* 500px */
+}
+
+canvas {
+  width: 100% !important;
+  height: 18.75rem !important; /* 300px */
+  max-height: 18.75rem;
+}
+
+#chart-status canvas {
+  height: 25rem !important; /* 400px */
+  max-height: 25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 75rem) {
+  #main {
+    margin-left: 0.625rem; /* 10px */
+    max-width: calc(100vw - 18.75rem); /* 300px */
+  }
+
+  .qm-stats {
+    gap: 0.9375rem; /* 15px */
+  }
+
+  .stat-card {
+    min-width: 11.25rem; /* 180px */
+  }
+
+  .qm-charts {
+    flex-direction: column;
+  }
+
+  .chart-box {
+    min-width: 100%;
+  }
+
+  .chart-title {
+    font-size: 1.25rem; /* 20px */
+  }
+}
+
+@media (max-width: 48rem) {
+  #main {
+    margin-left: 0.3125rem; /* 5px */
+    max-width: calc(100vw - 1.25rem); /* 20px */
+    padding: 0.625rem; /* 10px */
+  }
+
+  .qm-title {
+    font-size: 1.75rem; /* 28px */
+  }
+
+  .qm-tabs {
+    flex-wrap: wrap;
+    height: auto;
+    gap: 0.3125rem; /* 5px */
+  }
+
+  .qm-tab {
+    min-width: 6.25rem; /* 100px */
+    font-size: 0.75rem; /* 12px */
+    padding: 0 0.5rem; /* 8px */
+  }
+
+  .qm-stats {
+    flex-direction: column;
+    gap: 0.9375rem; /* 15px */
+  }
+
+  .stat-card {
+    min-width: 100%;
+  }
+
+  .chart-box {
+    padding: 0.9375rem; /* 15px */
+    min-width: 100%;
+  }
+
+  canvas {
+    height: 15.625rem !important; /* 250px */
+  }
+
+  #chart-status canvas {
+    height: 18.75rem !important; /* 300px */
+  }
+}
+
+/* Chart legend styling */
+.chartjs-legend {
+  margin-top: 0.9375rem; /* 15px */
+}
+
+.chartjs-legend ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.9375rem; /* 15px */
+}
+
+.chartjs-legend li {
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem; /* 12px */
+  color: #64748b;
+}
+
+.chartjs-legend li span {
+  display: inline-block;
+  width: 0.75rem; /* 12px */
+  height: 0.75rem;
+  margin-right: 0.5rem; /* 8px */
+  border-radius: 50%;
+}
+
+/* Ensure content doesn't overflow */
+* {
+  box-sizing: border-box;
+}
+
+#statusChart {
+  max-width: 100%;
+  margin: 0 auto;
+}
