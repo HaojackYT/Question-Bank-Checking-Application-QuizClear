@@ -40,7 +40,7 @@
 
 .stat-item {
     text-align: center;
-    border: 2px solid #E0EAFA;
+    border: 2px solid #E5E7EB;
     border-radius: 0.5rem; /* 8px */
     padding: 1.25rem; /* 20px */
     background-color: #ffffff;
@@ -103,16 +103,17 @@
 .row-flex {
     display: flex;
     flex-direction: column;
-    gap: 3.75rem; /* 60px */
+    gap: 3rem; /* 60px */
 }
 
 .overview-box {
     flex: 1 1 48%;
     background: #ffffff;
     padding: 1.25rem; /* 20px */
-    border: 1px solid #E0EAFA;
+    border: 2px solid #E5E7EB;
     border-radius: 0.5rem; /* 8px */
     width: 100%;
+    margin-top: 15px;
 }
 
 .exam-structure h3,
@@ -255,7 +256,7 @@
 }
 
 #main {
-    padding-left: 3.4375rem; /* 55px */
+    padding-left:5.4375rem; /* 55px */
     width: 75%;
 }
 

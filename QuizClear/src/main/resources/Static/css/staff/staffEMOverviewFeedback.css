@@ -1,111 +1,109 @@
-/* feedback_comments.css */
-
 .feedback-content {
-    max-width: 600px;
+    width: 100%;
     margin: 0 auto;
 }
 
 .feedback-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 2.5rem;
 }
 
 .feedback-header h3 {
-    font-size: 20px;
+    font-size: 1.75rem;
     font-weight: 600;
     color: #2c3e50;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
+    margin-right: 37.5rem;
 }
 
 .feedback-header p {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: #6c757d;
 }
 
 .no-feedback {
     text-align: center;
-    padding: 60px 40px;
+    padding: 3.75rem 2.5rem;
     background: #ffffff;
-    border: 1px solid #e9ecef;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 0.0625rem solid #e9ecef;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.05);
 }
 
 .feedback-icon {
-    margin-bottom: 25px;
+    margin-bottom: 1.5625rem;
 }
 
 .feedback-icon i {
-    font-size: 48px;
+    font-size: 3rem;
     color: #dee2e6;
 }
 
 .no-feedback h4 {
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 600;
     color: #2c3e50;
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
 }
 
 .no-feedback p {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: #6c757d;
-    margin-bottom: 25px;
+    margin-bottom: 1.5625rem;
     line-height: 1.5;
 }
 
 .add-feedback-btn {
-    padding: 12px 24px;
+    padding: 0.75rem 1.5rem;
     background-color: #4834d4;
     color: white;
     border: none;
-    border-radius: 6px;
-    font-size: 14px;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(72, 52, 212, 0.2);
+    box-shadow: 0 0.125rem 0.25rem rgba(72, 52, 212, 0.2);
 }
 
 .add-feedback-btn:hover {
     background-color: #3d2db8;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(72, 52, 212, 0.3);
+    transform: translateY(-0.0625rem);
+    box-shadow: 0 0.25rem 0.5rem rgba(72, 52, 212, 0.3);
 }
 
 .add-feedback-btn:active {
     transform: translateY(0);
 }
 
-/* Styles for when feedback exists */
 .feedback-list {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1.25rem;
 }
 
 .feedback-item {
     background: #ffffff;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 20px;
+    border: 0.0625rem solid #e9ecef;
+    border-radius: 0.5rem;
+    padding: 1.25rem;
     transition: box-shadow 0.3s ease;
 }
 
 .feedback-item:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
 }
 
 .feedback-author {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 15px;
+    gap: 0.75rem;
+    margin-bottom: 0.9375rem;
 }
 
 .author-avatar {
-    width: 32px;
-    height: 32px;
+    width: 2rem;
+    height: 2rem;
     border-radius: 50%;
     background-color: #6c757d;
     color: white;
@@ -113,7 +111,7 @@
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 0.875rem;
 }
 
 .author-info {
@@ -121,59 +119,61 @@
 }
 
 .author-name {
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 500;
     color: #2c3e50;
-    margin-bottom: 2px;
+    margin-bottom: 0.125rem;
 }
 
 .feedback-date {
-    font-size: 12px;
+    font-size: 0.75rem;
     color: #6c757d;
 }
 
 .feedback-text {
-    font-size: 14px;
+    font-size: 0.875rem;
     color: #495057;
     line-height: 1.6;
-    margin-bottom: 15px;
+    margin-bottom: 0.9375rem;
 }
 
 .feedback-actions {
     display: flex;
-    gap: 10px;
+    gap: 0.625rem;
 }
 
-.reply-btn, .like-btn {
-    padding: 6px 12px;
+.reply-btn,
+.like-btn {
+    padding: 0.375rem 0.75rem;
     background: none;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    font-size: 12px;
+    border: 0.0625rem solid #dee2e6;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
     color: #6c757d;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
-.reply-btn:hover, .like-btn:hover {
+.reply-btn:hover,
+.like-btn:hover {
     background-color: #f8f9fa;
     border-color: #adb5bd;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48rem) {
     .feedback-content {
         max-width: 100%;
     }
-    
+
     .no-feedback {
-        padding: 40px 20px;
+        padding: 2.5rem 1.25rem;
     }
-    
+
     .feedback-icon i {
-        font-size: 36px;
+        font-size: 2.25rem;
     }
-    
+
     .no-feedback h4 {
-        font-size: 16px;
+        font-size: 1rem;
     }
 }
