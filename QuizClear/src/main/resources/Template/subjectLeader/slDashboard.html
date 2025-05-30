@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../static/css/subjectLeader/slDashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>sl - Dashboard</title>
+    <style>
+        .statitics-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            margin-top: 180px;
+            padding: 0 50px;
+        }
+
+        .statistics {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            width: 50%;
+        }
+
+        .statistics-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #120368;
+            margin-bottom: 8px;
+        }
+
+        .statistics-subtitle {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 16px;
+        }
+
+        .statistics-chart canvas {
+            width: 100% !important;
+            height: auto !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- noi dung duoc nhap trong day -->
+            <div class="dashboard-container">
+                <div class="title">Dashboard</div>
+                <div class=subtitle>Welcome back, Subject Leader. Let's make today productive!</div>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-title">Pending Assignments</div>
+                        <div class="stat-value">25</div>
+                        <div class="stat-change">+6 this month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Total Plans</div>
+                        <div class="stat-value">256</div>
+                        <div class="stat-change">+123 this month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Need Approval</div>
+                        <div class="stat-value">14</div>
+                        <div class="stat-change">+1 this month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Task Completion</div>
+                        <div class="stat-value">32</div>
+                        <div class="stat-change">+8 this month</div>
+                    </div>
+                </div>
+
+                <div class="statitics-container">
+                    <div class="statistics">
+                        <div class="statistics-title">Question Progress by Subject</div>
+                        <div class="statistics-subtitle">Number of Questions Created vs. Target</div>
+                        <div class="statistics-chart">
+                            <canvas id="barChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="statistics">
+                        <div class="statistics-title">Overall Progress</div>
+                        <div class="statistics-chart">
+                            <canvas id="doughnutChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-updates">
+                    <div class="activity-title">Recent Updates</div>
+                    <div class="activity-list">
+                        <div class="activity-item">• Assign question for Object Oriented Programming</div>
+                        <div class="activity-item">• Approve question for Operating System</div>
+                        <div class="activity-item">• Reviewed 10 assignments in English</div>
+                        <div class="activity-item">• Lecturer ABC has sent questions for Data Structures and Algorithms</div>
+                        <div class="activity-item">• Approve question for Computer Architecture</div>
+                        <div class="see-more">See more...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for loading header and menu -->
+    <script>
+        fetch('../header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        fetch('Menu-SL.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Math', 'Science', 'History', 'OS'],
+                datasets: [
+                    {
+                        label: 'Created',
+                        backgroundColor: '#3b82f6',
+                        data: [40, 55, 30, 70],
+                    },
+                    {
+                        label: 'Target',
+                        backgroundColor: '#f87171',
+                        data: [60, 65, 40, 90],
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                },
+            },
+        });
+
+        const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+        new Chart(doughnutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Completed', 'Remaining'],
+                datasets: [
+                    {
+                        data: [72, 28],
+                        backgroundColor: ['#22c55e', '#e5e7eb'],
+                    },
+                ],
+            },
+            options: {
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                },
+            },
+        });
+    </script>
+</body>
+
+</html>
