@@ -1,20 +1,9 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
-body {
-  font-family: "Roboto", sans-serif;
-  background-color: #f9fafb;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
 
-html, body {
-  height: 100%;
-}
 .dashboard-container {
   position: relative;
   min-height: 100vh;
