@@ -55,7 +55,7 @@
   align-items: center;
   margin-bottom: 1rem;
   padding: 0.75rem;
-  background-color: #ffffff;
+  background-color: #f9fafb;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
@@ -116,4 +116,13 @@
 #tab-content.active {
   display: block;
   width: 100%;
+}
+
+.chart-wrapper {
+  background-color: #ffffff;
+  padding: 2rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
