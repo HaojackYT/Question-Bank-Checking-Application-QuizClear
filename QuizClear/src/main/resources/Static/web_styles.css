@@ -13,7 +13,7 @@ body {
     display: flex;
     flex-direction: row;
     width: 100%;
-    gap: 6rem;
+    gap: 2rem;
     align-items: stretch;
     min-height: 100vh;
 }
