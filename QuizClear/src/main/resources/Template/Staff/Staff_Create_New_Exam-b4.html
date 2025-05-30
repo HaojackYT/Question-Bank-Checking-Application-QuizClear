@@ -253,29 +253,29 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-    // Danh sách các ID của cột và giá trị tương ứng
-    const columns = [
-        { colId: 'colum-basic', valueId: 'value-basic' },
-        { colId: 'colum-intermediate', valueId: 'value-Intermediate' },
-        { colId: 'colum-advanced', valueId: 'value-Advanced' },
-        { colId: 'colum-expert', valueId: 'value-Expert' },
-        { colId: 'colum-CLO1', valueId: 'value-CLO1' },
-        { colId: 'colum-CLO2', valueId: 'value-CLO2' },
-        { colId: 'colum-CLO3', valueId: 'value-CLO3' },
-        { colId: 'colum-CLO4', valueId: 'value-CLO4' }
-    ];
+            // Danh sách các ID của cột và giá trị tương ứng
+            const columns = [
+                { colId: 'colum-basic', valueId: 'value-basic' },
+                { colId: 'colum-intermediate', valueId: 'value-Intermediate' },
+                { colId: 'colum-advanced', valueId: 'value-Advanced' },
+                { colId: 'colum-expert', valueId: 'value-Expert' },
+                { colId: 'colum-CLO1', valueId: 'value-CLO1' },
+                { colId: 'colum-CLO2', valueId: 'value-CLO2' },
+                { colId: 'colum-CLO3', valueId: 'value-CLO3' },
+                { colId: 'colum-CLO4', valueId: 'value-CLO4' }
+            ];
 
-    // Duyệt qua từng cột và đặt chiều cao
-    columns.forEach(({ colId, valueId }) => {
-        const column = document.getElementById(colId);
-        const valueElement = document.getElementById(valueId);
-        
-        if (column && valueElement) {
-            const value = parseFloat(valueElement.textContent); // Lấy giá trị phần trăm
-            column.style.height = `${value}px`; // Đặt chiều cao bằng giá trị phần trăm (1% = 1px)
-        }
-    });
-});
+            // Duyệt qua từng cột và đặt chiều cao
+            columns.forEach(({ colId, valueId }) => {
+                const column = document.getElementById(colId);
+                const valueElement = document.getElementById(valueId);
+
+                if (column && valueElement) {
+                    const value = parseFloat(valueElement.textContent); // Lấy giá trị phần trăm
+                    column.style.height = `${value}px`; // Đặt chiều cao bằng giá trị phần trăm (1% = 1px)
+                }
+            });
+        });
     </script>
 </body>
 
