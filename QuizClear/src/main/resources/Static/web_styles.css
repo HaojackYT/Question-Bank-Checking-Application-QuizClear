@@ -13,8 +13,14 @@ body {
     display: flex;
     flex-direction: row;
     width: 100%;
-    gap: 6rem;
-    align-items:stretch;
+    gap: 2rem;
+    align-items: stretch;
     min-height: 100vh;
 }
 
+#main {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 70vw;
+}
