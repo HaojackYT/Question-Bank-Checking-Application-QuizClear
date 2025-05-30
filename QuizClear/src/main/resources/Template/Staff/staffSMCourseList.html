@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../../Static/header.css">
     <link rel="stylesheet" href="../../Static/web_styles.css">
     <link rel="stylesheet" href="../../Static/Menu-Staff.css">
-    <link rel="stylesheet" href="../../Static/staffCourseList.css">
+    <link rel="stylesheet" href="../../static/css/staff/staffSMCourseList.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
 </head>
 
@@ -25,6 +25,7 @@
         <div id="menu-HTML"></div>
 
         <!-- Modal for edit course -->
+
         <div id="modal" class="modal-overlay" style="display:none;">
             <div class="modal-content">
                 <span class="close-button" onclick="closeModal()">&times;</span>
@@ -89,9 +90,13 @@
 
         <!-- Main content -->
         <div id="main">
+
             <div class="main-context">
                 <button class="new-course-btn" onclick="openCreateModal()">+ New Course</button>
-
+                <div class="tab-switch">
+                    <button class="tab-button active" onclick="selectTab('course')">Course</button>
+                    <button class="tab-button" onclick="selectTab('clo')">CLO</button>
+                </div>
                 <div class="title">Course List</div>
                 <div class="subtitle">Manage courses, learning outcomes (CLOs), and difficulty levels.</div>
                 <div class="filter-select">
@@ -205,9 +210,11 @@
                     <p class="page-info" style="padding: 10px;">Total Pages:</p>
                     <p class="page-info">9</p>
                     <div class="page-controls">
-                        <button class="prev-btn"><i class="fa-solid fa-square-caret-left" style ="padding: 0px 5px;"></i> Previous</button>
+                        <button class="prev-btn"><i class="fa-solid fa-square-caret-left" style="padding: 0px 5px;"></i>
+                            Previous</button>
                         <input type="number" id="pageInput" value="1" min="1" style="width: 50px; text-align: center;">
-                        <button class="next-btn">Next <i class="fa-solid fa-square-caret-right" style ="padding: 0px 5px;"></i></button>
+                        <button class="next-btn">Next <i class="fa-solid fa-square-caret-right"
+                                style="padding: 0px 5px;"></i></button>
                     </div>
                 </div>
                 <div class="activity">
@@ -243,17 +250,17 @@
 
     <!-- ma nhung header vs menu -->
     <script>
-      fetch("../header_user.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("header-placeholder").innerHTML = data;
-        });
+        fetch("../header_user.html")
+            .then((response) => response.text())
+            .then((data) => {
+                document.getElementById("header-placeholder").innerHTML = data;
+            });
 
-      fetch("../Menu-Staff.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("menu-HTML").innerHTML = data;
-        });
+        fetch("../Menu-Staff.html")
+            .then((response) => response.text())
+            .then((data) => {
+                document.getElementById("menu-HTML").innerHTML = data;
+            });
 
         function openModal() {
             document.getElementById("modal").style.display = "flex";
