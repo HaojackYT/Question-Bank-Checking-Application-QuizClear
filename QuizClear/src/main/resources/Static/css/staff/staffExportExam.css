@@ -1,0 +1,393 @@
+/* General Body and Layout - REMOVED/MODIFIED */
+/* The existing framework likely handles the body and top-level container. */
+/* We will focus on the main content area that the "Export Exam" page occupies. */
+
+#export-exam-container {
+    width: 100%;
+    max-width: 1200px; /* Adhere to max-width for better readability on large screens */
+    margin-left: 0rem; /* Center the entire export exam section */
+    padding: 2rem; /* Consistent padding around the entire container */
+    box-sizing: border-box; /* Include padding in element's total width and height */
+    background-color: white; /* Background color for the whole section */
+}
+
+/* Main Content Area for Export Exam */
+/* This class now ONLY wraps the 'export options' and 'preview' sections. */
+.main-content {
+    display: flex;
+    gap: 2rem; /* Spacing between the two main columns */
+    width: 100%; /* Take full width of its parent container (#export-exam-container) */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    align-items: stretch; /* Align items to the top */
+    /* Removed padding and background-color as they are now on #export-exam-container */
+}
+
+/* Header */
+/* This header-content is now outside the main-content flex container */
+.header-content {
+    width: 100%; /* Take full width */
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.header-content h1 {
+    font-size: 1.8rem; /* Use rem for font size */
+    color: #333;
+    margin: 0;
+}
+
+.header-content p {
+    font-size: 0.9rem; /* Use rem for font size */
+    color: #666;
+    margin: 0;
+}
+
+/* Cards */
+.card {
+    background-color: #fff;
+    border-radius: 0.5rem; /* Use rem for border-radius */
+    padding: 1.5rem; /* Use rem for padding */
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1); /* Use rem for box-shadow spread */
+}
+
+.card h2 {
+    font-size: 1.2rem; /* Use rem for font size */
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 0.5rem; /* Use rem for margin */
+}
+
+.card-subtitle {
+    font-size: 0.85rem; /* Use rem for font size */
+    color: #888;
+    margin-bottom: 1.5rem; /* Use rem for margin */
+}
+
+/* Export Options Section */
+.export-options {
+    flex: 1; /* Allow to grow */
+    min-width: 300px; /* Minimum width to prevent squishing */
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 1rem; /* Use rem for margin */
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem; /* Use rem for font size */
+    color: #555;
+    margin-bottom: 0.5rem; /* Use rem for margin */
+    font-weight: bold;
+}
+
+/* Custom Select (Dropdowns) */
+.custom-select {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select select {
+    width: 100%;
+    padding: 0.75rem 1rem; /* Use rem for padding */
+    border: 1px solid #ddd;
+    border-radius: 0.3rem; /* Use rem for border-radius */
+    background-color: #fff;
+    appearance: none; /* Remove default arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-size: 0.9rem; /* Use rem for font size */
+    color: #333;
+    cursor: pointer;
+}
+
+.custom-select .select-arrow {
+    position: absolute;
+    right: 1rem; /* Use rem for position */
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+}
+
+/* Content Options (Toggles) */
+h3 {
+    font-size: 1rem; /* Use rem for font size */
+    color: #333;
+    margin-top: 2.5rem; /* Use rem for margin */
+    margin-bottom: 1.5rem; /* Use rem for margin */
+}
+
+.toggle-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem; /* Use rem for margin */
+    padding-right: 0.5rem; /* Adjust padding for better alignment with toggle */
+}
+
+.toggle-group label {
+    font-size: 0.9rem; /* Use rem for font size */
+    color: #555;
+    font-weight: bold;
+    margin-right: 1rem; /* Use rem for margin */
+}
+
+.toggle-group .toggle-description {
+    font-size: 0.8rem; /* Use rem for font size */
+    color: #888;
+    flex-grow: 1; /* Allow description to take available space */
+    margin-top: 0.5rem;
+}
+
+/* The switch - adapted for rem and percentages */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 3.4rem; /* Use rem for width */
+    height: 1.5rem; /* Use rem for height */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 1.5rem; /* Use rem for border-radius */
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 1.1rem; /* Use rem for height */
+    width: 1.1rem; /* Use rem for width */
+    left: 0.2rem; /* Use rem for position */
+    bottom: 0.2rem; /* Use rem for position */
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #007bff;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #007bff;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(2rem); /* Use rem for transform */
+    -ms-transform: translateX(2rem); /* Use rem for transform */
+    transform: translateX(2rem); /* Use rem for transform */
+}
+
+/* Distribution Buttons */
+.distribution-buttons {
+    display: flex;
+    gap: 0.8rem; /* Use rem for gap */
+    margin-top: 1rem; /* Use rem for margin */
+    margin-bottom: 1.5rem; /* Use rem for margin */
+    flex-wrap: wrap; /* Allow wrapping */
+}
+
+.icon-button {
+    background-color: #e9ecef;
+    border: 1px solid #ddd;
+    border-radius: 0.3rem; /* Use rem for border-radius */
+    padding: 0.7rem 1.2rem; /* Use rem for padding */
+    font-size: 0.9rem; /* Use rem for font size */
+    color: #555;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Use rem for gap */
+    transition: background-color 0.3s ease;
+}
+
+.icon-button:hover {
+    background-color: #dce0e4;
+}
+
+.icon-button i {
+    color: #007bff;
+}
+
+/* Export Button */
+.export-button {
+    width: 100%;
+    padding: 0.8rem 1.5rem; /* Use rem for padding */
+    margin-top: 2rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 0.3rem; /* Use rem for border-radius */
+    font-size: 1rem; /* Use rem for font size */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem; /* Use rem for gap */
+}
+
+.export-button:hover {
+    background-color: #0056b3;
+}
+
+/* Preview Section */
+.preview {
+    flex: 1.2; /* Allow to grow more than export options */
+    min-width: 400px; /* Minimum width for preview */
+}
+
+/* Preview Tabs */
+.preview-tabs {
+    display: flex; /* Dùng flexbox để các nút nằm cạnh nhau */
+    border: 1px solid #ddd; /* Viền xung quanh box */
+    border-radius: 8px; /* Bo tròn góc */
+    overflow: hidden; /* Quan trọng để bo tròn viền các nút bên trong */
+    width: fit-content; /* Giúp box chỉ rộng bằng nội dung của nó */
+    margin-bottom: 1rem; /* Khoảng cách dưới box */
+    background-color: #f0f0f0; /* Màu nền cho container */
+}
+
+.tab-button {
+    flex-grow: 1; /* Cho phép các nút giãn ra để lấp đầy không gian */
+    padding: 0.75rem 1.5rem; /* Khoảng cách bên trong nút */
+    border: none; /* Không có viền cho từng nút */
+    background-color: transparent; /* Mặc định trong suốt */
+    color: #555; /* Màu chữ mặc định */
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 15rem;
+    transition: all 0.2s ease-in-out; /* Hiệu ứng chuyển động mượt mà */
+    white-space: nowrap; /* Ngăn không cho chữ xuống dòng */
+}
+
+.tab-button:hover {
+    background-color: #e0e0e0; /* Màu nền khi di chuột qua */
+}
+
+.tab-button.active {
+    background-color: #fff; /* Màu nền cho tab đang hoạt động */
+    color: #333; /* Màu chữ cho tab đang hoạt động */
+    font-weight: 700;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Bóng đổ nhẹ cho tab active */
+    /* Có thể thêm border-right cho tab active nếu muốn có đường phân cách rõ hơn */
+}
+
+/* Loại bỏ viền phải cho nút active nếu nó không phải là nút cuối cùng */
+.tab-button.active:not(:last-child) {
+    border-right: 1px solid #ddd;
+}
+
+/* Exam Preview Content */
+.exam-preview-content h4 {
+    font-size: 1.1rem; /* Use rem for font size */
+    color: #333;
+    margin-bottom: 0.5rem; /* Use rem for margin */
+}
+
+.exam-info {
+    font-size: 0.8rem; /* Use rem for font size */
+    color: #777;
+    margin-bottom: 0.3rem; /* Use rem for margin */
+    text-align: center;
+}
+
+.question-number {
+    font-size: 0.85rem; /* Use rem for font size */
+    color: #666;
+    margin-top: 0.5rem; /* Use rem for margin */
+    margin-bottom: 0.5rem; /* Use rem for margin */
+}
+
+.question-text {
+    font-size: 0.95rem; /* Use rem for font size */
+    color: #333;
+    margin-bottom: 1rem; /* Use rem for margin */
+    font-weight: bold;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); /* Responsive grid for options */
+    gap: 0.8rem; /* Use rem for gap */
+}
+
+.option {
+    border: 1px solid #ddd;
+    border-radius: 0.3rem; /* Use rem for border-radius */
+    padding: 0.7rem 1rem; /* Use rem for padding */
+    font-size: 0.9rem; /* Use rem for font size */
+    color: #444;
+}
+
+/* View Full Preview Button */
+.view-full-preview-button {
+    width: 100%;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.3rem; /* Use rem for border-radius */
+    padding: 0.8rem 1.5rem; /* Use rem for padding */
+    margin-top: 1.6rem; /* Use rem for margin */
+    font-size: 0.9rem; /* Use rem for font size */
+    color: #007bff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem; /* Use rem for gap */
+}
+
+.view-full-preview-button:hover {
+    background-color: #e2e6ea;
+    border-color: #dae0e5;
+}
+
+.view-full-preview-button i {
+    color: #007bff;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column; /* Stack columns on smaller screens */
+        align-items: center;
+    }
+
+    /* Adjust padding of the overall container for smaller screens */
+    #export-exam-container {
+        padding: 2rem;
+    }
+
+    .export-options,
+    .preview {
+        width: 100%;
+        max-width: 500px; /* Limit width for stacked elements */
+        min-width: unset; /* Remove min-width for flexibility */
+    }
+
+    .header-content {
+        align-items: center;
+        text-align: center;
+    }
+}
