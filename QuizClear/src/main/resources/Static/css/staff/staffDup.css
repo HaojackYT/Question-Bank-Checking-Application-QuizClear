@@ -152,10 +152,7 @@ body {
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap; /* Ngăn xuống dòng */
-  display: inline-block; /* Giúp kiểm soát kích thước */
-  max-width: 100%; /* Không tràn khỏi cột */
-  overflow: hidden; /* Nếu có, ẩn phần dư */
-  text-overflow: ellipsis; /* Thêm ... nếu bị cắt */
+  display: inline-block;
 }
 
 .similarity-complete {
