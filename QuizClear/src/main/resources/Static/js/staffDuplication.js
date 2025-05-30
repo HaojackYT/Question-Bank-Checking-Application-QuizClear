@@ -32,15 +32,15 @@ function handleTabClick(tab) {
   const tabConfig = {
     detection: {
       file: "../../Template/staffDupContent.html",
-      css: "../../Static/staffDup.css",
+      css: "../../Static/css/staff/staffDup.css",
     },
     stat: {
       file: "../../Template/staffStatContent.html",
-      css: "../../Static/staffStats.css",
+      css: "../../Static/css/staff/staffStats.css",
     },
     proc_log: {
       file: "../../Template/staffLogContent.html",
-      css: "../../Static/staffLogs.css",
+      css: "../../Static/css/staff/staffLogs.css",
     },
   };
 
@@ -107,7 +107,7 @@ function handleViewDetail() {
       comparisonContainer.style.display = "block";
 
       // Load CSS
-      loadCSS("../../Static/staffDupDetails.css");
+      loadCSS("../../Static/css/staff/staffDupDetails.css");
     })
     .catch((err) => {
       comparisonContainer.innerHTML = "<p>Error loading details.</p>";
