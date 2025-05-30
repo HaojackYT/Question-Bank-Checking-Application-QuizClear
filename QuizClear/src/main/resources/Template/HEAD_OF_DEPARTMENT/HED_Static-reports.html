@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/css/HED/HED_Static-reports.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Template</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- noi dung duoc nhap trong day -->
+
+            <p style="font-size: 2.5rem; font-weight: bolder; margin-bottom: 1.875rem;">Statistics & Reports</p>
+
+            <div id="specifications-container">
+                <div class="box_specifications">
+                    <p class="title">Total Questions</p>
+                    <span class="count" id="total-questions">2,847</span>
+                    <p>+<span id="thismonth">164</span> this month</p>
+                </div>
+
+                <div class="box_specifications">
+                    <p class="title">Approved</p>
+                    <span class="count" id="approved">2,156</span>
+                    <p><span id="approved_of_total">75,5</span>% of total</p>
+                </div>
+
+                <div class="box_specifications">
+                    <p class="title">Pending</p>
+                    <span class="count" id="Pending">342</span>
+                    <p>Awaiting review</p>
+                </div>
+
+                <div class="box_specifications">
+                    <p class="title">Rejected</p>
+                    <span class="count" id="Rejected">189</span>
+                    <p>Need revision</p>
+                </div>
+            </div>
+
+            <div id="map-container">
+                <div id="Question_Progress_container">
+                    <p style="font-size: 1.625rem; font-weight: bolder; margin-bottom: 0.625rem;">Question Progress by Subject</p>
+                    <p style="font-size: 0.875rem; opacity: 60%; margin-bottom: 1.875rem;">Number of Questions Created vs. Target</p>
+                    <div id="Question_Progress" style="width: 100%; height: 25rem; display: flex; flex-direction: row;">
+                        <!-- Trục Y -->
+                        <div class="y-axis" style="width: 2.5rem; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.75rem; color: #6B7280;">
+                            <span>100</span>
+                            <span>80</span>
+                            <span>60</span>
+                            <span>40</span>
+                            <span>20</span>
+                            <span>0</span>
+                        </div>
+                        <!-- Khu vực cột và đường kẻ -->
+                        <div class="chart-content" style="flex: 1; display: flex; flex-direction: column;">
+                            <div class="grid-overlay" style="flex: 1; display: flex; justify-content: space-around; align-items: flex-end; border-left: 0.0625rem solid #E0EAFA; border-bottom: 0.0625rem solid #E0EAFA;">
+                                <div class="bars" id="bars" style="width: 100%; height: 100%; display: flex; justify-content: space-around; align-items: flex-end; margin-left: 1.25rem;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Phần chú thích (legend) -->
+                    <div class="legend" style="display: flex; justify-content: center; margin-top: 0.625rem;">
+                        <div style="display: flex; align-items: center; margin: 0 0.625rem;">
+                            <span class="legend-color created" style="width: 0.9375rem; height: 0.9375rem; background-color: #8979FF; display: inline-block; margin-right: 0.3125rem;"></span>
+                            Created
+                        </div>
+                        <div style="display: flex; align-items: center; margin: 0 0.625rem;">
+                            <span class="legend-color target" style="width: 0.9375rem; height: 0.9375rem; background-color: #FF928A; display: inline-block; margin-right: 0.3125rem;"></span>
+                            Target
+                        </div>
+                    </div>
+                </div>
+
+                <div id="Overall_Progress_container">
+                    <p style="font-size: 1.625rem; font-weight: bolder; margin-bottom: 2.5rem;">Overall Progress</p>
+                    <div id="Overall_Progress">
+                        <p><span id="Completed"></span>% Completed</p>
+                        <div id="container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="Progress-container">
+                <p style="font-size: 1.625rem; color: #120368; font-weight: bolder; margin-bottom: 1.875rem;">Lecturer Question Progress per Subject</p>
+                <p style="font-size: 0.875rem; opacity: 60%; margin-bottom: 0.625rem;">Number of Lecturer Question</p>
+                <div id="find">
+                    <input type="text" id="searchInput" title="find" placeholder="Enter search content ...." oninput="filterByUsername()">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <div id="cross_bar" style="margin-top: 1.25rem;">
+                    <!-- Danh sách các thanh ngang sẽ được tạo bởi JavaScript -->
+                </div>
+                <div class="description">
+                    <div>
+                        <div class="square" style="background-color: #34C759;"></div>
+                        <p class="text">Approve</p>
+                    </div>
+                    <div>
+                        <div class="square" style="background-color: #FFAE4C"></div>
+                        <p class="text">Pending</p>
+                    </div>
+                    <div>
+                        <div class="square" style="background-color: #FF3B30"></div>
+                        <p class="text">Reject</p>
+                    </div>
+                    <div>
+                        <div class="square" style="background-color: #CBD5E1"></div>
+                        <p class="text">Need</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ma nhung header vs menu -->
+    <script>
+        // Load header
+        fetch('../header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        // Load menu
+        fetch('Menu-HED.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+    </script>
+
+    <script>
+        // Dữ liệu mẫu (có thể thay đổi bằng Java sau này)
+        const data = [
+            { subject: "Math", created: 40, target: 50 },
+            { subject: "Physics", created: 20, target: 70 },
+            { subject: "Chemistry", created: 50, target: 60 },
+            { subject: "Biology", created: 20, target: 80 },
+            { subject: "History", created: 50, target: 70 },
+            { subject: "Geography", created: 20, target: 40 },
+            { subject: "Literature", created: 20, target: 30 }
+        ];
+
+        // Hàm tạo biểu đồ
+        function createChart() {
+            const barsContainer = document.getElementById('bars');
+
+            data.forEach(group => {
+                const barGroup = document.createElement('div');
+                barGroup.classList.add('bar-group');
+
+                // Cột Created
+                const createdBar = document.createElement('div');
+                createdBar.classList.add('bar', 'created');
+                createdBar.style.height = `${group.created}%`;
+                createdBar.innerHTML = `<span class="tooltip">${group.subject}\n${group.created}</span>`;
+                barGroup.appendChild(createdBar);
+
+                // Cột Target
+                const targetBar = document.createElement('div');
+                targetBar.classList.add('bar', 'target');
+                targetBar.style.height = `${group.target}%`;
+                targetBar.innerHTML = `<span class="tooltip">${group.subject}\n${group.target}</span>`;
+                barGroup.appendChild(targetBar);
+
+                barsContainer.appendChild(barGroup);
+            });
+        }
+    </script>
+
+    <script>
+        // Dữ liệu mẫu cho biểu đồ vòng (có thể thay đổi bằng Java)
+        const progressData = {
+            completed: 75,
+            remaining: 25
+        };
+
+        // Hàm tạo biểu đồ vòng
+        function createDoughnutChart() {
+            const container = document.getElementById('container');
+            const completedSpan = document.getElementById('Completed');
+
+            // Cập nhật phần trăm Completed
+            completedSpan.textContent = progressData.completed;
+
+            // Tạo phần tử biểu đồ
+            const doughnutChart = document.createElement('div');
+            doughnutChart.classList.add('doughnut-chart');
+            doughnutChart.style.background = `conic-gradient(
+                #22c55e 0% ${progressData.completed}%,
+                #d1d5db ${progressData.completed}% 100%
+            )`;
+            container.innerHTML = ''; // Xóa nội dung cũ
+            container.appendChild(doughnutChart);
+
+            // Thêm chú thích (legend) bên dưới
+            const legend = document.createElement('div');
+            legend.classList.add('legend');
+            legend.innerHTML = `
+                <div style="display: flex; align-items: center; margin: 0 0.625rem;">
+                    <span class="legend-color completed" style="width: 0.9375rem; height: 0.9375rem; background-color: #22c55e; display: inline-block; margin-right: 0.3125rem;"></span>
+                    Completed
+                </div>
+                <div style="display: flex; align-items: center; margin: 0 0.625rem;">
+                    <span class="legend-color remaining" style="width: 0.9375rem; height: 0.9375rem; background-color: #d1d5db; display: inline-block; margin-right: 0.3125rem;"></span>
+                    Remaining
+                </div>
+            `;
+            container.appendChild(legend);
+        }
+    </script>
+
+    <script>
+        // Dữ liệu mẫu cho biểu đồ thanh ngang (có thể thay đổi bằng Java sau này)
+        let barData = [
+            { userName: "Nguyen Van A", completed: 80, inProgress: 10, overdue: 5, remaining: 5 },
+            { userName: "Nguyen Van B", completed: 70, inProgress: 15, overdue: 5, remaining: 10 },
+            { userName: "Nguyen Van C", completed: 60, inProgress: 20, overdue: 10, remaining: 10 },
+            { userName: "Nguyen Van D", completed: 50, inProgress: 25, overdue: 10, remaining: 15 },
+            { userName: "Nguyen Van G", completed: 40, inProgress: 30, overdue: 10, remaining: 20 },
+            { userName: "Nguyen Van H", completed: 30, inProgress: 35, overdue: 15, remaining: 20 },
+            { userName: "Nguyen Van P", completed: 20, inProgress: 40, overdue: 15, remaining: 25 },
+            { userName: "Nguyen Van Q", completed: 10, inProgress: 45, overdue: 20, remaining: 25 }
+        ];
+
+        // Hàm tạo biểu đồ thanh ngang
+        function createCrossBarChart(filteredData = barData) {
+            const crossBarContainer = document.getElementById('cross_bar');
+            crossBarContainer.innerHTML = ''; // Xóa nội dung cũ trước khi vẽ lại
+
+            filteredData.forEach(item => {
+                const total = item.completed + item.inProgress + item.overdue + item.remaining;
+                const container = document.createElement('div');
+                container.classList.add('bar-container');
+
+                // Thêm nhãn userName
+                const label = document.createElement('div');
+                label.classList.add('label');
+                label.textContent = item.userName;
+                container.appendChild(label);
+
+                // Thêm thanh tiến trình
+                const barWrapper = document.createElement('div');
+                barWrapper.classList.add('bar-wrapper');
+
+                const progressBar = document.createElement('div');
+                progressBar.classList.add('progress-bar');
+
+                // Tạo các đoạn thanh dựa trên tỷ lệ
+                const completedWidth = (item.completed / total) * 100;
+                const inProgressWidth = (item.inProgress / total) * 100;
+                const overdueWidth = (item.overdue / total) * 100;
+
+                if (completedWidth > 0) {
+                    const completedBar = document.createElement('div');
+                    completedBar.classList.add('completed');
+                    completedBar.style.width = `${completedWidth}%`;
+                    progressBar.appendChild(completedBar);
+                }
+                if (inProgressWidth > 0) {
+                    const inProgressBar = document.createElement('div');
+                    inProgressBar.classList.add('in-progress');
+                    inProgressBar.style.width = `${inProgressWidth}%`;
+                    progressBar.appendChild(inProgressBar);
+                }
+                if (overdueWidth > 0) {
+                    const overdueBar = document.createElement('div');
+                    overdueBar.classList.add('overdue');
+                    overdueBar.style.width = `${overdueWidth}%`;
+                    progressBar.appendChild(overdueBar);
+                }
+
+                barWrapper.appendChild(progressBar);
+
+                // Thêm tooltip hiển thị giá trị completed khi hover
+                const tooltip = document.createElement('div');
+                tooltip.classList.add('tooltip');
+                tooltip.textContent = `completed: ${item.completed}%`;
+                barWrapper.appendChild(tooltip);
+
+                container.appendChild(barWrapper);
+                crossBarContainer.appendChild(container);
+            });
+        }
+
+        // Hàm lọc dữ liệu theo userName
+        function filterByUsername() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const filteredData = barData.filter(item =>
+                item.userName.toLowerCase().includes(searchInput)
+            );
+            createCrossBarChart(filteredData); // Vẽ lại biểu đồ với dữ liệu đã lọc
+        }
+
+        // Gọi hàm tạo biểu đồ khi trang tải
+        window.onload = function () {
+            // Tạo biểu đồ cột
+            createChart();
+
+            // Tạo biểu đồ vòng
+            createDoughnutChart();
+
+            // Tạo biểu đồ thanh ngang
+            createCrossBarChart();
+        };
+    </script>
+</body>
+
+</html>
