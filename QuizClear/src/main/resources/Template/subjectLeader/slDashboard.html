@@ -11,41 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>sl - Dashboard</title>
-    <style>
-        .statitics-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 40px;
-            margin-top: 180px;
-            padding: 0 50px;
-        }
-
-        .statistics {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            width: 50%;
-        }
-
-        .statistics-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #120368;
-            margin-bottom: 8px;
-        }
-
-        .statistics-subtitle {
-            font-size: 14px;
-            color: #777;
-            margin-bottom: 16px;
-        }
-
-        .statistics-chart canvas {
-            width: 100% !important;
-            height: auto !important;
-        }
-    </style>
 </head>
 
 <body>
@@ -86,30 +51,88 @@
                     </div>
                 </div>
 
-                <div class="statitics-container">
-                    <div class="statistics">
-                        <div class="statistics-title">Question Progress by Subject</div>
-                        <div class="statistics-subtitle">Number of Questions Created vs. Target</div>
-                        <div class="statistics-chart">
-                            <canvas id="barChart"></canvas>
-                        </div>
+                <div class="qm-charts">
+                    <div class="chart-box" id="chart-progress">
+                        <div class="chart-title">Question Progress by Subject</div>
+                        <div class="chart-subtitle">Number of Questions Created vs. Target</div>
+                        <canvas id="progressChart"></canvas>
                     </div>
-                    <div class="statistics">
-                        <div class="statistics-title">Overall Progress</div>
-                        <div class="statistics-chart">
-                            <canvas id="doughnutChart"></canvas>
-                        </div>
+                    <div class="chart-box" id="chart-overall">
+                        <div class="chart-title">Overall Progress</div>
+                        <div class="chart-subtitle"> 72% Completed</div>
+                        <canvas id="overallChart"></canvas>
                     </div>
                 </div>
 
                 <div class="recent-updates">
                     <div class="activity-title">Recent Updates</div>
                     <div class="activity-list">
-                        <div class="activity-item">• Assign question for Object Oriented Programming</div>
-                        <div class="activity-item">• Approve question for Operating System</div>
-                        <div class="activity-item">• Reviewed 10 assignments in English</div>
-                        <div class="activity-item">• Lecturer ABC has sent questions for Data Structures and Algorithms</div>
-                        <div class="activity-item">• Approve question for Computer Architecture</div>
+                        <div class="activity-item">
+                            <div class="activity-content">
+                                <span class="bullet">•</span>
+                                <span class="activity-text">Assign question for Object Oriented Programming</span>
+                            </div>
+                            <div class="activity-meta">
+                                <span class="activity-time">3:00 PM</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 85%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-content">
+                                <span class="bullet">•</span>
+                                <span class="activity-text">Approve question for Operating System</span>
+                            </div>
+                            <div class="activity-meta">
+                                <span class="activity-time">12:35 AM</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 60%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-content">
+                                <span class="bullet">•</span>
+                                <span class="activity-text">Reviewed 10 assignments in English</span>
+                            </div>
+                            <div class="activity-meta">
+                                <span class="activity-time">8:00 PM</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-content">
+                                <span class="bullet">•</span>
+                                <span class="activity-text">Lecturer ABC has sent questions for Data Structures and
+                                    Algorithms</span>
+                            </div>
+                            <div class="activity-meta">
+                                <span class="activity-time">9:35 AM</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 45%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-content">
+                                <span class="bullet">•</span>
+                                <span class="activity-text">Approve question for Computer Architecture</span>
+                            </div>
+                            <div class="activity-meta">
+                                <span class="activity-time">11:20 AM</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 75%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="see-more">See more...</div>
                     </div>
                 </div>
@@ -130,56 +153,74 @@
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
             });
-
-        const barCtx = document.getElementById('barChart').getContext('2d');
-        new Chart(barCtx, {
+        // JavaScript for charts
+        // Vẽ biểu đồ cột (Question Progress by Subject)
+        const ctxBar = document.getElementById('progressChart').getContext('2d');
+        const progressChart = new Chart(ctxBar, {
             type: 'bar',
             data: {
-                labels: ['Math', 'Science', 'History', 'OS'],
+                labels: ['OOP', 'OS', 'DSA', 'CA', 'DBMS', 'English'],
                 datasets: [
                     {
                         label: 'Created',
-                        backgroundColor: '#3b82f6',
-                        data: [40, 55, 30, 70],
+                        data: [40, 55, 32, 50, 48, 60],
+                        backgroundColor: '#4A90E2'
                     },
                     {
                         label: 'Target',
-                        backgroundColor: '#f87171',
-                        data: [60, 65, 40, 90],
-                    },
-                ],
+                        data: [60, 50, 45, 55, 50, 65], // target khác nhau
+                        backgroundColor: '#F28C8C'
+                    }
+                ]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                },
                 plugins: {
                     legend: {
-                        position: 'top',
-                    },
-                },
-            },
+                        position: 'bottom' // chuyển chú thích xuống dưới biểu đồ
+                    }
+                }
+            }
         });
 
-        const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
-        new Chart(doughnutCtx, {
+
+        // Vẽ biểu đồ donut (Overall Progress)
+        const ctx = document.getElementById('overallChart').getContext('2d');
+        new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: ['Completed', 'Remaining'],
-                datasets: [
-                    {
-                        data: [72, 28],
-                        backgroundColor: ['#22c55e', '#e5e7eb'],
-                    },
-                ],
+                datasets: [{
+                    data: [72, 28],
+                    backgroundColor: ['#00C9A7', '#e5e5e5'],
+                    borderWidth: 0
+                }]
             },
             options: {
                 cutout: '70%',
+                responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: false
                     },
-                },
-            },
+                    tooltip: {
+                        enabled: false
+                    }
+                }
+            }
         });
+
+
     </script>
 </body>
 
