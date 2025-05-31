@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/css/subjectLeader/sl_FB_viewDetails.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>SL Plans</title>
+</head>
+
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <div class="main-context">
+                <a href="#" class="back-link">
+                    <i class="fa-solid fa-arrow-left-long"></i>
+                </a>
+                <h1 class="details-title">Details</h1>
+
+                <div id="container">
+                    <h2 class="section-title">Information</h2>
+                    <p class="section-subtitle">Display all related information</p>
+
+                    <div class="info-row">
+                        <div class="info-item info-item--no">
+                            <p class="info-label">No.</p>
+                            <span id="No">DB_S102</span>
+                        </div>
+                        <div class="info-item info-item--giver">
+                            <p class="info-label">Feedback Giver</p>
+                            <span id="Feedback_Giver">Department Head</span>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-item info-item--content">
+                            <p class="info-label">Feedback Content</p>
+                            <span id="Feedback_Content">Feedback on Q25</span>
+                        </div>
+                        <div class="info-item info-item--date">
+                            <p class="info-label">Created Date</p>
+                            <span id="Created_Date">23/4/25</span>
+                        </div>
+                    </div>
+
+                    <div class="status-row">
+                        <p class="status-label">Status</p>
+                        <span id="Status">Received</span>
+                    </div>
+
+                    <div class="notes-section">
+                        <p class="notes-label">Notes</p>
+                        <span id="Notes">Question 25 lacks sufficient differentiation. Please revise the distractors to
+                            increase difficulty</span>
+                    </div>
+
+                    <h2 class="section-title">Related Question</h2>
+                    <p class="section-subtitle">Display the question and all related information</p>
+
+                    <div class="question-section">
+                        <div class="question-content">
+                            <p class="question-title">Question Content</p>
+                            <div>
+                                <span class="question-instructions" id="questionText">Question 25: In a redox reaction,
+                                    which substance is the reducing agent?</span>
+                                <div class="question-options">
+                                    <p>A. <span id="optionA">O2</span></p>
+                                    <p>B. <span id="optionB">H2</span></p>
+                                    <p>C. <span id="optionC">Cl2</span></p>
+                                    <p>D. <span id="optionD">Fe2O3</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button title="Edit" class="btn btn--edit" onclick="openEditModal()">Edit</button>
+                            <button title="Assign" class="btn btn--assign" onclick="openAssignModal()">Assign</button>
+                            <button title="Resubmit" class="btn btn--resubmit">Resubmit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for New Assignment -->
+        <div id="assignModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAssignModal()">×</span>
+                <h2 class="modal-title">New Assignment</h2>
+
+                <div class="modal-row">
+                    <div class="modal-item">
+                        <label class="modal-label">Department</label>
+                        <select class="modal-select">
+                            <option>Title</option>
+                        </select>
+                    </div>
+                    <div class="modal-item">
+                        <label class="modal-label">Lecturer</label>
+                        <select class="modal-select">
+                            <option>Nguyen Van A</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-row">
+                    <div class="modal-item">
+                        <label class="modal-label">Assign Date</label>
+                        <input type="date" id="assignDate" class="modal-input" disabled>
+                    </div>
+                    <div class="modal-item">
+                        <label class="modal-label">Due Date</label>
+                        <input type="date" class="modal-input" value="2025-04-20">
+                    </div>
+                </div>
+
+                <div class="modal-notes">
+                    <label class="modal-label">Notes</label>
+                    <input type="text" class="modal-input" value="" placeholder="Enter notes...">
+                </div>
+
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-btn--cancel" onclick="closeAssignModal()">Cancel</button>
+                    <button class="modal-btn modal-btn--assign">Assign</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Edit Question -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeEditModal()">×</span>
+                <h2 class="modal-title">Edit</h2>
+
+                <div class="modal-item">
+                    <label class="modal-label">Question</label>
+                    <textarea id="editQuestionText" class="modal-textarea"></textarea>
+                </div>
+
+                <div class="modal-item" style="display: flex;flex-direction: row;gap:1rem">
+                    <div>
+                        <label class="modal-label">Answers</label>
+                        <div class="edit-options">
+                            <div class="option-row">
+                                <span class="option-label">A.</span>
+                                <input type="text" id="editOptionA" class="modal-input option-input"
+                                    style="border: none;">
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">B.</span>
+                                <input type="text" id="editOptionB" class="modal-input option-input"
+                                    style="border: none;">
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">C.</span>
+                                <input type="text" id="editOptionC" class="modal-input option-input"
+                                    style="border: none;">
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">D.</span>
+                                <input type="text" id="editOptionD" class="modal-input option-input"
+                                    style="border: none;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-item">
+                        <label class="modal-label">Correct Answer</label>
+                        <select id="correctAnswer" class="modal-select">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                </div>
+
+
+
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-btn--cancel" onclick="closeEditModal()">Cancel</button>
+                    <button class="modal-btn modal-btn--save" onclick="saveQuestion()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts for loading header, menu, and modal functionality -->
+    <script>
+        // Load header
+        fetch('../header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        // Load menu
+        fetch('Menu-SL.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+
+        // Function to format date to YYYY-MM-DD
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Assign Modal functionality
+        function openAssignModal() {
+            // Set Assign Date to current date
+            const assignDateInput = document.getElementById('assignDate');
+            const currentDate = new Date('2025-05-31'); // Using the system-provided date
+            assignDateInput.value = formatDate(currentDate);
+
+            // Show the modal
+            document.getElementById('assignModal').style.display = 'block';
+        }
+
+        function closeAssignModal() {
+            document.getElementById('assignModal').style.display = 'none';
+        }
+
+        // Edit Modal functionality
+        function openEditModal() {
+            // Populate modal with current question data
+            document.getElementById('editQuestionText').value = document.getElementById('questionText').innerText;
+            document.getElementById('editOptionA').value = document.getElementById('optionA').innerText;
+            document.getElementById('editOptionB').value = document.getElementById('optionB').innerText;
+            document.getElementById('editOptionC').value = document.getElementById('optionC').innerText;
+            document.getElementById('editOptionD').value = document.getElementById('optionD').innerText;
+
+            // Set correct answer (for now, default to B as per the image; ideally, this should be stored and retrieved)
+            document.getElementById('correctAnswer').value = 'B';
+
+            // Show the modal
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        function saveQuestion() {
+            // Update the question section with edited values
+            document.getElementById('questionText').innerText = document.getElementById('editQuestionText').value;
+            document.getElementById('optionA').innerText = document.getElementById('editOptionA').value;
+            document.getElementById('optionB').innerText = document.getElementById('editOptionB').value;
+            document.getElementById('optionC').innerText = document.getElementById('editOptionC').value;
+            document.getElementById('optionD').innerText = document.getElementById('editOptionD').value;
+
+            // Close the modal
+            closeEditModal();
+        }
+
+        // Close modals when clicking outside of them
+        window.onclick = function (event) {
+            const assignModal = document.getElementById('assignModal');
+            const editModal = document.getElementById('editModal');
+            if (event.target == assignModal) {
+                assignModal.style.display = 'none';
+            }
+            if (event.target == editModal) {
+                editModal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>
