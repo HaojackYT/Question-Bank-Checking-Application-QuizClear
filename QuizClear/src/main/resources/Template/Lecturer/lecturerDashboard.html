@@ -143,53 +143,6 @@
                     document.getElementById('menu-HTML').innerHTML = data;
                 });
 
-            // Initialize the chart
-            const ctx = document.getElementById('assignmentChart').getContext('2d');
-            const assignmentChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['HTML', 'CSS', 'JavaScript', 'PHP'],
-                    datasets: [{
-                        label: 'Completion Rate (%)',
-                        data: [100, 80, 60, 30],
-                        backgroundColor: [
-                            '#4e73df',
-                            '#1cc88a',
-                            '#36b9cc',
-                            '#f6c23e'
-                        ],
-                        borderRadius: 8,
-                        barThickness: 40
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                stepSize: 20,
-                                callback: function (value) {
-                                    return value + "%";
-                                }
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    return context.parsed.y + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
         </script>
 </body>
 

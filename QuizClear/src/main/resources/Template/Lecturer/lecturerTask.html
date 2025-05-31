@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../static/css/Lecturer/lecturerTask.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Lecturer Task</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- noi dung duoc nhap trong day -->
+            <div class="main-context">
+                <button class="new-btn">+ Create Question</button>
+                <div class="title">Task</div>
+
+                <div class="search-container">
+                    <input type="text" id="search" placeholder="Search...">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+
+                <table class="course-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Description</th>
+                            <th>Total Question</th>
+                            <th>Deadline</th>
+                            <th>
+                                <div class="dropdown">
+                                    <select id="subject-select">
+                                        <option value="all">All Status</option>
+                                        <option value="not received">Not Received</option>
+                                        <option value="in progress">In Progress</option>
+                                        <option value="submitted">Submitted</option>
+                                    </select>
+                                </div>
+                            </th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Database System</td>
+                            <td>Middle exam</td>
+                            <td>20</td>
+                            <td>20/05/2025</td>
+                            <td>
+                                <div class="status status-n">Not Received</div>
+                            </td>
+                            <td>
+                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
+                                    onclick="openModal();"></i>
+                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC;"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Database System</td>
+                            <td>Middle exam</td>
+                            <td>20</td>
+                            <td>20/05/2025</td>
+                            <td>
+                                <div class="status status-i">In Progress</div>
+                            </td>
+                            <td>
+                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
+                                    onclick="openModal();"></i>
+                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC;"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Database System</td>
+                            <td>Middle exam</td>
+                            <td>20</td>
+                            <td>20/05/2025</td>
+                            <td>
+                                <div class="status status-s">Submitted</div>
+                            </td>
+                            <td>
+                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
+                                    onclick="openModal();"></i>
+                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC;"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Database System</td>
+                            <td>Middle exam</td>
+                            <td>20</td>
+                            <td>20/05/2025</td>
+                            <td>
+                                <div class="status status-n">Not Received</div>
+                            </td>
+                            <td>
+                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
+                                    onclick="openModal();"></i>
+                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC;"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Database System</td>
+                            <td>Middle exam</td>
+                            <td>20</td>
+                            <td>20/05/2025</td>
+                            <td>
+                                <div class="status status-i">In Progress</div>
+                            </td>
+                            <td>
+                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
+                                    onclick="openModal();"></i>
+                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC;"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Database System</td>
+                            <td>Middle exam</td>
+                            <td>20</td>
+                            <td>20/05/2025</td>
+                            <td>
+                                <div class="status status-s">Submitted</div>
+                            </td>
+                            <td>
+                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
+                                    onclick="openModal();"></i>
+                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC;"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Database System</td>
+                            <td>Middle exam</td>
+                            <td>20</td>
+                            <td>20/05/2025</td>
+                            <td>
+                                <div class="status status-n">Not Received</div>
+                            </td>
+                            <td>
+                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
+                                    onclick="openModal();"></i>
+                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC;"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Database System</td>
+                            <td>Middle exam</td>
+                            <td>20</td>
+                            <td>20/05/2025</td>
+                            <td>
+                                <div class="status status-i">In Progress</div>
+                            </td>
+                            <td>
+                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
+                                    onclick="openModal();"></i>
+                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC;"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Database System</td>
+                            <td>Middle exam</td>
+                            <td>20</td>
+                            <td>20/05/2025</td>
+                            <td>
+                                <div class="status status-s">Submitted</div>
+                            </td>
+                            <td>
+                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
+                                    onclick="openModal();"></i>
+                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC;"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- End Main content -->
+
+
+
+            <!-- ma nhung header vs menu -->
+            <script>
+                // Load header
+                fetch('../header_user.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('header-placeholder').innerHTML = data;
+                    });
+
+                // Load menu
+                fetch('Menu-Lecturer.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('menu-HTML').innerHTML = data;
+                    });
+
+                document.getElementById("subject-select").addEventListener("change", function () {
+                    const selectedStatus = this.value.toLowerCase();
+                    const rows = document.querySelectorAll("tbody tr");
+
+                    rows.forEach(row => {
+                        const statusDiv = row.querySelector(".status");
+                        const statusText = statusDiv ? statusDiv.textContent.trim().toLowerCase() : "";
+
+                        if (selectedStatus === "all") {
+                            row.style.display = "";
+                        } else {
+                            row.style.display = (statusText === selectedStatus) ? "" : "none";
+                        }
+                    });
+                });
+
+            </script>
+</body>
+
+</html>
