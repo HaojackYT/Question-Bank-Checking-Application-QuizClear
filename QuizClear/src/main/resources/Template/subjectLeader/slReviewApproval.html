@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../static/css/subjectLeader/slReviewApproval.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>sl - Review & Approval</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <div class="review-container">
+                <div class="page-header">
+                    <h1>Review & Approval</h1>
+                    <p class="page-subtitle">Assign and manage question development tasks by lecturer</p>
+                </div>
+
+                <div class="search-filter-section">
+                    <div class="search-box">
+                        <input type="text" placeholder="Enter search content..." class="search-input">
+                        <button class="search-btn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="filter-dropdown">
+                        <select class="filter-select">
+                            <option>All Tasks</option>
+                            <option>Completed</option>
+                            <option>Approved</option>
+                            <option>In Progress</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <div class="tasks-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Lecturer</th>
+                                <th>No. of Ques</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Details</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Nguyen Van A</td>
+                                <td>20</td>
+                                <td>22/04/25</td>
+                                <td><span class="status completed">Completed</span></td>
+                                <td><button class="details-btn" onclick="viewDetails(1)"><i class="fa-solid fa-eye"></i></button></td>
+                                <td>
+                                    <button class="action-btn approve"><i class="fas fa-check"></i></button>
+                                    <button class="action-btn decline" onclick="openDeclineModal()"><i class="fas fa-times"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Nguyen Van B</td>
+                                <td>40</td>
+                                <td>22/04/25</td>
+                                <td><span class="status approved">Approved</span></td>
+                                <td><button class="details-btn" onclick="viewDetails(2)"><i class="fa-solid fa-eye"></i></button></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Nguyen Van B</td>
+                                <td>50</td>
+                                <td>22/04/25</td>
+                                <td><span class="status in-progress">In Prog.</span></td>
+                                <td><button class="details-btn" onclick="viewDetails(3)"><i class="fa-solid fa-eye"></i></button></td>
+                                <td>
+                                    <button class="action-btn approve"><i class="fas fa-check"></i></button>
+                                    <button class="action-btn decline" onclick="openDeclineModal()"><i class="fas fa-times"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+
+    <!-- Decline Question Modal -->
+    <div class="modal" id="declineModal">
+        <div class="modal-header">
+            <h2>Decline Question</h2>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Provide a reason for declining this question.</p>
+            <textarea class="modal-textarea" id="declineTextarea" placeholder="Enter your decline reason here..."></textarea>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+            <button class="modal-btn send" onclick="sendDeclineReason()">Send</button>
+        </div>
+    </div>
+
+    <!-- JavaScript for loading header and menu -->
+    <script>
+        fetch('../header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        fetch('Menu-SL.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+
+        function viewDetails(id) {
+            window.location.href = `details.html?id=${id}`;
+        }
+
+        function openDeclineModal() {
+            document.getElementById('modalOverlay').style.display = 'block';
+            document.getElementById('declineModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.getElementById('declineModal').style.display = 'none';
+        }
+
+        function sendDeclineReason() {
+            const textarea = document.getElementById('declineTextarea');
+            const reason = textarea.value.trim();
+
+            if (reason) {
+                console.log('Decline reason sent:', reason);
+                alert('Decline reason sent successfully!');
+                textarea.value = '';
+                closeModal();
+            } else {
+                alert('Please enter a reason before sending.');
+            }
+        }
+
+        // Close modal when clicking on overlay
+        document.getElementById('modalOverlay').addEventListener('click', closeModal);
+    </script>
+</body>
+
+</html>

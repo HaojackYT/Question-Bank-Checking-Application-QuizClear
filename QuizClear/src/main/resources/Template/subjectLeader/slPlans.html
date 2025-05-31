@@ -1,32 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-        <link rel="stylesheet" href="../../Static/header.css">
-        <link rel="stylesheet" href="../../Static/web_styles.css">
-        <link rel="stylesheet" href="../../static/css/subjectLeader/slPlans.css">
-        <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-        <title>Template</title>
-    </head>
 
-    <body>
-        <!--header-->
-        <div id="header-placeholder"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../static/css/subjectLeader/slPlans.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>SL Plans</title>
+</head>
 
-
-
-        <!-- body -->
-        <div id="Container-body">
-            <!-- Menu -->
-            <div id="menu-HTML"></div>
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
 
 
-            <!-- Main content -->
-            <div id="main">
-               <!-- noi dung duoc nhap trong day -->
-                
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- noi dung duoc nhap trong day -->
+            <div class="main-context">
+                <div class="title">Plans</div>
+                <div class="subtitle">Access and confirm assigned question development tasks</div>
+                <div class="filter-select">
+                    <div class="search-container">
+                        <input type="text" id="search" placeholder="Search...">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <label for="department"></label>
+                    <select id="department" name="departments">
+                        <option value="AllDepartment">All Plans</option>
+                        <option value="IT">gsdjsg</option>
+                        <option value="DB">gfre</option>
+                    </select>
+                </div>
+                <table class="course-table">
+                    <thead>
+                        <tr>
+                            <th>Plans ID</th>
+                            <th>Plans Name</th>
+                            <th>No. of Ques</th>
+                            <th>Difficulty Levels</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>DB202</td>
+                            <td>Database Systems</td>
+                            <td>50</td>
+                            <td>15 Reg
+                                20 Comp
+                                10 Bas App
+                                5 Adv App</td>
+                            <td>22/04/25</td>
+                            <td>
+                                <div class="status-btn-acp">Accepted</div>
+                            </td>
+                            <td></td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>DB202</td>
+                            <td>Database Systems</td>
+                            <td>50</td>
+                            <td>15 Reg
+                                20 Comp
+                                10 Bas App
+                                5 Adv App</td>
+                            <td>22/04/25</td>
+                            <td>
+                                <div class="status-btn-new">New</div>
+                            </td>
+                            <td>
+                               <i class="fa-regular fa-circle-check" style ="color: green"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                           <tr>
+                            <td>DB202</td>
+                            <td>Database Systems</td>
+                            <td>50</td>
+                            <td>15 Reg
+                                20 Comp
+                                10 Bas App
+                                5 Adv App</td>
+                            <td>22/04/25</td>
+                            <td>
+                                <div class="status-btn-new">New</div>
+                            </td>
+                            <td>
+                               <i class="fa-regular fa-circle-check" style ="color: green"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>DB202</td>
+                            <td>Database Systems</td>
+                            <td>50</td>
+                            <td>15 Reg
+                                20 Comp
+                                10 Bas App
+                                5 Adv App</td>
+                            <td>22/04/25</td>
+                            <td>
+                                <div class="status-btn-new">New</div>
+                            </td>
+                            <td>
+                               <i class="fa-regular fa-circle-check" style ="color: green"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>DB202</td>
+                            <td>Database Systems</td>
+                            <td>50</td>
+                            <td>15 Reg
+                                20 Comp
+                                10 Bas App
+                                5 Adv App</td>
+                            <td>22/04/25</td>
+                            <td>
+                                <div class="status-btn-new">New</div>
+                            </td>
+                            <td>
+                               <i class="fa-regular fa-circle-check" style ="color: green"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>DB202</td>
+                            <td>Database Systems</td>
+                            <td>50</td>
+                            <td>15 Reg
+                                20 Comp
+                                10 Bas App
+                                5 Adv App</td>
+                            <td>22/04/25</td>
+                            <td>
+                                <div class="status-btn-new">New</div>
+                            </td>
+                            <td>
+                               <i class="fa-regular fa-circle-check" style ="color: green"></i>
+                            </td>
+                        </tr>
+                    </tbody>
             </div>
         </div>
 
@@ -49,5 +174,6 @@
                 });
 
         </script>
-    </body>
+</body>
+
 </html>
