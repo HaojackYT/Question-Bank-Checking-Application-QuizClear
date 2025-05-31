@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Static/fontawesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../Static/css/HED/HED_profile.css">
+    <title>Template</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Main content -->
+        <div id="main">
+            <div class="content-section">
+                <div id="top">
+                    <div class="personal-info">
+                        <h2>Personal Information</h2>
+                        <div class="info-item">
+                            <label>Full Name</label>
+                            <span>Nguyen Van A</span>
+                        </div>
+                        <div style="display: flex;flex-direction: row;">
+                            <div class="info-item" style="width: 48%;margin-right: 4%;">
+                                <label>Gender</label>
+                                <span>Male</span>
+                            </div>
+                            <div class="info-item" style="width: 48%;">
+                                <label>Date of Birth</label>
+                                <span>20/01/1999</span>
+                            </div>
+                        </div>
+                        <div style="display: flex;flex-direction: row;">
+                            <div class="info-item" style="width: 52%;margin-right: 4%;">
+                                <label>Nation</label>
+                                <span>Viet Nam</span>
+                            </div>
+                            <div class="info-item" style="width: 44%">
+                                <label>Phone Number</label>
+                                <span>0972051234</span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <label>Hometown</label>
+                            <span>No 70 To Ky Street, Tan Chanh Hiep Ward, District 12, Ho Chi Minh City</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Contact Address</label>
+                            <span>No 70 To Ky Street, Tan Chanh Hiep Ward, District 12, Ho Chi Minh City</span>
+                        </div>
+                    </div>
+
+                    <div class="settings">
+                        <h2>Settings</h2>
+                        <div class="setting-item">
+                            <div class="container">
+                                <h3>Account</h3>
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <a href="#">Update Profile</a>
+                            <a href="#">Change Password</a>
+                        </div>
+                        <div class="setting-item">
+                            <div class="container">
+                                <h3>Preferences</h3>
+                            <i class="fa-solid fa-sliders"></i>
+                            </div>
+                            <a href="#">Notification</a>
+                            <a href="#">Language</a>
+                        </div>
+                        <div class="setting-item">
+                            <div class="container">
+                                <h3>Privacy & Security</h3>
+                            <i class="fa-solid fa-shield"></i>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <a href="#">Delete My Account</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="work-info">
+                    <h2>Work Information</h2>
+                    <div style="display: flex;flex-direction: row;justify-content: space-between;">
+                        <div class="info-item" style="width: 48%;">
+                            <label>Teacher's Code</label>
+                            <span>1001</span>
+                        </div>
+                        <div class="info-item" style="width: 48%;">
+                            <label>Gmail</label>
+                            <span>nva1001@utd.vn</span>
+                        </div>
+                    </div>
+                    <div style="display: flex;flex-direction: row;justify-content: space-between;">
+                        <div class="info-item" style="width: 52%;">
+                            <label>Position</label>
+                            <span>Head of Department</span>
+                        </div>
+                        <div class="info-item" style="width: 44%;">
+                            <label>Department</label>
+                            <span>Information Technology</span>
+                        </div>
+                    </div>
+                    <div style="display: flex;flex-direction: row;justify-content: space-between;">
+                        <div class="info-item" style="width: 28%;">
+                            <label>Start Year</label>
+                            <span>20/4/2025</span>
+                        </div>
+                        <div class="info-item" style="width: 28%;">
+                            <label>End Year</label>
+                            <span>---</span>
+                        </div>
+                        <div class="info-item" style="width: 28%;">
+                            <label>Status</label>
+                            <span>Ongoing</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <label>Qualification</label>
+                        <span>MS in Information Technology - University of Transport and Communications, Vietnam -
+                            2012</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Workplace</label>
+                        <span>University of Transport and Communications, Campus 3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ma nhung header vs menu -->
+    <script>
+        // Load header
+        fetch('../header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+    </script>
+</body>
+
+</html>
