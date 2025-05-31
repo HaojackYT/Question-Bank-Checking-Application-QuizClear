@@ -1,0 +1,475 @@
+/* Dashboard Styles */
+#main {
+    padding: 30px;
+    background-color: #f8fafc;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+    margin-bottom: 40px;
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 12px 0;
+}
+
+.welcome-text {
+    color: #64748b;
+    font-size: 1.1rem;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* Statistics Cards */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 50px;
+}
+
+.stat-card {
+    background: #e0e7ff;
+    padding: 24px 20px;
+    border-radius: 16px;
+    text-align: center;
+    position: relative;
+}
+
+.stat-card.lecturer {
+    background: #dbeafe;
+}
+
+.stat-card.pending {
+    background: #dbeafe;
+}
+
+.stat-card.approved {
+    background: #dbeafe;
+}
+
+.stat-card.reject {
+    background: #dbeafe;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 8px;
+    line-height: 1;
+}
+
+.stat-change {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 400;
+}
+
+/* Quick Access Section */
+.quick-access-section {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.quick-access-section h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 40px 0;
+}
+
+.quick-access-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 80px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.quick-access-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+}
+
+.quick-access-button {
+    margin-bottom: 20px;
+    transition: transform 0.2s ease;
+}
+
+.quick-access-button:hover {
+    transform: translateY(-4px);
+}
+
+.quick-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1e293b;
+    background: white;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border: 1px solid #f1f5f9;
+}
+
+.quick-access-item span {
+    font-size: 16px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Deadline Section */
+.deadline-section {
+    margin-bottom: 50px;
+     margin-top: 60px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.deadline-section h2,
+.activities-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+}
+
+.section-subtitle {
+    color: #6b7280;
+    font-size: 14px;
+    margin: 0 0 30px 0;
+    font-weight: 400;
+}
+
+.deadline-list,
+.activities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.deadline-item,
+.activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.deadline-content,
+.activity-content {
+    flex: 1;
+}
+
+.deadline-content h3,
+.activity-content h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+}
+
+.deadline-content p,
+.activity-content p {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.check-btn {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-left: 20px;
+}
+
+.check-btn:hover {
+    background-color: #2563eb;
+}
+
+/* Activities Section */
+.activities-section {
+    margin-bottom: 50px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Charts Container */
+.charts-container {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 40px;
+}
+
+.chart-section,
+.progress-section {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.chart-section h2,
+.progress-section h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+}
+
+/* Bar Chart */
+.bar-chart {
+    margin-top: 30px;
+    position: relative;
+}
+
+.chart-area {
+    display: flex;
+    align-items: end;
+    margin-bottom: 10px;
+        margin-top: 80px;
+    position: relative;
+    background-image: 
+        linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+        linear-gradient(to top, #e5e7eb 1px, transparent 1px);
+    background-size: 60px 24px;
+    background-position: 60px 0;
+    padding: 20px 6;
+}
+
+.y-axis {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    height: 120px;
+    margin-right: 15px;
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+    width: 40px;
+    text-align: right;
+}
+
+.chart-bars {
+    display: flex;
+    align-items: end;
+    justify-content: space-evenly;
+    height: 120px;
+    flex: 1;
+    padding: 0 20px;
+}
+
+.bar-group {
+    display: flex;
+    gap: 4px;
+    align-items: end;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.bar-group:hover {
+    opacity: 0.8;
+}
+
+.bar {
+    width: 16px;
+    border-radius: 2px 2px 0 0;
+    min-height: 2px;
+}
+
+.bar.created {
+    background-color: #8b5cf6;
+}
+
+.bar.target {
+    background-color: #f87171;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 60px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.legend-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+}
+
+.legend-color.created {
+    background-color: #8b5cf6;
+}
+
+.legend-color.target {
+    background-color: #f87171;
+}
+
+.legend-color.completed {
+    background-color: #10b981;
+}
+
+.legend-color.remaining {
+    background-color: #e5e7eb;
+}
+
+.chart-tooltip {
+    background: #374151;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* Overall Progress */
+.progress-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.progress-percentage-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 30px;
+}
+
+.circular-progress {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.progress-legend {
+    display: flex;
+    gap: 30px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .charts-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .quick-access-grid {
+        gap: 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    #main {
+        padding: 20px;
+    }
+    
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-access-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .quick-access-section {
+        padding: 30px 20px;
+    }
+    
+    .deadline-item,
+    .activity-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+    
+    .check-btn {
+        margin-left: 0;
+        align-self: flex-end;
+    }
+    
+    .charts-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-header h1 {
+        font-size: 2rem;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+    }
+    
+    .chart-bars {
+        padding: 0 10px;
+    }
+    
+    .bar-group {
+        gap: 2px;
+    }
+    
+    .bar {
+        width: 10px;
+    }
+    
+    .quick-icon {
+        width: 80px;
+        height: 80px;
+    }
+}

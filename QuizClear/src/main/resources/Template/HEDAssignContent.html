@@ -1,0 +1,88 @@
+<!-- Phần nội dung chính để đặt vào div#main -->
+<div class="main-content">
+  <div class="page-header">
+    <h1 class="page-title">Assignment Management</h1>
+    <button class="new-assign-btn" onclick="showNewAssignmentModal()">
+      <i class="fas fa-plus"></i>
+      New Assign
+    </button>
+  </div>
+
+  <div class="notification-card">
+    <div class="notification-title">New Notification</div>
+    <div class="notification-subtitle">Assignments to be completed</div>
+
+    <div class="notification-item">
+      <input type="checkbox" class="notification-checkbox" checked />
+      <div class="notification-text">
+        <div class="notification-content">
+          New Assignment: Assign lecturer(s) to the Web Programming Subject
+        </div>
+        <div class="notification-date">Due: 20/05/2025</div>
+      </div>
+    </div>
+
+    <div class="notification-item">
+      <input type="checkbox" class="notification-checkbox" checked />
+      <div class="notification-text">
+        <div class="notification-content">
+          New Assignment: Assign lecturer(s) to the Database Subject
+        </div>
+        <div class="notification-date">Due: 25/05/2025</div>
+      </div>
+    </div>
+
+    <a href="#" class="see-more">See more...</a>
+    <div style="clear: both"></div>
+  </div>
+
+  <div class="search-section">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Enter search content ..."
+      id="searchInput"
+    />
+    <select class="subject-filter" id="subjectFilter">
+      <option value="All Subject">All Subject</option>
+      <option value="Operating System">Operating System</option>
+      <option value="Database">Database</option>
+      <option value="Computer architecture">Computer Architecture</option>
+      <option value="DBMS">DBMS</option>
+      <option value="Object Oriented Programming">
+        Object Oriented Programming
+      </option>
+    </select>
+  </div>
+
+  <div class="assignments-table">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Subject</th>
+          <th>Questions Required</th>
+          <th>Assigned Lecturer</th>
+          <th>Completed</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="assignmentsTableBody">
+        <!-- Dữ liệu sẽ được thêm bằng JavaScript -->
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      <div class="pagination-info">
+        <i class="fas fa-chart-bar"></i>
+        Total Pages: <strong>9</strong>
+      </div>
+      <div class="pagination-controls">
+        <button class="pagination-btn" id="prevBtn" disabled>< Previous</button>
+        <span class="page-number">1</span>
+        <button class="pagination-btn" id="nextBtn">Next ></button>
+      </div>
+    </div>
+  </div>
+</div>
