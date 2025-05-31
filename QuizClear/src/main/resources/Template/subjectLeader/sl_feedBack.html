@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/css/subjectLeader/sl_feedBack.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>SL Plans</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- noi dung duoc nhap trong day -->
+            <div class="main-context">
+
+                <p style="font-size: 3rem;font-weight: bold;margin-left: 1rem;">Feedback</p>
+                <p style="font-size: 1.1rem;margin-left: 1rem;opacity: 60%;">Assign and manage question development
+                    tasks by lecturer</p>
+
+
+                <div class="fillter-container">
+                    <div id="find">
+                        <input type="text" title="find" placeholder="Enter search content ....">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <select name="fillter" id="fillter" title="fillter">
+                        <option value=" All_Feedback">All Feedback</option>
+                    </select>
+                </div>
+
+                <div>
+                    <table class="feedback-table">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Feedback Content</th>
+                                <th>Feedback Giver</th>
+                                <th>Created Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dữ liệu sẽ được thêm vào đây động -->
+                            <tr>
+                                <td>1</td>
+                                <td>Feedback on Q25</td>
+                                <td>Department Head</td>
+                                <td>22/04/25</td>
+                                <td><span class="status completed">Completed</span></td>
+                                <td><span class="action-icon"><a href="#"><i class="fa-solid fa-pen-to-square"></i></a></span></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Feedback on Q25</td>
+                                <td>Department Head</td>
+                                <td>22/04/25</td>
+                                <td><span class="status in-progress">In Prog.</span></td>
+                                <td><span class="action-icon"><a href="#"><i class="fa-solid fa-pen-to-square"></i></a></span></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Feedback on Q25</td>
+                                <td>Department Head</td>
+                                <td>22/04/25</td>
+                                <td><span class="status new">New</span></td>
+                                <td><span class="action-icon"><a href="#"><i class="fa-solid fa-pen-to-square"></i></a></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- ma nhung header vs menu -->
+        <script>
+            // Load header
+            fetch('../header_user.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
+
+            // Load menu
+            fetch('Menu-SL.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('menu-HTML').innerHTML = data;
+                });
+
+        </script>
+</body>
+
+</html>
