@@ -3,9 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-        <link rel="stylesheet" href="../Static/header.css">
-        <link rel="stylesheet" href="../Static/web_styles.css">
+        <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css" />
+        <link rel="stylesheet" href="../../Static/header.css" />
+        <link rel="stylesheet" href="../../Static/web_styles.css" />
+        <link rel="stylesheet" href="../../Static/Menu-Staff.css" />
+        <link rel="stylesheet"
+            href="../../Static/css/staff/staffQuestionBank.css">
         <link
             href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
             rel="stylesheet">
@@ -260,11 +263,11 @@
 
         <!-- Auto-load menu and header -->
         <script>
-            fetch('../Template/header_user.html')
+            fetch('../../Template/header_user.html')
               .then(res => res.text())
               .then(data => document.getElementById('header-placeholder').innerHTML = data);
 
-            fetch('../Template/Menu-Staff.html')
+            fetch('../../Template/Menu-Staff.html')
               .then(res => res.text())
               .then(data => document.getElementById('menu-HTML').innerHTML = data);
               
