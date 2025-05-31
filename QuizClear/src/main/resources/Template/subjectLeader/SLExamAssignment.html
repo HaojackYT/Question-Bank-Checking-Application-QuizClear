@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+        <link rel="stylesheet" href="../../Static/header.css">
+        <link rel="stylesheet" href="../../Static/web_styles.css">
+        <link rel="stylesheet" href="../../Static/Menu-Staff.css">
+        <link rel="stylesheet" href="../../Static/css/subjectLeader/SLExamAssignment.css">
+        <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+        <title>Template</title>
+    </head>
+
+    <body>
+        <!--header-->
+        <div id="header-placeholder"></div>
+
+        <!-- body -->
+        <div id="Container-body">
+            <!-- Menu -->
+            <div id="menu-HTML"></div>
+
+            <div id="newAssignModalOverlay" class="modal-overlay"></div>
+
+            <div id="newAssignModal" class="new-assign-modal">
+                <div class="modal-header">
+                    <h2>New Assign</h2>
+                    <button type="button" class="close-modal-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="examTitle">Exam Title</label>
+                            <input type="text" id="examTitle" placeholder="Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="lecturer">Lecturer</label>
+                            <select id="lecturer">
+                                <option value="Nguyen Van A">Nguyen Van A</option>
+                                <option value="Nguyen Van B">Nguyen Van B</option>
+                                </select>
+                            <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16px" height="16px">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                        </div>
+                        <div class="form-group">
+                            <label for="course">Course</label>
+                            <input type="text" id="course" placeholder="Database">
+                        </div>
+                        <div class="form-group">
+                            <label for="noOfExams">No. of Exams</label>
+                            <input type="number" id="noOfExams" placeholder="4">
+                        </div>
+                        <div class="form-group">
+                            <label for="structure">Structure</label>
+                            <select id="structure">
+                                <option value="Multiple Choices">Multiple Choices</option>
+                                <option value="Essay">Essay</option>
+                                </select>
+                            <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16px" height="16px">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                        </div>
+                        <div class="form-group">
+                            <label for="assignDate">Assign Date</label>
+                            <input type="text" id="assignDate" placeholder="20/4/25">
+                        </div>
+                        <div class="form-group">
+                            <label for="dueDate">Due Date</label>
+                            <input type="text" id="dueDate" placeholder="20/4/25">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel-button close-modal-btn">Cancel</button>
+                    <button type="button" class="assign-button">Assign</button>
+                </div>
+            </div>
+            
+            <div id="detailsModalOverlay" class="modal-overlay"></div>
+
+            <div id="detailsModal" class="details-modal">
+                <div class="modal-header">
+                    <h2>Details</h2>
+                    <button type="button" class="close-details-modal-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="detailsExamTitle">Exam Title</label>
+                            <input type="text" id="detailsExamTitle" value="DB202" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="detailsLecturer">Lecturer</label>
+                            <input type="text" id="detailsLecturer" value="Nguyen Van A" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="detailsCourse">Course</label>
+                            <input type="text" id="detailsCourse" value="Database" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="detailsNoOfExams">No. of Exams</label>
+                            <input type="number" id="detailsNoOfExams" value="4" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="detailsStructure">Structure</label>
+                            <input type="text" id="detailsStructure" value="Multiple Choices" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="detailsAssignDate">Assign Date</label>
+                            <input type="text" id="detailsAssignDate" value="25/4/25" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="detailsDueDate">Due Date</label>
+                            <input type="text" id="detailsDueDate" value="25/4/25" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <div id="main">
+               <div class="main-content-area">
+                    <div class="exam-assignment-header">
+                        <h1>Exam Assignment</h1>
+                        <p>View, assign tasks and track exam progress.</p>
+                    </div>
+
+                    <div class="exam-assignment-controls">
+                        <div class="search-bar">
+                            <input type="text" placeholder="Enter search content...">
+                            <button type="button" class="search-icon"> </button>
+                        </div>
+                        <div class="dropdown">
+                            <select>
+                                <option value="all-tasks">All Tasks</option>
+                                </select>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16px" height="16px" class="dropdown-arrow">
+                                <path d="M7 10l5 5 5-5z"/>
+                            </svg>
+                        </div>
+                        <button class="new-assign-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                            New assign
+                        </button>
+                    </div>
+
+                    <div class="exam-assignment-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="header-item">No.</th>
+                                    <th class="header-item">Exam Title</th>
+                                    <th class="header-item">No. of Exams</th>
+                                    <th class="header-item">Structure</th>
+                                    <th class="header-item">Due Date</th>
+                                    <th class="header-item">Status</th>
+                                    <th class="header-item">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>DAI SO</td>
+                                    <td>4</td>
+                                    <td>M.Cs</td>
+                                    <td>22/04/25</td>
+                                    <td><span class="status completed">Completed</span></td>
+                                    <td class="actions completed-row-actions">
+                                        <button class="action-icon view-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px">
+                                                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 13c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                            </svg>
+                                        </button>
+                                        <button class="action-icon edit-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px">
+                                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Nguyen Van B</td>
+                                    <td>2</td>
+                                    <td>M.Cs</td>
+                                    <td>22/04/25</td>
+                                    <td><span class="status in-progress">In Prog.</span></td>
+                                    <td class="actions">
+                                        <button class="action-icon view-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px">
+                                                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 13c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                            </svg>
+                                        </button>
+                                        <button class="action-icon edit-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px">
+                                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Nguyen Van B</td>
+                                    <td>3</td>
+                                    <td>M.Cs</td>
+                                    <td>22/04/25</td>
+                                    <td><span class="status new">New</span></td>
+                                    <td class="actions">
+                                        <button class="action-icon view-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px">
+                                                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 13c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                            </svg>
+                                        </button>
+                                        <button class="action-icon edit-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px" height="20px">
+                                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="../../Static/js/SLNewAssign.js"></script>
+
+        <!-- ma nhung header vs menu -->
+        <script>
+            // Load header
+            fetch('../header_user.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
+
+            // Load menu
+            fetch('../Menu-Staff.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('menu-HTML').innerHTML = data;
+                });
+
+        </script>
+    </body>
+</html>

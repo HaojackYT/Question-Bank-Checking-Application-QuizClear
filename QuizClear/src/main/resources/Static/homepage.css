@@ -32,7 +32,7 @@ img {
 }
 
 #body-content .text {
-    margin-left: 16rem;
+    margin-left: 10%;
     font-size: 1.5rem;
     font-weight: lighter;
     margin-bottom: 16rem;
@@ -86,7 +86,7 @@ img {
 }
 
 #Infor-Container #left .text1 {
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: #120368;
     margin-bottom: 2rem;
