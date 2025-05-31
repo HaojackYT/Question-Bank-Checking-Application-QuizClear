@@ -1,0 +1,327 @@
+.approvals-container {
+    padding: 1.875rem 2.5rem;
+    min-height: 100vh;
+    width: 68.75rem;
+}
+
+.page-header {
+    margin-bottom: 1.875rem;
+}
+
+.page-header h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #120368;
+    margin: 0 0 0.5rem 0;
+}
+
+.page-subtitle {
+    color: #6c757d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.search-filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5625rem;
+    gap: 1.25rem;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    max-width: 25rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 3.125rem 0.75rem 1rem;
+    border: 0.0625rem solid #dee2e6;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background-color: white;
+    transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.1875rem rgba(0, 123, 255, 0.1);
+}
+
+.search-btn {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+}
+
+.filter-dropdown {
+    position: relative;
+    min-width: 11.25rem;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    border: 0.0625rem solid #dee2e6;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background-color: white;
+    cursor: pointer;
+    appearance: none;
+}
+
+.filter-dropdown i {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    pointer-events: none;
+}
+
+.table-container {
+    background: white;
+    border: 0.0625rem solid #D9D9D9;
+    border-radius: 0.625rem;
+}
+
+.approvals-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.approvals-table th,
+.approvals-table td {
+    padding: 1rem 1.25rem;
+    font-size: 0.875rem;
+}
+
+.approvals-table th {
+    background-color: #D9D9D9;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 0.0625rem solid #dee2e6;
+}
+
+.approvals-table td {
+    border-bottom: 0.0625rem solid #f8f9fa;
+    color: #495057;
+}
+
+.approvals-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.status {
+    padding: 0.375rem 0.75rem;
+    border-radius: 1.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03125rem;
+}
+
+/* Trạng thái */
+.status.approved { background-color: #d4edda; color: #155724; }
+.status.declined { background-color: #f8d7da; color: #721c24; }
+.status.new { background-color: #fff3cd; color: #856404; }
+
+/* Buttons */
+.details-btn {
+    background-color: #f8f9fa;
+    border: 0.0625rem solid #dee2e6;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    color: #495057;
+    transition: all 0.2s ease;
+}
+
+.details-btn:hover {
+    background-color: #e9ecef;
+    color: #212529;
+}
+
+.action-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    margin: 0 0.25rem;
+    border: none;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.approve-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.approve-btn:hover {
+    background-color: #218838;
+    transform: scale(1.1);
+}
+
+.decline-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.decline-btn:hover {
+    background-color: #c82333;
+    transform: scale(1.1);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0 0 0 / 74%);
+    backdrop-filter: blur(0.25rem);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 3.125rem auto 0;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.625rem 2.5rem rgba(0, 0, 0, 0.2);
+    max-width: 37.5rem;
+    width: 90%;
+    animation: modalSlideIn 0.3s ease;
+    margin-top: 8.125rem;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 3.125rem;
+    padding-top: 2.1875rem;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #120368;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: #000;
+    padding-top: 0.5rem;
+    padding-right: 3.125rem;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background-color: #f8f9fa;
+    color: #495057;
+}
+
+.modal-body {
+    padding: 0.9375rem 3.125rem 1.5625rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.9375rem;
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.875rem;
+    margin-top: -0.5625rem;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 0.0625rem solid #dee2e6;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: #495057;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+    margin-top: -0.3125rem;
+}
+
+.form-group textarea {
+    min-height: 6.25rem;
+    font-family: inherit;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.875rem;
+}
+
+.cancel-btn,
+.send-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.cancel-btn {
+    background-color: #f8f9fa;
+    color: #495057;
+    border: 0.0625rem solid #dee2e6;
+}
+
+.send-btn {
+    background-color: #00ADEF;
+    color: white;
+}
+
+.send-btn:hover {
+    background-color: #138496;
+    transform: translateY(-0.125rem);
+    box-shadow: 0 0.25rem 0.75rem rgba(23, 162, 184, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 48rem) {
+    .approvals-container { padding: 1.25rem; }
+    .search-filter-bar { flex-direction: column; align-items: stretch; }
+    .search-box { max-width: none; }
+    .approvals-table { font-size: 0.75rem; }
+    .approvals-table th, .approvals-table td { padding: 0.75rem 0.5rem; }
+    .modal-content { margin: 1.25rem auto; width: 95%; }
+    .modal-body { padding: 1.25rem; }
+    .modal-actions { flex-direction: column; }
+    .cancel-btn, .send-btn { width: 100%; }
+}
+.modal-content.details-modal{
+    margin-top: 4.375rem;
+
+}
