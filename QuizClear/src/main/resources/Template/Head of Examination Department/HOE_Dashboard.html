@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+        <link rel="stylesheet" href="../../Static/header.css">
+        <link rel="stylesheet" href="../../Static/web_styles.css">
+        <link rel="stylesheet" href="../../Static/css/HOE/HOE_Dashboard.css">
+        <link
+            href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
+            rel="stylesheet">
+        <title>HOE Dashboard</title>
+    </head>
+
+    <body>
+        <!--header-->
+        <div id="header-placeholder"></div>
+
+        <!-- body -->
+        <div id="Container-body">
+            <!-- Menu -->
+            <div id="menu-HTML"></div>
+
+            <!-- Main content -->
+            <div id="main">
+                <div class="dashboard-container">
+                    <!-- Dashboard Header -->
+                    <div class="dashboard-header">
+                        <h1>Dashboard</h1>
+                        <p class="welcome-text">Welcome back, Head of
+                            Examination Department.<br>Let's make today
+                            productive!</p>
+                    </div>
+
+                    <!-- Statistics Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Pending Assignments</div>
+                            <div class="stat-number">25</div>
+                            <div class="stat-change">+6 this month</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total Reviews</div>
+                            <div class="stat-number">253</div>
+                            <div class="stat-change">+12 this month</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Need approval</div>
+                            <div class="stat-number">14</div>
+                            <div class="stat-change">+1 this month</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Task Completion</div>
+                            <div class="stat-number">32</div>
+                            <div class="stat-change">+8 this month</div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="charts-section">
+                        <!-- Bar Chart -->
+                        <div class="chart-container">
+                            <h2>Review Progress by Subject</h2>
+                            <p class="section-subtitle">Number of Review Created
+                                vs. Target</p>
+                            <div class="bar-chart">
+                                <div class="chart-area">
+                                    <div class="y-axis">
+                                        <span>100</span>
+                                        <span>80</span>
+                                        <span>60</span>
+                                        <span>40</span>
+                                        <span>20</span>
+                                        <span>0</span>
+                                    </div>
+                                    <div class="chart-bars">
+                                        <div class="bar-group"
+                                            data-subject="Database Systems">
+                                            <div class="bar created"
+                                                style="height: 44px;"></div>
+                                            <div class="bar target"
+                                                style="height: 54px;"></div>
+                                        </div>
+                                        <div class="bar-group"
+                                            data-subject="Web Development">
+                                            <div class="bar created"
+                                                style="height: 30px;"></div>
+                                            <div class="bar target"
+                                                style="height: 82px;"></div>
+                                        </div>
+                                        <div class="bar-group"
+                                            data-subject="Data Structures">
+                                            <div class="bar created"
+                                                style="height: 56px;"></div>
+                                            <div class="bar target"
+                                                style="height: 74px;"></div>
+                                        </div>
+                                        <div class="bar-group"
+                                            data-subject="Algorithms">
+                                            <div class="bar created"
+                                                style="height: 24px;"></div>
+                                            <div class="bar target"
+                                                style="height: 84px;"></div>
+                                        </div>
+                                        <div class="bar-group"
+                                            data-subject="Operating System">
+                                            <div class="bar created"
+                                                style="height: 60px;"></div>
+                                            <div class="bar target"
+                                                style="height: 82px;"></div>
+                                        </div>
+                                        <div class="bar-group"
+                                            data-subject="Networks">
+                                            <div class="bar created"
+                                                style="height: 18px;"></div>
+                                            <div class="bar target"
+                                                style="height: 42px;"></div>
+                                        </div>
+                                        <div class="bar-group"
+                                            data-subject="Security">
+                                            <div class="bar created"
+                                                style="height: 24px;"></div>
+                                            <div class="bar target"
+                                                style="height: 30px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="chart-legend">
+                                    <div class="legend-item">
+                                        <span
+                                            class="legend-color created"></span>
+                                        <span>Created</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span
+                                            class="legend-color target"></span>
+                                        <span>Target</span>
+                                    </div>
+                                </div>
+                                <div class="chart-tooltip" id="chart-tooltip"
+                                    style="display: none;">Operating
+                                    System</div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Chart -->
+                        <div class="progress-container">
+                            <h3>Overall Progress</h3>
+                            <div class="progress-percentage-text">72%
+                                Completed</div>
+                            <div class="circular-progress">
+                                <svg width="180" height="180"
+                                    viewBox="0 0 180 180">
+                                    <circle cx="90" cy="90" r="80" fill="none"
+                                        stroke="#e5e7eb" stroke-width="20" />
+                                    <circle cx="90" cy="90" r="80" fill="none"
+                                        stroke="#10b981" stroke-width="20"
+                                        stroke-dasharray="502.4"
+                                        stroke-dashoffset="140.672"
+                                        stroke-linecap="round"
+                                        transform="rotate(-90 90 90)" />
+                                </svg>
+                            </div>
+                            <div class="progress-legend">
+                                <div class="legend-item">
+                                    <span class="legend-color completed"></span>
+                                    <span>Completed</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color remaining"></span>
+                                    <span>Remaining</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Updates -->
+                    <div class="recent-updates">
+                        <h3>Recent Updates</h3>
+                        <div class="updates-list">
+                            <div class="update-item">
+                                <div class="update-content">
+                                    <div class="bullet-point">•</div>
+                                    <span class="update-text">Assign review for
+                                        Object Oriented Programming</span>
+                                    <div class="update-time">3:00 PM</div>
+                                    <div class="update-progress">
+                                        <div class="progress-bar"
+                                            style="width: 85%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-content">
+                                    <div class="bullet-point">•</div>
+                                    <span class="update-text">Approve feedback
+                                        for Nguyen Van A</span>
+                                    <div class="update-time">12:35 AM</div>
+                                    <div class="update-progress">
+                                        <div class="progress-bar"
+                                            style="width: 45%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-content">
+                                    <div class="bullet-point">•</div>
+                                    <span class="update-text">Lecturer ABC has
+                                        sent feedback for Data Structures and
+                                        Algorithms</span>
+                                    <div class="update-time">8:00 PM</div>
+                                    <div class="update-progress">
+                                        <div class="progress-bar"
+                                            style="width: 100%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="update-item">
+                                <div class="update-content">
+                                    <div class="bullet-point">•</div>
+                                    <span class="update-text">Approve feedback
+                                        for Computer Architecture</span>
+                                    <div class="update-time">9:35 AM</div>
+                                    <div class="update-progress">
+                                        <div class="progress-bar"
+                                            style="width: 20%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="see-more">
+                            <a href="#">See more...</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ma nhung header vs menu -->
+        <script>
+            // Load header
+            fetch('../header_user.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
+
+            // Load menu
+            fetch('Menu-ExaminationDepartment.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('menu-HTML').innerHTML = data;
+                });
+
+            // Chart tooltip functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const barGroups = document.querySelectorAll('.bar-group');
+                const tooltip = document.getElementById('chart-tooltip');
+
+                barGroups.forEach(group => {
+                    group.addEventListener('mouseenter', function() {
+                        const subject = this.getAttribute('data-subject');
+                        tooltip.textContent = subject;
+                        tooltip.style.display = 'block';
+                        
+                        const rect = this.getBoundingClientRect();
+                        const chartRect = document.querySelector('.chart-area').getBoundingClientRect();
+                        tooltip.style.left = (rect.left - chartRect.left + rect.width/2) + 'px';
+                        tooltip.style.bottom = '10px';
+                    });
+
+                    group.addEventListener('mouseleave', function() {
+                        tooltip.style.display = 'none';
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
