@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../static/css/Lecturer/lecturerDashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Lecturer Dashboard</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- noi dung duoc nhap trong day -->
+            <div class="main-content">
+                <div class="title">Dashboard</div>
+                <div class="subtitle">Welcome back, Lecturer. Let's make today productive!</div>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-title">Question Submitted</div>
+                        <div class="stat-value">50</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Question Approved</div>
+                        <div class="stat-value">35</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Question Returned</div>
+                        <div class="stat-value">5</div>
+                    </div>
+                </div>
+
+                <div class="assignment-section">
+                    <h2>Current Assignments</h2>
+                    <p class="subtitle">Monitor the progress of your task completion.</p>
+
+                    <div class="assignment-item">
+                        <div class="assignment-header">
+                            <span>Create a question about Object-Oriented Programming.</span>
+                            <span class="count">10/20 câu</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 50%;"></div>
+                        </div>
+                        <p class="deadline">Deadline: 20/05/2023</p>
+                    </div>
+
+                    <div class="assignment-item">
+                        <div class="assignment-header">
+                            <span>Create a question about Object-Oriented Programming.</span>
+                            <span class="count">10/20 câu</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 50%;"></div>
+                        </div>
+                        <p class="deadline">Deadline: 20/05/2023</p>
+                    </div>
+
+                    <div class="assignment-item">
+                        <div class="assignment-header">
+                            <span>Create a question about Object-Oriented Programming.</span>
+                            <span class="count">10/20 câu</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 50%;"></div>
+                        </div>
+                        <p class="deadline">Deadline: 20/05/2023</p>
+                    </div>
+                </div>
+
+                <div class="activity">
+                    <h2>Recent Activities</h2>
+                    <p class="activities-subtitle">Latest updates in the system</p>
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <p class="activity-text"><strong>Introduction to Programming</strong></p>
+                            <p class="activity-caption">A new subject has been created.</p>
+                        </div>
+                        <div class="status-btn-a">Approved</div>
+                        <div class="date">17:30 05/15</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <p class="activity-text"><strong>Final exam on Data Structures A new subject has been
+                                    created.</strong></p>
+                            <p class="activity-caption">The exam has been sent for review.</p>
+                        </div>
+                        <div class="status-btn-p">Pending</div>
+                        <div class="date">17:30 05/15</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <p class="activity-text"><strong>Database system</strong></p>
+                            <p class="activity-caption">The question is marked as a duplicate.</p>
+                        </div>
+                        <div class="status-btn-r">Reject</div>
+                        <div class="date">17:30 05/15</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <p class="activity-text"><strong>Introduction to Programming</strong></p>
+                            <p class="activity-caption">A new subject has been created.</p>
+                        </div>
+                        <div class="status-btn-a">Approved</div>
+                        <div class="date">17:30 05/15</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Main content -->
+
+
+
+        <!-- ma nhung header vs menu -->
+        <script>
+            // Load header
+            fetch('../header_user.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
+
+            // Load menu
+            fetch('Menu-Lecturer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('menu-HTML').innerHTML = data;
+                });
+
+            // Initialize the chart
+            const ctx = document.getElementById('assignmentChart').getContext('2d');
+            const assignmentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['HTML', 'CSS', 'JavaScript', 'PHP'],
+                    datasets: [{
+                        label: 'Completion Rate (%)',
+                        data: [100, 80, 60, 30],
+                        backgroundColor: [
+                            '#4e73df',
+                            '#1cc88a',
+                            '#36b9cc',
+                            '#f6c23e'
+                        ],
+                        borderRadius: 8,
+                        barThickness: 40
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20,
+                                callback: function (value) {
+                                    return value + "%";
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return context.parsed.y + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+        </script>
+</body>
+
+</html>
