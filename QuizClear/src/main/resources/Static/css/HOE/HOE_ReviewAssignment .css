@@ -1,0 +1,267 @@
+/* Review Assignment Styles */
+.review-assignment-container {
+    margin-bottom: 3.125rem;
+    background: white;
+    padding: 1.875rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1);
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0 0 0.5rem 0;
+}
+
+.page-subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+}
+
+.controls-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+
+.search-filter-container {
+    display: flex;
+    gap: 1rem;
+    flex: 1;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    max-width: 25rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 3rem 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    background-color: #e9ecef;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #007bff;
+}
+
+.search-btn {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.filter-dropdown {
+    position: relative;
+    min-width: 12rem;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    background-color: white;
+    appearance: none;
+    cursor: pointer;
+    outline: none;
+}
+
+.dropdown-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    pointer-events: none;
+    font-size: 0.875rem;
+}
+
+.new-assign-btn {
+    background-color: #5bc0de;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.new-assign-btn:hover {
+    background-color: #46b8da;
+}
+
+.table-container {
+    background-color: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.assignment-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.assignment-table th {
+    background-color: #e9ecef;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    font-size: 0.875rem;
+}
+
+.assignment-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    font-size: 0.875rem;
+    color: #333;
+}
+
+.assignment-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status.completed {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status.in-progress {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    background: none;
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    transition: all 0.3s ease;
+}
+
+.action-btn.large {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.25rem;
+}
+
+.edit-btn {
+    color: #007bff;
+    border-color: #007bff;
+}
+
+.edit-btn:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.delete-btn {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.delete-btn:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+.view-btn {
+    color: #28a745;
+    border-color: #28a745;
+}
+
+.view-btn:hover {
+    background-color: #28a745;
+    color: white;
+}
+
+.bottom-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .review-assignment-container {
+        padding: 1rem;
+    }
+    
+    .controls-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-filter-container {
+        flex-direction: column;
+    }
+    
+    .page-title {
+        font-size: 2rem;
+    }
+    
+    .assignment-table {
+        font-size: 0.75rem;
+    }
+    
+    .assignment-table th,
+    .assignment-table td {
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .assignment-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
