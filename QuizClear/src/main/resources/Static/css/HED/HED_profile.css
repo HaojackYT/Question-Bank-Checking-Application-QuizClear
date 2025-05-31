@@ -1,0 +1,104 @@
+#Container-body {
+    font-family: 'roboto',sans-serif;
+}
+#main {
+    width: 95%;
+    margin: 3%;
+}
+.content-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 20px;
+}
+
+#top {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.personal-info, .settings, .work-info {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    width: 100%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.content-section .personal-info {
+    width: 68%;
+    margin-right: 2%;
+}
+.content-section .settings {
+    width: 28%;
+    margin-left: 2%;
+}
+.content-section h2 {
+    color: #120368;
+    margin-bottom: 15px;
+    font-size: 2rem;
+    border-left: 5px solid #1e3a8a;
+    padding-left: 20px;
+    font-weight: 200;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 20px;
+    border: 2px solid #E0EAFA;
+}
+
+.info-item label {
+    font-weight: bold;
+    margin-right: 10px;
+    color: #000000;
+    width: 200px;
+    font-size: 20px;
+}
+
+.info-item span {
+    color: #555;
+    flex-grow: 1;
+    font-size: 1rem;
+    font-weight: 100;
+    text-align: right;
+}
+
+.settings .setting-item {
+    margin-bottom: 15px;
+}
+
+.settings .container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 5px;
+    background: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 24px !important;
+}
+
+.settings a {
+    color: black;
+    display: block;
+    text-decoration: none;
+    padding: 5px 10px;
+    margin-left: 10px;
+    font-weight: 100;
+    font-size: 20px;
+}
+
+.settings a:hover {
+    text-decoration: none;
+    background: #e0e0e0;
+    border-radius: 5px;
+}
