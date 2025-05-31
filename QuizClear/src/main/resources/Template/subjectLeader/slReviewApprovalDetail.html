@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+      <link rel="stylesheet" href="../../static/css/subjectLeader/slReviewApprovalDetail.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>sl - Details</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <div class="details-container">
+                <div class="page-header">
+                    <button class="back-btn" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h1>Details</h1>
+                </div>
+
+                <div class="information-section">
+                    <h2>Information</h2>
+                    <p class="section-subtitle">Display all related information</p>
+
+                    <div class="info-grid">
+                        <div class="info-row">
+                            <div class="info-field">
+                                <label>No.</label>
+                                <input type="text" value="1" readonly>
+                            </div>
+                            <div class="info-field">
+                                <label>Lecturer</label>
+                                <input type="text" value="Nguyen Van A" readonly>
+                            </div>
+                            <div class="info-field">
+                                <label>Department</label>
+                                <input type="text" value="Department" readonly>
+                            </div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-field">
+                                <label>Number of Question</label>
+                                <input type="text" value="20" readonly>
+                            </div>
+                            <div class="info-field">
+                                <label>Course</label>
+                                <input type="text" value="Database" readonly>
+                            </div>
+                            <div class="info-field">
+                                <label>CLOs</label>
+                                <input type="text" value="CLOs" readonly>
+                            </div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-field">
+                                <label>Difficulty Levels</label>
+                                <input type="text" value="Comprehension" readonly>
+                            </div>
+                            <div class="info-field">
+                                <label>Status</label>
+                                <input type="text" value="In Progress" readonly>
+                            </div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-field">
+                                <label>Assigned Date</label>
+                                <input type="text" value="23/4/25" readonly>
+                            </div>
+                            <div class="info-field">
+                                <label>Due Date</label>
+                                <input type="text" value="23/4/25" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-list-section">
+                    <h2>Question List</h2>
+                    <p class="section-subtitle">Display the list of questions and all related information</p>
+
+                    <div class="question-tabs">
+                        <button class="tab-btn active" onclick="filterQuestions('all')">All</button>
+                        <button class="tab-btn" onclick="filterQuestions('approved')">Approved</button>
+                        <button class="tab-btn" onclick="filterQuestions('decline')">Decline</button>
+                    </div>
+
+                    <div class="questions-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Ques. Title</th>
+                                    <th>Optional</th>
+                                    <th>Answer</th>
+                                    <th>Updated Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-status="approved">
+                                    <td>Q101</td>
+                                    <td>What is the largest planet in our solar system?</td>
+                                    <td>
+                                        A. Mars<br>
+                                        B. Earth<br>
+                                        C. Jupiter<br>
+                                        D. Venus
+                                    </td>
+                                    <td>C.</td>
+                                    <td>22/04/25</td>
+                                    <td><span class="status approved">Approved</span></td>
+                                    <td></td>
+                                </tr>
+                                <tr data-status="completed">
+                                    <td>Q101</td>
+                                    <td>What is the largest planet in our solar system?</td>
+                                    <td>
+                                        A. Mars<br>
+                                        B. Earth<br>
+                                        C. Jupiter<br>
+                                        D. Venus
+                                    </td>
+                                    <td>C.</td>
+                                    <td>22/04/25</td>
+                                    <td><span class="status completed">Completed</span></td>
+                                    <td>
+                                        <button class="action-btn edit" onclick="editQuestion()"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn approve"><i class="fas fa-check"></i></button>
+                                        <button class="action-btn decline" onclick="declineQuestion()"><i class="fas fa-times"></i></button>
+                                    </td>
+                                </tr>
+                                <tr data-status="declined">
+                                    <td>Q101</td>
+                                    <td>What is the largest planet in our solar system?</td>
+                                    <td>
+                                        A. Mars<br>
+                                        B. Earth<br>
+                                        C. Jupiter<br>
+                                        D. Venus
+                                    </td>
+                                    <td>C.</td>
+                                    <td>22/04/25</td>
+                                    <td><span class="status declined">Declined</span></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for loading header and menu -->
+    <script>
+        fetch('../header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        fetch('Menu-SL.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function filterQuestions(status) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+
+            // Filter table rows
+            const rows = document.querySelectorAll('.questions-table tbody tr');
+            rows.forEach(row => {
+                if (status === 'all') {
+                    row.style.display = '';
+                } else {
+                    const rowStatus = row.getAttribute('data-status');
+                    row.style.display = rowStatus === status ? '' : 'none';
+                }
+            });
+        }
+
+        function editQuestion() {
+            // Open edit modal
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function declineQuestion() {
+            // Open decline modal
+            document.getElementById('declineModal').style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
