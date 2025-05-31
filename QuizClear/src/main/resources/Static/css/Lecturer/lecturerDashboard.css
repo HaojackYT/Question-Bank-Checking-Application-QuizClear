@@ -1,0 +1,205 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+#Container-body {
+    display: flex;
+    gap: 2rem;
+}
+
+#main {
+    flex: 1;
+    padding: 1.875rem;
+    /* 30px */
+    background-color: white;
+    border-radius: 0.625rem;
+    /* 10px */
+    margin: 1.25rem;
+    /* 20px */
+}
+
+.title {
+    font-size: 2.25rem;
+    font-weight: bold;
+    margin-bottom: 0.625rem;
+    color: #120368;
+}
+
+.subtitle {
+    font-size: 1.125rem;
+    margin-bottom: 1.25rem;
+    color: #555;
+}
+
+/* Stats Cards */
+.stats-container {
+    display: flex;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    
+}
+
+.stat-card {
+    width: 15.25rem;
+    background-color: #E0EAFA;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    text-align: center;
+}
+
+.stat-title {
+    font-size: 1rem;
+    /* fixed typo from "1,8rem" */
+    color: #120368;
+    margin-bottom: 1.5rem;
+    /* 8px */
+    font-weight: bold;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    margin-bottom: 0.525rem;
+    /* 28.8px */
+    font-weight: bold;
+    color: #120368;
+}
+
+/* Current assignments */
+.assignment-section {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    width: 100%;
+}
+
+.assignment-section h2 {
+    color: #1a1a8f;
+    margin: 0 0 4px;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.assignment-item {
+    margin-bottom: 20px;
+}
+
+.assignment-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.count {
+    color: #555;
+}
+
+.progress-bar {
+    background-color: #d3d3d3;
+    border-radius: 20px;
+    height: 12px;
+    margin: 8px 0;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background-color: #00b050;
+    height: 100%;
+    border-radius: 20px 0 0 20px;
+    transition: width 0.3s ease;
+}
+
+.deadline {
+    color: #777;
+    font-size: 13px;
+}
+
+/* activity section */
+.activity {
+    background-color: #ffffff;
+    padding: 1.25rem 1.5625rem;
+    border: 0.0625rem solid #E0EAFA;
+    border-radius: 0.5rem;
+    margin-top: 1.875rem;
+    max-width: 100%;
+}
+
+.activity h2 {
+    font-size: 1.5rem;
+    color: #120368;
+    font-weight: bold;
+    margin-bottom: 0.3125rem;
+}
+
+.activities-subtitle {
+    font-size: 0.875rem;
+    color: #777;
+    margin-bottom: 1.25rem;
+}
+
+.activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9375rem 1.25rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    margin-bottom: 0.625rem;
+}
+
+.activity-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.activity-text {
+    font-size: 1.0rem;
+    color: #333;
+    margin: 0;
+}
+
+.activity-caption {
+    font-size: 0.875rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+.status-btn-a,
+.status-btn-p,
+.status-btn-r {
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 350;
+    color: white;
+    text-align: center;
+}
+
+.status-btn-a {
+    background-color: #69c081;
+}
+
+.status-btn-p {
+    background-color: #f7b731;
+}
+
+.status-btn-r {
+    background-color: #ff5e57;
+}
+
+.date {
+    padding: 5px 10px;
+    font-size: 13px;
+    color: #444;
+}
