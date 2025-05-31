@@ -322,3 +322,9 @@ body {
   padding-top: 0 !important;
   padding-bottom: 30px !important;
 }
+
+.stat-value,
+.stat-label,
+.stat-change {
+  transition: opacity 0.2s ease-in-out;
+}
