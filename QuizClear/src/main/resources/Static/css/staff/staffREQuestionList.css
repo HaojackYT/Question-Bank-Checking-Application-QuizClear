@@ -1,0 +1,320 @@
+/* General Styling for the main content area */
+#main {
+    flex-grow: 1;
+    padding: 2rem; 
+    box-sizing: border-box;
+    background-color: #f0f2f5;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem; 
+    min-width: 70vw;
+}
+
+/* Header for the review exam page */
+.review-exam-header {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem; 
+    margin-bottom: 1.25rem; 
+}
+
+.review-exam-header .back-arrow {
+    margin-top: 1.875rem; 
+    font-size: 2rem; 
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+}
+
+.review-exam-header .title {
+    margin-top: 1.875rem; 
+    font-size: 2rem;
+    font-weight: bold;
+    color: #291963;
+}
+
+.review-exam-header .exam-details {
+    font-size: 1rem; 
+    color: #666;
+}
+
+/* Stat boxes section */
+.stat-boxes {
+    margin-top: 1.5625rem; 
+    display: flex;
+    justify-content: space-between;
+    gap: 1.25rem; 
+    margin-bottom: 1.875rem; 
+    flex-wrap: wrap; 
+}
+
+.stat-box {
+    flex: 1;
+    min-width: 12.5rem; 
+    background-color: #fff;
+    border-radius: 0.5rem; 
+    border: 0.125rem solid #E0EAFA; 
+    padding: 1.25rem; 
+    text-align: left;
+}
+
+.stat-box .label {
+    font-size: 1rem; 
+    color: #4B5563;
+    margin-bottom: 0.3125rem; 
+}
+
+.stat-box .value {
+    font-size: 1.75rem; 
+    font-weight: bold;
+    color: #333;
+}
+
+.stat-box .percentage {
+    font-size: 0.875rem; 
+    color: #999;
+}
+
+/* Tabs for Question Review and Question List */
+.tabs {
+    display: flex;
+    border-bottom: 0.0625rem solid #ddd; 
+    margin-bottom: 1.25rem; 
+}
+
+.tab-button {
+    padding: 0.625rem 1.25rem; 
+    cursor: pointer;
+    font-size: 1rem; 
+    color: #666;
+    border: none;
+    background-color: transparent;
+    transition: color 0.3s ease;
+}
+
+.tab-button.active {
+    color: #007bff; 
+    border-bottom: 0.125rem solid #007bff; 
+    font-weight: bold;
+}
+
+.all-questions-section {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    margin-bottom: 20px; 
+    padding: 0 20px; 
+}
+
+
+.all-questions-text-container h3 {
+    margin-top: 20px;
+    margin-bottom: 5px; 
+    font-size: 28px; 
+    color: #120368;
+}
+
+.all-questions-text-container p {
+    margin-bottom: 0px;
+    margin-top: 15px;
+    color: #777;
+    font-size: 14px;
+}
+
+.search-box {
+    display: flex; 
+    align-items: center; 
+    position: relative; 
+    width: 250px; 
+    height: 40px; 
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    padding: 0 15px; 
+}
+
+.search-box input {
+    width: 100%; 
+    padding: 0 30px 0 0; 
+    border: none; 
+    outline: none; 
+    font-size: 14px;
+    background: transparent; 
+}
+
+.search-box i {
+    position: absolute;
+    right: 15px; 
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+}
+
+/* Question Items */
+.question-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.question-item {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Styling chung cho tất cả các tag */
+.question-tag {
+    display: inline-block; 
+    padding: 4px 12px;
+    border-radius: 4px; 
+    font-weight: normal;
+    font-size: 12px;
+    text-transform: capitalize; 
+}
+
+
+.question-tag.basic {
+    background-color: #F0FDF4; 
+    color: #15803D; 
+}
+
+.question-tag.intermediate {
+    background-color: #FEFCE8; 
+    color: #A16207; 
+}
+
+.question-tag.advanced {
+    background-color: #FEF2F2; 
+    color: #B91C1C; 
+}
+
+.question-tag.expert {
+    background-color: #F9FAFB; 
+    color: #374151; 
+}
+
+/* Styling chung cho trạng thái (rejected/approved) */
+.status {
+    display: flex; 
+    align-items: center; 
+    font-weight: normal;
+    font-size: 14px;
+    text-transform: capitalize; 
+    color: #000; 
+}
+
+/* Màu icon cho trạng thái rejected */
+.status.rejected i {
+    color: #dc3545; 
+    margin-right: 5px; 
+}
+
+/* Màu icon cho trạng thái approved */
+.status.approved i {
+    color: #28a745; 
+    margin-right: 5px; 
+}
+
+/* Các CSS khác có liên quan đến question-item (nếu có) */
+.question-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.question-content {
+    flex-grow: 1; 
+    margin: 0 20px; 
+    font-size: 16px;
+    color: #333;
+}
+
+.question-number {
+    font-weight: bold;
+    margin-right: 5px;
+    color: #120368;
+}
+
+.question-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+}
+
+.action-button {
+    background-color: transparent; 
+    color: #333333; 
+    border: 1px solid #333333; 
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.action-button:hover {
+    background-color: #333333; 
+    color: #ffffff; 
+    border-color: #333333; 
+}
+
+/* Responsive Adjustments (Optional but good practice) */
+@media (max-width: 992px) {
+    .review-summary-cards {
+        flex-wrap: wrap;
+    }
+    .summary-card {
+        flex-basis: calc(50% - 10px); 
+    }
+}
+
+@media (max-width: 768px) {
+    .review-exam-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .review-exam-header .exam-details {
+        margin-top: 10px;
+    }
+    .all-questions-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .all-questions-header h3 {
+        margin-bottom: 5px;
+    }
+    .all-questions-header p {
+        margin-bottom: 15px;
+    }
+    .all-questions-header .search-box {
+        width: 100%;
+    }
+    .all-questions-header .search-box input {
+        width: calc(100% - 45px); 
+    }
+    .question-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .question-item .question-content {
+        width: 100%;
+    }
+    .question-item .question-actions {
+        width: 100%;
+        justify-content: flex-end;
+        margin-left: 0;
+    }
+    .summary-card {
+        flex-basis: 100%; 
+    }
+}
