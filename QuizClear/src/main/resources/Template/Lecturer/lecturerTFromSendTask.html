@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/css/Lecturer/lecturerTFormSendTask.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Send Task</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- noi dung duoc nhap trong day -->
+            <div class="title-content">
+                <i class="fas fa-arrow-left"></i>
+                <div class="title-group">
+                    <div class="title">Send Task</div>
+                </div>
+            </div>
+
+            <div class="content-box">
+                <div class="info-grid">
+                    <div class="info-group">
+                        <label>Subject</label>
+                        <input type="text" value="Database System" readonly>
+                        <label>Deadline</label>
+                        <input type="text" value="23/08/2028" readonly>
+                    </div>
+                    <div class="info-right">
+                        <p>Total Question <strong>7/90</strong></p>
+                        <p>Recognition <strong>1/50</strong></p>
+                        <p>Comprehension <strong>1/30</strong></p>
+                        <p>Apply (basic) <strong>3/5</strong></p>
+                        <p>Apply (advanced) <strong>2/5</strong></p>
+                    </div>
+                </div>
+
+                <h2 style="color: #141263">Question</h2>
+
+                <!-- Questions repeat below -->
+                <div class="question-box">
+                    <p>Which data structure would be most efficient for implementing a priority queue?
+                        <span class="tag">Recognition</span>
+                    </p>
+                </div>
+
+                <div class="question-box">
+                    <p>Which data structure would be most efficient for implementing a priority queue?
+                        <span class="tag" style="background: #e0c5f4; color: #6b21a8">Apply (basic)</span>
+                    </p>
+                    <div class="answers">
+                        <div class="answer-option">
+                            <div class="circle correct"></div>
+                            <div class="input-placeholder"></div>
+                        </div>
+                        <div class="answer-option">
+                            <div class="circle"></div>
+                            <div class="input-placeholder"></div>
+                        </div>
+                        <div class="answer-option">
+                            <div class="circle"></div>
+                            <div class="input-placeholder"></div>
+                        </div>
+                        <div class="answer-option">
+                            <div class="circle"></div>
+                            <div class="input-placeholder"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-box">
+                    <p>Which data structure would be most efficient for implementing a priority queue?
+                        <span class="tag">Recognition</span>
+                    </p>
+                </div>
+
+                <div class="question-box">
+                    <p>Which data structure would be most efficient for implementing a priority queue?
+                        <span class="tag">Recognition</span>
+                    </p>
+                </div>
+
+                <div class="question-box">
+                    <p>Which data structure would be most efficient for implementing a priority queue?
+                        <span class="tag">Recognition</span>
+                    </p>
+                </div>
+
+                <div class="footer-msg">You must complete the request before proceeding to the next step.</div>
+                <button class="send-btn">Send <i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+        <!-- ma nhung header vs menu -->
+        <script>
+            // Load header
+            fetch('../../Template/header_user.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
+
+            // Load menu
+            fetch('Menu-Lecturer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('menu-HTML').innerHTML = data;
+                });
+
+        </script>
+</body>
+
+</html>

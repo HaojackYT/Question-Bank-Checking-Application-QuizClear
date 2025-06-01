@@ -134,118 +134,129 @@ select {
     background-color: #28A745;
 }
 
-/* form css */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
+
+/* form details */
+#overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
-.modal-content {
+.modal {
+    width: 500px;
     background-color: #fff;
-    padding: 1.875rem 3.125rem;
-    border-radius: 1.0rem;
-    width: 37.5rem;
-    max-width: 90%;
-    box-shadow: 0 0.625rem 1.875rem rgba(0, 0, 0, 0.2);
-    position: relative;
-    font-family: 'Roboto', sans-serif;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    font-family: 'Segoe UI', sans-serif;
 }
 
-.close-button {
-    position: absolute;
-    top: 0.9375rem;
-    right: 1.25rem;
-    font-size: 1.25rem;
-    cursor: pointer;
-    color: #333;
-}
-
-.modal-content h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1.25rem;
-}
-
-.modal-content label {
-    display: block;
-    margin-bottom: 0.375rem;
-    font-weight: 500;
-    font-size: 0.875rem;
-    color: #333;
-}
-
-.modal-content input[type="text"],
-.modal-content input[type="number"] {
-    width: 100%;
-    padding: 0.625rem 0.75rem;
-    border: 0.0625rem solid #ccc;
-    border-radius: 0.5rem;
-    margin-bottom: 1.0rem;
-    font-size: 0.875rem;
-    outline: none;
-    box-sizing: border-box;
-}
-
-.flex-row {
+.modal-header {
     display: flex;
-    gap: 1.0rem;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.flex-row>div {
+.modal-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.modal-desc {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #666;
+}
+
+.modal-due {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.field {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.field label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.field input,
+.field textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 12px;
+    resize: none;
+    background-color: #f9f9f9;
+}
+
+.info-group {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.levels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    text-align: center;
+    font-size: 14px;
+    gap: 10px;
+}
+
+.levels div {
     flex: 1;
+    background: #f1f1f1;
+    padding: 10px;
+    border-radius: 6px;
 }
 
-.save-button {
-    background-color: #00b0f0;
+.levels div strong {
+  display: block;
+}
+
+.status {
+    padding: 4px 10px;
+    border-radius: 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.button-group button {
+    background-color: #120368;
     color: white;
     border: none;
-    padding: 0.625rem 1.25rem;
-    border-radius: 0.5rem;
-    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 0.875rem;
     transition: background-color 0.3s ease;
-    margin-left: 27.0rem;
 }
 
-.save-button:hover {
-    background-color: #0090cc;
+.button-group button:hover {
+    background-color: #0d0258;
 }
 
-.tab-switch {
-    display: flex;
-    background-color: #e6ecff;
-    padding: 0.375rem;
-    border-radius: 0.5rem;
-    width: fit-content;
-    margin-bottom: 2.5rem;
-}
-
-.tab-button {
-    background-color: transparent;
-    border: none;
-    padding: 0.625rem 1.25rem;
-    font-weight: bold;
-    font-size: 1.0rem;
-    color: #120368;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.tab-button.active {
-    background-color: #ffffff;
-    color: #120368;
-    box-shadow: 0 0 0 0.125rem #d0d7ff;
-}
-.tab-button:hover {
-    background-color: #d0d7ff;
-}
+/* form gửi bài */
