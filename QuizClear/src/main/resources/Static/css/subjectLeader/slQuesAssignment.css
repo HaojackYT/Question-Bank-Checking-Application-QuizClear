@@ -1,0 +1,455 @@
+/* slQuesAssignment.css */
+
+/* Đảm bảo rằng main content có flex để căn chỉnh với menu nếu cần */
+#Container-body {
+    display: flex;
+}
+
+#main {
+    flex-grow: 1;
+    padding: 2rem;
+    box-sizing: border-box;
+    background-color: #f0f2f5;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    min-width: 70vw;
+}
+
+.assignment-container {
+    padding: 1.25rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1);
+    min-height: 100%;
+}
+
+.assignment-header h1 {
+    color: #000000;
+    margin-bottom: 0.3125rem;
+    margin-left: 0.9375rem;
+    font-size: 2.375rem;
+}
+
+.assignment-header p {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-bottom: 1.875rem;
+    margin-left: 0.9375rem;
+}
+
+/* Container cho các hành động (search, filter, button) */
+.assignment-actions {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    margin-bottom: 1.875rem;
+    flex-wrap: wrap;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #e0f2f7;
+    border-radius: 1.5625rem;
+    box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.08);
+    flex-grow: 1;
+    max-width: 25rem;
+    padding: 0.5rem 0.9375rem;
+    border: none;
+    overflow: hidden;
+}
+
+.search-bar input {
+    flex-grow: 1;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    font-size: 0.9375rem;
+    color: #34495e;
+    outline: none;
+}
+
+.search-bar input::placeholder {
+    color: #8c979d;
+}
+
+.search-bar button {
+    background-color: transparent;
+    color: #495057;
+    border: none;
+    padding: 0 0.5rem;
+    cursor: pointer;
+    font-size: 1.125rem;
+    transition: color 0.2s ease;
+}
+
+.search-bar button:hover {
+    color: #007bff;
+}
+
+.filter-dropdown {
+    display: inline-block;
+}
+
+.filter-dropdown select {
+    padding: 0.625rem 3.125rem 0.625rem 0.9375rem;
+    border: 0.0625rem solid #a7d9ef;
+    border-radius: 0.625rem;
+    font-size: 0.9375rem;
+    background-color: white;
+    color: #34495e;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23343a40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 0.9375rem);
+    background-position-y: 50%;
+    box-shadow: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filter-dropdown select:hover {
+    border-color: #7fc6e6;
+}
+
+.filter-dropdown select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.1875rem rgba(52, 152, 219, 0.2);
+}
+
+.new-assign-button {
+    margin-left: 18.75rem; /* Điều chỉnh lại khoảng cách nếu cần, hoặc dùng auto margin */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.625rem 0.9375rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3125rem;
+    transition: background-color 0.2s ease;
+}
+
+.new-assign-button:hover {
+    background-color: #0056b3;
+}
+
+/* CONTAINER BẢNG */
+.assignment-table-container {
+    overflow-x: auto;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
+    margin-top: 1.25rem;
+}
+
+/* BẢNG CHÍNH */
+.assignment-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    color: #333;
+}
+
+/* TIÊU ĐỀ BẢNG (TH và TD) */
+.assignment-table th,
+.assignment-table td {
+    padding: 0.75rem 1.25rem;
+    text-align: left;
+    border-bottom: 0.0625rem solid #eee;
+}
+
+.assignment-table th {
+    background-color: #D9D9D9;
+    font-weight: 600;
+    color: #000000;
+    white-space: nowrap;
+}
+
+/* BỎ ĐƯỜNG VIỀN DƯỚI CÙNG CỦA HÀNG CUỐI CÙNG */
+.assignment-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* HIỆU ỨNG HOVER */
+.assignment-table tbody tr:hover {
+    background-color: #f2f2f2;
+}
+
+/* CÁC BADGE TRẠNG THÁI (Điều chỉnh màu sắc và bo góc để khớp hình ảnh mới nhất) */
+.status {
+    display: inline-block;
+    padding: 0.3125rem 0.625rem;
+    border-radius: 1.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    text-align: center;
+}
+
+.status.completed {
+    background-color: #E4FFE9; 
+    color: #2e2d2d; 
+}
+
+.status.in-progress {
+    background-color: #FAFFC8; 
+    color: #2e2d2d; 
+}
+
+.status.not-started {
+    background-color: #FAFFC8; 
+    color: #2e2d2d; 
+}
+
+/* CÁC NÚT HÀNH ĐỘNG (VIEW, EDIT - Điều chỉnh biểu tượng và kích thước) */
+.actions {
+    display: flex;
+    gap: 0.625rem;
+}
+
+.actions button {
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    margin-right: 0;
+    font-size: 1.125rem;
+    transition: color 0.2s ease, background-color 0.2s ease, transform 0.1s ease;
+    padding: 0.3125rem;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.actions button:hover {
+    color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+    transform: translateY(-0.0625rem);
+}
+
+.actions button:active {
+    transform: translateY(0);
+    background-color: rgba(0, 123, 255, 0.2);
+}
+
+
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); 
+    /* BỎ display: flex; KHỎI ĐÂY */
+}
+
+/* THÊM CLASS MỚI ĐỂ HIỂN THỊ MODAL */
+.modal.show {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px; 
+    border-radius: 8px; 
+    box-shadow: 0 0 10px rgba(0,0,0,0.2); 
+    width: 90%; 
+    max-width: 600px; 
+    position: relative; 
+    animation: fadeIn 0.3s ease-out; 
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.close-button {
+    position: absolute; 
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: #aaa;
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none; 
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+}
+
+.modal-content h2 {
+    text-align: left; 
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.form-row {
+    display: flex; 
+    gap: 15px; 
+    margin-bottom: 15px;
+}
+
+.form-group {
+    flex: 1; 
+}
+
+.form-group.full-width {
+    flex: 0 0 100%; 
+}
+
+.form-group label {
+    display: block; 
+    margin-bottom: 5px;
+    color: #555;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: calc(100% - 12px); 
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box; 
+    outline: none;
+}
+
+/* Kiểu cho input readonly */
+.form-group input[readonly] {
+    background-color: #f5f5f5; 
+    cursor: default; 
+    color: #333; 
+    border-color: #e0e0e0; 
+}
+
+
+.form-group textarea {
+    resize: vertical; 
+    min-height: 80px; 
+}
+
+.form-actions {
+    margin-top: 20px;
+    display: flex; 
+    justify-content: flex-end; 
+    gap: 10px; 
+}
+
+.form-actions.centered {
+    justify-content: center; 
+}
+
+.submit-button,
+.cancel-button,
+.save-button,
+.delete-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+/* Kiểu nút chính (Assign, Save) */
+.submit-button, .save-button {
+    background-color: #007bff; 
+    color: white;
+}
+
+.submit-button:hover, .save-button:hover {
+    background-color: #0056b3; 
+}
+
+/* Kiểu nút phụ (Cancel) */
+.cancel-button {
+    background-color: #6c757d;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #545b62; 
+}
+
+/* Kiểu nút Delete */
+.delete-button {
+    background-color: #dc3545; 
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #c82333; 
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .assignment-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-bar {
+        max-width: 100%;
+    }
+
+    .new-assign-button {
+        margin-left: 0; 
+        width: 100%;
+        justify-content: center;/
+    }
+
+    .form-row {
+        flex-direction: column; 
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        padding: 15px;
+        width: 95%;
+    }
+
+    .modal-content h2 {
+        font-size: 18px;
+    }
+
+    .form-group label,
+    .form-group input,
+    .form-group select,
+    .form-group textarea,
+    .submit-button,
+    .cancel-button,
+    .save-button,
+    .delete-button {
+        font-size: 13px;
+        padding: 6px;
+    }
+
+    .close-button {
+        font-size: 20px;
+        top: 5px;
+        right: 5px;
+    }
+}
