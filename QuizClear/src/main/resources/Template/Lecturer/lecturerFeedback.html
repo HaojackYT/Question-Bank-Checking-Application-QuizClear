@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+        <link rel="stylesheet" href="../../Static/header.css">
+        <link rel="stylesheet" href="../../Static/web_styles.css">
+        <link rel="stylesheet" href="../../Static/css/Lecturer/lecturerFeedback.css">
+        <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+        <title>Template</title>
+    </head>
+
+    <body>
+        <!--header-->
+        <div id="header-placeholder"></div>
+
+
+
+        <!-- body -->
+        <div id="Container-body">
+            <!-- Menu -->
+            <div id="menu-HTML"></div>
+
+
+            <!-- Main content -->
+            <div id="main">
+               <!-- noi dung duoc nhap trong day -->
+                <div class="main-content">
+                    <h2 class="section-title" id="main-content-title">Feedback & Revisions</h2>
+
+                    <div class="tabs" id="main-content-tabs">
+                        <button class="tab-button active" data-tab="feedback-history">Feedback History</button>
+                        <button class="tab-button" data-tab="revisions">Revisions</button>
+                    </div>
+
+                    <div id="feedback-history-content" class="tab-content active-tab-content">
+                        <div class="feedback-item history-item">
+                            <div class="item-header">
+                                <h3>Web Development</h3>
+                                <span class="tag-approved">Approved</span>
+                            </div>
+                            <div class="question-box">
+                                <p>Which data structure would be most efficient for implementing a priority queue?</p>
+                            </div>
+                            <div class="item-footer">
+                                <span class="status-message">Approved without revisions</span>
+                                <span class="submitted-date">Submitted on May 15, 2025</span>
+                            </div>
+                        </div>
+
+                        <div class="feedback-item history-item">
+                            <div class="item-header">
+                                <h3>Web Development</h3>
+                                <span class="tag-approved">Approved</span>
+                            </div>
+                            <div class="question-box">
+                                <p>Which data structure would be most efficient for implementing a priority queue?</p>
+                            </div>
+                            <div class="feedback-note-box">
+                                <p>Good question, but please provide more detailed explanation for the correct answer.</p>
+                            </div>
+                            <div class="item-footer">
+                                <span class="status-message">Approved without revisions</span>
+                                <span class="submitted-date">Submitted on May 10, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="revisions-content" class="tab-content">
+                        <div class="feedback-item">
+                            <div class="item-header">
+                                <h3>Data Structures</h3>
+                                <span class="tag remember">Remember</span>
+                                <span class="tag needs-revision">Needs Revision</span>
+                            </div>
+                            <div class="question-box">
+                                <p>Which data structure would be most efficient for implementing a priority queue? Which data structure would be most efficient for implementing a priority queue?</p>
+                            </div>
+                            <div class="feedback-box">
+                                <h4>Feedback</h4>
+                                <p>Which data structure would be most efficient for implementing a priority queue? Which data structure would be most efficient for implementing a priority queue?</p>
+                            </div>
+                            <div class="item-footer">
+                                <span class="submitted-date">Submitted on May 18, 2025</span>
+                                <button class="edit-button edit-question-btn">Edit Question</button> </div>
+                        </div>
+
+                        <div class="feedback-item">
+                            <div class="item-header">
+                                <h3>Database Systems</h3>
+                                <span class="tag remember">Remember</span>
+                                <span class="tag needs-revision">Needs Revision</span>
+                            </div>
+                            <div class="question-box">
+                                <p>What is the purpose of normalization in database design?</p>
+                            </div>
+                            <div class="feedback-box">
+                                <h4>Feedback</h4>
+                                <p>This question is too broad. Please make it more specific by asking about a particular normal form or a specific benefit of normalization. Also, the answer options need to be more distinct from each other.</p>
+                            </div>
+                            <div class="item-footer">
+                                <span class="submitted-date">Submitted on May 18, 2025</span>
+                                <button class="edit-button edit-question-btn" data-question-id="db-normalization-q">Edit Question</button> </div>
+                        </div>
+                    </div>
+
+                    <div id="edit-question-form" class="edit-form-container">
+                        <div class="form-header-nav">
+                            <button class="back-button" id="back-to-revisions"><i class="fas fa-arrow-left"></i></button>
+                            <h2 class="form-title">Edit Question</h2>
+                        </div>
+
+                        <div class="feedback-box edit-form-feedback">
+                            <h4>Feedback</h4>
+                            <p id="edit-form-feedback-text">This question is too broad. Please make it more specific by asking about a particular normal form or a specific benefit of normalization. Also, the answer options need to be more distinct from each other.</p>
+                        </div>
+
+                        <div class="info-section">
+                            <h3 class="section-heading">Information</h3>
+                            <p class="section-description">Enter detailed information for the new question</p>
+
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <input type="text" id="subject" value="Database System" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="difficulty-level">Difficulty Level</label>
+                                <input type="text" id="difficulty-level" value="Remember" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="question-title">Question Title</label>
+                                <input type="text" id="question-title" placeholder="question title">
+                            </div>
+                        </div>
+
+                        <div class="duplicate-check-section">
+                            <div class="duplicate-check-header">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <p>Duplicate Detection Check</p>
+                            </div>
+                            <p class="duplicate-check-description">Check for similar questions before proceeding with submission</p>
+                            <div class="duplicate-check-action">
+                                <span class="status-ready">Ready to check</span>
+                                <button class="check-duplicates-button">Check Duplicates</button>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3 class="section-heading">Correct Answer</h3>
+                            <div class="form-group">
+                                <input type="text" id="correct-answer" placeholder="The correct answer">
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3 class="section-heading">Incorrect Answers</h3>
+                            <div class="form-group">
+                                <input type="text" placeholder="Incorrect answer">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" placeholder="incorrect answer">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" placeholder="incorrect answer">
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3 class="section-heading">Correct answer explanation</h3>
+                            <div class="form-group">
+                                <textarea id="explanation" rows="5" placeholder="Explanation here..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-submission-footer">
+                            <p class="submission-note">Check for similar questions before proceeding with submission</p>
+                            <button class="submit-button">Submit</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <script src="../../Static/js/lecturerFeedback.js"></script>
+
+        <!-- ma nhung header vs menu -->
+        <script>
+            // Load header
+            fetch('../../Template/header_user.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
+
+            // Load menu
+            fetch('Menu-Lecturer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('menu-HTML').innerHTML = data;
+                });
+
+        </script>
+    </body>
+</html>
