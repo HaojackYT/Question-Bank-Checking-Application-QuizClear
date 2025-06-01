@@ -38,7 +38,7 @@
                         </select>
                     </div>
 
-                    <button class="new-assign-button">
+                    <button class="new-assign-button" id="newAssignBtn">
                         <i class="fa fa-plus"></i> New assign
                     </button>
                 </div>
@@ -57,7 +57,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr data-id="1">
                                 <td>1</td>
                                 <td>Nguyen Van A</td>
                                 <td>20</td>
@@ -67,11 +67,12 @@
                                     <span class="status completed">Completed</span>
                                 </td>
                                 <td class="actions-cell">
-                                    <div class="actions"> <button class="action-button"><i class="fa fa-eye"></i></button>
+                                    <div class="actions">
+                                        <button class="action-button view-button" data-id="1"><i class="fa fa-eye"></i></button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr data-id="2">
                                 <td>2</td>
                                 <td>Nguyen Van B</td>
                                 <td>40</td>
@@ -81,12 +82,13 @@
                                     <span class="status in-progress">In Prog.</span>
                                 </td>
                                 <td class="actions-cell">
-                                    <div class="actions"> <button class="action-button"><i class="fa fa-eye"></i></button>
-                                        <button class="action-button"><i class="fa fa-pencil"></i></button>
+                                    <div class="actions">
+                                        <button class="action-button view-button" data-id="2"><i class="fa fa-eye"></i></button>
+                                        <button class="action-button edit-button" data-id="2"><i class="fa fa-pencil"></i></button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr data-id="3">
                                 <td>3</td>
                                 <td>Nguyen Van B</td>
                                 <td>50</td>
@@ -97,17 +99,231 @@
                                 </td>
                                 <td class="actions-cell">
                                     <div class="actions">
-                                        <button class="action-button"><i class="fa fa-eye"></i></button>
-                                        <button class="action-button"><i class="fa fa-pencil"></i></button>
+                                        <button class="action-button view-button" data-id="3"><i class="fa fa-eye"></i></button>
+                                        <button class="action-button edit-button" data-id="3"><i class="fa fa-pencil"></i></button>
                                     </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-            </div> <!-- end assignment-container -->
-        </div> <!-- end main -->
-    </div> <!-- end Container-body -->
+            </div> </div> </div> <div id="newAssignModal" class="modal">
+        <div class="modal-content">
+            <button type="button" class="close-button">&times;</button>
+            <h2>New Assign</h2>
+            <form id="newAssignForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <select id="department" name="department">
+                            <option value="">Department</option>
+                            <option value="IT">Information Technology</option>
+                            <option value="Business">Business Administration</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lecturer">Lecturer</label>
+                        <select id="lecturer" name="lecturer">
+                            <option value="">Lecturer</option>
+                            <option value="Nguyen Van A">Nguyen Van A</option>
+                            <option value="Tran Thi B">Tran Thi B</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject" name="subject">
+                            <option value="">Subject</option>
+                            <option value="Database">Database</option>
+                            <option value="Web Development">Web Development</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="totalQues">Total Ques.</label>
+                        <input type="number" id="totalQues" name="totalQues" value="20">
+                    </div>
+                    <div class="form-group">
+                        <label for="diffLevels">Diff. Levels</label>
+                        <select id="diffLevels" name="diffLevels">
+                            <option value="Reg">Reg</option>
+                            <option value="Comp">Comp</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="clos">CLOs</label>
+                        <select id="clos" name="clos">
+                            <option value="">CLOs</option>
+                            <option value="CLO1">CLO1</option>
+                            <option value="CLO2">CLO2</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="assignDate">Assign Date</label>
+                        <input type="date" id="assignDate" name="assignDate" value="2024-06-01">
+                    </div>
+                    <div class="form-group">
+                        <label for="dueDate">Due Date</label>
+                        <input type="date" id="dueDate" name="dueDate" value="2024-06-08">
+                    </div>
+                    <div class="form-group"></div>
+                </div>
+                <div class="form-group full-width">
+                    <label for="notes">Notes</label>
+                    <textarea id="notes" name="notes">Please prepare the exam questions based on the course content, covering different levels of difficulty and question types where appropriate.</textarea>
+                </div>
+                <div class="form-actions centered">
+                    <button type="button" class="cancel-button">Cancel</button>
+                    <button type="submit" class="submit-button">Assign</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="viewDetailsModal" class="modal">
+        <div class="modal-content">
+            <button type="button" class="close-button">&times;</button>
+            <h2 id="viewDetailsTitle">Details No. 1</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Lecturer</label>
+                    <input type="text" id="viewLecturer" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Department</label>
+                    <input type="text" id="viewDepartment" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" id="viewSubject" readonly>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Total Ques.</label>
+                    <input type="text" id="viewTotalQues" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Diff. Levels</label>
+                    <input type="text" id="viewDiffLevels" readonly>
+                </div>
+                <div class="form-group">
+                    <label>CLOs</label>
+                    <input type="text" id="viewCLOs" readonly>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Assign Date</label>
+                    <input type="text" id="viewAssignDate" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Due Date</label>
+                    <input type="text" id="viewDueDate" readonly>
+                </div>
+                <div class="form-group"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Progress</label>
+                    <input type="text" id="viewProgress" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <input type="text" id="viewStatus" readonly>
+                </div>
+                <div class="form-group"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editAssignmentModal" class="modal">
+        <div class="modal-content">
+            <button type="button" class="close-button">&times;</button>
+            <h2 id="editAssignmentTitle">Edit No. 1</h2>
+            <form id="editAssignmentForm">
+                <input type="hidden" id="editAssignmentId"> <div class="form-row">
+                    <div class="form-group">
+                        <label for="editLecturer">Lecturer</label>
+                        <select id="editLecturer" name="editLecturer" required>
+                            <option value="">Lecturer</option>
+                            <option value="Nguyen Van A">Nguyen Van A</option>
+                            <option value="Tran Thi B">Tran Thi B</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDepartment">Department</label>
+                        <select id="editDepartment" name="editDepartment" required>
+                            <option value="">Department</option>
+                            <option value="IT">Information Technology</option>
+                            <option value="Business">Business Administration</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editSubject">Subject</label>
+                        <select id="editSubject" name="editSubject" required>
+                            <option value="">Subject</option>
+                            <option value="Database">Database</option>
+                            <option value="Web Development">Web Development</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editTotalQues">Total Ques.</label>
+                        <input type="number" id="editTotalQues" name="editTotalQues" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDiffLevels">Diff. Levels</label>
+                        <select id="editDiffLevels" name="editDiffLevels" required>
+                            <option value="Reg">Reg</option>
+                            <option value="Comp">Comp</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCLOs">CLOs</label>
+                        <select id="editCLOs" name="editCLOs" required>
+                            <option value="">CLOs</option>
+                            <option value="CLO1">CLO1</option>
+                            <option value="CLO2">CLO2</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editAssignDate">Assign Date</label>
+                        <input type="date" id="editAssignDate" name="editAssignDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDueDate">Due Date</label>
+                        <input type="date" id="editDueDate" name="editDueDate" required>
+                    </div>
+                    <div class="form-group"></div>
+                </div>
+                <div class="form-group full-width">
+                    <label for="editStatus">Status</label>
+                    <select id="editStatus" name="editStatus" required>
+                        <option value="Not started">Not started</option>
+                        <option value="In Prog.">In Prog.</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <label for="editNotes">Notes</label>
+                    <textarea id="editNotes" name="editNotes"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-button delete-button">Delete</button>
+                    <button type="submit" class="submit-button save-button">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <script>
         // Load header
@@ -124,5 +340,6 @@
                 document.getElementById('menu-HTML').innerHTML = data;
             });
     </script>
+    <script src="../../Static/js/slQuesAssignment.js"></script>
 </body>
 </html>
