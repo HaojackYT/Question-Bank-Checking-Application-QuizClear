@@ -28,29 +28,29 @@
 
 .review-exam-header .title {
     margin-top: 1.875rem; 
-    font-size: 2rem;
+    font-size: 2rem; 
     font-weight: bold;
     color: #291963;
 }
 
 .review-exam-header .exam-details {
-    font-size: 1rem; 
+    font-size: 0.625rem; 
     color: #666;
 }
 
 /* Stat boxes section */
 .stat-boxes {
-    margin-top: 1.5625rem; 
+    margin-top: 0.9765625rem; 
     display: flex;
     justify-content: space-between;
     gap: 1.25rem; 
     margin-bottom: 1.875rem; 
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
 }
 
 .stat-box {
     flex: 1;
-    min-width: 12.5rem; 
+    min-width: 7.8125rem; 
     background-color: #fff;
     border-radius: 0.5rem; 
     border: 0.125rem solid #E0EAFA; 
@@ -59,7 +59,7 @@
 }
 
 .stat-box .label {
-    font-size: 1rem; 
+    font-size: 0.625rem; 
     color: #4B5563;
     margin-bottom: 0.3125rem; 
 }
@@ -83,9 +83,9 @@
 }
 
 .tab-button {
-    padding: 0.625rem 1.25rem; 
+    padding: 0.625rem 1.25rem;
     cursor: pointer;
-    font-size: 1rem; 
+    font-size: 0.625rem;
     color: #666;
     border: none;
     background-color: transparent;
@@ -93,57 +93,57 @@
 }
 
 .tab-button.active {
-    color: #007bff; 
-    border-bottom: 0.125rem solid #007bff; 
+    color: #007bff;
+    border-bottom: 0.125rem solid #007bff;
     font-weight: bold;
 }
 
 .all-questions-section {
-    display: flex; 
-    justify-content: space-between; 
-    align-items: flex-start; 
-    margin-bottom: 20px; 
-    padding: 0 20px; 
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem; 
+    padding: 0 1.25rem; 
 }
 
 
 .all-questions-text-container h3 {
-    margin-top: 20px;
-    margin-bottom: 5px; 
-    font-size: 28px; 
+    margin-top: 1.25rem; 
+    margin-bottom: 0.3125rem; 
+    font-size: 1.75rem; 
     color: #120368;
 }
 
 .all-questions-text-container p {
-    margin-bottom: 0px;
-    margin-top: 15px;
+    margin-bottom: 0rem; 
+    margin-top: 0.9375rem; 
     color: #777;
-    font-size: 14px;
+    font-size: 0.875rem; 
 }
 
 .search-box {
-    display: flex; 
-    align-items: center; 
-    position: relative; 
-    width: 250px; 
-    height: 40px; 
-    border: 1px solid #ccc;
-    border-radius: 15px;
-    padding: 0 15px; 
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 15.625rem;
+    height: 2.5rem; 
+    border: 0.0625rem solid #ccc;
+    border-radius: 0.9375rem;
+    padding: 0 0.9375rem; 
 }
 
 .search-box input {
-    width: 100%; 
-    padding: 0 30px 0 0; 
-    border: none; 
-    outline: none; 
-    font-size: 14px;
-    background: transparent; 
+    width: 100%;
+    padding: 0 1.875rem 0 0; 
+    border: none;
+    outline: none;
+    font-size: 0.875rem; 
+    background: transparent;
 }
 
 .search-box i {
     position: absolute;
-    right: 15px; 
+    right: 0.9375rem; 
     top: 50%;
     transform: translateY(-50%);
     color: #aaa;
@@ -153,70 +153,70 @@
 .question-items-container {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 0.9375rem; 
 }
 
 .question-item {
     display: flex;
     align-items: center;
     background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 15px 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 0.0625rem solid #e0e0e0; 
+    border-radius: 0.5rem; 
+    padding: 0.9375rem 1.25rem;
+    box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.05);
 }
 
 /* Styling chung cho tất cả các tag */
 .question-tag {
-    display: inline-block; 
-    padding: 4px 12px;
-    border-radius: 4px; 
+    display: inline-block;
+    padding: 0.25rem 0.75rem; 
+    border-radius: 0.25rem; 
     font-weight: normal;
-    font-size: 12px;
-    text-transform: capitalize; 
+    font-size: 0.75rem; 
+    text-transform: capitalize;
 }
 
 
 .question-tag.basic {
-    background-color: #F0FDF4; 
-    color: #15803D; 
+    background-color: #F0FDF4;
+    color: #15803D;
 }
 
 .question-tag.intermediate {
-    background-color: #FEFCE8; 
-    color: #A16207; 
+    background-color: #FEFCE8;
+    color: #A16207;
 }
 
 .question-tag.advanced {
-    background-color: #FEF2F2; 
-    color: #B91C1C; 
+    background-color: #FEF2F2;
+    color: #B91C1C;
 }
 
 .question-tag.expert {
-    background-color: #F9FAFB; 
-    color: #374151; 
+    background-color: #F9FAFB;
+    color: #374151;
 }
 
 /* Styling chung cho trạng thái (rejected/approved) */
 .status {
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     font-weight: normal;
-    font-size: 14px;
-    text-transform: capitalize; 
-    color: #000; 
+    font-size: 0.875rem; 
+    text-transform: capitalize;
+    color: #000;
 }
 
 /* Màu icon cho trạng thái rejected */
 .status.rejected i {
-    color: #dc3545; 
-    margin-right: 5px; 
+    color: #dc3545;
+    margin-right: 0.3125rem; 
 }
 
 /* Màu icon cho trạng thái approved */
 .status.approved i {
-    color: #28a745; 
-    margin-right: 5px; 
+    color: #28a745;
+    margin-right: 0.3125rem; 
 }
 
 /* Các CSS khác có liên quan đến question-item (nếu có) */
@@ -224,87 +224,87 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 15px 20px;
-    margin-bottom: 10px;
+    padding: 0.9375rem 1.25rem;
+    margin-bottom: 0.625rem; 
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem; 
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1); 
 }
 
 .question-content {
-    flex-grow: 1; 
-    margin: 0 20px; 
-    font-size: 16px;
+    flex-grow: 1;
+    margin: 0 1.25rem; 
+    font-size: 1rem; 
     color: #333;
 }
 
 .question-number {
     font-weight: bold;
-    margin-right: 5px;
+    margin-right: 0.3125rem; 
     color: #120368;
 }
 
 .question-actions {
     display: flex;
     align-items: center;
-    gap: 15px; 
+    gap: 0.9375rem; 
 }
 
 .action-button {
-    background-color: transparent; 
-    color: #333333; 
-    border: 1px solid #333333; 
-    padding: 8px 15px;
-    border-radius: 5px;
+    background-color: transparent;
+    color: #333333;
+    border: 0.0625rem solid #333333; 
+    padding: 0.5rem 0.9375rem; 
+    border-radius: 0.3125rem;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 0.875rem; 
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 .action-button:hover {
-    background-color: #333333; 
-    color: #ffffff; 
-    border-color: #333333; 
+    background-color: #333333;
+    color: #ffffff;
+    border-color: #333333;
 }
 
 /* Responsive Adjustments (Optional but good practice) */
-@media (max-width: 992px) {
+@media (max-width: 62rem) { 
     .review-summary-cards {
         flex-wrap: wrap;
     }
     .summary-card {
-        flex-basis: calc(50% - 10px); 
+        flex-basis: calc(50% - 0.625rem); 
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48rem) { 
     .review-exam-header {
         flex-direction: column;
         align-items: flex-start;
     }
     .review-exam-header .exam-details {
-        margin-top: 10px;
+        margin-top: 0.625rem; 
     }
     .all-questions-header {
         flex-direction: column;
         align-items: flex-start;
     }
     .all-questions-header h3 {
-        margin-bottom: 5px;
+        margin-bottom: 0.3125rem; 
     }
     .all-questions-header p {
-        margin-bottom: 15px;
+        margin-bottom: 0.9375rem; 
     }
     .all-questions-header .search-box {
         width: 100%;
     }
     .all-questions-header .search-box input {
-        width: calc(100% - 45px); 
+        width: calc(100% - 2.8125rem); 
     }
     .question-item {
         flex-direction: column;
         align-items: flex-start;
-        gap: 10px;
+        gap: 0.625rem;
     }
     .question-item .question-content {
         width: 100%;
@@ -315,6 +315,6 @@
         margin-left: 0;
     }
     .summary-card {
-        flex-basis: 100%; 
+        flex-basis: 100%;
     }
 }
