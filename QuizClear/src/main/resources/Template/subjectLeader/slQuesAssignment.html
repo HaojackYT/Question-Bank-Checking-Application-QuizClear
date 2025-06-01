@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template</title>
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
+    <link rel="stylesheet" href="../../Static/css/subjectLeader/slQuesAssignment.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div id="Container-body">
+        <div id="menu-HTML"></div>
+
+        <div id="main">
+            <div class="assignment-container">
+                <div class="assignment-header">
+                    <h1>Question Assignment</h1>
+                    <p>Assign and manage question development tasks by lecturer</p>
+                </div>
+
+                <div class="assignment-actions">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Enter search content ...">
+                        <button><i class="fa fa-search"></i></button>
+                    </div>
+
+                    <div class="filter-dropdown">
+                        <select>
+                            <option>All Tasks</option>
+                            <option>Option 1</option>
+                            <option>Option 2</option>
+                        </select>
+                    </div>
+
+                    <button class="new-assign-button">
+                        <i class="fa fa-plus"></i> New assign
+                    </button>
+                </div>
+
+                <div class="assignment-table-container">
+                    <table class="assignment-table">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Lecturer</th>
+                                <th>No. of Ques</th>
+                                <th>Diff. Levels</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Nguyen Van A</td>
+                                <td>20</td>
+                                <td>Reg</td>
+                                <td>22/04/25</td>
+                                <td class="status-cell">
+                                    <span class="status completed">Completed</span>
+                                </td>
+                                <td class="actions-cell">
+                                    <div class="actions"> <button class="action-button"><i class="fa fa-eye"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Nguyen Van B</td>
+                                <td>40</td>
+                                <td>Comp</td>
+                                <td>22/04/25</td>
+                                <td class="status-cell">
+                                    <span class="status in-progress">In Prog.</span>
+                                </td>
+                                <td class="actions-cell">
+                                    <div class="actions"> <button class="action-button"><i class="fa fa-eye"></i></button>
+                                        <button class="action-button"><i class="fa fa-pencil"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Nguyen Van B</td>
+                                <td>50</td>
+                                <td>Bas App</td>
+                                <td>22/04/25</td>
+                                <td class="status-cell">
+                                    <span class="status not-started">Not started</span>
+                                </td>
+                                <td class="actions-cell">
+                                    <div class="actions">
+                                        <button class="action-button"><i class="fa fa-eye"></i></button>
+                                        <button class="action-button"><i class="fa fa-pencil"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div> <!-- end assignment-container -->
+        </div> <!-- end main -->
+    </div> <!-- end Container-body -->
+
+    <script>
+        // Load header
+        fetch('../header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        // Load menu
+        fetch('../Menu-Staff.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+    </script>
+</body>
+</html>
