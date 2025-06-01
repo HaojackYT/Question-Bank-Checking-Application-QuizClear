@@ -100,7 +100,7 @@ function handleViewDetail() {
 
   tabContent.style.display = "none";
 
-  fetch("../../Template/staffDupDetails.html")
+  fetch("../../Template/Staff/staffDupDetails.html")
     .then((res) => res.text())
     .then((html) => {
       comparisonContainer.innerHTML = html;
