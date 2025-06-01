@@ -3,11 +3,12 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-        <link rel="stylesheet" href="../Static/header.css">
-        <link rel="stylesheet" href="../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
+    <link rel="stylesheet" href="../../Static/css/staff/staffReviewQuestion.css">
         <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="../Static/staffReviewQuestion.css">
         <title>Template</title>
     </head>
 
@@ -127,14 +128,14 @@
         <!-- ma nhung header vs menu -->
         <script>
             // Load header
-            fetch('../Template/header_user.html')
+            fetch('../../Template/header_user.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('header-placeholder').innerHTML = data;
                 });
 
             // Load menu
-            fetch('../Template/Menu-Staff.html')
+            fetch('../../Template/Menu-Staff.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('menu-HTML').innerHTML = data;
