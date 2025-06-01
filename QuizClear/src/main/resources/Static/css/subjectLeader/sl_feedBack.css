@@ -6,13 +6,13 @@ body {
 .feedback-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
+    margin: 1.25rem 0; /* 20px -> 1.25rem */
 }
 
 .feedback-table th, .feedback-table td {
-    padding: 10px;
+    padding: 0.625rem; /* 10px -> 0.625rem */
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 0.0625rem solid #ddd; /* 1px -> 0.0625rem */
 }
 
 .feedback-table th {
@@ -22,12 +22,12 @@ body {
 
 /* Bo tròn góc trên bên trái cho ô đầu tiên trong thead */
 .feedback-table thead th:first-child {
-    border-top-left-radius: 10px;
+    border-top-left-radius: 0.625rem; /* 10px -> 0.625rem */
 }
 
 /* Bo tròn góc trên bên phải cho ô cuối cùng trong thead */
 .feedback-table thead th:last-child {
-    border-top-right-radius: 10px;
+    border-top-right-radius: 0.625rem; /* 10px -> 0.625rem */
 }
 
 .feedback-table td {
@@ -36,34 +36,34 @@ body {
 
 /* Styling cho cột Status */
 .status {
-    padding: 5px 15px;
-    border-radius: 15px;
-    font-size: 14px;
+    padding: 0.3125rem 0.9375rem; /* 5px 15px -> 0.3125rem 0.9375rem */
+    border-radius: 0.9375rem; /* 15px -> 0.9375rem */
+    font-size: 0.875rem; /* 14px -> 0.875rem */
     font-weight: bold;
 }
 
 .status.completed {
     background-color: #E4FFE9;
     color: black;
-    font-weight:400;
+    font-weight: 400;
 }
 
 .status.in-progress {
     background-color: #FAFFC8;
     color: black;
-    font-weight:400;
+    font-weight: 400;
 }
 
 .status.new {
     background-color: #FAFFC8;
     color: black;
-    font-weight:400;
+    font-weight: 400;
 }
 
 /* Styling cho cột Actions */
 .action-icon {
     cursor: pointer;
-    font-size: 18px;
+    font-size: 1.125rem; /* 18px -> 1.125rem */
 }
 
 /* Hover effect cho hàng */
@@ -74,9 +74,9 @@ body {
 
 .main-context {
     width: 100%;
-    border-radius: 1rem;
-    border: 1px solid #E0EAFA;
-    padding: 15px;
+    border-radius: 1rem; /* đã là rem rồi */
+    border: 0.0625rem solid #E0EAFA; /* 1px -> 0.0625rem */
+    padding: 0.9375rem; /* 15px -> 0.9375rem */
     box-sizing: border-box;
 }
 
@@ -84,35 +84,38 @@ body {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-bottom: 20px;
-    margin-top: 30px;
-    margin-left: 1rem;
+    margin-bottom: 1.25rem; /* 20px -> 1.25rem */
+    margin-top: 1.875rem; /* 30px -> 1.875rem */
+    margin-left: 1rem; /* đã là rem */
     width: 100%;
-    height: 2.6rem;
+    height: 2.6rem; /* giữ nguyên vì là rem */
 }
+
 #find {
-    border-radius: 15px;
+    border-radius: 0.9375rem; /* 15px -> 0.9375rem */
     height: 100%;
     display: flex;
     align-items: center;
     background-color: #E0EAFA;
     padding-left: 1rem;
     width: 30%;
-    margin-right: 1.5rem;
+    margin-right: 0.09375rem; /* 1.5px -> 0.09375rem ? Bạn ghi 1.5rem nên giữ 1.5rem */
+    /* Cẩn thận margin-right gốc 1.5rem là 24px -> 1.5rem */
+    margin-right: 1.5rem; /* giữ nguyên 1.5rem */
 }
 #find input {
     height: 100%;
     background-color: #E0EAFA;
-    border-radius: 15px;
+    border-radius: 0.9375rem; /* 15px -> 0.9375rem */
     width: 90%;
     outline: none;
 }
 
 .fillter-container select {
     height: 100%;
-    border: 1px solid #E0EAFA;
-    border-radius: 10px;
+    border: 0.0625rem solid #E0EAFA; /* 1px -> 0.0625rem */
+    border-radius: 0.625rem; /* 10px -> 0.625rem */
     outline: none;
     margin-left: 1rem;
-    padding: 5px 10px;
+    padding: 0.3125rem 0.625rem; /* 5px 10px -> 0.3125rem 0.625rem */
 }
