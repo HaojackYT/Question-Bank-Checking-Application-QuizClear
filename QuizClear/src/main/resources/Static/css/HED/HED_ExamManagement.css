@@ -540,3 +540,47 @@
         min-width: 1046px;
     }
 }
+
+
+
+
+
+/* ...existing code... */
+
+/* Assignment Table Specific Styles */
+.assignment-table thead tr th:nth-child(1) { width: 120px; }  /* Assignment ID */
+.assignment-table thead tr th:nth-child(2) { width: 250px; }  /* Title */
+.assignment-table thead tr th:nth-child(3) { width: 180px; }  /* Subject */
+.assignment-table thead tr th:nth-child(4) { width: 100px; }  /* Type */
+.assignment-table thead tr th:nth-child(5) { width: 120px; }  /* Due Date */
+.assignment-table thead tr th:nth-child(6) { width: 100px; }  /* Status */
+.assignment-table thead tr th:nth-child(7) { width: 106px; }  /* Action */
+
+.assignment-table tbody tr td:nth-child(1) { width: 120px; }
+.assignment-table tbody tr td:nth-child(2) { width: 250px; }
+.assignment-table tbody tr td:nth-child(3) { width: 180px; }
+.assignment-table tbody tr td:nth-child(4) { width: 100px; }
+.assignment-table tbody tr td:nth-child(5) { width: 120px; }
+.assignment-table tbody tr td:nth-child(6) { width: 100px; }
+.assignment-table tbody tr td:nth-child(7) { width: 106px; border-right: none; }
+
+/* Assignment Title styling */
+.assignment-table tbody tr td:nth-child(2) {
+    text-align: left !important;
+    justify-content: flex-start !important;
+    padding-left: 12px !important;
+    font-weight: 500;
+}
+
+/* Type badges for assignments */
+.type-badge.homework {
+    background: #3B82F6;
+}
+
+.type-badge.project {
+    background: #8B5CF6;
+}
+
+.type-badge.lab {
+    background: #10B981;
+}
