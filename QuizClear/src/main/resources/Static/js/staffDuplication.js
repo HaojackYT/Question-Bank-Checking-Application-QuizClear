@@ -31,15 +31,15 @@ function handleTabClick(tab) {
 
   const tabConfig = {
     detection: {
-      file: "../../Template/staffDupContent.html",
+      file: "../../Template/Staff/staffDupContent.html",
       css: "../../Static/css/staff/staffDup.css",
     },
     stat: {
-      file: "../../Template/staffStatContent.html",
+      file: "../../Template/Staff/staffStatContent.html",
       css: "../../Static/css/staff/staffStats.css",
     },
     proc_log: {
-      file: "../../Template/staffLogContent.html",
+      file: "../../Template/Staff/staffLogContent.html",
       css: "../../Static/css/staff/staffLogs.css",
     },
   };
