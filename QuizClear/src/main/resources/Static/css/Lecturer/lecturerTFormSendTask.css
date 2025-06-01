@@ -1,0 +1,128 @@
+ body {
+     margin: 0;
+     font-family: 'Roboto', sans-serif;
+     background-color: #f9f9fc;
+ }
+
+ #Container-body {
+     display: flex;
+ }
+
+ #main {
+     flex: 1;
+     padding: 2rem;
+ }
+ .title-content {
+     display: flex;
+     align-items: center;
+     font-size: 1.5rem;
+     font-weight: bold;
+     color: #141263;
+     margin-bottom: 1rem;
+ }
+
+ .content-box {
+     background: #ffffff;
+     border-radius: 0.75rem;
+     padding: 2rem;
+     box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+ }
+
+ .info-grid {
+     display: flex;
+     justify-content: space-between;
+     flex-wrap: wrap;
+     gap: 1rem;
+     margin-bottom: 2rem;
+ }
+
+ .info-group label,
+ .info-right p {
+     font-size: 0.875rem;
+     font-weight: 500;
+     color: #333;
+ }
+
+ .info-group input {
+     padding: 0.5rem;
+     border-radius: 0.375rem;
+     border: 1px solid #ccc;
+     width: 200px;
+ }
+
+ .question-box {
+     background-color: #fff;
+     border-radius: 1rem;
+     padding: 1rem;
+     margin-bottom: 1.5rem;
+     border: 1px solid #e2e8f0;
+ }
+
+ .question-box p {
+     font-weight: 500;
+ }
+
+ .tag {
+     float: right;
+     background: #f8d4f2;
+     color: #7a3160;
+     font-size: 0.75rem;
+     padding: 0.25rem 0.75rem;
+     border-radius: 1rem;
+ }
+
+ .answers {
+     margin-top: 1rem;
+ }
+
+ .answer-option {
+     display: flex;
+     align-items: center;
+     gap: 0.75rem;
+     margin-bottom: 0.75rem;
+ }
+
+ .circle {
+     width: 20px;
+     height: 20px;
+     border-radius: 50%;
+     border: 2px solid #ccc;
+ }
+
+ .circle.correct {
+     background-color: #4ade80;
+     border-color: #22c55e;
+ }
+
+ .input-placeholder {
+     flex: 1;
+     height: 32px;
+     background: #f3f4f6;
+     border-radius: 0.5rem;
+ }
+
+ .footer-msg {
+     text-align: center;
+     color: red;
+     margin-top: 1rem;
+     font-size: 0.875rem;
+ }
+
+ .send-btn {
+     background-color: #141263;
+     color: white;
+     border: none;
+     border-radius: 0.5rem;
+     padding: 0.75rem 2rem;
+     font-size: 1rem;
+     cursor: pointer;
+     float: right;
+     display: flex;
+     align-items: center;
+     gap: 0.5rem;
+     margin-top: 1rem;
+ }
+
+ .send-btn i {
+     font-size: 1rem;
+ }

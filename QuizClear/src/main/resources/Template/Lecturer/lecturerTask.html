@@ -17,6 +17,43 @@
     <!--header-->
     <div id="header-placeholder"></div>
 
+    <div id="overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Details</h2>
+                <span class="close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <p class="modal-desc">Detailed information about the task. <span class="modal-due">Due: 2025-25-05</span>
+            </p>
+
+            <div class="field">
+                <label>Subject</label>
+                <input type="text" value="Database System" readonly>
+            </div>
+            <div class="field">
+                <label>Description</label>
+                <input type="text" value="Middle Exam" readonly>
+            </div>
+
+            <div class="info-group">
+                <div><strong>Total Question:</strong> 20</div>
+                <div><strong>Deadline:</strong> 2025-05-25</div>
+                <div><strong>Status:</strong> <span class="status status-n">Not Received</span></div>
+            </div>
+
+            <div class="levels">
+                <div><strong>Recognition</strong><br>5</div>
+                <div><strong>Comprehension</strong><br>5</div>
+                <div><strong>Basic</strong><br>5</div>
+                <div><strong>Advanced</strong><br>5</div>
+            </div>
+
+            <div class="button-group">
+                <button onclick="closeModal()">Accept</button>
+            </div>
+        </div>
+    </div>
+
 
 
     <!-- body -->
@@ -188,42 +225,46 @@
                 </table>
             </div>
             <!-- End Main content -->
-
-
-
-            <!-- ma nhung header vs menu -->
-            <script>
-                // Load header
-                fetch('../header_user.html')
-                    .then(response => response.text())
-                    .then(data => {
-                        document.getElementById('header-placeholder').innerHTML = data;
-                    });
-
-                // Load menu
-                fetch('Menu-Lecturer.html')
-                    .then(response => response.text())
-                    .then(data => {
-                        document.getElementById('menu-HTML').innerHTML = data;
-                    });
-
-                document.getElementById("subject-select").addEventListener("change", function () {
-                    const selectedStatus = this.value.toLowerCase();
-                    const rows = document.querySelectorAll("tbody tr");
-
-                    rows.forEach(row => {
-                        const statusDiv = row.querySelector(".status");
-                        const statusText = statusDiv ? statusDiv.textContent.trim().toLowerCase() : "";
-
-                        if (selectedStatus === "all") {
-                            row.style.display = "";
-                        } else {
-                            row.style.display = (statusText === selectedStatus) ? "" : "none";
-                        }
-                    });
-                });
-
-            </script>
 </body>
+<!-- ma nhung header vs menu -->
+<script>
+    // Load header
+    fetch('../header_user.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('header-placeholder').innerHTML = data;
+        });
+
+    // Load menu
+    fetch('Menu-Lecturer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('menu-HTML').innerHTML = data;
+        });
+
+    document.getElementById("subject-select").addEventListener("change", function () {
+        const selectedStatus = this.value.toLowerCase();
+        const rows = document.querySelectorAll("tbody tr");
+
+        rows.forEach(row => {
+            const statusDiv = row.querySelector(".status");
+            const statusText = statusDiv ? statusDiv.textContent.trim().toLowerCase() : "";
+
+            if (selectedStatus === "all") {
+                row.style.display = "";
+            } else {
+                row.style.display = (statusText === selectedStatus) ? "" : "none";
+            }
+        });
+    });
+    function openModal() {
+        document.getElementById("overlay").style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById("overlay").style.display = "none";
+    }
+
+</script>
 
 </html>
