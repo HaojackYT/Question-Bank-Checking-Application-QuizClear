@@ -1,5 +1,4 @@
-<!-- Phần nội dung chính để đặt vào div#main -->
-<div class="main-content">
+<div class="main-content" id="main-content">
   <div class="page-header">
     <h1 class="page-title">Assignment Management</h1>
     <button class="new-assign-btn" onclick="showNewAssignmentModal()">
@@ -86,7 +85,7 @@
     </div>
   </div>
 
-  <!-- Modal Detail tôi mới thêm -->
+  <!-- Modal Detail -->
   <div class="modal-overlay" id="modal-detail">
     <div class="modal">
       <div class="modal-header">
@@ -198,9 +197,7 @@
         </div>
 
         <!-- Button See more go to Detail -->
-        <button class="see-more-btn" onclick="expandQuestions()">
-          See more...
-        </button>
+        <button class="see-more-btn" id="see-more-btn">See more...</button>
       </div>
 
       <div class="modal-footer">
@@ -237,5 +234,206 @@
         </button>
       </div>
     </div>
+  </div>
+</div>
+
+
+<!-- Detail View -->
+<div class="details-container" id="modal-detail-view" style="display: none">
+  <!-- Header -->
+  <div class="content-header">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <div>
+      <h1 class="page-title">Details</h1>
+      <p class="page-subtitle">
+        Detailed information about the assignment. Due: 2025-25-05
+      </p>
+    </div>
+  </div>
+
+  <!-- Information Section -->
+  <section class="info-section">
+    <h2 class="section-title">Information</h2>
+    <p class="section-subtitle">Information about assignment</p>
+
+    <div class="form-group">
+      <label class="form-label">Subject</label>
+      <select class="form-select">
+        <option>Object Oriented Programming</option>
+        <option>Database</option>
+        <option>Computer Architecture</option>
+        <option>Operating System</option>
+        <option>DBMS</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Title</label>
+      <input
+        type="text"
+        class="form-input"
+        placeholder="Title"
+        value="Assignment Title"
+      />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-textarea" placeholder="Description">This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document.</textarea>
+    </div>
+  </section>
+
+  <!-- Questions Section -->
+  <section class="info-section">
+    <div class="questions-header">
+      <h2 class="section-title">Question(s)</h2>
+      <button class="export-btn" onclick="exportQuestions()">
+        <span>Export</span>
+        <span>↓</span>
+      </button>
+    </div>
+
+    <!-- Question 1 -->
+    <div class="question-card" data-question="1">
+      <div class="question-header">
+        <span class="question-title">Question 1:</span>
+        <span class="question-difficulty">Easy</span>
+      </div>
+      <div class="question-text">
+        What is the main feature of encapsulation in OOP?
+      </div>
+      <ul class="options-list">
+        <li class="option-item incorrect">
+          <span class="option-letter">A.</span>
+          <span>Inheriting behavior from another class</span>
+          <span class="option-status">❌</span>
+        </li>
+        <li class="option-item correct">
+          <span class="option-letter">B.</span>
+          <span>Hiding internal data from outside access</span>
+          <span class="option-status">✅</span>
+        </li>
+        <li class="option-item incorrect">
+          <span class="option-letter">C.</span>
+          <span>Defining multiple methods with the same name</span>
+          <span class="option-status">❌</span>
+        </li>
+        <li class="option-item incorrect">
+          <span class="option-letter">D.</span>
+          <span>Creating abstract classes</span>
+          <span class="option-status">❌</span>
+        </li>
+      </ul>
+      <div class="question-actions">
+        <button class="action-btn btn-reject" onclick="rejectQuestion(1)">
+          ❌
+        </button>
+        <button class="action-btn btn-approve" onclick="approveQuestion(1)">
+          ✅
+        </button>
+      </div>
+    </div>
+
+    <!-- Question 2 -->
+    <div class="question-card" data-question="2">
+      <div class="question-header">
+        <span class="question-title">Question 2:</span>
+        <span class="question-difficulty">Easy</span>
+      </div>
+      <div class="question-text">
+        What is the main feature of encapsulation in OOP?
+      </div>
+      <ul class="options-list">
+        <li class="option-item incorrect">
+          <span class="option-letter">A.</span>
+          <span>Inheriting behavior from another class</span>
+          <span class="option-status">❌</span>
+        </li>
+        <li class="option-item correct">
+          <span class="option-letter">B.</span>
+          <span>Hiding internal data from outside access</span>
+          <span class="option-status">✅</span>
+        </li>
+        <li class="option-item incorrect">
+          <span class="option-letter">C.</span>
+          <span>Defining multiple methods with the same name</span>
+          <span class="option-status">❌</span>
+        </li>
+        <li class="option-item incorrect">
+          <span class="option-letter">D.</span>
+          <span>Creating abstract classes</span>
+          <span class="option-status">❌</span>
+        </li>
+      </ul>
+      <div class="question-actions">
+        <button class="action-btn btn-reject" onclick="rejectQuestion(2)">
+          ❌
+        </button>
+        <button class="action-btn btn-approve" onclick="approveQuestion(2)">
+          ✅
+        </button>
+      </div>
+    </div>
+
+    <!-- Question 3 -->
+    <div class="question-card" data-question="3">
+      <div class="question-header">
+        <span class="question-title">Question 3:</span>
+        <span class="question-difficulty">Easy</span>
+      </div>
+      <div class="question-text">
+        What is the main feature of encapsulation in OOP?
+      </div>
+      <ul class="options-list">
+        <li class="option-item incorrect">
+          <span class="option-letter">A.</span>
+          <span>Inheriting behavior from another class</span>
+          <span class="option-status">❌</span>
+        </li>
+        <li class="option-item correct">
+          <span class="option-letter">B.</span>
+          <span>Hiding internal data from outside access</span>
+          <span class="option-status">✅</span>
+        </li>
+        <li class="option-item incorrect">
+          <span class="option-letter">C.</span>
+          <span>Defining multiple methods with the same name</span>
+          <span class="option-status">❌</span>
+        </li>
+        <li class="option-item incorrect">
+          <span class="option-letter">D.</span>
+          <span>Creating abstract classes</span>
+          <span class="option-status">❌</span>
+        </li>
+      </ul>
+      <div class="question-actions">
+        <button class="action-btn btn-reject" onclick="rejectQuestion(3)">
+          ❌
+        </button>
+        <button class="action-btn btn-approve" onclick="approveQuestion(3)">
+          ✅
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feedback Section -->
+  <section class="feedback-section">
+    <h2 class="section-title">Feedback</h2>
+    <div class="form-group">
+      <textarea class="form-textarea" placeholder="Enter your feedback here...">This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document.</textarea>
+    </div>
+  </section>
+
+  <!-- Final Actions -->
+  <div class="final-actions">
+    <button class="btn-secondary" onclick="rejectAssignment()">
+      <span>❌</span>
+      <span>Reject</span>
+    </button>
+    <button class="btn-primary" onclick="approveAssignment()">
+      <span>✅</span>
+      <span>Approve</span>
+    </button>
   </div>
 </div>
