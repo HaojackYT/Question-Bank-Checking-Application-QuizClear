@@ -28,103 +28,158 @@
         <div id="main">
             <!-- noi dung duoc nhap trong day -->
             <div class="title-content">
-                <i class="fas fa-arrow-left"></i>
+                <a href="lecturerTask.html">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
                 <div class="title-group">
                     <div class="title">Send Task</div>
                 </div>
             </div>
 
-            <div class="content-box">
-                <div class="info-grid">
-                    <div class="info-group">
-                        <label>Subject</label>
-                        <input type="text" value="Database System" readonly>
-                        <label>Deadline</label>
-                        <input type="text" value="23/08/2028" readonly>
-                    </div>
-                    <div class="info-right">
-                        <p>Total Question <strong>7/90</strong></p>
-                        <p>Recognition <strong>1/50</strong></p>
-                        <p>Comprehension <strong>1/30</strong></p>
-                        <p>Apply (basic) <strong>3/5</strong></p>
-                        <p>Apply (advanced) <strong>2/5</strong></p>
-                    </div>
+            <div class="info-container">
+                <div class="info-left">
+                    <label>Subject</label>
+                    <div class="stat">Database System</div>
+                    <label>Deadline</label>
+                    <div class="stat">2025 - 15 - 05</div>
                 </div>
 
+                <div class="divider"></div>
+
+                <div class="info-right">
+                    <div class="stat"><label>Total Question</label>
+                        <div class="value">7/90</div>
+                    </div>
+                    <div class="stat"><label>Recognition</label>
+                        <div class="value">1/50</div>
+                    </div>
+                    <div class="stat"><label>Comprehension</label>
+                        <div class="value">1/30</div>
+                    </div>
+                    <div class="stat"><label>Apply (basic)</label>
+                        <div class="value">3/5</div>
+                    </div>
+                    <div class="stat"><label>Apply (advanced)</label>
+                        <div class="value">2/5</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="questions-list">
                 <h2 style="color: #141263">Question</h2>
 
-                <!-- Questions repeat below -->
                 <div class="question-box">
-                    <p>Which data structure would be most efficient for implementing a priority queue?
-                        <span class="tag">Recognition</span>
-                    </p>
+                    <div class="question-header" onclick="toggleQuestion(this)">
+                        <i class="fas fa-chevron-up toggle-icon rotated"></i>
+                        <p>Write a SQL query to retrieve all customers who have made purchases totaling more than $1000.
+                            <span class="tag apply-basic">Apply (Basic)</span>
+                        </p>
+                    </div>
+                    <div class="question-content">
+                        <div class="correct-answer">
+                            <h4>Correct Answer</h4>
+                            <div class="answer-text">The correct answer</div>
+                        </div>
+                        <div class="incorrect-answers">
+                            <h4>Incorrect Answers</h4>
+                            <div class="answer-text">Incorrect answer</div>
+                            <div class="answer-text">Incorrect answer</div>
+                            <div class="answer-text">Incorrect answer</div>
+                        </div>
+                    </div>
                 </div>
 
+
                 <div class="question-box">
-                    <p>Which data structure would be most efficient for implementing a priority queue?
-                        <span class="tag" style="background: #e0c5f4; color: #6b21a8">Apply (basic)</span>
-                    </p>
-                    <div class="answers">
-                        <div class="answer-option">
-                            <div class="circle correct"></div>
-                            <div class="input-placeholder"></div>
+                    <div class="question-header" onclick="toggleQuestion(this)">
+                        <i class="fas fa-chevron-up toggle-icon rotated"></i>
+                        <p>Write a SQL query to retrieve all customers who have made purchases totaling more than $1000.
+                            <span class="tag apply-basic">Apply (Basic)</span>
+                        </p>
+                    </div>
+                    <div class="question-content">
+                        <div class="correct-answer">
+                            <h4>Correct Answer</h4>
+                            <div class="answer-text">The correct answer</div>
                         </div>
-                        <div class="answer-option">
-                            <div class="circle"></div>
-                            <div class="input-placeholder"></div>
-                        </div>
-                        <div class="answer-option">
-                            <div class="circle"></div>
-                            <div class="input-placeholder"></div>
-                        </div>
-                        <div class="answer-option">
-                            <div class="circle"></div>
-                            <div class="input-placeholder"></div>
+                        <div class="incorrect-answers">
+                            <h4>Incorrect Answers</h4>
+                            <div class="answer-text">Incorrect answer</div>
+                            <div class="answer-text">Incorrect answer</div>
+                            <div class="answer-text">Incorrect answer</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="question-box">
-                    <p>Which data structure would be most efficient for implementing a priority queue?
-                        <span class="tag">Recognition</span>
-                    </p>
+                    <div class="question-header" onclick="toggleQuestion(this)">
+                        <i class="fas fa-chevron-up toggle-icon rotated"></i>
+                        <p>Write a SQL query to retrieve all customers who have made purchases totaling more than $1000.
+                            <span class="tag apply-basic">Apply (Basic)</span>
+                        </p>
+                    </div>
+                    <div class="question-content">
+                        <div class="correct-answer">
+                            <h4>Correct Answer</h4>
+                            <div class="answer-text">The correct answer</div>
+                        </div>
+                        <div class="incorrect-answers">
+                            <h4>Incorrect Answers</h4>
+                            <div class="answer-text">Incorrect answer</div>
+                            <div class="answer-text">Incorrect answer</div>
+                            <div class="answer-text">Incorrect answer</div>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- Question 4 -->
                 <div class="question-box">
-                    <p>Which data structure would be most efficient for implementing a priority queue?
-                        <span class="tag">Recognition</span>
-                    </p>
+                    <div class="question-header" onclick="toggleQuestion(this)">
+                        <i class="fas fa-chevron-up toggle-icon rotated"></i>
+                        <p>Write a SQL query to retrieve all customers who have made purchases totaling more than $1000.
+                            <span class="tag apply-basic">Apply (Basic)</span>
+                        </p>
+                    </div>
+                    <div class="question-content">
+                        <div class="correct-answer">
+                            <h4>Correct Answer</h4>
+                            <div class="answer-text">The correct answer</div>
+                        </div>
+                        <div class="incorrect-answers">
+                            <h4>Incorrect Answers</h4>
+                            <div class="answer-text">Incorrect answer</div>
+                            <div class="answer-text">Incorrect answer</div>
+                            <div class="answer-text">Incorrect answer</div>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="question-box">
-                    <p>Which data structure would be most efficient for implementing a priority queue?
-                        <span class="tag">Recognition</span>
-                    </p>
-                </div>
-
-                <div class="footer-msg">You must complete the request before proceeding to the next step.</div>
-                <button class="send-btn">Send <i class="fas fa-paper-plane"></i></button>
             </div>
-        </div>
-    </div>
 
-        <!-- ma nhung header vs menu -->
-        <script>
-            // Load header
-            fetch('../../Template/header_user.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('header-placeholder').innerHTML = data;
-                });
+            <div class="footer-msg">You must complete the request before proceeding to the next step.</div>
+            <button class="send-btn">Send <i class="fas fa-paper-plane"></i></button>
+            <!-- ma nhung header vs menu -->
+            <script>
+                // Load header
+                fetch('../../Template/header_user.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('header-placeholder').innerHTML = data;
+                    });
 
-            // Load menu
-            fetch('Menu-Lecturer.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('menu-HTML').innerHTML = data;
-                });
+                // Load menu
+                fetch('Menu-Lecturer.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('menu-HTML').innerHTML = data;
+                    });
+                function toggleQuestion(header) {
+                    const questionBox = header.parentElement;
+                    const toggleIcon = header.querySelector('.toggle-icon');
 
-        </script>
+                    questionBox.classList.toggle('expanded');
+                    toggleIcon.classList.toggle('rotated');
+                }
+            </script>
 </body>
 
 </html>
