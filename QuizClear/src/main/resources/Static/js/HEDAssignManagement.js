@@ -244,7 +244,6 @@ function renderAssignmentsTable() {
 }
 
 function viewDetails(index) {
-  // const assignment = assignmentsData[index];
   const detailData = detailDataMap[index];
   populateModalData("modal-detail", detailData);
   openModal("modal-detail");
@@ -354,10 +353,13 @@ function closeModal(modalId) {
   }
 }
 
-// 3. Hàm expand questions - THAY ĐỔI: Load questions từ API
-function expandQuestions() {
-  // TODO: Load và hiển thị tất cả câu hỏi
-  alert("Expand questions functionality - cần implement load data từ API");
+function closeDetails() {
+  const detailContainer = document.getElementById("details-container");
+  detailContainer.style.display = "none";
+
+  // Hiện lại bảng assignments
+  const assignmentsTable = document.getElementById("assignments-table");
+  if (assignmentsTable) assignmentsTable.style.display = "table";
 }
 
 // 4. Close modal khi click outside
@@ -378,53 +380,6 @@ document.addEventListener("keydown", function (e) {
   }
 });
 
-// function populateModalData(modalId, data) {
-//   const modal = document.getElementById(modalId);
-//   if (!modal || !data) return;
-
-//   // Update lecturer info
-//   const lecturerInfo = modal.querySelector(".lecturer-info span");
-//   if (lecturerInfo && data.lecturer) {
-//     lecturerInfo.textContent = `${data.lecturer.name} - ${data.lecturer.id}`;
-//   }
-
-//   // Update title
-//   const titleElement = modal.querySelector(".assignment-title");
-//   if (titleElement && data.title) {
-//     titleElement.textContent = data.title;
-//   }
-
-//   // Update stats
-//   if (data.stats) {
-//     const statValues = modal.querySelectorAll(".stat-value");
-//     if (statValues[0] && data.stats.totalQuestions) {
-//       statValues[0].textContent = data.stats.totalQuestions;
-//     }
-//     if (statValues[1] && data.stats.subject) {
-//       statValues[1].textContent = data.stats.subject;
-//     }
-//     if (statValues[2] && data.stats.deadline) {
-//       statValues[2].textContent = data.stats.deadline;
-//     }
-//   }
-
-//   // Update description
-//   const descElement = modal.querySelector(".description-text");
-//   if (descElement && data.description) {
-//     descElement.textContent = data.description;
-//   }
-
-//   // Update feedback
-//   const feedbackElement = modal.querySelector(".feedback-text");
-//   if (feedbackElement && data.feedback) {
-//     feedbackElement.textContent = data.feedback;
-//   }
-
-//   // Update questions (if provided)
-//   if (data.questions && data.questions.length > 0) {
-//     updateQuestions(modal, data.questions);
-//   }
-// }
 //Load
 function populateModalData(modalId, data) {
   const modal = document.getElementById(modalId);
@@ -489,4 +444,34 @@ function populateModalData(modalId, data) {
   if (dueSpan && data.stats && data.stats.deadline) {
     dueSpan.textContent = "Due: " + data.stats.deadline;
   }
+
+  let seeMoreBtn = modal.querySelector(".see-more-btn");
+
+  if (!seeMoreBtn) {
+    seeMoreBtn = document.createElement("button");
+    seeMoreBtn.className = "see-more-btn";
+    seeMoreBtn.textContent = "See More";
+    seeMoreBtn.style.cursor = "pointer";
+
+    const container =
+      modal.querySelector(".questions-container") ||
+      modal.querySelector(".modal-body");
+    if (container) {
+      container.appendChild(seeMoreBtn);
+    }
+  }
+
+  // Gán sự kiện click cho nút
+  seeMoreBtn.onclick = () => {
+    document.getElementById("main-content").style.display = "none"; // Ẩn trang chính
+    document.getElementById("modal-detail-view").style.display = "block"; // Hiện phần detail
+  };
+
+  // Hiển thị nút
+  seeMoreBtn.style.display = "inline-block";
+}
+
+function goBack() {
+  document.getElementById("modal-detail-view").style.display = "none";
+  document.getElementById("main-content").style.display = "block";
 }
