@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/css/Lecturer/lectureEETaskExamLastReview.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Exam Evaluation</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <div class="exam-container">
+                <h1 class="page-title">Last Review</h1>
+
+                <!-- Request Form -->
+                <div class="request-form">
+                    <h3>Request</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Requester</label>
+                            <input type="text" value="Nguyễn A" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Time Exam</label>
+                            <input type="text" value="90:00" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Subject</label>
+                            <input type="text" value="Database System" readonly>
+                        </div>
+                        <div class="form-group-split">
+                            <div class="form-subgroup">
+                                <label>Remember</label>
+                                <input type="text" value="50" readonly>
+                            </div>
+                            <div class="form-subgroup">
+                                <label>Understand</label>
+                                <input type="text" value="30" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Deadline</label>
+                            <input type="text" value="23/08/2028" readonly>
+                        </div>
+                        <div class="form-group-split">
+                            <div class="form-subgroup">
+                                <label>Apply (basic)</label>
+                                <input type="text" value="5" readonly>
+                            </div>
+                            <div class="form-subgroup">
+                                <label>Apply (advanced)</label>
+                                <input type="text" value="5" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step Tabs -->
+                <div class="step-tabs">
+                    <button class="tab-btn">Step</button>
+                    <button class="tab-btn">Select Questions</button>
+                    <button class="tab-btn active">Build Exam</button>
+                </div>
+
+                <!-- Exam Title -->
+                <div class="exam-title-section">
+                    <label class="exam-title-label">Exam Title</label>
+                    <input type="text" placeholder="The content" class="exam-title-input">
+                </div>
+
+
+                <!-- Build Your Exam Section -->
+                <div class="build-exam-section">
+                    <h2 class="sectionTitle">Build Your Exam</h2>
+
+                    <!-- Question 1 -->
+                    <div class="question-item">
+                        <div class="question-header">
+                            <i class="fas fa-chevron-down"></i>
+                            <span>What is a primary key in a relational database?</span>
+                        </div>
+                        <div class="question-tags">
+                            <span class="tag remember">Remember</span>
+                            <span class="tag clo1">CLO1</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="question-item">
+                        <div class="question-header">
+                            <i class="fas fa-chevron-down"></i>
+                            <span>Explain the concept of database normalization and its benefits.</span>
+                        </div>
+                        <div class="question-tags">
+                            <span class="tag remember">Remember</span>
+                            <span class="tag clo1">CLO1</span>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="question-item expanded">
+                        <div class="question-header">
+                            <i class="fas fa-chevron-down"></i>
+                            <span>Write a SQL query to retrieve all customers who have made purchases totaling more than
+                                $1000.</span>
+                        </div>
+                        <div class="question-tags">
+                            <span class="tag apply-basic">Apply (Basic)</span>
+                            <span class="tag clo2">CLO2</span>
+                        </div>
+
+                        <!-- Answer Section -->
+                        <div class="answer-section">
+                            <div class="correct-answer">
+                                <h4>Correct Answer</h4>
+                                <textarea placeholder="The correct answer" class="answer-textarea"></textarea>
+                            </div>
+
+                            <div class="incorrect-answers">
+                                <h4>Incorrect Answers</h4>
+                                <textarea placeholder="Incorrect answer" class="answer-textarea"></textarea>
+                                <textarea placeholder="Incorrect answer" class="answer-textarea"></textarea>
+                                <textarea placeholder="Incorrect answer" class="answer-textarea"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shuffle Questions -->
+                <div class="shuffle-section">
+                    <label class="checkbox-container">
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                        Shuffle Questions
+                    </label>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Back
+                    </button>
+                    <button class="btn btn-secondary" id="preview-btn">
+                        <i class="fas fa-eye"></i>
+                        Preview
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-save"></i>
+                        Save Draft
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Exam Review</h2>
+                <button class="close"><i class="fa-solid fa-xmark"></i></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="question-preview">
+                    <p class="question-text">Write a SQL query to retrieve all customers who have made purchases
+                        totaling more than $1000.</p>
+
+                    <div class="answer-options">
+                        <div class="option">
+                            <input type="radio" name="answer" id="option1">
+                            <label for="option1">
+                                <textarea readonly>50 000</textarea>
+                            </label>
+                        </div>
+                        <div class="option selected">
+                            <input type="radio" name="answer" id="option2" checked>
+                            <label for="option2">
+                                <textarea readonly>50 000</textarea>
+                            </label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="answer" id="option3">
+                            <label for="option3">
+                                <textarea readonly>50 000</textarea>
+                            </label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="answer" id="option4">
+                            <label for="option4">
+                                <textarea readonly>50 000</textarea>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question-navigation">
+                        <span class="question-counter">1/90</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary">&lt; Previous</button>
+                <button class="btn btn-secondary">Next &gt;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Load header
+        fetch('../../Template/header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        // Load menu
+        fetch('Menu-Lecturer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+
+        // Modal functionality
+        const modal = document.getElementById('preview-modal');
+        const previewBtn = document.getElementById('preview-btn');
+        const closeBtn = document.getElementsByClassName('close')[0];
+
+        previewBtn.onclick = function () {
+            modal.style.display = 'block';
+        }
+
+        closeBtn.onclick = function () {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Question expand/collapse
+        document.querySelectorAll('.question-header').forEach(header => {
+            header.addEventListener('click', function () {
+                const questionItem = this.parentElement;
+                questionItem.classList.toggle('expanded');
+            });
+        });
+    </script>
+</body>
+
+</html>
