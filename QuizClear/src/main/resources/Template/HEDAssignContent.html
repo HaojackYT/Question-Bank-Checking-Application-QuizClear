@@ -1,7 +1,11 @@
 <div class="main-content" id="main-content">
   <div class="page-header">
     <h1 class="page-title">Assignment Management</h1>
-    <button class="new-assign-btn" onclick="showNewAssignmentModal()">
+    <button
+      class="new-assign-btn"
+      id="new-assign-btn"
+      onclick="newAssignOpenModal()"
+    >
       <i class="fas fa-plus"></i>
       New Assign
     </button>
@@ -237,7 +241,6 @@
   </div>
 </div>
 
-
 <!-- Detail View -->
 <div class="details-container" id="modal-detail-view" style="display: none">
   <!-- Header -->
@@ -279,7 +282,9 @@
 
     <div class="form-group">
       <label class="form-label">Description</label>
-      <textarea class="form-textarea" placeholder="Description">This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document.</textarea>
+      <textarea class="form-textarea" placeholder="Description">
+This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document.</textarea
+      >
     </div>
   </section>
 
@@ -421,7 +426,9 @@
   <section class="feedback-section">
     <h2 class="section-title">Feedback</h2>
     <div class="form-group">
-      <textarea class="form-textarea" placeholder="Enter your feedback here...">This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document.</textarea>
+      <textarea class="form-textarea" placeholder="Enter your feedback here...">
+This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document.</textarea
+      >
     </div>
   </section>
 
@@ -435,5 +442,253 @@
       <span>✅</span>
       <span>Approve</span>
     </button>
+  </div>
+</div>
+
+
+<!-- New Assign Modal -->
+<div class="newAssign-modal-overlay hidden" id="newAssignModalOverlay">
+  <div class="newAssign-modal">
+    <!-- Modal Header -->
+    <div class="newAssign-modal-header">
+      <h2 class="newAssign-modal-title">New Assign</h2>
+      <p class="newAssign-modal-subtitle">
+        Create new assign for the lecturer.
+      </p>
+      <button class="newAssign-close-btn" onclick="newAssignCloseModal()">
+        &times;
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="newAssign-modal-body">
+      <form id="newAssignForm">
+        <!-- Lecturer, Subject, Total Question Row -->
+        <div class="newAssign-form-row">
+          <div class="newAssign-form-group">
+            <label class="newAssign-form-label" for="newAssignLecturer"
+              >Lecturer</label
+            >
+            <select
+              class="newAssign-form-select"
+              id="newAssignLecturer"
+              name="newAssignLecturer"
+            >
+              <option value="nguyen-van-a">Nguyen Van A</option>
+              <option value="nguyen-thi-b">Nguyen Thi B</option>
+              <option value="tran-van-c">Tran Van C</option>
+            </select>
+          </div>
+          <div class="newAssign-form-group">
+            <label class="newAssign-form-label" for="newAssignSubject"
+              >Subject</label
+            >
+            <select
+              class="newAssign-form-select"
+              id="newAssignSubject"
+              name="newAssignSubject"
+            >
+              <option value="operating-system">Operating System</option>
+              <option value="database">Database</option>
+              <option value="web-development">Web Development</option>
+              <option value="data-structures">Data Structures</option>
+            </select>
+          </div>
+          <div class="newAssign-form-group">
+            <label class="newAssign-form-label" for="newAssignTotalQuestion"
+              >Total Question</label
+            >
+            <input
+              type="number"
+              class="newAssign-form-input"
+              id="newAssignTotalQuestion"
+              name="newAssignTotalQuestion"
+              placeholder="----"
+              min="1"
+            />
+          </div>
+        </div>
+
+        <!-- Title -->
+        <div class="newAssign-form-group full-width">
+          <label class="newAssign-form-label" for="newAssignTitle">Title</label>
+          <input
+            type="text"
+            class="newAssign-form-input"
+            id="newAssignTitle"
+            name="newAssignTitle"
+            placeholder="Enter title"
+          />
+        </div>
+
+        <!-- Context -->
+        <div class="newAssign-form-group full-width">
+          <label class="newAssign-form-label" for="newAssignContext"
+            >Context</label
+          >
+          <textarea
+            class="newAssign-form-textarea"
+            id="newAssignContext"
+            name="newAssignContext"
+            placeholder="This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document."
+          ></textarea>
+        </div>
+
+        <!-- Duration -->
+        <div class="newAssign-duration-section">
+          <div class="newAssign-duration-header">
+            <span class="newAssign-calendar-icon">📅 Calendar</span>
+            <label class="newAssign-form-label" style="margin-bottom: 0"
+              >Duration</label
+            >
+          </div>
+
+          <!-- Start Date/Time -->
+          <div class="newAssign-duration-row">
+            <span class="newAssign-duration-label">Start</span>
+            <div class="newAssign-duration-inputs">
+              <select
+                class="newAssign-duration-select small"
+                id="newAssignStartDay"
+                name="newAssignStartDay"
+              >
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29">29</option>
+                <option value="30">30</option>
+                <option value="31">31</option>
+              </select>
+              <select
+                class="newAssign-duration-select medium"
+                id="newAssignStartMonth"
+                name="newAssignStartMonth"
+              >
+                <option value="may">May</option>
+                <option value="june">June</option>
+                <option value="july">July</option>
+                <option value="august">August</option>
+              </select>
+              <select
+                class="newAssign-duration-select large"
+                id="newAssignStartYear"
+                name="newAssignStartYear"
+              >
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+              </select>
+              <select
+                class="newAssign-duration-select small"
+                id="newAssignStartHour"
+                name="newAssignStartHour"
+              >
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+              <select
+                class="newAssign-duration-select small"
+                id="newAssignStartMinute"
+                name="newAssignStartMinute"
+              >
+                <option value="00">00</option>
+                <option value="15">15</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
+              </select>
+              <select
+                class="newAssign-duration-select small"
+                id="newAssignStartPeriod"
+                name="newAssignStartPeriod"
+              >
+                <option value="am">AM</option>
+                <option value="pm">PM</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- End Date/Time -->
+          <div class="newAssign-duration-row">
+            <span class="newAssign-duration-label">End</span>
+            <div class="newAssign-duration-inputs">
+              <select
+                class="newAssign-duration-select small"
+                id="newAssignEndDay"
+                name="newAssignEndDay"
+              >
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29">29</option>
+                <option value="30">30</option>
+                <option value="31">31</option>
+              </select>
+              <select
+                class="newAssign-duration-select medium"
+                id="newAssignEndMonth"
+                name="newAssignEndMonth"
+              >
+                <option value="may">May</option>
+                <option value="june">June</option>
+                <option value="july">July</option>
+                <option value="august">August</option>
+              </select>
+              <select
+                class="newAssign-duration-select large"
+                id="newAssignEndYear"
+                name="newAssignEndYear"
+              >
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+              </select>
+              <select
+                class="newAssign-duration-select small"
+                id="newAssignEndHour"
+                name="newAssignEndHour"
+              >
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+              <select
+                class="newAssign-duration-select small"
+                id="newAssignEndMinute"
+                name="newAssignEndMinute"
+              >
+                <option value="00">00</option>
+                <option value="15">15</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
+              </select>
+              <select
+                class="newAssign-duration-select small"
+                id="newAssignEndPeriod"
+                name="newAssignEndPeriod"
+              >
+                <option value="am">AM</option>
+                <option value="pm">PM</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="newAssign-modal-footer">
+          <button
+            type="button"
+            class="newAssign-submit-btn"
+            onclick="newAssignSubmitForm()"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

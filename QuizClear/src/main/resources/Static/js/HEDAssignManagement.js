@@ -445,6 +445,7 @@ function populateModalData(modalId, data) {
     dueSpan.textContent = "Due: " + data.stats.deadline;
   }
 
+  // See more button
   let seeMoreBtn = modal.querySelector(".see-more-btn");
 
   if (!seeMoreBtn) {
@@ -471,7 +472,20 @@ function populateModalData(modalId, data) {
   seeMoreBtn.style.display = "inline-block";
 }
 
+// Go back from detail page
 function goBack() {
   document.getElementById("modal-detail-view").style.display = "none";
   document.getElementById("main-content").style.display = "block";
+}
+
+// New Assignment Modal
+function newAssignOpenModal() {
+  document.getElementById("newAssignModalOverlay").classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+// Close modal function
+function newAssignCloseModal() {
+  document.getElementById("newAssignModalOverlay").classList.add("hidden");
+  document.body.style.overflow = "auto";
 }
