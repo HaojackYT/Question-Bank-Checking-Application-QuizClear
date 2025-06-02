@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/css/subjectLeader/SL_SummaryReport.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>SL - Summary Report</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- Summary Report Main Page -->
+            <div id="summaryReportPage" class="page-content">
+                <div class="page-header">
+                    <h1>Summary Report</h1>
+                    <p class="page-subtitle">Overview of approved questions ready to submit to department heads or R&D</p>
+                </div>
+
+                <div class="actions-section">
+                    <div class="search-filter-section">
+                        <div class="search-box">
+                            <input type="text" placeholder="Enter search content..." class="search-input">
+                            <button class="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div class="filter-dropdown">
+                            <select class="filter-select">
+                                <option>All Summary</option>
+                                <option>Completed</option>
+                                <option>Draft</option>
+                                <option>Pending</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <button class="new-summary-btn" onclick="openNewSummaryModal()">
+                        <span class="plus-icon">+</span>
+                        New assign
+                    </button>
+                </div>
+
+                <div class="summary-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Summary ID</th>
+                                <th>Recipient</th>
+                                <th>No. of Ques</th>
+                                <th>Created Date</th>
+                                <th>FB Status</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>DB_S102</td>
+                                <td>R&D</td>
+                                <td>20</td>
+                                <td>22/04/25</td>
+                                <td><span class="fb-status received">Received</span></td>
+                                <td><span class="status completed">Completed</span></td>
+                                <td>
+                                    <button class="action-btn view" onclick="viewSummaryDetails('DB_S102')" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DB_S102</td>
+                                <td>R&D</td>
+                                <td>40</td>
+                                <td>22/04/25</td>
+                                <td><span class="fb-status not-received">Not Received</span></td>
+                                <td><span class="status draft">Draft</span></td>
+                                <td>
+                                    <button class="action-btn view" onclick="viewSummaryDetails('DB_S102')" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="action-btn edit" onclick="editSummary('DB_S102')" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DB_S102</td>
+                                <td>Depart. Head</td>
+                                <td>50</td>
+                                <td>22/04/25</td>
+                                <td><span class="fb-status not-received">Not Received</span></td>
+                                <td><span class="status pending">Pending</span></td>
+                                <td>
+                                    <button class="action-btn view" onclick="viewSummaryDetails('DB_S102')" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="action-btn edit" onclick="editSummary('DB_S102')" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Summary Details Page -->
+            <div id="summaryDetailsPage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <button class="back-btn" onclick="goBackToMain()">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h1>Details</h1>
+                </div>
+
+                <div class="information-section">
+                    <h2>Information</h2>
+                    <p class="section-subtitle">Display all related information</p>
+
+                    <div class="info-grid">
+                        <div class="info-row">
+                            <div class="info-field">
+                                <label>ID</label>
+                                <input type="text" id="detailId" value="DB_S102" readonly>
+                            </div>
+                            <div class="info-field">
+                                <label>Title</label>
+                                <input type="text" id="detailTitle" value="Midterm Test" readonly>
+                            </div>
+                            <div class="info-field">
+                                <label>Created by</label>
+                                <input type="text" id="detailCreatedBy" value="Nguyen Van A" readonly>
+                            </div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-field">
+                                <label>Number of Question</label>
+                                <input type="text" id="detailQuestions" value="20" readonly>
+                            </div>
+                            <div class="info-field">
+                                <label>Submission Date</label>
+                                <input type="text" id="detailSubmissionDate" value="23/4/25" readonly>
+                            </div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-field">
+                                <label>Recipient</label>
+                                <input type="text" id="detailRecipient" value="Department Head" readonly>
+                            </div>
+                            <div class="info-field">
+                                <label>Status</label>
+                                <input type="text" id="detailStatus" value="Received" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-list-section">
+                    <h2>Question list</h2>
+                    <p class="section-subtitle">Display the list of questions and all related information</p>
+
+                    <div class="questions-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Contributor</th>
+                                    <th>Diff. Levels</th>
+                                    <th>Updated Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Q101</td>
+                                    <td>Nguyen Van A</td>
+                                    <td>Reg</td>
+                                    <td>22/04/25</td>
+                                    <td><span class="status approved">Approved</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Q101</td>
+                                    <td>Nguyen Van A</td>
+                                    <td>Reg</td>
+                                    <td>22/04/25</td>
+                                    <td><span class="status approved">Approved</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Q101</td>
+                                    <td>Nguyen Van A</td>
+                                    <td>Reg</td>
+                                    <td>22/04/25</td>
+                                    <td><span class="status approved">Approved</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Summary Modal -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal" id="newSummaryModal">
+        <div class="modal-header">
+            <h2>New Summary</h2>
+            <button class="modal-close" onclick="closeNewSummaryModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="summaryTitle" placeholder="Midterm Test" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Recipient</label>
+                        <input type="text" id="summaryRecipient" placeholder="Department Head" class="form-input">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Total Ques.</label>
+                        <input type="number" id="summaryTotalQues" placeholder="20" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Submission Date</label>
+                        <input type="text" id="summarySubmissionDate" placeholder="23/05/25" class="form-input">
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Questions</label>
+                    <div class="dropdown-container">
+                        <select id="summaryQuestions" class="form-select">
+                            <option value="">Multi Select</option>
+                            <option value="q1">Question 1 - Database Basics</option>
+                            <option value="q2">Question 2 - SQL Queries</option>
+                            <option value="q3">Question 3 - Normalization</option>
+                        </select>
+                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Notes</label>
+                    <textarea id="summaryNotes" placeholder="Please prepare the exam questions based on the course content, covering different levels of difficulty and question types where appropriate." class="form-textarea"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn cancel" onclick="closeNewSummaryModal()">Cancel</button>
+            <button class="modal-btn save-draft" onclick="saveAsDraft()">Save as Draft</button>
+            <button class="modal-btn create" onclick="createSummary()">Create</button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Load header and menu
+        fetch('../header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        fetch('Menu-SL.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+
+        // Navigation functions
+        function viewSummaryDetails(summaryId) {
+            document.getElementById('summaryReportPage').style.display = 'none';
+            document.getElementById('summaryDetailsPage').style.display = 'block';
+        }
+
+        function goBackToMain() {
+            document.getElementById('summaryDetailsPage').style.display = 'none';
+            document.getElementById('summaryReportPage').style.display = 'block';
+        }
+
+        function editSummary(summaryId) {
+            // Open edit modal with existing data
+            openNewSummaryModal();
+            // Populate form with existing data
+            document.getElementById('summaryTitle').value = 'Midterm Test';
+            document.getElementById('summaryRecipient').value = 'Department Head';
+            // etc.
+        }
+
+        // Modal functions
+        function openNewSummaryModal() {
+            document.getElementById('modalOverlay').style.display = 'block';
+            document.getElementById('newSummaryModal').style.display = 'block';
+        }
+
+        function closeNewSummaryModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.getElementById('newSummaryModal').style.display = 'none';
+            // Clear form
+            const form = document.querySelector('.modal-form');
+            const inputs = form.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                if (input.type === 'text' || input.type === 'number' || input.tagName === 'TEXTAREA') {
+                    input.value = '';
+                } else if (input.tagName === 'SELECT') {
+                    input.selectedIndex = 0;
+                }
+            });
+        }
+
+        function saveAsDraft() {
+            // Save as draft logic
+            alert('Summary saved as draft!');
+            closeNewSummaryModal();
+        }
+
+        function createSummary() {
+            // Create summary logic
+            const title = document.getElementById('summaryTitle').value;
+            const recipient = document.getElementById('summaryRecipient').value;
+            
+            if (title && recipient) {
+                alert('Summary created successfully!');
+                closeNewSummaryModal();
+                // Refresh table or add new row
+            } else {
+                alert('Please fill in all required fields');
+            }
+        }
+
+        // Close modal when clicking overlay
+        document.getElementById('modalOverlay').addEventListener('click', closeNewSummaryModal);
+
+        // Prevent modal from closing when clicking inside modal
+        document.getElementById('newSummaryModal').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    </script>
+
+</body>
+</html>
