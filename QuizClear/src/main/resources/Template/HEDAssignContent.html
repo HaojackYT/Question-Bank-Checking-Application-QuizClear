@@ -85,4 +85,157 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal Detail tôi mới thêm -->
+  <div class="modal-overlay" id="modal-detail">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Details</h2>
+        <div class="modal-actions">
+          <button class="expand-btn" title="Expand">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="15,3 21,3 21,9"></polyline>
+              <polyline points="9,21 3,21 3,15"></polyline>
+              <line x1="21" y1="3" x2="14" y2="10"></line>
+              <line x1="3" y1="21" x2="10" y2="14"></line>
+            </svg>
+          </button>
+          <button
+            class="close-btn"
+            onclick="closeModal('modal-detail')"
+            title="Close"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px">
+          Detailed information about the assignment
+          <span style="color: #1976d2">Due: 2025-25-05</span>
+        </p>
+
+        <div class="section">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <div>
+              <h3 class="section-title">Lecturer</h3>
+              <div class="lecturer-info">
+                <span>Nguyen Van A - 1001</span>
+              </div>
+            </div>
+            <button class="download-btn">↓</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Title</h3>
+          <p class="assignment-title">
+            Midterm exam of the Object Oriented Programming subject
+          </p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-label">Total Question</div>
+            <div class="stat-value">4</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Subject</div>
+            <div class="stat-value">Object Oriented Programming</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Deadline</div>
+            <div class="stat-value">2025-25-05</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Status</div>
+            <div class="status-pending">Pending</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Description</h3>
+          <p class="description-text">
+            This is a detailed description of the content that needs to be
+            approved. It includes specific information, requirements, and the
+            purpose of the document.
+          </p>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Feedback</h3>
+          <div class="feedback-box">
+            <p class="feedback-text">
+              This is a detailed description of the content that needs to be
+              approved. It includes specific information, requirements, and the
+              purpose of the document.
+            </p>
+          </div>
+        </div>
+
+        <!-- Button See more go to Detail -->
+        <button class="see-more-btn" onclick="expandQuestions()">
+          See more...
+        </button>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-reject" onclick="closeModal('modal-detail')">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            style="margin-right: 4px"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+          </svg>
+          Reject
+        </button>
+        <button class="btn btn-approve" onclick="closeModal('modal-detail')">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            style="margin-right: 4px"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+          Approve
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
