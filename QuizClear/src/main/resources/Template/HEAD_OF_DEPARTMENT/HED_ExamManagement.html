@@ -291,6 +291,89 @@
                     <a href="#" class="see-more-link">See more...</a>
                 </div>
             </div>
+
+            <!-- Exam Details Modal -->
+            <div id="examDetailsModal" class="modal">
+                <div class="modal-content details-modal">
+                    <div class="modal-header">
+                        <h2>Details</h2>
+                        <div class="modal-controls">
+                            <button class="expand-btn" title="Expand">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                            <button class="close-btn" title="Close">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <p class="details-subtitle">
+                            Detailed information about the assignment 
+                            <span class="due-date">Due: <span id="modalDueDate">2025-25-05</span></span>
+                        </p>
+                        
+                        <div class="details-section">
+                            <h3>Lecturer</h3>
+                            <div class="instructor-info">
+                                <span id="modalLecturer">Nguyen Van A - 1001</span>
+                                <button class="download-btn">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="details-section">
+                            <h3>Title</h3>
+                            <p id="modalTitle">Midterm exam of the Object Oriented Programming subject</p>
+                        </div>
+                        
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <h4>Total Question</h4>
+                                <span id="modalTotalQuestion">4</span>
+                            </div>
+                            <div class="detail-item">
+                                <h4>Subject</h4>
+                                <span id="modalSubject">Object Oriented Programming</span>
+                            </div>
+                            <div class="detail-item">
+                                <h4>Deadline</h4>
+                                <span id="modalDeadline">2025-25-05</span>
+                            </div>
+                            <div class="detail-item">
+                                <h4>Status</h4>
+                                <span id="modalStatus" class="status-badge pending">Pending</span>
+                            </div>
+                        </div>
+                        
+                        <div class="details-section">
+                            <h3>Description</h3>
+                            <p id="modalDescription">This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document.</p>
+                        </div>
+                        
+                        <div class="details-section">
+                            <h3>Feedback</h3>
+                            <textarea id="modalFeedback" placeholder="This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document."></textarea>
+                        </div>
+                        
+                        <div class="see-more">
+                            <a href="#" class="see-more-link">See more...</a>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button class="reject-btn">
+                            <i class="fas fa-times-circle"></i>
+                            Reject
+                        </button>
+                        <button class="approve-btn">
+                            <i class="fas fa-check-circle"></i>
+                            Approve
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -99,15 +99,15 @@
     font-size: 13px;
     color: #000000;
     cursor: pointer;
-    padding: 0 40px 0 15px; /* Tăng padding-right để tránh text đè lên mũi tên */
+    padding: 0 40px 0 15px;
     box-sizing: border-box;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23000000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 15px center; /* Điều chỉnh vị trí mũi tên */
+    background-position: right 15px center;
     background-repeat: no-repeat;
-    background-size: 15px; /* Giảm kích thước mũi tên */
+    background-size: 15px;
 }
 
 /* Table Container */
@@ -167,16 +167,16 @@
     align-items: center;
     padding: 14px 12px;
     border-right: 1px solid #CBD5E1;
-    border-bottom: 1px solid #CBD5E1; /* Add horizontal border */
+    border-bottom: 1px solid #CBD5E1;
     font-family: 'Inter';
     font-weight: 700;
     font-size: 12px;
     line-height: 15px;
     color: #000000;
-    flex: 1; /* Add this - equal width columns */
+    flex: 1;
     box-sizing: border-box;
     height: 43px;
-    min-width: 149px; /* Minimum width */
+    min-width: 149px;
 }
 
 /* Table Body */
@@ -217,29 +217,19 @@
     justify-content: center;
     padding: 12px 8px;
     border-right: 1px solid #CBD5E1;
-    border-bottom: 1px solid #CBD5E1; /* Add horizontal border */
+    border-bottom: 1px solid #CBD5E1;
     font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
     font-size: 12px;
     line-height: 15px;
     color: #000000;
-    flex: 1; /* Add this - equal width columns */
+    flex: 1;
     height: 58px;
     box-sizing: border-box;
-    min-width: 149px; /* Minimum width */
+    min-width: 149px;
 }
 
-/* Remove the specific width rules since we use flex: 1 */
-/* Comment out or remove these:
-.exam-table th:nth-child(1),
-.exam-table td:nth-child(1) { 
-    width: 149px; 
-}
-... etc
-*/
-
-/* Keep only the last column border removal */
 .exam-table th:nth-child(7),
 .exam-table td:nth-child(7) { 
     border-right: none;
@@ -499,7 +489,390 @@
     color: #120368;
 }
 
+/* Updated Modal Styles - Clean Design like Image 2 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: #FFFFFF;
+    margin: 3% auto;
+    border-radius: 12px;
+    width: 600px;
+    max-height: 90vh;
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 32px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.modal-header h2 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    color: #111827;
+    margin: 0;
+}
+
+.modal-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.expand-btn, .close-btn {
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #6B7280;
+    font-size: 14px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.expand-btn:hover, .close-btn:hover {
+    background: #F9FAFB;
+    border-color: #9CA3AF;
+    color: #374151;
+}
+
+/* Modal Body */
+.modal-body {
+    padding: 32px;
+    max-height: calc(90vh - 160px);
+    overflow-y: auto;
+}
+
+/* Subtitle with Due Date */
+.details-subtitle {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #6B7280;
+    margin-bottom: 32px;
+    line-height: 1.5;
+}
+
+.due-date {
+    color: #3B82F6;
+    font-weight: 500;
+}
+
+/* Section Styling */
+.details-section {
+    margin-bottom: 32px;
+}
+
+.details-section h3 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: #111827;
+    margin: 0 0 12px 0;
+}
+
+/* Lecturer Section */
+.instructor-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #374151;
+}
+
+.download-btn {
+    width: 40px;
+    height: 40px;
+    background: #FFFFFF;
+    border: 1px solid #3B82F6;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.download-btn i {
+    color: #3B82F6;
+    font-size: 16px;
+}
+
+.download-btn:hover {
+    background: #F0F8FF;
+}
+
+/* Title Section */
+#modalTitle {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #374151;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Details Grid - 4 columns */
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 24px;
+    margin: 32px 0;
+}
+
+.detail-item {
+    text-align: center;
+}
+
+.detail-item h4 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #111827;
+    margin: 0 0 8px 0;
+}
+
+.detail-item span {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #6B7280;
+    display: block;
+}
+
+/* Status Badge in Grid */
+#modalStatus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #FFFFFF;
+    white-space: nowrap;
+}
+
+#modalStatus.pending {
+    background: #F59E0B;
+}
+
+#modalStatus.approved {
+    background: #10B981;
+}
+
+#modalStatus.rejected {
+    background: #EF4444;
+}
+
+#modalStatus.in-progress {
+    background: #3B82F6;
+}
+
+/* Description Section */
+#modalDescription {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Feedback Section */
+#modalFeedback {
+    width: 100%;
+    min-height: 120px;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    padding: 16px;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #374151;
+    resize: vertical;
+    background: #FAFAFA;
+}
+
+#modalFeedback:focus {
+    outline: none;
+    border-color: #3B82F6;
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+#modalFeedback::placeholder {
+    color: #9CA3AF;
+}
+
+/* See More Link */
+.modal-body .see-more {
+    text-align: left;
+    margin-top: 24px;
+}
+
+.modal-body .see-more-link {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #6B7280;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.modal-body .see-more-link:hover {
+    color: #3B82F6;
+    text-decoration: underline;
+}
+
+/* Modal Footer */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    padding: 24px 32px;
+    border-top: 1px solid #E5E7EB;
+    background: #F9FAFB;
+}
+
+.reject-btn, .approve-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.reject-btn {
+    background: #FFFFFF;
+    border: 1px solid #D1D5DB;
+    color: #374151;
+}
+
+.reject-btn:hover {
+    background: #F9FAFB;
+    border-color: #9CA3AF;
+}
+
+.reject-btn i {
+    color: #EF4444;
+    font-size: 16px;
+}
+
+.approve-btn {
+    background: #4C1D95;
+    color: #FFFFFF;
+}
+
+.approve-btn:hover {
+    background: #3730A3;
+}
+
+.approve-btn i {
+    color: #FFFFFF;
+    font-size: 16px;
+}
+
+/* Assignment Table Specific Styles */
+.assignment-table thead tr th:nth-child(1) { width: 120px; }
+.assignment-table thead tr th:nth-child(2) { width: 250px; }
+.assignment-table thead tr th:nth-child(3) { width: 180px; }
+.assignment-table thead tr th:nth-child(4) { width: 100px; }
+.assignment-table thead tr th:nth-child(5) { width: 120px; }
+.assignment-table thead tr th:nth-child(6) { width: 100px; }
+.assignment-table thead tr th:nth-child(7) { width: 106px; }
+
+.assignment-table tbody tr td:nth-child(1) { width: 120px; }
+.assignment-table tbody tr td:nth-child(2) { width: 250px; }
+.assignment-table tbody tr td:nth-child(3) { width: 180px; }
+.assignment-table tbody tr td:nth-child(4) { width: 100px; }
+.assignment-table tbody tr td:nth-child(5) { width: 120px; }
+.assignment-table tbody tr td:nth-child(6) { width: 100px; }
+.assignment-table tbody tr td:nth-child(7) { width: 106px; border-right: none; }
+
+.assignment-table tbody tr td:nth-child(2) {
+    text-align: left !important;
+    justify-content: flex-start !important;
+    padding-left: 12px !important;
+    font-weight: 500;
+}
+
+.type-badge.homework {
+    background: #3B82F6;
+}
+
+.type-badge.project {
+    background: #8B5CF6;
+}
+
+.type-badge.lab {
+    background: #10B981;
+}
+
 /* Responsive Design */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 2% auto;
+    }
+    
+    .modal-body {
+        padding: 24px;
+    }
+    
+    .details-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .reject-btn, .approve-btn {
+        width: 100%;
+    }
+}
+
 @media (max-width: 1440px) {
     #main {
         width: 100vw;
@@ -539,48 +912,4 @@
     .exam-table {
         min-width: 1046px;
     }
-}
-
-
-
-
-
-/* ...existing code... */
-
-/* Assignment Table Specific Styles */
-.assignment-table thead tr th:nth-child(1) { width: 120px; }  /* Assignment ID */
-.assignment-table thead tr th:nth-child(2) { width: 250px; }  /* Title */
-.assignment-table thead tr th:nth-child(3) { width: 180px; }  /* Subject */
-.assignment-table thead tr th:nth-child(4) { width: 100px; }  /* Type */
-.assignment-table thead tr th:nth-child(5) { width: 120px; }  /* Due Date */
-.assignment-table thead tr th:nth-child(6) { width: 100px; }  /* Status */
-.assignment-table thead tr th:nth-child(7) { width: 106px; }  /* Action */
-
-.assignment-table tbody tr td:nth-child(1) { width: 120px; }
-.assignment-table tbody tr td:nth-child(2) { width: 250px; }
-.assignment-table tbody tr td:nth-child(3) { width: 180px; }
-.assignment-table tbody tr td:nth-child(4) { width: 100px; }
-.assignment-table tbody tr td:nth-child(5) { width: 120px; }
-.assignment-table tbody tr td:nth-child(6) { width: 100px; }
-.assignment-table tbody tr td:nth-child(7) { width: 106px; border-right: none; }
-
-/* Assignment Title styling */
-.assignment-table tbody tr td:nth-child(2) {
-    text-align: left !important;
-    justify-content: flex-start !important;
-    padding-left: 12px !important;
-    font-weight: 500;
-}
-
-/* Type badges for assignments */
-.type-badge.homework {
-    background: #3B82F6;
-}
-
-.type-badge.project {
-    background: #8B5CF6;
-}
-
-.type-badge.lab {
-    background: #10B981;
 }
