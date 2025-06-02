@@ -1,29 +1,25 @@
 /* General Layout (assuming the main content area has a class like .main-content) */
 .main-content {
     padding: 1rem;
-    background-color: white; /* A light background for the content area */
-    flex-grow: 1; /* Allows the main content to take up available space */
+    background-color: white;
+    flex-grow: 1;
 }
 
 /* Section Title */
 .section-title {
-    font-size: 2.5rem;
+    font-size: 1.5rem;
     color: #333;
     margin-bottom: 20px;
 }
 
 /* Tabs */
 .tabs {
-    /* display: flex;
-    margin-bottom: 30px; */
-
     display: flex;
     background-color: #e0f2fe;
     border-radius: 0.5rem;
-    padding: 0.3rem; /* Slight padding inside the container for the buttons */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+    padding: 0.3rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     margin-bottom: 1rem;
-    margin-top: 3rem;
     width: fit-content;
 }
 
@@ -31,11 +27,11 @@
     background-color: transparent;
     border: none;
     padding: 10px 15px;
-    font-size: 1.2rem;
+    font-size: 1rem;
     cursor: pointer;
     color: #555;
     position: relative;
-    top: 1px; /* To align with the border-bottom */
+    top: 1px;
     white-space: nowrap;
 }
 
@@ -47,11 +43,11 @@
 
 /* Tab Content - New styles */
 .tab-content {
-    display: none; /* Hide all tab content by default */
+    display: none;
 }
 
 .tab-content.active-tab-content {
-    display: block; /* Show active tab content */
+    display: block;
 }
 
 /* Feedback Item */
@@ -61,6 +57,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 25px;
     padding: 20px;
+    border: 1px solid #a1a1a1;
 }
 
 .item-header {
@@ -70,20 +67,31 @@
 }
 
 .item-header h3 {
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: #210082;
     margin-right: 15px;
 }
 
+.tag-remember {
+    margin-left: 40rem;
+    background-color: #F8C1F2;
+    padding: 0.2rem;
+    border-radius: 1rem;
+}
+
+.tag-remember.a {
+    margin-left: 42em;
+}
+
 .tag-approved {
-    margin-left: 39rem;
+    margin-left: 43rem;
     border-radius: 10px;
-    background-color: #00FF7F;
+    background-color: #ADFFD4;
     padding: 0.5rem;
     width: 10rem;
     text-align: center;
     font-weight: bold;
-    font-size: 1.5rem;
+    font-size: 1rem;
 }
 
 /* Tags */
@@ -93,22 +101,18 @@
     border-radius: 15px;
     font-weight: bold;
     text-transform: uppercase;
-    margin-left: 5px; /* Spacing between tags */
+    margin-left: 5px;
 }
 
-.tag.remember {
-    background-color: #ffe0b2; /* Light orange */
-    color: #e65100; /* Darker orange */
-}
 
 .tag.needs-revision {
-    background-color: #ffcdd2; /* Light red */
-    color: #d32f2f; /* Darker red */
+    background-color: #FE6565;
+    color: #ffffff;
 }
 
 .tag.approved { /* New tag style */
-    background-color: #e8f5e9; /* Light green */
-    color: #2e7d32; /* Darker green */
+    background-color: #e8f5e9;
+    color: #2e7d32;
 }
 
 /* Question Box */
@@ -118,14 +122,17 @@
 }
 
 .question-box p {
-    font-size: 2rem;
+    font-size: 1rem;
     line-height: 1.6;
+    padding: 1rem;
+    background-color: #f0f8ff;
+    border-radius: 25px;
 }
 
 /* Feedback Box (for Revisions tab) */
 .feedback-box {
-    background-color: #fffde7; /* Light yellow */
-    border-left: 5px solid #ffeb3b; /* Yellow border */
+    background-color: #fffde7;
+    border-left: 5px solid #ffeb3b;
     padding: 15px;
     border-radius: 4px;
     margin-bottom: 20px;
@@ -133,20 +140,19 @@
 
 .feedback-box h4 {
     font-size: 16px;
-    color: #fbc02d; /* Darker yellow for title */
+    color: #fbc02d;
     margin-top: 0;
     margin-bottom: 10px;
 }
 
 .feedback-box p {
     font-size: 15px;
-    color: #795548; /* Brownish text for feedback */
     line-height: 1.6;
 }
 
 /* Feedback Note Box (for Feedback History tab, specific notes) */
 .feedback-note-box {
-    background-color: #e0e7fa; /* Lighter blue/purple for notes */
+    background-color: #e0e7fa;
     padding: 15px;
     border-radius: 4px;
     margin-bottom: 20px;
@@ -167,12 +173,12 @@
 }
 
 .submitted-date {
-    font-size: 13px;
+    font-size: 1rem;
     color: #777;
 }
 
-.status-message { /* New style for status messages in history */
-    font-size: 2rem;
+.status-message {
+    font-size: 1rem;
 }
 
 .edit-button {
@@ -180,7 +186,7 @@
     color: white;
     border: none;
     padding: 10px 20px;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s ease;
@@ -195,22 +201,21 @@
 /* ------------------------------------------------ */
 
 .edit-form-container {
-    display: none; /* Hidden by default */
-    padding: 20px 0; /* Add some vertical padding */
+    display: none;
+    padding: 20px 0;
 }
 
 .form-header-nav {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-    border-bottom: 1px solid #eee;
     padding-bottom: 15px;
 }
 
 .back-button {
     background: none;
     border: none;
-    font-size: 24px; /* Icon size */
+    font-size: 24px;
     color: #555;
     cursor: pointer;
     margin-right: 15px;
@@ -234,9 +239,10 @@
 .info-section {
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    padding: 20px;
+    padding: 3rem;
+    padding-right: 1rem;
     margin-bottom: 25px;
+    box-shadow: 0 2px 4px rgb(112, 112, 112);
 }
 
 .section-heading {
@@ -266,13 +272,13 @@
 
 .form-group input[type="text"],
 .form-group textarea {
-    width: calc(100% - 20px); /* Adjust for padding */
+    width: calc(100% - 20px);
     padding: 10px;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 1rem;
     font-size: 15px;
     color: #333;
-    outline: none; /* Remove outline on focus */
+    outline: none;
     transition: border-color 0.3s ease;
 }
 
@@ -288,8 +294,8 @@
 
 /* Duplicate Detection Section */
 .duplicate-check-section {
-    background-color: #fffde7; /* Light yellow */
-    border-left: 5px solid #ffeb3b; /* Yellow border */
+    background-color: #fffde7;
+    border-left: 5px solid #ffeb3b;
     padding: 15px;
     border-radius: 4px;
     margin-bottom: 25px;
@@ -303,13 +309,13 @@
 
 .duplicate-check-header i {
     font-size: 20px;
-    color: #e65100; /* Orange icon */
+    color: #e65100;
     margin-right: 10px;
 }
 
 .duplicate-check-header p {
     font-size: 16px;
-    color: #e65100; /* Orange text */
+    color: #e65100;
     font-weight: 500;
     margin: 0;
 }
@@ -360,8 +366,10 @@
 
 .submission-note {
     font-size: 13px;
-    color: #d32f2f; /* Red warning text */
+    color: #d32f2f;
     margin: 0;
+    margin-left: 40rem;
+    margin-bottom: 1rem;
 }
 
 .submit-button {
@@ -374,6 +382,7 @@
     font-size: 16px;
     font-weight: bold;
     transition: background-color 0.3s ease;
+    margin-left: 56rem;
 }
 
 .submit-button:hover {
