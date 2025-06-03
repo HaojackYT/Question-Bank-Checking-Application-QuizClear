@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
+    <link rel="stylesheet" href="../../Static/css/Lecturer/lectureQuesManagement.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div id="Container-body">
+        <div id="menu-HTML"></div>
+
+        <div id="main">
+            <div class="question-management-header">
+                <h1>Question Management</h1>
+                <button class="create-question-button">
+                    <i class="fas fa-plus"></i>
+                    Create question
+                </button>
+            </div>
+
+            <div class="navigation-tabs">
+                <button class="tab-button active">Current Assignment</button>
+                <button class="tab-button">Progress Tracking</button>
+            </div>
+
+            <div class="filters">
+                <div class="filter-dropdown">
+                    <select>
+                        <option>All different</option>
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                    </select>
+                </div>
+                <div class="filter-dropdown">
+                    <select>
+                        <option>All subject</option>
+                        <option>Subject 1</option>
+                        <option>Subject 2</option>
+                    </select>
+                </div>
+                <div class="filter-dropdown">
+                    <select>
+                        <option>All status</option>
+                        <option>Status 1</option>
+                        <option>Status 2</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-table-container">
+                <table class="question-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Question</th>
+                            <th>Correct Answer</th>
+                            <th>Other Answer</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>DataBase System</td>
+                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                            <td>This is correct answers</td>
+                            <td>
+                                • False 1<br>
+                                • False 2<br>
+                                • False 3
+                            </td>
+                            <td class="status-cell">
+                                <button class="action-button remember">Remember</button>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>DataBase System</td>
+                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                            <td>This is correct answers</td>
+                            <td>
+                                • False 1<br>
+                                • False 2<br>
+                                • False 3
+                            </td>
+                            <td class="status-cell">
+                                <button class="action-button save">Save</button>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>DataBase System</td>
+                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                            <td>This is correct answers</td>
+                            <td>
+                                • False 1<br>
+                                • False 2<br>
+                                • False 3
+                            </td>
+                            <td class="status-cell">
+                                <button class="action-button drop">Drop</button>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>DataBase System</td>
+                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                            <td>This is correct answers</td>
+                            <td>
+                                • False 1<br>
+                                • False 2<br>
+                                • False 3
+                            </td>
+                            <td class="status-cell">
+                                <button class="action-button remember">Remember</button>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>DataBase System</td>
+                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                            <td>This is correct answers</td>
+                            <td>
+                                • False 1<br>
+                                • False 2<br>
+                                • False 3
+                            </td>
+                            <td class="status-cell">
+                                <button class="action-button drop">Drop</button>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>DataBase System</td>
+                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                            <td>This is correct answers</td>
+                            <td>
+                                • False 1<br>
+                                • False 2<br>
+                                • False 3
+                            </td>
+                            <td class="status-cell">
+                                <button class="action-button save">Save</button>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load header
+        fetch('../header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        // Load menu
+        fetch('../Menu-Staff.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+    </script>
+</body>
+</html>
