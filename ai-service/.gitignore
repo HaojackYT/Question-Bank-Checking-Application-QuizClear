@@ -11,12 +11,10 @@ env.bak/
 venv.bak/
 
 # Models và data lớn
-models/*.pkl
-models/*.model
-models/*.bin
-models/*.h5
-models/*.onnx
+models/
+!models/.gitkeep
 .cache/
+sentence-transformers/
 
 # IDE
 .vscode/

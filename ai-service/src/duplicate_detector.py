@@ -3,10 +3,15 @@ AI Duplicate Detection Module using Sentence Transformers
 """
 import numpy as np
 import logging
-from sentence_transformers import SentenceTransformer
+import os
+import sys
+from sentence_transformers import SentenceTransformer, util
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List, Dict, Tuple
-from config import Config
+
+# Add parent directory to path for imports
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from src.config import Config
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)

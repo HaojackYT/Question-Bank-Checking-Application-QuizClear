@@ -12,10 +12,9 @@ class Config:
     FLASK_HOST = os.getenv('FLASK_HOST', '127.0.0.1')
     FLASK_PORT = int(os.getenv('FLASK_PORT', 5000))
     FLASK_DEBUG = os.getenv('FLASK_DEBUG', 'True').lower() == 'true'
-    
-    # AI Model settings
+      # AI Model settings
     MODEL_NAME = os.getenv('MODEL_NAME', 'all-MiniLM-L6-v2')
-    MODEL_CACHE_DIR = os.getenv('MODEL_CACHE_DIR', '../models')
+    MODEL_CACHE_DIR = os.getenv('MODEL_CACHE_DIR', os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'models')))
     
     # Similarity threshold
     SIMILARITY_THRESHOLD = float(os.getenv('SIMILARITY_THRESHOLD', 0.75))

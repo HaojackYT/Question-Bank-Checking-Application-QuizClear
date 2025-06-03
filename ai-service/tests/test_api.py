@@ -84,7 +84,7 @@ def main():
     
     # Wait for service to start
     print("⏳ Waiting for service to start...")
-    time.sleep(2)
+    time.sleep(5)  # Tăng thời gian chờ lên 5 giây
     
     # Run tests
     tests = [

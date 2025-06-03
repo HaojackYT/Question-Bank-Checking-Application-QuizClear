@@ -8,11 +8,13 @@ import os
 import sys
 from datetime import datetime
 
-# Add current directory to path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Add parent directory to path for imports
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.append(parent_dir)
 
-from config import config
-from duplicate_detector import DuplicateDetector
+from src.config import config
+from src.duplicate_detector import DuplicateDetector
 
 # Setup logging
 logging.basicConfig(
