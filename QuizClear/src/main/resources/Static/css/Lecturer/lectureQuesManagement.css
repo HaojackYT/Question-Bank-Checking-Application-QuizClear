@@ -1,0 +1,278 @@
+/* lectureQuesManagement.css */
+
+#main {
+    flex-grow: 1;
+    padding: 2rem; 
+    box-sizing: border-box;
+    background-color: #f0f2f5;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem; 
+    min-width: 70vw;
+}
+
+.question-management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5625rem; 
+    padding: 0;
+    border-radius: 0;
+}
+
+.question-management-header h1 {
+    margin: 0;
+    color: #291963;
+    font-size: 2rem; 
+    font-weight: bold;
+}
+
+.create-question-button {
+    background-color: #007bff;
+    color: white;
+    padding: 0.75rem 1.25rem; 
+    border: none;
+    border-radius: 0.3125rem; 
+    cursor: pointer;
+    font-size: 1rem; 
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; 
+    transition: background-color 0.3s ease;
+}
+
+.create-question-button:hover {
+    background-color: #0056b3;
+}
+
+.main-content-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5625rem;
+}
+
+.navigation-tabs {
+    display: flex;
+    background-color: #e0e7ff;
+    border-radius: 0.5rem; 
+    overflow: hidden;
+    padding: 0.3125rem; 
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1); 
+    width: fit-content;
+}
+
+.navigation-tabs .tab-button {
+    padding: 0.625rem 1.25rem; 
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 1rem; 
+    font-weight: bold;
+    color: #43527e;
+    transition: background-color 0.3s ease, color 0.3s ease, border-radius 0.3s ease;
+    border-radius: 0.3125rem; 
+}
+
+.navigation-tabs .tab-button.active {
+    background-color: #ffffff;
+    color: #43527e;
+    border-bottom: none;
+    box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1); 
+}
+
+.navigation-tabs .tab-button:not(.active):hover {
+    background-color: #d1daff;
+}
+
+.filters {
+    display: flex;
+    gap: 0.9375rem; 
+    justify-content: flex-end;
+}
+
+.filter-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.filter-dropdown select {
+    padding: 0.625rem 1.875rem 0.625rem 0.9375rem; 
+    border: 0.0625rem solid #ddd; 
+    border-radius: 0.3125rem; 
+    background-color: white;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-size: 1rem; 
+    cursor: pointer;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M85.3%20121.8L146.2%20182.7L207.1%20121.8Z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 0.625rem center; 
+    background-size: 1.875rem; 
+    width: 9.375rem; 
+}
+
+.filters select:focus {
+    outline: none;
+    border-color: #92b8ff;
+    box-shadow: 0 0 0 0.1875rem rgba(146, 184, 255, 0.4); 
+}
+
+.question-table-container {
+    background-color: #fff;
+    border-radius: 0.5rem; 
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1); 
+    overflow: hidden;
+}
+
+.question-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.question-table th,
+.question-table td {
+    padding: 0.75rem 0.9375rem; 
+    text-align: left;
+    border-bottom: 0.0625rem solid #eee; 
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.question-table th:first-child,
+.question-table td:first-child {
+    width: 9.375rem; 
+}
+
+.question-table th:nth-child(2),
+.question-table td:nth-child(2) {
+    width: 18.75rem; 
+}
+
+.question-table th:nth-child(3),
+.question-table td:nth-child(3) {
+    width: 11.25rem; 
+}
+
+.question-table th:nth-child(4),
+.question-table td:nth-child(4) {
+    width: 11.25rem; 
+    text-align: center;
+}
+
+.question-table th:nth-child(5),
+.question-table td:nth-child(5) {
+    width: 7.5rem; 
+}
+
+.question-table th:nth-child(6),
+.question-table td:nth-child(6) {
+    width: 7.5rem; 
+}
+
+.question-table th {
+    background-color: #D9D9D9;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    font-size: 0.9375rem; 
+    text-transform: uppercase;
+}
+
+.question-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.question-table td {
+    color: #444;
+    font-size: 0.875rem; 
+}
+
+.question-table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem; 
+    align-items: center;
+}
+
+/* Thêm CSS cho div chứa các nút trạng thái */
+.status-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3125rem; 
+    align-items: flex-start; 
+}
+
+.action-button {
+    padding: 0.375rem 0.75rem; 
+    border: none;
+    border-radius: 0.75rem; 
+    cursor: pointer;
+    font-size: 0.8125rem; 
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3125rem; 
+    width: 5.625rem; 
+    text-align: center;
+}
+
+.action-button.remember {
+    background-color: #F8C1F2;
+    color: #000000c8;
+}
+
+.action-button.save {
+    background-color: #CFFDD2;
+    color: #000000;
+}
+
+.action-button.drop {
+    background-color: #FDCFD0;
+    color: #000000;
+}
+
+.circle-button {
+    width: 2rem; 
+    height: 2rem; 
+    border-radius: 50%;
+    border: 0.0625rem solid #ccc; 
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.circle-button:hover {
+    background-color: #f0f0f0;
+    border-color: #aaa;
+}
+
+.circle-button i {
+    color: #555;
+    font-size: 1rem; 
+}
+
+.circle-button.delete i {
+    color: #dc3545;
+}
+
+
+.status-cell {
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+}
+
+.status-cell .action-button {
+    width: 5.625rem;
+    margin: 0; 
+}
