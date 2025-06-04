@@ -27,6 +27,7 @@
             <!-- Page Header -->
             <div class="page-header">
                 <button class="back-button">
+                    <a href="lecturerFeedback.html"></a>
                     <i class="fas fa-arrow-left"></i>
                 </button>
                 <div>
@@ -54,13 +55,13 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Subject <span class="required">(*)</span></label>
-                            <input type="text" class="form-input" value="Database System">
+                            <input type="text" class="form-input" placeholder="Enter subject...">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Difficulty Level <span class="required">(*)</span></label>
-                            <input type="text" class="form-input " value="Remember">
+                            <input type="text" class="form-input" placeholder="Enter difficulty level...">
                         </div>
-                    </div>
+                    </div>      
 
                     <div class="form-group full-width">
                         <label class="form-label">Question Title</label>
@@ -123,7 +124,44 @@
                 .then(data => {
                     document.getElementById('menu-HTML').innerHTML = data;
                 });
+            // Add interactivity
+            document.querySelector('.back-button').addEventListener('click', function () {
+                window.history.back();
+            });
 
+            document.querySelector('.check-button').addEventListener('click', function () {
+                this.textContent = 'Checking...';
+                this.disabled = true;
+
+                setTimeout(() => {
+                    this.textContent = 'Check Duplicates';
+                    this.disabled = false;
+                    alert('No duplicates found!');
+                }, 2000);
+            });
+
+            document.querySelector('.submit-button').addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Basic validation
+                const requiredFields = document.querySelectorAll('.form-input:not(.readonly)');
+                let isValid = true;
+
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.style.borderColor = '#ef4444';
+                        isValid = false;
+                    } else {
+                        field.style.borderColor = '#d1d5db';
+                    }
+                });
+
+                if (isValid) {
+                    alert('Question submitted successfully!');
+                } else {
+                    alert('Please fill in all required fields.');
+                }
+            });
         </script>
 </body>
 
