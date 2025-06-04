@@ -1,0 +1,235 @@
+ /* Page Header */
+ .page-header {
+     display: flex;
+     align-items: center;
+     margin-bottom: 2rem;
+ }
+
+ .back-button {
+     background: none;
+     border: none;
+     font-size: 1.2rem;
+     color: #6b7280;
+     cursor: pointer;
+     margin-right: 1rem;
+     padding: 0.5rem;
+     border-radius: 50%;
+     transition: background 0.2s;
+ }
+
+ .back-button:hover {
+     background: #f3f4f6;
+ }
+
+ .page-title {
+     font-size: 1.8rem;
+     font-weight: bold;
+     color: #1f2937;
+     margin-bottom: 0.25rem;
+ }
+
+ .page-subtitle {
+     color: #6b7280;
+     font-size: 0.9rem;
+ }
+
+ /* Feedback Section */
+ .feedback-section {
+     background: #fef3c7;
+     border: 1px solid #f59e0b;
+     border-radius: 8px;
+     padding: 1.5rem;
+     margin-bottom: 2rem;
+ }
+
+ .feedback-title {
+     color: #1e3a8a;
+     font-size: 1.2rem;
+     font-weight: bold;
+     margin-bottom: 1rem;
+ }
+
+ .feedback-text {
+     color: #92400e;
+     line-height: 1.5;
+ }
+
+ /* Information Section */
+ .info-section {
+     background: white;
+     border-radius: 8px;
+     padding: 2rem;
+     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+     margin-bottom: 2rem;
+     border: 1px solid #e5e7eb;
+ }
+
+ .section-title {
+     color: #1e3a8a;
+     font-size: 1.2rem;
+     font-weight: bold;
+     margin-bottom: 0.5rem;
+ }
+
+ .section-subtitle {
+     color: #6b7280;
+     margin-bottom: 1.5rem;
+ }
+
+ .form-row {
+     display: grid;
+     grid-template-columns: 1fr 1fr;
+     gap: 1.5rem;
+     margin-bottom: 1.5rem;
+ }
+
+ .form-group {
+     display: flex;
+     flex-direction: column;
+ }
+
+ .form-group.full-width {
+     grid-column: 1 / -1;
+ }
+
+ .form-label {
+     font-weight: 500;
+     margin-bottom: 1rem;
+     color: #374151;
+ }
+
+ .required {
+     color: #ef4444;
+ }
+
+ .form-input {
+     padding: 0.75rem;
+     margin-bottom: 0.5rem;
+     border: 1px solid #d1d5db;
+     border-radius: 6px;
+     font-size: 0.9rem;
+     transition: border-color 0.2s;
+     /* Transition for focus effect */
+ }
+
+ .form-input:focus {
+     outline: none;
+     border-color: #2563eb;
+     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+ }
+
+ /* Duplicate Check Section */
+ .duplicate-check {
+     background: #fef7ed;
+     border: 1px solid #f97316;
+     border-radius: 8px;
+     padding: 1.5rem;
+     margin: 1.5rem 0;
+ }
+
+ .duplicate-header {
+     display: flex;
+     align-items: center;
+     margin-bottom: 0.5rem;
+ }
+
+ .duplicate-icon {
+     color: #ea580c;
+     margin-right: 0.5rem;
+ }
+
+ .duplicate-title {
+     color: #ea580c;
+     font-weight: bold;
+ }
+
+ .duplicate-subtitle {
+     color: #9a3412;
+     font-size: 0.9rem;
+     margin-bottom: 1rem;
+ }
+
+ .duplicate-status {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+ }
+
+ .status-text {
+     color: #92400e;
+     font-weight: 500;
+ }
+
+ .check-button {
+     background: #f97316;
+     color: white;
+     border: none;
+     padding: 0.5rem 1rem;
+     border-radius: 6px;
+     cursor: pointer;
+     font-size: 0.9rem;
+     transition: background 0.2s;
+ }
+
+ .check-button:hover {
+     background: #ea580c;
+ }
+
+ /* Answer Fields */
+ .answer-group {
+     margin-bottom: 1.5rem;
+ }
+
+ .incorrect-answers {
+     display: flex;
+     flex-direction: column;
+     gap: 0.75rem;
+ }
+
+ /* Footer */
+ .footer-message {
+     color: #ef4444;
+     text-align: center;
+     margin-bottom: 1rem;
+     font-size: 0.9rem;
+ }
+
+ .submit-button {
+     background: #2563eb;
+     color: white;
+     border: none;
+     padding: 0.75rem 2rem;
+     border-radius: 6px;
+     font-size: 1rem;
+     cursor: pointer;
+     display: block;
+     margin: 0 auto;
+     transition: background 0.2s;
+ }
+
+ .submit-button:hover {
+     background: #1d4ed8;
+ }
+
+ .submit-button i {
+     margin-left: 0.5rem;
+ }
+
+ @media (max-width: 768px) {
+     .main-layout {
+         flex-direction: column;
+     }
+
+     .sidebar {
+         width: 100%;
+         order: 2;
+     }
+
+     .content {
+         padding: 1rem;
+     }
+
+     .form-row {
+         grid-template-columns: 1fr;
+     }
+ }
