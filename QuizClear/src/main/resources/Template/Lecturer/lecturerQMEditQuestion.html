@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/css/Lecturer/lecturerQMEditQuestion.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Form Edit Question</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- noi dung duoc nhap trong day -->
+            <!-- Page Header -->
+            <div class="page-header">
+                <button class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div>
+                    <h1 class="page-title">Edit Question</h1>
+                    <p class="page-subtitle">Don't forget to confirm your assigned task before starting a question!</p>
+                </div>
+            </div>
+
+            <!-- Feedback Section -->
+            <div class="feedback-section">
+                <h2 class="feedback-title">Feedback</h2>
+                <p class="feedback-text">
+                    This question is too broad. Please make it more specific by asking about a particular normal form or
+                    a specific benefit of normalization. Also, the answer options need to be more distinct from each
+                    other.
+                </p>
+            </div>
+
+            <!-- Information Section -->
+            <div class="info-section">
+                <h2 class="section-title">Information</h2>
+                <p class="section-subtitle">Enter detailed information for the new question</p>
+
+                <form>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Subject <span class="required">(*)</span></label>
+                            <input type="text" class="form-input" value="Database System">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Difficulty Level <span class="required">(*)</span></label>
+                            <input type="text" class="form-input " value="Remember">
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Question Title</label>
+                        <input type="text" class="form-input" placeholder="The title question...">
+                    </div>
+
+                    <!-- Duplicate Check -->
+                    <div class="duplicate-check">
+                        <div class="duplicate-header">
+                            <i class="fas fa-exclamation-triangle duplicate-icon"></i>
+                            <span class="duplicate-title">Duplicate Detection Check</span>
+                        </div>
+                        <p class="duplicate-subtitle">Check for similar questions before proceeding with submission</p>
+                        <div class="duplicate-status">
+                            <span class="status-text">Ready to check</span>
+                            <button type="button" class="check-button">Check Duplicates</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Correct Answer <span class="required">(*)</span></label>
+                        <input type="text" class="form-input" placeholder="Enter the correct answer...">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Incorrect Answers <span class="required">(*)</span></label>
+                        <div class="incorrect-answers">
+                            <input type="text" class="form-input" placeholder="Enter an incorrect answer...">
+                            <input type="text" class="form-input" placeholder="Enter an incorrect answer...">
+                            <input type="text" class="form-input" placeholder="Enter an incorrect answer...">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Correct answer explanation</label>
+                        <textarea class="form-input" rows="4" placeholder="Enter explanation here..."></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Footer -->
+            <p class="footer-message">Check for similar questions before proceeding with submission</p>
+            <button class="submit-button">
+                Submit <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+
+        <!-- ma nhung header vs menu -->
+        <script>
+            // Load header
+            fetch('../header_user.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
+
+            // Load menu
+            fetch('Menu-Lecturer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('menu-HTML').innerHTML = data;
+                });
+
+        </script>
+</body>
+
+</html>
