@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <link rel="stylesheet" href="../../Static/css/Lecturer/lectureQuesManagement.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div id="header-placeholder"></div>
 
@@ -30,255 +32,341 @@
                 <button class="tab-button">Progress Tracking</button>
             </div>
 
-            <div class="filters">
-                <div class="filter-dropdown">
-                    <select>
-                        <option>All different</option>
-                        <option>Option 1</option>
-                        <option>Option 2</option>
-                    </select>
+            <div id="Current_assignment">
+                <div class="filters">
+                    <div class="filter-dropdown">
+                        <select>
+                            <option>All different</option>
+                            <option>Option 1</option>
+                            <option>Option 2</option>
+                        </select>
+                    </div>
+                    <div class="filter-dropdown">
+                        <select>
+                            <option>All subject</option>
+                            <option>Subject 1</option>
+                            <option>Subject 2</option>
+                        </select>
+                    </div>
+                    <div class="filter-dropdown">
+                        <select>
+                            <option>All status</option>
+                            <option>Status 1</option>
+                            <option>Status 2</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="filter-dropdown">
-                    <select>
-                        <option>All subject</option>
-                        <option>Subject 1</option>
-                        <option>Subject 2</option>
-                    </select>
-                </div>
-                <div class="filter-dropdown">
-                    <select>
-                        <option>All status</option>
-                        <option>Status 1</option>
-                        <option>Status 2</option>
-                    </select>
+
+                <div class="question-table-container">
+                    <table class="question-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Question</th>
+                                <th>Correct Answer</th>
+                                <th>Other Answer</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>DataBase System</td>
+                                <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                                <td>This is correct answers</td>
+                                <td>
+                                    • False 1<br>
+                                    • False 2<br>
+                                    • False 3
+                                </td>
+                                <td class="status-cell">
+                                    <div class="status-buttons">
+                                        <button class="action-button remember">Remember</button>
+                                        <button class="action-button save">Save</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DataBase System</td>
+                                <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                                <td>This is correct answers</td>
+                                <td>
+                                    • False 1<br>
+                                    • False 2<br>
+                                    • False 3
+                                </td>
+                                <td class="status-cell">
+                                    <div class="status-buttons">
+                                        <button class="action-button remember">Remember</button>
+                                        <button class="action-button drop">Drop</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DataBase System</td>
+                                <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                                <td>This is correct answers</td>
+                                <td>
+                                    • False 1<br>
+                                    • False 2<br>
+                                    • False 3
+                                </td>
+                                <td class="status-cell">
+                                    <div class="status-buttons">
+                                        <button class="action-button remember">Remember</button>
+                                        <button class="action-button save">Save</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DataBase System</td>
+                                <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                                <td>This is correct answers</td>
+                                <td>
+                                    • False 1<br>
+                                    • False 2<br>
+                                    • False 3
+                                </td>
+                                <td class="status-cell">
+                                    <div class="status-buttons">
+                                        <button class="action-button remember">Remember</button>
+                                        <button class="action-button drop">Drop</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DataBase System</td>
+                                <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                                <td>This is correct answers</td>
+                                <td>
+                                    • False 1<br>
+                                    • False 2<br>
+                                    • False 3
+                                </td>
+                                <td class="status-cell">
+                                    <div class="status-buttons">
+                                        <button class="action-button remember">Remember</button>
+                                        <button class="action-button save">Save</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DataBase System</td>
+                                <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                                <td>This is correct answers</td>
+                                <td>
+                                    • False 1<br>
+                                    • False 2<br>
+                                    • False 3
+                                </td>
+                                <td class="status-cell">
+                                    <div class="status-buttons">
+                                        <button class="action-button remember">Remember</button>
+                                        <button class="action-button drop">Drop</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DataBase System</td>
+                                <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                                <td>This is correct answers</td>
+                                <td>
+                                    • False 1<br>
+                                    • False 2<br>
+                                    • False 3
+                                </td>
+                                <td class="status-cell">
+                                    <div class="status-buttons">
+                                        <button class="action-button remember">Remember</button>
+                                        <button class="action-button save">Save</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DataBase System</td>
+                                <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                                <td>This is correct answers</td>
+                                <td>
+                                    • False 1<br>
+                                    • False 2<br>
+                                    • False 3
+                                </td>
+                                <td class="status-cell">
+                                    <div class="status-buttons">
+                                        <button class="action-button remember">Remember</button>
+                                        <button class="action-button drop">Drop</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DataBase System</td>
+                                <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                                <td>This is correct answers</td>
+                                <td>
+                                    • False 1<br>
+                                    • False 2<br>
+                                    • False 3
+                                </td>
+                                <td class="status-cell">
+                                    <div class="status-buttons">
+                                        <button class="action-button remember">Remember</button>
+                                        <button class="action-button save">Save</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DataBase System</td>
+                                <td>Which data structure would be most efficient for implementing a priority queue?</td>
+                                <td>This is correct answers</td>
+                                <td>
+                                    • False 1<br>
+                                    • False 2<br>
+                                    • False 3
+                                </td>
+                                <td class="status-cell">
+                                    <div class="status-buttons">
+                                        <button class="action-button remember">Remember</button>
+                                        <button class="action-button drop">Drop</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+            <div id="Progress_tracking">
+                <div id="map-container">
+                    <div id="Question_Progress_container">
+                        <p style="font-size: 1.625rem; font-weight: bolder; margin-bottom: 0.625rem;">Questions by Level
+                        </p>
+                        <div id="Question_Progress" style="display: flex; flex-direction: row; height: 18.75rem;margin-top: 2.5rem">
+                            <!-- Trục Y -->
+                            <div class="y-axis">
+                                <span>100</span>
+                                <span>80</span>
+                                <span>60</span>
+                                <span>40</span>
+                                <span>20</span>
+                                <span>0</span>
+                            </div>
+                            <!-- Khu vực cột và đường kẻ -->
+                            <div class="chart-content">
+                                <div class="grid-overlay">
+                                    <div class="bars" id="bars">
+                                        <div class="bar-group">
+                                            <div class="bar remember"><span class="tooltip">8%</span></div>
+                                        </div>
+                                        <div class="bar-group">
+                                            <div class="bar understand"><span class="tooltip">80%</span></div>
+                                        </div>
+                                        <div class="bar-group">
+                                            <div class="bar applying"><span class="tooltip">8%</span></div>
+                                        </div>
+                                        <div class="bar-group">
+                                            <div class="bar analyzing"><span class="tooltip">3%</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Phần chú thích (legend) -->
+                        <div class="legend" style="display: flex; justify-content: center; margin-top: 0.625rem;">
+                            <div style="display: flex; align-items: center; margin: 0 0.625rem;">
+                                <span class="legend-color remember"
+                                    style="width: 0.9375rem; height: 0.9375rem; background-color: #00BFFF; display: inline-block; margin-right: 0.3125rem;"></span>
+                                Remember
+                            </div>
+                            <div style="display: flex; align-items: center; margin: 0 0.625rem;">
+                                <span class="legend-color understand"
+                                    style="width: 0.9375rem; height: 0.9375rem; background-color: #5EF05E; display: inline-block; margin-right: 0.3125rem;"></span>
+                                Understand
+                            </div>
+                            <div style="display: flex; align-items: center; margin: 0 0.625rem;">
+                                <span class="legend-color applying"
+                                    style="width: 0.9375rem; height: 0.9375rem; background-color: #FF7D03; display: inline-block; margin-right: 0.3125rem;"></span>
+                                Applying
+                            </div>
+                            <div style="display: flex; align-items: center; margin: 0 0.625rem;">
+                                <span class="legend-color analyzing"
+                                    style="width: 0.9375rem; height: 0.9375rem; background-color: #F25B5B; display: inline-block; margin-right: 0.3125rem;"></span>
+                                Analyzing
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="question-table-container">
-                <table class="question-table">
-                    <thead>
-                        <tr>
-                            <th>Subject</th>
-                            <th>Question</th>
-                            <th>Correct Answer</th>
-                            <th>Other Answer</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>DataBase System</td>
-                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
-                            <td>This is correct answers</td>
-                            <td>
-                                • False 1<br>
-                                • False 2<br>
-                                • False 3
-                            </td>
-                            <td class="status-cell">
-                                <div class="status-buttons">
-                                    <button class="action-button remember">Remember</button>
-                                    <button class="action-button save">Save</button>
+                    <div id="Overall_Progress_container">
+                        <p style="font-size: 1.625rem; font-weight: bolder; margin-bottom: 0.625rem;">Completion Rate
+                        </p>
+                        <div id="Overall_Progress">
+                            <div class="completion-text"><span id="completion-rate">20</span>% Completed</div>
+                            <div id="container">
+                                <div class="doughnut-chart"></div>
+                            </div>
+                            <div class="legend" style="display: flex; justify-content: center; margin-top: 0.625rem;">
+                                <div style="display: flex; align-items: center; margin: 0 0.625rem;">
+                                    <span class="legend-color completed"
+                                        style="width: 0.9375rem; height: 0.9375rem; background-color: #00B158; display: inline-block; margin-right: 0.3125rem;"></span>
+                                    Completed
                                 </div>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
+                                <div style="display: flex; align-items: center; margin: 0 0.625rem;">
+                                    <span class="legend-color remaining"
+                                        style="width: 0.9375rem; height: 0.9375rem; background-color: #d1d5db; display: inline-block; margin-right: 0.3125rem;"></span>
+                                    Remaining
                                 </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>DataBase System</td>
-                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
-                            <td>This is correct answers</td>
-                            <td>
-                                • False 1<br>
-                                • False 2<br>
-                                • False 3
-                            </td>
-                            <td class="status-cell">
-                                <div class="status-buttons">
-                                    <button class="action-button remember">Remember</button>
-                                    <button class="action-button drop">Drop</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>DataBase System</td>
-                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
-                            <td>This is correct answers</td>
-                            <td>
-                                • False 1<br>
-                                • False 2<br>
-                                • False 3
-                            </td>
-                            <td class="status-cell">
-                                <div class="status-buttons">
-                                    <button class="action-button remember">Remember</button>
-                                    <button class="action-button save">Save</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>DataBase System</td>
-                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
-                            <td>This is correct answers</td>
-                            <td>
-                                • False 1<br>
-                                • False 2<br>
-                                • False 3
-                            </td>
-                            <td class="status-cell">
-                                <div class="status-buttons">
-                                    <button class="action-button remember">Remember</button>
-                                    <button class="action-button drop">Drop</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>DataBase System</td>
-                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
-                            <td>This is correct answers</td>
-                            <td>
-                                • False 1<br>
-                                • False 2<br>
-                                • False 3
-                            </td>
-                            <td class="status-cell">
-                                <div class="status-buttons">
-                                    <button class="action-button remember">Remember</button>
-                                    <button class="action-button save">Save</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>DataBase System</td>
-                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
-                            <td>This is correct answers</td>
-                            <td>
-                                • False 1<br>
-                                • False 2<br>
-                                • False 3
-                            </td>
-                            <td class="status-cell">
-                                <div class="status-buttons">
-                                    <button class="action-button remember">Remember</button>
-                                    <button class="action-button drop">Drop</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>DataBase System</td>
-                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
-                            <td>This is correct answers</td>
-                            <td>
-                                • False 1<br>
-                                • False 2<br>
-                                • False 3
-                            </td>
-                            <td class="status-cell">
-                                <div class="status-buttons">
-                                    <button class="action-button remember">Remember</button>
-                                    <button class="action-button save">Save</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>DataBase System</td>
-                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
-                            <td>This is correct answers</td>
-                            <td>
-                                • False 1<br>
-                                • False 2<br>
-                                • False 3
-                            </td>
-                            <td class="status-cell">
-                                <div class="status-buttons">
-                                    <button class="action-button remember">Remember</button>
-                                    <button class="action-button drop">Drop</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>DataBase System</td>
-                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
-                            <td>This is correct answers</td>
-                            <td>
-                                • False 1<br>
-                                • False 2<br>
-                                • False 3
-                            </td>
-                            <td class="status-cell">
-                                <div class="status-buttons">
-                                    <button class="action-button remember">Remember</button>
-                                    <button class="action-button save">Save</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>DataBase System</td>
-                            <td>Which data structure would be most efficient for implementing a priority queue?</td>
-                            <td>This is correct answers</td>
-                            <td>
-                                • False 1<br>
-                                • False 2<br>
-                                • False 3
-                            </td>
-                            <td class="status-cell">
-                                <div class="status-buttons">
-                                    <button class="action-button remember">Remember</button>
-                                    <button class="action-button drop">Drop</button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="circle-button delete"><i class="fas fa-trash-alt"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -298,5 +386,68 @@
                 document.getElementById('menu-HTML').innerHTML = data;
             });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lấy các phần tử
+            const currentAssignmentDiv = document.getElementById('Current_assignment');
+            const progressTrackingDiv = document.getElementById('Progress_tracking');
+            const tabButtons = document.querySelectorAll('.tab-button');
+
+            // Mặc định hiển thị Current_assignment và ẩn Progress_tracking
+            currentAssignmentDiv.style.display = 'block';
+            progressTrackingDiv.style.display = 'none';
+
+            // Thêm sự kiện click cho các nút tab
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Xóa lớp active khỏi tất cả các nút
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+
+                    // Thêm lớp active cho nút được nhấn
+                    button.classList.add('active');
+
+                    // Kiểm tra nội dung nút để hiển thị div tương ứng
+                    if (button.textContent === 'Current Assignment') {
+                        currentAssignmentDiv.style.display = 'block';
+                        progressTrackingDiv.style.display = 'none';
+                    } else if (button.textContent === 'Progress Tracking') {
+                        currentAssignmentDiv.style.display = 'none';
+                        progressTrackingDiv.style.display = 'block';
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cập nhật chiều cao cột dựa trên giá trị trong .tooltip
+            const bars = document.querySelectorAll('.bar');
+            bars.forEach(bar => {
+                const tooltip = bar.querySelector('.tooltip');
+                if (tooltip) {
+                    const percentage = parseInt(tooltip.textContent);
+                    const height = percentage * 3; 
+                    bar.style.height = `${height}px`;
+                }
+            });
+
+            // Cập nhật vòng tròn dựa trên giá trị trong #completion-rate
+            const completionRate = document.getElementById('completion-rate');
+            function updateDoughnut() {
+                const rate = parseInt(completionRate.textContent);
+                const doughnutChart = document.querySelector('.doughnut-chart');
+                if (doughnutChart) {
+                    doughnutChart.style.background = `conic-gradient(#00B158 0% ${rate}%, #d1d5db ${rate}% 100%)`;
+                }
+            }
+
+            // Gọi hàm khi tải trang và khi giá trị thay đổi (nếu có sự kiện thay đổi)
+            updateDoughnut();
+
+            // Thêm sự kiện nếu bạn muốn cập nhật khi thay đổi giá trị (ví dụ: nhập tay)
+            completionRate.addEventListener('input', updateDoughnut); // Nếu là input, có thể cần điều chỉnh
+        });
+    </script>
 </body>
+
 </html>
