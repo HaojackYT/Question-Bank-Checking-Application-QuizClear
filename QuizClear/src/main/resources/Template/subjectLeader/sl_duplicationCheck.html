@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css" />
+    <link rel="stylesheet" href="../../Static/header.css" />
+    <link rel="stylesheet" href="../../Static/web_styles.css" />
+    <link rel="stylesheet" href="../../Static/css/staff/staffDup.css" />
+    <link rel="stylesheet" href="../../Static/Menu-Staff.css" />
+    <link rel="stylesheet" href="../../Static/css/subjectLeader/sl_duplicationCheck.css">
+    <!-- Thêm style riêng -->
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet" />
+    <title>QuizClear - Duplication Check</title>
+</head>
+
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Body -->
+    <div id="Container-body">
+        <!-- Sidebar/Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <div class="duplication-check">
+                <h1>Duplication Check</h1>
+                <p>Detect duplicate questions automatically</p>
+                <div class="automatic-duplication-detection">
+                    <p style="color: black;font-size: 24px;opacity: 100;font-weight: bold;">Automatic Duplication Detection</p>
+                    <p>Review questions our AI system has flagged as potential duplicates</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th><span id="questionContext">Question Context</span></th>
+                                <th><span id="similarityTo">Similarity To</span></th>
+                                <th><span id="similarity">Similarity</span></th>
+                                <th><span id="submitter">Submitter</span></th>
+                                <th><span id="action">Action</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span id="id1">S1001</span></td>
+                                <td><span id="question1">What are the key differences between procedural and
+                                        object-oriented programming paradigms?</span></td>
+                                <td><span id="similarTo1">Q1045: Explain the main procedural programming and
+                                        programming.</span></td>
+                                <td><span id="similarity1" class="high">High (92%)</span></td>
+                                <td><span id="submitter1">Dr. Nguyen</span></td>
+                                <td><span id="action1"><button><i class="fa-solid fa-check"></i></button> <button><i
+                                                class="fa-solid fa-xmark"></i></button></span></td>
+                            </tr>
+                            <tr>
+                                <td><span id="id2">S1008</span></td>
+                                <td><span id="question2">Describe the process of ph plants and its importance.</span>
+                                </td>
+                                <td><span id="similarTo2">Q1078: Explain how photo why it is essential for plant
+                                        life.</span></td>
+                                <td><span id="similarity2" class="high">High (88%)</span></td>
+                                <td><span id="submitter2">Dr. Pham</span></td>
+                                <td><span id="action2"><button><i class="fa-solid fa-check"></i></button> <button><i
+                                                class="fa-solid fa-xmark"></i></button></span></td>
+                            </tr>
+                            <tr>
+                                <td><span id="id3">S1012</span></td>
+                                <td><span id="question3">What is the role of DNS in computer networks?</span></td>
+                                <td><span id="similarTo3">Q1034: Explain the function of internet architecture.</span>
+                                </td>
+                                <td><span id="similarity3" class="medium">Medium (60%)</span></td>
+                                <td><span id="submitter3">Dr. Le</span></td>
+                                <td><span id="action3"><button><i class="fa-solid fa-check"></i></button> <button><i
+                                                class="fa-solid fa-xmark"></i></button></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tải header và menu -->
+    <script>
+        fetch("../header_user.html")
+            .then((response) => response.text())
+            .then((data) => {
+                document.getElementById("header-placeholder").innerHTML = data;
+            });
+
+        fetch("Menu-SL.html")
+            .then((response) => response.text())
+            .then((data) => {
+                document.getElementById("menu-HTML").innerHTML = data;
+            });
+    </script>
+
+</body>
+
+</html>
