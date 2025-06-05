@@ -62,14 +62,11 @@ CREATE TABLE Questions (
     answer_f3 TEXT,                                                     -- Đáp án nhiễu 3
     explanation TEXT,                                                   -- Giải thích đáp án
     created_by INT,                                                     -- Người tạo câu hỏi (user_id)
-    status ENUM('draft', 'approved', 'rejected') 
-           NOT NULL DEFAULT 'draft',                                    -- Trạng thái xét duyệt câu hỏi
+    status ENUM('draft', 'approved', 'rejected') NOT NULL DEFAULT 'draft',                                    -- Trạng thái xét duyệt câu hỏi
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,                      -- Ngày tạo câu hỏi
     updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,       -- Ngày cập nhật lần cuối
-    block_question ENUM('block', 'active') 
-                   NOT NULL DEFAULT 'active',                           -- Trạng thái khoá/mở câu hỏi
+    block_question ENUM('block', 'active') NOT NULL DEFAULT 'active',                           -- Trạng thái khoá/mở câu hỏi
     hidden_question TINYINT(1) NOT NULL DEFAULT 1,                      -- Ẩn hay hiện câu hỏi (1 = ẩn)
-    
     FOREIGN KEY (course_id) REFERENCES Courses(course_id),              -- Liên kết đến bảng Khóa học
     FOREIGN KEY (clo_id) REFERENCES CLOs(clo_id),                       -- Liên kết đến bảng CLO
     FOREIGN KEY (created_by) REFERENCES Users(user_id)                  -- Liên kết đến người tạo
