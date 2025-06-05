@@ -4,7 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-import com.uth.model.Exam;
+import com.uth.quizclear.model.Exam;
+
 
 public interface ExamRepository extends JpaRepository<Exam, Integer> {
 

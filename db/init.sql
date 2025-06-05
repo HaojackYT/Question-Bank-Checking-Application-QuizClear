@@ -41,45 +41,37 @@ CREATE TABLE CLOs (
     clo_id INT PRIMARY KEY AUTO_INCREMENT, -- ID CLO
     course_id INT NOT NULL, -- Khóa học liên quan
     clo_code VARCHAR(50) NOT NULL, -- Mã CLO
-    clo_bloom_level ENUM('recognition', 'comprehension', 'Basic Application', 'Advanced Application') NOT NULL, -- Mức độ Bloom
+    difficulty_level ENUM('recognition', 'comprehension', 'Basic Application', 'Advanced Application') NOT NULL, -- Độ khó tương ứng
     weight DECIMAL(5,2), -- Trọng số CLO
     clo_note TEXT, -- Ghi chú CLO
     clo_description TEXT, -- Mô tả chi tiết CLO
     FOREIGN KEY (course_id) REFERENCES Courses(course_id)
 ) ENGINE=InnoDB;
 
--- 4. QuestionDifficulties (Độ khó câu hỏi)
-CREATE TABLE QuestionDifficulties (
-    difficulty_id INT PRIMARY KEY AUTO_INCREMENT, -- ID độ khó
-    name ENUM('Remember', 'Understand', 'Apply (basic)', 'Apply (advanced)') NOT NULL, -- Tên độ khó
-    description TEXT, -- Mô tả
-    weight_factor DECIMAL(5,2) -- Hệ số trọng số
-) ENGINE=InnoDB;
-
 -- 5. Questions (Câu hỏi)
 CREATE TABLE Questions (
-    question_id INT PRIMARY KEY AUTO_INCREMENT, -- ID câu hỏi
-    course_id INT NOT NULL, -- Khóa học liên quan
-    clo_id INT NOT NULL, -- CLO liên quan
-    task_id INT, -- Nhiệm vụ liên quan
-    difficulty_id INT NOT NULL, -- Độ khó
-    content TEXT NOT NULL, -- Nội dung câu hỏi
-    answer_key TEXT NOT NULL, -- Đáp án chính
-    answer_f1 TEXT, -- Đáp án phụ 1
-    answer_f2 TEXT, -- Đáp án phụ 2
-    answer_f3 TEXT, -- Đáp án phụ 3
-    explanation TEXT, -- Giải thích đáp án
-    created_by INT, -- Người tạo câu hỏi
-    status ENUM('draft', 'approved', 'rejected') NOT NULL DEFAULT 'draft', -- Trạng thái câu hỏi
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo
-    updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP, -- Ngày cập nhật
-    block_question ENUM('block', 'active') NOT NULL DEFAULT 'active', -- Trạng thái block
-    hidden_question TINYINT(1) NOT NULL DEFAULT 1, -- Ẩn/hiện câu hỏi
-    FOREIGN KEY (course_id) REFERENCES Courses(course_id),
-    FOREIGN KEY (clo_id) REFERENCES CLOs(clo_id),
-    FOREIGN KEY (difficulty_id) REFERENCES QuestionDifficulties(difficulty_id),
-    FOREIGN KEY (created_by) REFERENCES Users(user_id)
+    question_id INT PRIMARY KEY AUTO_INCREMENT,                 -- ID câu hỏi
+    course_id INT NOT NULL,                                             -- Khóa học liên quan
+    clo_id INT NOT NULL,                                                -- CLO (chuẩn đầu ra học phần) liên quan
+    task_id INT,                                                        -- Nhiệm vụ liên quan (có thể null)
+    difficulty_level ENUM('recognition', 'comprehension', 'Basic Application', 'Advanced Application') NOT NULL,    -- Mức độ Bloom/độ khó
+    content TEXT NOT NULL,                                              -- Nội dung câu hỏi
+    answer_key TEXT NOT NULL,                                           -- Đáp án chính xác
+    answer_f1 TEXT,                                                     -- Đáp án nhiễu 1
+    answer_f2 TEXT,                                                     -- Đáp án nhiễu 2
+    answer_f3 TEXT,                                                     -- Đáp án nhiễu 3
+    explanation TEXT,                                                   -- Giải thích đáp án
+    created_by INT,                                                     -- Người tạo câu hỏi (user_id)
+    status ENUM('draft', 'approved', 'rejected') NOT NULL DEFAULT 'draft',                                    -- Trạng thái xét duyệt câu hỏi
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,                      -- Ngày tạo câu hỏi
+    updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,       -- Ngày cập nhật lần cuối
+    block_question ENUM('block', 'active') NOT NULL DEFAULT 'active',                           -- Trạng thái khoá/mở câu hỏi
+    hidden_question TINYINT(1) NOT NULL DEFAULT 1,                      -- Ẩn hay hiện câu hỏi (1 = ẩn)
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id),              -- Liên kết đến bảng Khóa học
+    FOREIGN KEY (clo_id) REFERENCES CLOs(clo_id),                       -- Liên kết đến bảng CLO
+    FOREIGN KEY (created_by) REFERENCES Users(user_id)                  -- Liên kết đến người tạo
 ) ENGINE=InnoDB;
+
 
 -- 6. Plans (Kế hoạch)
 CREATE TABLE Plans (
@@ -238,3 +230,25 @@ CREATE TABLE Activity_logs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Thời gian hoạt động
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 ) ENGINE=InnoDB;
+
+-- 19. DuplicateDetections (Phát hiện và xử lý trùng lặp câu hỏi)
+CREATE TABLE DuplicateDetections (
+    detection_id INT PRIMARY KEY AUTO_INCREMENT,                     -- ID phát hiện trùng lặp
+    new_question_id INT NOT NULL,                                    -- ID câu hỏi mới được thêm vào
+    similar_question_id INT NOT NULL,                                -- ID câu hỏi đã tồn tại
+    similarity_score DECIMAL(5,2) NOT NULL,                          -- Điểm tương đồng (%)
+    status ENUM('pending', 'accepted', 'rejected', 'sent_back', 'merged') DEFAULT 'pending', -- Trạng thái phát hiện
+    action ENUM('accept', 'reject', 'send_back', 'merged') DEFAULT NULL, -- Hành động xử lý
+    feedback TEXT,                                                   -- Góp ý/ghi chú xử lý
+    detected_by INT,                                                 -- Người phát hiện (nullable: có thể là hệ thống)
+    processed_by INT,                                                -- Người xử lý (nullable)
+    detected_at DATETIME DEFAULT CURRENT_TIMESTAMP,                  -- Ngày phát hiện
+    processed_at DATETIME DEFAULT NULL,                              -- Ngày xử lý
+
+    -- Liên kết khóa ngoại
+    FOREIGN KEY (new_question_id) REFERENCES Questions(question_id),
+    FOREIGN KEY (similar_question_id) REFERENCES Questions(question_id),
+    FOREIGN KEY (detected_by) REFERENCES Users(user_id),
+    FOREIGN KEY (processed_by) REFERENCES Users(user_id)
+) ENGINE=InnoDB;
+

@@ -5,7 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import com.uth.model.Exam;
+import com.uth.quizclear.model.Exam;
+
 import com.uth.quizclear.repository.ExamRepository;
 
 @Service

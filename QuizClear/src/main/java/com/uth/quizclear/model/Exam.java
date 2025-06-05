@@ -1,4 +1,5 @@
-package com.uth.quizclear;
+package com.uth.quizclear.model;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
