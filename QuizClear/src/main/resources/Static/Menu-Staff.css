@@ -32,4 +32,15 @@
     color: #0088F0;
     font-weight: 600;
     font-size: 1.5rem;
-} */
+}
+    #Menu-Staff .elements.active {
+    background-color: #C6DCFF;
+    font-weight: 600;
+}
+
+#Menu-Staff .elements.active a,
+#Menu-Staff .elements.active i {
+    color: #0088F0;
+}
+    */
+

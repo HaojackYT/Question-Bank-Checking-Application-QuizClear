@@ -27,15 +27,13 @@
 
             <!-- Search and Filter Section -->
             <div class="search-filter-section">
-                <div class="search-box">
-                    <input type="text" placeholder="Enter search content..." class="search-input">
-                    <button class="search-btn">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
+                <div class="search-container">
+                        <input type="text" id="search" placeholder="Search...">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
                 <div class="filter-controls">
                     <select class="filter-select">
-                        <option value="">Approve Assign</option>
+                        <option value="">All status</option>
                         <option value="approved">Approved</option>
                         <option value="pending">Pending</option>
                         <option value="rejected">Rejected</option>
@@ -52,15 +50,15 @@
 
             <!-- Exam Table -->
             <div class="table-container">
-                <table class="exam-table">
-                    <thead>
+                <table class ="exam-table">
+                   <thead>
                         <tr>
                             <th>ID</th>
                             <th>Subject</th>
                             <th>Lecturer</th>
                             <th>Total Question</th>
                             <th>Deadline</th>
-                            <th>Status <i class="fas fa-sort"></i></th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -70,7 +68,7 @@
                             <td>Operating System</td>
                             <td>Nguyen Van A</td>
                             <td>30</td>
-                            <td>---</td>
+                            <td>2025-25-05</td>
                             <td><span class="status-badge in-progress">In Progress</span></td>
                             <td>
                                 <button class="action-btn view-btn" title="View">
@@ -89,7 +87,7 @@
                             <td>Database</td>
                             <td>Tran Thi B</td>
                             <td>25</td>
-                            <td>2:00 PM</td>
+                            <td>2025-25-05</td>
                             <td><span class="status-badge approved">Approved</span></td>
                             <td>
                                 <button class="action-btn view-btn" title="View">
@@ -102,7 +100,7 @@
                             <td>Computer Architecture</td>
                             <td>Vo Van C</td>
                             <td>30</td>
-                            <td>8:00 AM</td>
+                            <td>2025-25-05</td>
                             <td><span class="status-badge pending">Pending</span></td>
                             <td>
                                 <button class="action-btn view-btn" title="View">
@@ -121,7 +119,7 @@
                             <td>Database Management System</td>
                             <td>Ho Thi D</td>
                             <td>20</td>
-                            <td>---</td>
+                            <td>2025-25-05</td>
                             <td><span class="status-badge in-progress">In Progress</span></td>
                             <td>
                                 <button class="action-btn view-btn" title="View">
@@ -140,7 +138,7 @@
                             <td>Object Oriented Programming</td>
                             <td>Huynh E</td>
                             <td>15</td>
-                            <td>---</td>
+                            <td>2025-25-05</td>
                             <td><span class="status-badge in-progress">In Progress</span></td>
                             <td>
                                 <button class="action-btn view-btn" title="View">
@@ -159,7 +157,7 @@
                             <td>Operating System</td>
                             <td>Tran K</td>
                             <td>20</td>
-                            <td>---</td>
+                            <td>2025-25-05</td>
                             <td><span class="status-badge in-progress">In Progress</span></td>
                             <td>
                                 <button class="action-btn view-btn" title="View">
@@ -178,7 +176,7 @@
                             <td>Database</td>
                             <td>Vo Thi L</td>
                             <td>10</td>
-                            <td>8:00 PM</td>
+                            <td>2025-25-05</td>
                             <td><span class="status-badge approved">Approved</span></td>
                             <td>
                                 <button class="action-btn view-btn" title="View">
@@ -191,7 +189,7 @@
                             <td>Computer Architecture</td>
                             <td>Chu Van G</td>
                             <td>20</td>
-                            <td>9:00 AM</td>
+                            <td>2025-25-05</td>
                             <td><span class="status-badge pending">Pending</span></td>
                             <td>
                                 <button class="action-btn view-btn" title="View">
@@ -210,7 +208,7 @@
                             <td>Database Management System</td>
                             <td>Luu Thi H</td>
                             <td>25</td>
-                            <td>---</td>
+                            <td>2025-25-05</td>
                             <td><span class="status-badge in-progress">In Progress</span></td>
                             <td>
                                 <button class="action-btn view-btn" title="View">
@@ -229,7 +227,7 @@
                             <td>Object Oriented Programming</td>
                             <td>Nguyen Van A</td>
                             <td>20</td>
-                            <td>10:10 PM</td>
+                            <td>2025-25-05</td>
                             <td><span class="status-badge rejected">Rejected</span></td>
                             <td>
                                 <button class="action-btn view-btn" title="View">
@@ -248,17 +246,18 @@
             </div>
 
             <!-- Pagination -->
-            <div class="pagination-container">
-                <div class="pagination-info">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Total Pages: 9</span>
+           <div class="pagination">
+                    <i class="fa-solid fa-bullhorn" style="padding: 20px;"></i>
+                    <p class="page-info" style="padding: 10px;">Total Pages:</p>
+                    <p class="page-info">9</p>
+                    <div class="page-controls">
+                        <button class="prev-btn"><i class="fa-solid fa-chevron-left" style="padding: 0px 5px;"></i>
+                            Previous</button>
+                        <input type="number" id="pageInput" value="1" min="1" style="width: 50px; text-align: center;">
+                        <button class="next-btn">Next <i class="fa-solid fa-chevron-right"
+                                style="padding: 0px 5px;"></i></button>
+                    </div>
                 </div>
-                <div class="pagination-controls">
-                    <button class="pagination-btn" disabled>< Previous</button>
-                    <span class="pagination-current">1</span>
-                    <button class="pagination-btn">Next ></button>
-                </div>
-            </div>
 
             <!-- Notification Section -->
             <div class="notification-section">

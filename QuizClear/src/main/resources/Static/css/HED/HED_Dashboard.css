@@ -1,10 +1,3 @@
-/* Dashboard Styles */
-#main {
-    padding: 1.875rem;
-    background-color: #f8fafc;
-    min-height: 100vh;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
 
 /* Dashboard Header */
 .dashboard-header {
@@ -50,15 +43,14 @@
 
 .stat-label {
     font-size: 0.875rem;
-    color: #374151;
+    color: #120368;
     margin-bottom: 0.5rem;
-    font-weight: 500;
+    font-weight: 800;
 }
 
 .stat-number {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 700;
-    color: #1e293b;
     margin-bottom: 0.5rem;
     line-height: 1;
 }
@@ -75,6 +67,7 @@
     padding: 1.875rem;
     border-radius: 0.75rem;
     box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1);
+    border: 1px solid #E0EAFA;
 }
 
 .quick-access-section h2 {
@@ -120,6 +113,7 @@
     background: white;
     box-shadow: 0 0.5rem 1.5625rem rgba(0, 0, 0, 0.15);
     border: 0.0625rem solid #f1f5f9;
+    font-size: 2rem;
 }
 
 .quick-access-item span {
@@ -136,6 +130,7 @@
     padding: 1.875rem;
     border-radius: 0.75rem;
     box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1);
+    border: 1px solid #E0EAFA;
 }
 
 .deadline-section h2,
@@ -169,6 +164,7 @@
     background: white;
     border-radius: 0.75rem;
     box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1);
+    border: 1px solid #E0EAFA;
 }
 
 .deadline-content,
@@ -197,7 +193,7 @@
     color: white;
     border: none;
     padding: 0.625rem 1.25rem;
-    border-radius: 0.5rem;
+    border-radius: 1.25rem;
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -216,6 +212,7 @@
     padding: 1.875rem;
     border-radius: 0.75rem;
     box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1);
+    border: 1px solid #E0EAFA;
 }
 
 /* Charts Container */
@@ -231,6 +228,7 @@
     padding: 1.875rem;
     border-radius: 0.75rem;
     box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1);
+    border: 1px solid #E0EAFA;
 }
 
 .chart-section h2,

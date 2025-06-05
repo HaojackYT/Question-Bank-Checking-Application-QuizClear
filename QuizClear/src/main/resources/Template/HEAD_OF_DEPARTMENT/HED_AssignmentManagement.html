@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
         <link rel="stylesheet" href="../../Static/header.css">
         <link rel="stylesheet" href="../../Static/web_styles.css">
-        <link rel="stylesheet" href="../../Static/css/HED/HODAssignManagement.css">
+        <link rel="stylesheet" href="../../Static/css/HED/HED_AssignManagement.css">
         <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
         <title>Assignment Management</title>
     </head>
@@ -505,6 +505,18 @@
                 .then(data => {
                     document.getElementById('menu-HTML').innerHTML = data;
                 });
+
+            const currentPath = window.location.pathname.split("/").pop(); // Lấy tên file HTML hiện tại
+        const menuItems = document.querySelectorAll('#Menu-Staff .elements');
+
+        menuItems.forEach(item => {
+            const link = item.querySelector("a");
+            if (link.getAttribute("href") === currentPath) {
+                item.classList.add("active");
+            } else {
+                item.classList.remove("active");
+            }
+        });
         </script>
     </body>
 </html>
