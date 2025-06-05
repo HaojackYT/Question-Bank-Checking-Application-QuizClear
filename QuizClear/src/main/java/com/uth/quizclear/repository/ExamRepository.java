@@ -1,4 +1,4 @@
-package com.uth.repository;
+package com.uth.quizclear.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
