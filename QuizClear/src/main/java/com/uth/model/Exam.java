@@ -61,4 +61,37 @@ public class Exam {
         APPROVED,   // Đã duyệt
         FINALIZED   // Đã hoàn tất
     }
+
+    public Integer getExamId() { return examId; }
+    public void setExamId(Integer examId) { this.examId = examId; }
+
+    public Integer getCourseId() { return courseId; }
+    public void setCourseId(Integer courseId) { this.courseId = courseId; }
+
+    public Integer getPlanId() { return planId; }
+    public void setPlanId(Integer planId) { this.planId = planId; }
+
+    public String getExamTitle() { return examTitle; }
+    public void setExamTitle(String examTitle) { this.examTitle = examTitle; }
+
+    public String getExamCode() { return examCode; }
+    public void setExamCode(String examCode) { this.examCode = examCode; }
+
+    public Integer getDurationMinutes() { return durationMinutes; }
+    public void setDurationMinutes(Integer durationMinutes) { this.durationMinutes = durationMinutes; }
+
+    public String getDifficultyDistribution() { return difficultyDistribution; }
+    public void setDifficultyDistribution(String difficultyDistribution) { this.difficultyDistribution = difficultyDistribution; }
+
+    public ExamStatus getStatus() { return status; }
+    public void setStatus(ExamStatus status) { this.status = status; }
+
+    public Integer getCreatedBy() { return createdBy; }
+    public void setCreatedBy(Integer createdBy) { this.createdBy = createdBy; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public Boolean getHidden() { return hidden; }
+    public void setHidden(Boolean hidden) { this.hidden = hidden; }
 }
