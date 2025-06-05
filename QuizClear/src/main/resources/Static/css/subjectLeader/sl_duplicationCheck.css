@@ -1,0 +1,119 @@
+#main {
+    padding: 1.25rem;
+    flex-grow: 1;
+}
+
+.duplication-check {
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+}
+
+.duplication-check h1 {
+    font-size: 3rem;
+    color: black;
+    font-weight: bold;
+    margin: 0 0 0.625rem;
+}
+
+.duplication-check p {
+    color: black;
+    margin: 0 0 0.9375rem;
+    font-size: 1.125rem;
+    opacity: 60%;
+}
+
+.automatic-duplication-detection {
+    margin-top: 1.25rem;
+    padding: 1.25rem;
+    border: 0.0625rem solid #E0EAFA;
+    border-radius: 0.5rem;
+    box-shadow: #E0EAFA 0.125rem 0.125rem 0.3125rem;
+}
+
+.automatic-duplication-detection p {
+    margin: 0 0 0.625rem;
+    font-size: 0.875rem;
+    color: #6B7280;
+}
+
+.automatic-duplication-detection p:last-child {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 0.0625rem solid #eee;
+}
+
+th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    color: #1a2a44;
+}
+
+td {
+    color: #333;
+}
+
+td span {
+    display: block;
+}
+
+.high {
+    color: #991B1B;
+    background-color: #FEE2E2;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.75rem;
+    display: inline-block;
+}
+
+.medium {
+    color: #991B1B;
+    background-color: #FEF9C3;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.75rem;
+    display: inline-block;
+}
+
+input[type="checkbox"] {
+    margin-right: 0.625rem;
+}
+
+#action1, #action2, #action3 {
+    display: flex;
+    gap: 0.3125rem;
+}
+
+button {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 0.3125rem 0.625rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    width: 1.875rem;
+    height: 1.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button:hover {
+    background-color: #c82333;
+}
+
+button:nth-child(2) {
+    background-color: #28a745;
+}
+
+button:nth-child(2):hover {
+    background-color: #218838;
+}
