@@ -1,10 +1,4 @@
-/* Assignment Management Styles */
-.assignment-container {
-    padding: 1.25rem;
-    width: 100%;
-    margin: 0 auto;
-    min-height: 100vh;
-}
+
 
 /* Header */
 .assignment-header {
@@ -166,73 +160,54 @@
 }
 
 /* Table */
-.table-container {
-    background: white;
-    border: 0.125rem solid #E0EAFA;
-    border-radius: 0.9375rem;
-    overflow: hidden;
-    box-shadow: none;
-    margin-bottom: 1.25rem;
-}
-
-.assignment-table {
+table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 0.0625rem solid #D9D9D9;
+    border-radius: 0.3125rem;
 }
 
-.assignment-table thead {
-    background: #E0EAFA;
-}
-
-.assignment-table th,
-.assignment-table td {
-    padding: 1rem 0.9375rem;
+th,
+td {
+    padding: 0.75rem 0.9375rem;
     text-align: left;
-    border-bottom: 0.0625rem solid #E0EAFA;
+    border-bottom: 0.0625rem solid #D9D9D9;
 }
 
-.assignment-table th {
-    font-weight: 600;
-    color: #424242;
-    font-size: 0.875rem;
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
 }
 
-.assignment-table td {
-    font-size: 0.875rem;
-    color: #616161;
+tr:hover {
+    background-color: #f9f9f9;
 }
-
-.assignment-table tbody tr:hover {
-    background: #F3F7FD;
-}
-
 /* Status badges */
 .status {
-    padding: 0.375rem 0.75rem;
+   padding: 0.375rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.75rem;
     font-weight: 500;
     text-transform: capitalize;
     display: inline-block;
+    color: white;
 }
 
 .status.in-progress {
-    background: #E3F2FD;
-    color: #1976D2;
+     background: #1E88E5;
 }
 
 .status.completed {
-    background: #E8F5E8;
-    color: #4CAF50;
+   background: #43A047;
 }
 
 .status.pending {
-    background: #FFF3E0;
-    color: #FF9800;
+    background: #FB8C00;
 }
 
 /* Action buttons */
-.action-btn {
+button {
     background: none;
     border: none;
     padding: 0.5rem 0.625rem;
@@ -240,23 +215,6 @@
     border-radius: 0.25rem;
     cursor: pointer;
     color: #757575;
-    transition: all 0.2s;
-}
-
-.action-btn:hover {
-    background: #f0f0f0;
-}
-
-.view-btn:hover {
-    color: #42A5F5;
-}
-
-.edit-btn:hover {
-    color: #66BB6A;
-}
-
-.delete-btn:hover {
-    color: #EF5350;
 }
 
 /* Pagination */
@@ -779,88 +737,4 @@
 
 .approve-btn-modal:hover {
     background: #5E35B1;
-}
-
-/* Responsive Design */
-@media (max-width: 48rem) {
-    .assignment-header {
-        flex-direction: column;
-        gap: 0.9375rem;
-        align-items: flex-start;
-    }
-
-    .search-filter-section {
-        flex-direction: column;
-        gap: 0.9375rem;
-    }
-
-    .search-container {
-        max-width: 100%;
-    }
-
-    .form-row {
-        flex-direction: column;
-        gap: 0;
-    }
-
-    .details-grid {
-        grid-template-columns: 1fr;
-        gap: 0.9375rem;
-    }
-
-    .modal-content {
-        margin: 2% auto;
-        width: 95%;
-    }
-
-    .details-modal.expanded {
-        max-width: 95%;
-    }
-
-    .question-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.625rem;
-    }
-
-    .modal-footer {
-        flex-direction: column;
-        gap: 0.625rem;
-    }
-
-    .reject-btn-modal,
-    .approve-btn-modal {
-        width: 100%;
-        justify-content: center;
-    }
-}
-
-@media (max-width: 30rem) {
-    .assignment-table {
-        font-size: 0.75rem;
-    }
-
-    .assignment-table th,
-    .assignment-table td {
-        padding: 0.5rem 0.625rem;
-    }
-
-    .modal-header,
-    .modal-footer,
-    .form-group,
-    .details-content {
-        padding-left: 0.9375rem;
-        padding-right: 0.9375rem;
-    }
-
-    .date-time-row {
-        flex-wrap: wrap;
-        gap: 0.3125rem;
-    }
-
-    .date-select,
-    .time-select {
-        min-width: 2.8125rem;
-        font-size: 0.75rem;
-    }
 }

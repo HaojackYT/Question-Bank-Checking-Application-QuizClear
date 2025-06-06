@@ -12,6 +12,20 @@ body {
     color: #333;
 }
 
+.title {
+    font-size: 2.25rem;
+    font-weight: bold;
+    color: #120368;
+    margin: 0;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.875rem;
+}
+
 /* Search Section */
 .search-filter-section {
     display: flex;
@@ -19,7 +33,6 @@ body {
     align-items: center;
     margin-bottom: 40px;
     margin-top: 20px;
-    align-items: center;
 }
 
 /* Search Box */
@@ -27,7 +40,6 @@ body {
 .search-container {
     position: relative;
     width: 18.75rem;
-    margin-bottom: 1.25rem;
 }
 
 .search-container input {
@@ -57,7 +69,6 @@ body {
     height: 44px;
     background: #FFFFFF;
     border: 1px solid #C6DCFF;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 12px;
     font-weight: 600;
     font-size: 13px;
@@ -101,38 +112,33 @@ tr:hover {
 
 /* Status Badges */
 .status-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 3px 14px;
-    height: 18px;
-    border-radius: 9px;
-    font-size: 10px;
+    padding: 0.375rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
     font-weight: 500;
-    color: #FFFFFF;
-    white-space: nowrap;
+    text-transform: capitalize;
+    display: inline-block;
+    color: white;
 }
 
 .status-badge.in-progress {
-     background: #E3F2FD;
-    color: #1976D2;
+    background: #1E88E5;
 }
 
 .status-badge.approved {
-    background: #34C759;
+    background: #43A047;
 }
 
 .status-badge.pending {
-    background: #FFF3E0;
-    color: #FF9800;
+    background: #FB8C00;
 }
 
 .status-badge.rejected {
-    background: #FF3B30;
+    background: #E53935;
 }
 
 /* Action Buttons */
-.action-buttons {
+button {
     background: none;
     border: none;
     padding: 0.5rem 0.625rem;
@@ -143,8 +149,6 @@ tr:hover {
 }
 
 /* Pagination Section */
-
-
 .pagination {
     margin-top: 1.25rem;
     display: flex;
@@ -176,97 +180,78 @@ tr:hover {
 .next-btn:hover {
     background-color: #3b8bbd;
 }
+
 /* Notification Section */
 .notification-section {
-    position: relative;
-    width: 1046px;
-    background: #FFFFFF;
-    border: 2px solid #E0EAFA;
-    border-radius: 15px;
-    padding: 35px 40px;
-    box-sizing: border-box;
-    margin: 0 auto;
+    background: #ffffff;
+    padding: 1.5625rem 2.5rem;
+    border: 0.125rem solid #E0EAFA;
+    border-radius: 0.9375rem;
+    margin-bottom: 1.875rem;
 }
 
-.notification-title {
-    font-weight: 800;
-    font-size: 24px;
+
+.notification-section h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 0 0.3125rem 0;
     color: #120368;
-    margin-bottom: 5px;
-    background: transparent;
 }
 
 .notification-subtitle {
-    font-size: 13px;
-    color: rgba(0, 0, 0, 0.6);
-    margin-bottom: 30px;
-    background: transparent;
+    color: #757575;
+    margin: 0 0 0.9375rem 0;
+    font-size: 0.875rem;
 }
 
-.notification-item {
+.notification_items {
+    margin-bottom: 0.9375rem;
+}
+
+.notification_item {
     display: flex;
     align-items: flex-start;
-    gap: 20px;
-    padding: 15px 0;
-    border-bottom: 1px solid #E0EAFA;
-    background: transparent;
+    gap: 0.625rem;
+    margin-bottom: 0.625rem;
+    margin-top: 0.3125rem;
+    padding: 0.625rem;
+    border-radius: 0.625rem;
 }
 
-.notification-item:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
+.notification_item:hover {
+    background-color: #d9d9d9;
 }
 
-.notification-item:first-child {
-    padding-top: 0;
+.notification_item input[type="checkbox"] {
+    margin-top: 0.625rem;
+    width: 1.875rem;
 }
 
-.notification-checkbox {
-    width: 20px;
-    height: 20px;
-    margin-top: 3px;
-    cursor: pointer;
-    background: transparent;
+.notification-text strong {
+    display: block;
+    color: #000;
+    margin-bottom: 0.125rem;
+    font-weight: 450;
+    margin-left: 0.9375rem;
 }
 
-.notification-content {
-    flex: 1;
-    background: transparent;
-}
-
-.notification-content h4 {
-    font-weight: 700;
-    font-size: 16px;
-    color: #000000;
-    margin: 0 0 5px 0;
-    line-height: 1.3;
-    background: transparent;
-}
-
-.notification-time {
-    font-weight: 600;
-    font-size: 13px;
-    color: rgba(0, 0, 0, 0.5);
-    background: transparent;
+.notification-text p {
+    margin: 0;
+    color: #757575;
+    font-size: 0.8125rem;
+    margin-left: 0.9375rem;
 }
 
 .see-more {
-    text-align: right;
-    margin-top: 20px;
-    background: transparent;
-}
-
-.see-more-link {
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.5);
+    color: #42A5F5;
     text-decoration: none;
-    transition: color 0.2s;
-    background: transparent;
+    font-size: 0.875rem;
 }
 
-.see-more-link:hover {
-    color: #120368;
+.see-more:hover {
+    text-decoration: underline;
 }
+
 
 /* Updated Modal Styles - Clean Design like Image 2 */
 .modal {
@@ -293,17 +278,6 @@ tr:hover {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-@keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 /* Modal Header */
 .modal-header {
     display: flex;
@@ -325,7 +299,8 @@ tr:hover {
     gap: 8px;
 }
 
-.expand-btn, .close-btn {
+.expand-btn,
+.close-btn {
     width: 32px;
     height: 32px;
     background: none;
@@ -340,7 +315,8 @@ tr:hover {
     justify-content: center;
 }
 
-.expand-btn:hover, .close-btn:hover {
+.expand-btn:hover,
+.close-btn:hover {
     background: #F9FAFB;
     border-color: #9CA3AF;
     color: #374151;
@@ -533,7 +509,8 @@ tr:hover {
     background: #F9FAFB;
 }
 
-.reject-btn, .approve-btn {
+.reject-btn,
+.approve-btn {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -576,71 +553,4 @@ tr:hover {
 .approve-btn i {
     color: #FFFFFF;
     font-size: 16px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .modal-content {
-        width: 95%;
-        margin: 2% auto;
-    }
-    
-    .modal-body {
-        padding: 24px;
-    }
-    
-    .details-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-    }
-    
-    .modal-footer {
-        flex-direction: column;
-        gap: 12px;
-    }
-    
-    .reject-btn, .approve-btn {
-        width: 100%;
-    }
-}
-
-@media (max-width: 1440px) {
-    #main {
-        width: 100vw;
-        max-width: 1440px;
-        overflow-x: auto;
-    }
-    
-    .page-content {
-        padding: 40px 60px;
-    }
-    
-    .table-container,
-    .notification-section {
-        max-width: calc(100vw - 120px);
-    }
-}
-
-@media (max-width: 1200px) {
-    .page-content {
-        padding: 30px 40px;
-    }
-    
-    .search-box {
-        width: 350px;
-    }
-    
-    .filter-select {
-        width: 180px;
-    }
-    
-    .table-container,
-    .notification-section {
-        max-width: calc(100vw - 80px);
-        overflow-x: auto;
-    }
-    
-    .exam-table {
-        min-width: 1046px;
-    }
 }
