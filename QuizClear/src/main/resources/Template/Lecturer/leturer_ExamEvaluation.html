@@ -11,7 +11,7 @@
         <link
             href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
             rel="stylesheet">
-        <title>Exam Evaluation</title>
+        <title>ExamEvaluation</title>
     </head>
 
     <body>
@@ -243,8 +243,10 @@
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('menu-HTML').innerHTML = data;
+                    setActiveMenu(document.title);
                 });
 
         </script>
+        <script src="../../Static/js/L_activeMenu.js"></script>
     </body>
 </html>

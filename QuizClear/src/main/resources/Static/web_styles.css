@@ -24,3 +24,6 @@ body {
     flex-direction: column;
     min-width: 78%;
 }
+a {
+    text-decoration: none;
+}
