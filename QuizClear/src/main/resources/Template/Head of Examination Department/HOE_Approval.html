@@ -39,7 +39,7 @@
                     <div class="filter-dropdown">
                         <select class="filter-select">
                             <option>All Review Tasks</option>
-                            <option>Pending Review</option>
+                            <option>Pending</option>
                             <option>Approved</option>
                             <option>Declined</option>
                         </select>
@@ -74,12 +74,7 @@
                                 </td>
                                 <td><span class="status approved">Approved</span></td>
                                 <td>
-                                    <button class="action-btn approve-btn" onclick="approveExam(this)">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    <button class="action-btn decline-btn" onclick="openDeclineModal()">
-                                        <i class="fas fa-times"></i>
-                                    </button>
+                                   
                                 </td>
                             </tr>
                             <tr>
@@ -95,12 +90,7 @@
                                 </td>
                                 <td><span class="status declined">Declined</span></td>
                                 <td>
-                                    <button class="action-btn approve-btn" onclick="approveExam(this)">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    <button class="action-btn decline-btn" onclick="openDeclineModal()">
-                                        <i class="fas fa-times"></i>
-                                    </button>
+                                  
                                 </td>
                             </tr>
                             <tr>
@@ -116,11 +106,11 @@
                                 </td>
                                 <td><span class="status new">New</span></td>
                                 <td>
-                                    <button class="action-btn approve-btn" onclick="approveExam(this)">
-                                        <i class="fas fa-check"></i>
+                                     <button class="action-btn approve-btn" onclick="approveExam(this)">
+                                        <i class="fa-regular fa-circle-check"></i>
                                     </button>
                                     <button class="action-btn decline-btn" onclick="openDeclineModal()">
-                                        <i class="fas fa-times"></i>
+                                        <i class="fa-regular fa-circle-xmark"></i>
                                     </button>
                                 </td>
                             </tr>
