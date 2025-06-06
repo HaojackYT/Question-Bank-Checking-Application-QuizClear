@@ -10,8 +10,9 @@ services:
     ports:
       - "3336:3306"
     volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - mysql_data:/var/lib/mysql   # Thêm volume này để lưu dữ liệu
-
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01_init.sql            #  Dùng để tạo bảng
+      - ./db/sample_data.sql:/docker-entrypoint-initdb.d/02_sample_data.sql  #  Dùng để insert dữ liệu
 volumes:
   mysql_data:
+
+
