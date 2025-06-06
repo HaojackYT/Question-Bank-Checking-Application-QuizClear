@@ -19,7 +19,7 @@ body {
 }
 
 #main {
-    padding: 2rem;
+    padding: 4rem;
     display: flex;
     flex-direction: column;
     min-width: 78%;
