@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS QuizClear CHARACTER SET utf8mb4 COLLATE utf8mb4_un
 USE QuizClear;
 
 -- 1. Users (Người dùng)
-CREATE TABLE Users (
+CREATE TABLE IF NOT EXISTS users (
     user_id INT PRIMARY KEY AUTO_INCREMENT, -- ID người dùng
     full_name VARCHAR(255) NOT NULL, -- Họ tên đầy đủ
     email VARCHAR(255) NOT NULL UNIQUE, -- Email (unique)
@@ -23,7 +23,7 @@ CREATE TABLE Users (
 ) ENGINE=InnoDB;
 
 -- 2. Courses (Khóa học)
-CREATE TABLE Courses (
+CREATE TABLE courses (
     course_id INT PRIMARY KEY AUTO_INCREMENT, -- ID khóa học
     course_code VARCHAR(50) NOT NULL UNIQUE, -- Mã khóa học (unique)
     course_name VARCHAR(255) NOT NULL, -- Tên khóa học
@@ -33,11 +33,11 @@ CREATE TABLE Courses (
     created_by INT, -- Người tạo khóa học (user_id)
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo
     course_note VARCHAR(255), -- Ghi chú khóa học
-    FOREIGN KEY (created_by) REFERENCES Users(user_id)
+    FOREIGN KEY (created_by) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
 -- 3. CLOs (Course Learning Outcomes)
-CREATE TABLE CLOs (
+CREATE TABLE clos (
     clo_id INT PRIMARY KEY AUTO_INCREMENT, -- ID CLO
     course_id INT NOT NULL, -- Khóa học liên quan
     clo_code VARCHAR(50) NOT NULL, -- Mã CLO
@@ -45,11 +45,11 @@ CREATE TABLE CLOs (
     weight DECIMAL(5,2), -- Trọng số CLO
     clo_note TEXT, -- Ghi chú CLO
     clo_description TEXT, -- Mô tả chi tiết CLO
-    FOREIGN KEY (course_id) REFERENCES Courses(course_id)
+    FOREIGN KEY (course_id) REFERENCES courses(course_id)
 ) ENGINE=InnoDB;
 
 -- 5. Questions (Câu hỏi)
-CREATE TABLE Questions (
+CREATE TABLE questions (
     question_id INT PRIMARY KEY AUTO_INCREMENT,                 -- ID câu hỏi
     course_id INT NOT NULL,                                             -- Khóa học liên quan
     clo_id INT NOT NULL,                                                -- CLO (chuẩn đầu ra học phần) liên quan
@@ -67,14 +67,14 @@ CREATE TABLE Questions (
     updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,       -- Ngày cập nhật lần cuối
     block_question ENUM('block', 'active') NOT NULL DEFAULT 'active',                           -- Trạng thái khoá/mở câu hỏi
     hidden_question TINYINT(1) NOT NULL DEFAULT 1,                      -- Ẩn hay hiện câu hỏi (1 = ẩn)
-    FOREIGN KEY (course_id) REFERENCES Courses(course_id),              -- Liên kết đến bảng Khóa học
-    FOREIGN KEY (clo_id) REFERENCES CLOs(clo_id),                       -- Liên kết đến bảng CLO
-    FOREIGN KEY (created_by) REFERENCES Users(user_id)                  -- Liên kết đến người tạo
+    FOREIGN KEY (course_id) REFERENCES courses(course_id),              -- Liên kết đến bảng Khóa học
+    FOREIGN KEY (clo_id) REFERENCES clos(clo_id),                       -- Liên kết đến bảng CLO
+    FOREIGN KEY (created_by) REFERENCES users(user_id)                  -- Liên kết đến người tạo
 ) ENGINE=InnoDB;
 
 
 -- 6. Plans (Kế hoạch)
-CREATE TABLE Plans (
+CREATE TABLE plans (
     plan_id INT PRIMARY KEY AUTO_INCREMENT, -- ID kế hoạch
     course_id INT NOT NULL, -- Khóa học liên quan
     total_questions INT, -- Tổng số câu hỏi
@@ -84,12 +84,12 @@ CREATE TABLE Plans (
     total_apply_advanced INT, -- Tổng câu hỏi áp dụng nâng cao
     user_id INT, -- Người lập kế hoạch (user_id)
     assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Ngày giao kế hoạch
-    FOREIGN KEY (course_id) REFERENCES Courses(course_id),
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    FOREIGN KEY (course_id) REFERENCES courses(course_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
 -- 7. Exams (Đề thi)
-CREATE TABLE Exams (
+CREATE TABLE exams (
     exam_id INT PRIMARY KEY AUTO_INCREMENT, -- ID đề thi
     course_id INT NOT NULL, -- Khóa học liên quan
     plan_id INT, -- Kế hoạch đề thi
@@ -101,57 +101,57 @@ CREATE TABLE Exams (
     created_by INT, -- Người tạo đề thi
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo
     hidden TINYINT(1) NOT NULL DEFAULT 1, -- Ẩn/hiện đề thi
-    FOREIGN KEY (course_id) REFERENCES Courses(course_id),
-    FOREIGN KEY (plan_id) REFERENCES Plans(plan_id),
-    FOREIGN KEY (created_by) REFERENCES Users(user_id)
+    FOREIGN KEY (course_id) REFERENCES courses(course_id),
+    FOREIGN KEY (plan_id) REFERENCES plans(plan_id),
+    FOREIGN KEY (created_by) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
 -- 8. ExamQuestions (Câu hỏi trong đề thi)
-CREATE TABLE ExamQuestions (
+CREATE TABLE exam_questions (
     exam_question_id INT PRIMARY KEY AUTO_INCREMENT, -- ID quan hệ đề-câu hỏi
     exam_id INT NOT NULL, -- Đề thi
     question_id INT NOT NULL, -- Câu hỏi
-    FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
-    FOREIGN KEY (question_id) REFERENCES Questions(question_id)
+    FOREIGN KEY (exam_id) REFERENCES exams(exam_id),
+    FOREIGN KEY (question_id) REFERENCES questions(question_id)
 ) ENGINE=InnoDB;
 
 
 -- 9. PlanAssignments (Giao kế hoạch)
-CREATE TABLE PlanAssignments (
+CREATE TABLE plan_assignments (
     assignment_id INT PRIMARY KEY AUTO_INCREMENT, -- ID giao kế hoạch
     plan_id INT NOT NULL, -- Kế hoạch
     assigned_to INT NOT NULL, -- Người được giao
     assigned_by INT NOT NULL, -- Người giao
     assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Ngày giao
-    FOREIGN KEY (plan_id) REFERENCES Plans(plan_id),
-    FOREIGN KEY (assigned_to) REFERENCES Users(user_id),
-    FOREIGN KEY (assigned_by) REFERENCES Users(user_id)
+    FOREIGN KEY (plan_id) REFERENCES plans(plan_id),
+    FOREIGN KEY (assigned_to) REFERENCES users(user_id),
+    FOREIGN KEY (assigned_by) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
 -- 10. ExamSubmissions (Nộp đề thi)
-CREATE TABLE ExamSubmissions (
+CREATE TABLE exam_submissions (
     submission_id INT PRIMARY KEY AUTO_INCREMENT, -- ID nộp bài
     submitted_by INT NOT NULL, -- Người nộp
     course_id INT NOT NULL, -- Khóa học
     status ENUM('submitted', 'reviewed', 'approved') NOT NULL DEFAULT 'submitted', -- Trạng thái nộp
     submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Thời gian nộp
-    FOREIGN KEY (submitted_by) REFERENCES Users(user_id),
-    FOREIGN KEY (course_id) REFERENCES Courses(course_id)
+    FOREIGN KEY (submitted_by) REFERENCES users(user_id),
+    FOREIGN KEY (course_id) REFERENCES courses(course_id)
 ) ENGINE=InnoDB;
 
 -- 11. SubmissionQuestions (Câu hỏi nộp bài)
-CREATE TABLE SubmissionQuestions (
+CREATE TABLE submission_questions (
     submission_question_id INT PRIMARY KEY AUTO_INCREMENT, -- ID câu hỏi nộp
     submission_id INT NOT NULL, -- Bài nộp
     course_id INT NOT NULL, -- Khóa học
     question_id INT NOT NULL, -- Câu hỏi
-    FOREIGN KEY (submission_id) REFERENCES ExamSubmissions(submission_id),
-    FOREIGN KEY (course_id) REFERENCES Courses(course_id),
-    FOREIGN KEY (question_id) REFERENCES Questions(question_id)
+    FOREIGN KEY (submission_id) REFERENCES exam_submissions(submission_id),
+    FOREIGN KEY (course_id) REFERENCES courses(course_id),
+    FOREIGN KEY (question_id) REFERENCES questions(question_id)
 ) ENGINE=InnoDB;
 
 -- 12. Tasks (Nhiệm vụ)
-CREATE TABLE Tasks (
+CREATE TABLE tasks (
     task_id INT PRIMARY KEY AUTO_INCREMENT, -- ID nhiệm vụ
     course_id INT, -- Khóa học
     title VARCHAR(255) NOT NULL, -- Tiêu đề nhiệm vụ
@@ -163,76 +163,76 @@ CREATE TABLE Tasks (
     assigned_to INT, -- Người được giao nhiệm vụ
     assigned_by INT, -- Người giao nhiệm vụ
     assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Ngày giao
-    FOREIGN KEY (course_id) REFERENCES Courses(course_id),
-    FOREIGN KEY (assigned_to) REFERENCES Users(user_id),
-    FOREIGN KEY (assigned_by) REFERENCES Users(user_id)
+    FOREIGN KEY (course_id) REFERENCES courses(course_id),
+    FOREIGN KEY (assigned_to) REFERENCES users(user_id),
+    FOREIGN KEY (assigned_by) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
 -- 13. Comments (Bình luận)
-CREATE TABLE Comments (
+CREATE TABLE comments (
     comment_id INT PRIMARY KEY AUTO_INCREMENT, -- ID bình luận
     submission_id INT NOT NULL, -- Bài nộp liên quan
     commenter_id INT NOT NULL, -- Người bình luận
     comment TEXT NOT NULL, -- Nội dung bình luận
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo bình luận
-    FOREIGN KEY (submission_id) REFERENCES ExamSubmissions(submission_id),
-    FOREIGN KEY (commenter_id) REFERENCES Users(user_id)
+    FOREIGN KEY (submission_id) REFERENCES exam_submissions(submission_id),
+    FOREIGN KEY (commenter_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
 -- 14. Notifications (Thông báo)
-CREATE TABLE Notifications (
+CREATE TABLE notifications (
     notification_id INT PRIMARY KEY AUTO_INCREMENT, -- ID thông báo
     user_id INT NOT NULL, -- Người nhận thông báo
     content TEXT NOT NULL, -- Nội dung thông báo
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo thông báo
     is_read TINYINT(1) DEFAULT 0, -- Trạng thái đã đọc
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
 -- 15. QuestionSimilarity (Tương đồng câu hỏi)
-CREATE TABLE QuestionSimilarity (
+CREATE TABLE question_similarity (
     id INT PRIMARY KEY AUTO_INCREMENT, -- ID quan hệ tương đồng
     question1_id INT NOT NULL, -- Câu hỏi 1
     question2_id INT NOT NULL, -- Câu hỏi 2
     similarity_score DECIMAL(5,2) NOT NULL, -- Điểm tương đồng
-    FOREIGN KEY (question1_id) REFERENCES Questions(question_id),
-    FOREIGN KEY (question2_id) REFERENCES Questions(question_id)
+    FOREIGN KEY (question1_id) REFERENCES questions(question_id),
+    FOREIGN KEY (question2_id) REFERENCES questions(question_id)
 ) ENGINE=InnoDB;
 
 -- 16. FeedbackExam (Phản hồi đề thi)
-CREATE TABLE FeedbackExam (
+CREATE TABLE feedback_exam (
     feedback_id INT PRIMARY KEY AUTO_INCREMENT, -- ID phản hồi
     exam_id INT NOT NULL, -- Đề thi
     user_id INT NOT NULL, -- Người phản hồi
     feedback_text TEXT NOT NULL, -- Nội dung phản hồi
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo phản hồi
-    FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    FOREIGN KEY (exam_id) REFERENCES exams(exam_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
 -- 17. ExamReview (Đánh giá đề thi)
-CREATE TABLE ExamReview (
+CREATE TABLE exam_review (
     review_id INT PRIMARY KEY AUTO_INCREMENT, -- ID đánh giá
     exam_id INT NOT NULL, -- Đề thi
     reviewer_id INT NOT NULL, -- Người đánh giá
     score DECIMAL(5,2), -- Điểm đánh giá
     comments TEXT, -- Nhận xét
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo đánh giá
-    FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
-    FOREIGN KEY (reviewer_id) REFERENCES Users(user_id)
+    FOREIGN KEY (exam_id) REFERENCES exams(exam_id),
+    FOREIGN KEY (reviewer_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
 -- 18. Activity_logs (Nhật ký hoạt động người dùng)
-CREATE TABLE Activity_logs (
+CREATE TABLE activity_logs (
     id INT AUTO_INCREMENT PRIMARY KEY, -- ID nhật ký
     user_id INT, -- Người dùng thực hiện hoạt động
     activity TEXT, -- Nội dung hoạt động
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Thời gian hoạt động
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
 -- 19. DuplicateDetections (Phát hiện và xử lý trùng lặp câu hỏi)
-CREATE TABLE DuplicateDetections (
+CREATE TABLE duplicate_detections (
     detection_id INT PRIMARY KEY AUTO_INCREMENT,                     -- ID phát hiện trùng lặp
     new_question_id INT NOT NULL,                                    -- ID câu hỏi mới được thêm vào
     similar_question_id INT NOT NULL,                                -- ID câu hỏi đã tồn tại
@@ -246,9 +246,9 @@ CREATE TABLE DuplicateDetections (
     processed_at DATETIME DEFAULT NULL,                              -- Ngày xử lý
 
     -- Liên kết khóa ngoại
-    FOREIGN KEY (new_question_id) REFERENCES Questions(question_id),
-    FOREIGN KEY (similar_question_id) REFERENCES Questions(question_id),
-    FOREIGN KEY (detected_by) REFERENCES Users(user_id),
-    FOREIGN KEY (processed_by) REFERENCES Users(user_id)
+    FOREIGN KEY (new_question_id) REFERENCES questions(question_id),
+    FOREIGN KEY (similar_question_id) REFERENCES questions(question_id),
+    FOREIGN KEY (detected_by) REFERENCES users(user_id),
+    FOREIGN KEY (processed_by) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
