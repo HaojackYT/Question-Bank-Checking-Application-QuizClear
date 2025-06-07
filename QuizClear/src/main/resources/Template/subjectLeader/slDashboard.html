@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../../static/css/subjectLeader/slDashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>sl - Dashboard</title>
+    <title>Dashboard</title>
 </head>
 
 <body>
@@ -194,32 +194,38 @@
 
 
         // Vẽ biểu đồ donut (Overall Progress)
-        const ctx = document.getElementById('overallChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Completed', 'Remaining'],
-                datasets: [{
-                    data: [72, 28],
-                    backgroundColor: ['#00C9A7', '#e5e5e5'],
-                    borderWidth: 0
-                }]
+       const ctx = document.getElementById('overallChart').getContext('2d');
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Completed', 'Remaining'],
+        datasets: [{
+            data: [72, 28],
+            backgroundColor: ['#00C9A7', '#e5e5e5'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        cutout: '70%',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
             },
-            options: {
-                cutout: '70%',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        enabled: false
+            tooltip: {
+                enabled: true, // bật tooltip
+                callbacks: {
+                    label: function(context) {
+                        const label = context.label || '';
+                        const value = context.raw || 0;
+                        return `${label}: ${value}%`;
                     }
                 }
             }
-        });
-
+        }
+    }
+});
 
     </script>
 </body>

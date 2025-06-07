@@ -1,146 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-        <link rel="stylesheet" href="../../Static/header.css">
-        <link rel="stylesheet" href="../../Static/web_styles.css">
-        <link rel="stylesheet"
-            href="../../Static/css/HOE/HOE_ReviewAssignment .css">
-        <link
-            href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
-            rel="stylesheet">
-        <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-            rel="stylesheet">
-        <title>Template</title>
-    </head>
 
-    <body>
-        <!--header-->
-        <div id="header-placeholder"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/css/HOE/HOE_ReviewAssignment .css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Review Assignment</title>
+</head>
 
-        <!-- body -->
-        <div id="Container-body">
-            <!-- Menu -->
-            <div id="menu-HTML"></div>
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
 
-            <!-- Main content -->
-            <div id="main">
-                <div class="review-assignment-container">
-                    <div class="page-header">
-                        <h1 class="page-title">Review Assignment</h1>
-                        <p class="page-subtitle">Select exams, assign reviewers,
-                            and set deadlines</p>
-                    </div>
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
 
-                    <div class="controls-section">
-                        <div class="search-filter-container">
-                            <div class="search-box">
-                                <input type="text"
-                                    placeholder="Enter search content..."
-                                    class="search-input">
-                                <button class="search-btn">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                            <div class="filter-dropdown">
-                                <select class="filter-select">
-                                    <option>All Review Tasks</option>
-                                    <option>Completed</option>
-                                    <option>In Progress</option>
-                                    <option>Pending</option>
-                                </select>
-                                <i
-                                    class="fas fa-chevron-down dropdown-icon"></i>
-                            </div>
+        <!-- Main content -->
+        <div id="main">
+            <div class="review-assignment-container">
+                <div class="page-header">
+                    <h1 class="page-title">Review Assignment</h1>
+                    <p class="page-subtitle">Select exams, assign reviewers,
+                        and set deadlines</p>
+                </div>
+
+                <div class="controls-section">
+                    <div class="search-filter-bar">
+                        <div class="search-box">
+                            <input type="text" placeholder="Enter search content ..." class="search-input">
+                            <button class="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
                         </div>
-                        <button class="new-assign-btn">
-                            <i class="fas fa-plus"></i>
-                            New Assign
-                        </button>
+                        <div class="filter-dropdown">
+                            <select class="filter-select">
+                                <option>All Review Tasks</option>
+                                <option>Pending</option>
+                                <option>Approved</option>
+                                <option>Declined</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
                     </div>
+                    <button class="new-assign-btn" onclick="location.href='HOE_Newassign.html'">
+                        <i class="fas fa-plus"></i> New Assign
+                    </button>
+                </div>
 
-                    <div class="table-container">
-                        <table class="assignment-table">
-                            <thead>
-                                <tr>
-                                    <th>Exam ID</th>
-                                    <th>Exam Title</th>
-                                    <th>Lecturer</th>
-                                    <th>Assign Date</th>
-                                    <th>Due Date</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>DB202</td>
-                                    <td>Database Systems</td>
-                                    <td>Ng Van A</td>
-                                    <td>12/04/25</td>
-                                    <td>22/04/25</td>
-                                    <td><span
-                                            class="status completed">Completed</span></td>
-                                    <td class="actions">
-                                        <button class="action-btn edit-btn">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="action-btn delete-btn">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>DB202</td>
-                                    <td>Operating Systems</td>
-                                    <td>Ng Van B</td>
-                                    <td>13/04/25</td>
-                                    <td>23/04/25</td>
-                                    <td><span class="status in-progress">In
-                                            Progress</span></td>
-                                    <td class="actions">
-                                        <button class="action-btn edit-btn">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="action-btn delete-btn">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="table-container">
+                    <table class="assignment-table">
+                        <thead>
+                            <tr>
+                                <th>Exam ID</th>
+                                <th>Exam Title</th>
+                                <th>Lecturer</th>
+                                <th>Assign Date</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>DB202</td>
+                                <td>Database Systems</td>
+                                <td>Ng Van A</td>
+                                <td>12/04/25</td>
+                                <td>22/04/25</td>
+                                <td><span class="status completed">Completed</span></td>
+                                <td class="actions">
+                                    <button class="action-btn edit-btn">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn delete-btn">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>DB202</td>
+                                <td>Operating Systems</td>
+                                <td>Ng Van B</td>
+                                <td>13/04/25</td>
+                                <td>23/04/25</td>
+                                <td><span class="status in-progress">In
+                                        Progress</span></td>
+                                <td class="actions">
+                                    <button class="action-btn edit-btn">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn delete-btn">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                    <div class="bottom-actions">
-                        <button class="action-btn edit-btn large">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn view-btn large">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
+                <div class="bottom-actions">
+                    <button class="action-btn edit-btn large">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn view-btn large">
+                        <i class="fas fa-eye"></i>
+                    </button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- ma nhung header vs menu -->
-        <script>
-            // Load header
-            fetch('../header_user.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('header-placeholder').innerHTML = data;
-                });
+    <!-- ma nhung header vs menu -->
+    <script>
+        // Load header
+        fetch('../header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
 
-            // Load menu
-            fetch('Menu-ExaminationDepartment.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('menu-HTML').innerHTML = data;
-                });
-        </script>
-    </body>
+        // Load menu
+        fetch('Menu-ExaminationDepartment.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+    </script>
+</body>
+
 </html>
