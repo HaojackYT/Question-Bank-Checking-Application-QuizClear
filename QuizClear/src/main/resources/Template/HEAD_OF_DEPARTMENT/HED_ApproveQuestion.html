@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +9,100 @@
     <link rel="stylesheet" href="../../Static/web_styles.css">
     <link rel="stylesheet" href="../../Static/css/HED/HED_ExamManagement.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Exam Management - QuizClear</title>
+    <title>Approve Question</title>
 </head>
+
 <body>
     <!--header-->
     <div id="header-placeholder"></div>
 
+            <!-- Exam Details Modal -->
+            <div id="examDetailsModal" class="modal">
+                <div class="modal-content details-modal">
+                    <div class="modal-header">
+                        <h2>Details</h2>
+                        <div class="modal-controls">
+                            <button class="expand-btn" title="Expand">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                            <button class="close-btn" title="Close">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="modal-body">
+                        <p class="details-subtitle">
+                            Detailed information about the assignment
+                            <span class="due-date">Due: <span id="modalDueDate">2025-25-05</span></span>
+                        </p>
+
+                        <div class="details-section">
+                            <h3>Lecturer</h3>
+                            <div class="instructor-info">
+                                <span id="modalLecturer">Nguyen Van A - 1001</span>
+                                <button class="download-btn">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="details-section">
+                            <h3>Title</h3>
+                            <p id="modalTitle">Midterm exam of the Object Oriented Programming subject</p>
+                        </div>
+
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <h4>Total Question</h4>
+                                <span id="modalTotalQuestion">4</span>
+                            </div>
+                            <div class="detail-item">
+                                <h4>Subject</h4>
+                                <span id="modalSubject">Object Oriented Programming</span>
+                            </div>
+                            <div class="detail-item">
+                                <h4>Deadline</h4>
+                                <span id="modalDeadline">2025-25-05</span>
+                            </div>
+                            <div class="detail-item">
+                                <h4>Status</h4>
+                                <span id="modalStatus" class="status-badge pending">Pending</span>
+                            </div>
+                        </div>
+
+                        <div class="details-section">
+                            <h3>Description</h3>
+                            <p id="modalDescription">This is a detailed description of the content that needs to be
+                                approved. It includes specific information, requirements, and the purpose of the
+                                document.</p>
+                        </div>
+
+                        <div class="details-section">
+                            <h3>Feedback</h3>
+                            <textarea id="modalFeedback"
+                                placeholder="This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document."></textarea>
+                        </div>
+
+                        <div class="see-more">
+                            <a href="#" class="see-more-link">See more...</a>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="reject-btn">
+                            <i class="fas fa-times-circle"></i>
+                            Reject
+                        </button>
+                        <button class="approve-btn">
+                            <i class="fas fa-check-circle"></i>
+                            Approve
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
@@ -22,18 +111,41 @@
         <!-- Main content -->
         <div id="main">
             <div class="content-header">
-                <h1 class="page-title">Exam Management</h1>
+                <h1 class="title">Approve Questions</h1>
+            </div>
+
+            <!-- Notification Section -->
+            <div class="notification-section">
+                <h2>New Notification</h2>
+                <p class="notification-subtitle">Submission to be approved</p>
+                <div class="notification_items">
+                    <div class="notification_item">
+                        <input type="checkbox" checked>
+                        <div class="notification-text">
+                            <strong>New Approve: Lecturer Tran Thi B has submitted 20 questions for Database</strong>
+                            <p>At: 2PM 25/05/2025</p>
+                        </div>
+                    </div>
+                    <div class="notification_item">
+                        <input type="checkbox" checked>
+                        <div class="notification-text">
+                            <strong>New Approve: Lecturer Tran Thi B has submitted 20 questions for Database</strong>
+                            <p>At: 2PM 25/05/2025</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="see-more">See more...</a>
             </div>
 
             <!-- Search and Filter Section -->
             <div class="search-filter-section">
                 <div class="search-container">
-                        <input type="text" id="search" placeholder="Search...">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </div>
+                    <input type="text" id="search" placeholder="Search...">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
                 <div class="filter-controls">
                     <select class="filter-select">
-                        <option value="">All status</option>
+                        <option value="">All Status</option>
                         <option value="approved">Approved</option>
                         <option value="pending">Pending</option>
                         <option value="rejected">Rejected</option>
@@ -48,10 +160,11 @@
                 </div>
             </div>
 
+
             <!-- Exam Table -->
             <div class="table-container">
-                <table class ="exam-table">
-                   <thead>
+                <table class="exam-table">
+                    <thead>
                         <tr>
                             <th>ID</th>
                             <th>Subject</th>
@@ -246,135 +359,18 @@
             </div>
 
             <!-- Pagination -->
-           <div class="pagination">
-                    <i class="fa-solid fa-bullhorn" style="padding: 20px;"></i>
-                    <p class="page-info" style="padding: 10px;">Total Pages:</p>
-                    <p class="page-info">9</p>
-                    <div class="page-controls">
-                        <button class="prev-btn"><i class="fa-solid fa-chevron-left" style="padding: 0px 5px;"></i>
-                            Previous</button>
-                        <input type="number" id="pageInput" value="1" min="1" style="width: 50px; text-align: center;">
-                        <button class="next-btn">Next <i class="fa-solid fa-chevron-right"
-                                style="padding: 0px 5px;"></i></button>
-                    </div>
-                </div>
-
-            <!-- Notification Section -->
-            <div class="notification-section">
-                <h3 class="notification-title">Notification</h3>
-                <p class="notification-subtitle">Submission to be approved</p>
-                
-                <div class="notification-list">
-                    <div class="notification-item">
-                        <div class="notification-checkbox">
-                            <input type="checkbox" id="notif1">
-                        </div>
-                        <div class="notification-content">
-                            <h4>New Approve: Lecturer Tran Thi B has submitted 20 questions for Database</h4>
-                            <p class="notification-time">At: 2:00 PM, 23/06/2025</p>
-                        </div>
-                    </div>
-                    
-                    <div class="notification-item">
-                        <div class="notification-checkbox">
-                            <input type="checkbox" id="notif2">
-                        </div>
-                        <div class="notification-content">
-                            <h4>New Approve: R&D just created a question assignment plan for Database System</h4>
-                            <p class="notification-time">At: 10:15 PM, 23/06/2025</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="see-more">
-                    <a href="#" class="see-more-link">See more...</a>
+            <div class="pagination">
+                <i class="fa-solid fa-bullhorn" style="padding: 20px;"></i>
+                <p class="page-info" style="padding: 10px;">Total Pages:</p>
+                <p class="page-info">9</p>
+                <div class="page-controls">
+                    <button class="prev-btn"><i class="fa-solid fa-chevron-left" style="padding: 0px 5px;"></i>
+                        Previous</button>
+                    <input type="number" id="pageInput" value="1" min="1" style="width: 50px; text-align: center;">
+                    <button class="next-btn">Next <i class="fa-solid fa-chevron-right"
+                            style="padding: 0px 5px;"></i></button>
                 </div>
             </div>
-
-            <!-- Exam Details Modal -->
-            <div id="examDetailsModal" class="modal">
-                <div class="modal-content details-modal">
-                    <div class="modal-header">
-                        <h2>Details</h2>
-                        <div class="modal-controls">
-                            <button class="expand-btn" title="Expand">
-                                <i class="fas fa-expand"></i>
-                            </button>
-                            <button class="close-btn" title="Close">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="modal-body">
-                        <p class="details-subtitle">
-                            Detailed information about the assignment 
-                            <span class="due-date">Due: <span id="modalDueDate">2025-25-05</span></span>
-                        </p>
-                        
-                        <div class="details-section">
-                            <h3>Lecturer</h3>
-                            <div class="instructor-info">
-                                <span id="modalLecturer">Nguyen Van A - 1001</span>
-                                <button class="download-btn">
-                                    <i class="fas fa-download"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="details-section">
-                            <h3>Title</h3>
-                            <p id="modalTitle">Midterm exam of the Object Oriented Programming subject</p>
-                        </div>
-                        
-                        <div class="details-grid">
-                            <div class="detail-item">
-                                <h4>Total Question</h4>
-                                <span id="modalTotalQuestion">4</span>
-                            </div>
-                            <div class="detail-item">
-                                <h4>Subject</h4>
-                                <span id="modalSubject">Object Oriented Programming</span>
-                            </div>
-                            <div class="detail-item">
-                                <h4>Deadline</h4>
-                                <span id="modalDeadline">2025-25-05</span>
-                            </div>
-                            <div class="detail-item">
-                                <h4>Status</h4>
-                                <span id="modalStatus" class="status-badge pending">Pending</span>
-                            </div>
-                        </div>
-                        
-                        <div class="details-section">
-                            <h3>Description</h3>
-                            <p id="modalDescription">This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document.</p>
-                        </div>
-                        
-                        <div class="details-section">
-                            <h3>Feedback</h3>
-                            <textarea id="modalFeedback" placeholder="This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document."></textarea>
-                        </div>
-                        
-                        <div class="see-more">
-                            <a href="#" class="see-more-link">See more...</a>
-                        </div>
-                    </div>
-                    
-                    <div class="modal-footer">
-                        <button class="reject-btn">
-                            <i class="fas fa-times-circle"></i>
-                            Reject
-                        </button>
-                        <button class="approve-btn">
-                            <i class="fas fa-check-circle"></i>
-                            Approve
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Load header and menu -->
     <script>
@@ -395,4 +391,5 @@
 
     <script src="../../Static/js/HED_ExamManagement.js"></script>
 </body>
+
 </html>

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../../Static/web_styles.css">
     <link rel="stylesheet" href="../../Static/css/Lecturer/L_createQuestion.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Create Question</title>
+    <title>QuestionManager</title>
 </head>
 
 <body>
@@ -25,7 +25,7 @@
         <div id="main">
             <!-- noi dung duoc nhap trong day -->
             <div id="back">
-                <a href="#!"><i class="fa-solid fa-arrow-left icon_back"></i></a>
+                <a href="lectureQuesManagement.html"><i class="fa-solid fa-arrow-left icon_back"></i></a>
                 <div>
                     <p style="font-size: 2.25rem; font-weight: bold; color: #120368;">New Question</p>
                     <p style="font-size: 1rem; color: #817474;">Don't forget to confirm your assigned task before
@@ -120,6 +120,7 @@
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
+                setActiveMenu(document.title);
             });
     </script>
     <script>
@@ -154,6 +155,7 @@
             });
         });
     </script>
+    <script src="../../Static/js/L_activeMenu.js"></script>
 </body>
 
 </html>

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../../static/css/Lecturer/lecturerTask.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Lecturer Task</title>
+    <title>Task</title>
 </head>
 
 <body>
@@ -66,7 +66,7 @@
         <div id="main">
             <!-- noi dung duoc nhap trong day -->
             <div class="main-context">
-                <button class="new-btn">+ Create Question</button>
+                <a href="L_createQuestion.html"><button class="new-btn">+ Create Question</button></a>
                 <div class="title">Task</div>
 
                 <div class="search-container">
@@ -250,6 +250,7 @@
         .then(response => response.text())
         .then(data => {
             document.getElementById('menu-HTML').innerHTML = data;
+            setActiveMenu(document.title);
         });
 
     document.getElementById("subject-select").addEventListener("change", function () {
@@ -275,9 +276,8 @@
         document.getElementById("overlay").style.display = "none";
     }
     function goToSendTask() {
-        window.location.href = "lecturerTFormSendTask.html";
+        window.location.href = "lecturerTFromSendTask.html";
     }
-
 </script>
-
+<script src="../../Static/js/L_activeMenu.js"></script>
 </html>
