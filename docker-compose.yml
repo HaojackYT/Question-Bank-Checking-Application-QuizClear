@@ -6,13 +6,9 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: QuizClear
       MYSQL_USER: user
-      MYSQL_PASSWORD: "123456"
+      MYSQL_PASSWORD: 123456
     ports:
       - "3336:3306"
     volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/01_init.sql            #  Dùng để tạo bảng
-      - ./db/sample_data.sql:/docker-entrypoint-initdb.d/02_sample_data.sql  #  Dùng để insert dữ liệu
-volumes:
-  mysql_data:
-
-
+      - ./QuizClear/src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/01_init.sql
+      - ./QuizClear/src/main/resources/db/sample_data.sql:/docker-entrypoint-initdb.d/02_sample_data.sql
