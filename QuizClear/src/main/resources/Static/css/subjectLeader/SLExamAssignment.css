@@ -235,16 +235,6 @@
     }
 }
 
-/* Main content area styling */
-.main-content-area {
-    padding: 1.875rem;
-    background-color: var(--quizclear-background-white);
-    flex-grow: 1;
-    border-radius: 0.5rem;
-    border: 0.0625rem solid #838adc;
-    box-shadow: 0 0.125rem 0.25rem #e0e0e0;
-}
-
 /* Header Section */
 .exam-assignment-header h1 {
     font-size: 1.75rem;

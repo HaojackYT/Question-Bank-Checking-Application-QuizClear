@@ -13,25 +13,6 @@ body {
     color: #333;
 }
 
-#Container-body {
-    display: flex;
-    flex-direction: row;
-    gap: 2.5rem; /* Khoảng cách giữa menu và main */
-}
-
-#header-placeholder {
-    background-color: #120368;
-}
-
-.main-context {
-    flex-grow: 1;
-    padding: 3rem;
-    box-sizing: border-box;
-    min-width: 75vw;
-    border-radius: 1rem;
-    border: 0.0625rem solid #E0EAFA;
-}
-
 .title {
     font-size: 2.25rem;
     font-weight: bold;

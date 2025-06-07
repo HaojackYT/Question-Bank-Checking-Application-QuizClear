@@ -1,347 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-        <link rel="stylesheet" href="../../Static/header.css">
-        <link rel="stylesheet" href="../../Static/web_styles.css">
-        <link rel="stylesheet" href="../../Static/css/HED/HED_Dashboard.css">
-        <link
-            href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
-            rel="stylesheet">
-        <title>Dashboard</title>
-    </head>
 
-    <body>
-        <!--header-->
-        <div id="header-placeholder"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/css/HED/HED_Dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Dashboard</title>
+</head>
 
-        <!-- body -->
-        <div id="Container-body">
-            <!-- Menu -->
-            <div id="menu-HTML"></div>
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
 
-            <!-- Main content -->
-            <div id="main">
-                <!-- Dashboard Header -->
-                <div class="dashboard-header">
-                    <h1>Dashboard</h1>
-                    <p class="welcome-text">Welcome back, Head of Department.
-                        Let's make today productive!</p>
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h1>Dashboard</h1>
+                <p class="welcome-text">Welcome back, Head of Department.
+                    Let's make today productive!</p>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="stats-container">
+                <div class="stat-card lecturer">
+                    <div class="stat-label">Lecturer</div>
+                    <div class="stat-number">54</div>
+                    <div class="stat-change">+6 this month</div>
                 </div>
+                <div class="stat-card pending">
+                    <div class="stat-label">Pending</div>
+                    <div class="stat-number">25</div>
+                    <div class="stat-change">+5 this month</div>
+                </div>
+                <div class="stat-card approved">
+                    <div class="stat-label">Approved</div>
+                    <div class="stat-number">56</div>
+                    <div class="stat-change">+23 this month</div>
+                </div>
+                <div class="stat-card reject">
+                    <div class="stat-label">Reject</div>
+                    <div class="stat-number">32</div>
+                    <div class="stat-change">+8 this month</div>
+                </div>
+            </div>
 
-                <!-- Statistics Cards -->
-                <div class="stats-container">
-                    <div class="stat-card lecturer">
-                        <div class="stat-label">Lecturer</div>
-                        <div class="stat-number">54</div>
-                        <div class="stat-change">+6 this month</div>
+            <!-- Quick Access Section -->
+            <div class="quick-access-section">
+                <h2>Quick Access</h2>
+                <div class="quick-access-grid">
+                    <div class="quick-access-item">
+                        <div class="quick-access-button" onclick="location.href='HED_ApproveQuestion.html'">
+                            <div class="quick-icon approve">
+                                <i class="fa-regular fa-circle-check"></i>
+                            </div>
+                        </div>
+                        <span>Approve Exam</span>
                     </div>
-                    <div class="stat-card pending">
-                        <div class="stat-label">Pending</div>
-                        <div class="stat-number">25</div>
-                        <div class="stat-change">+5 this month</div>
+
+                    <div class="quick-access-item">
+                        <div class="quick-access-button" onclick="location.href='HED_Static-reports.html'">
+                            <div class="quick-icon progress">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <span>View Progress</span>
                     </div>
-                    <div class="stat-card approved">
-                        <div class="stat-label">Approved</div>
-                        <div class="stat-number">56</div>
-                        <div class="stat-change">+23 this month</div>
-                    </div>
-                    <div class="stat-card reject">
-                        <div class="stat-label">Reject</div>
-                        <div class="stat-number">32</div>
-                        <div class="stat-change">+8 this month</div>
+
+                    <div class="quick-access-item">
+                        <div class="quick-access-button" onclick="location.href='new_assignment.html'">
+                            <div class="quick-icon assignment">
+                                <i class="fa-regular fa-square-plus"></i>
+                            </div>
+                        </div>
+                        <span>New Assignment</span>
                     </div>
                 </div>
+            </div>
 
-                <!-- Quick Access Section -->
-                <div class="quick-access-section">
-                    <h2>Quick Access</h2>
-                    <div class="quick-access-grid">
-                        <div class="quick-access-item">
-                            <div class="quick-access-button">
-                                <div class="quick-icon approve">
-                                    <i class="fa-regular fa-circle-check"></i>
-                                </div>
-                            </div>
-                            <span>Approve Exam</span>
-                        </div>
-                        <div class="quick-access-item">
-                            <div class="quick-access-button">
-                                <div class="quick-icon progress">
-                                    <i class="fa-solid fa-chart-line"></i>
-                                </div>
-                            </div>
-                            <span>View Progress</span>
-                        </div>
-                        <div class="quick-access-item">
-                            <div class="quick-access-button">
-                                <div class="quick-icon assignment">
-                                    <i class="fa-regular fa-square-plus"></i>
-                                </div>
-                            </div>
-                            <span>New Assignment</span>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Content Grid for Deadline and Activities -->
-                <div class="content-sections">
-                    <!-- Deadline Section -->
-                    <div class="deadline-section">
-                        <div class="section-header">
-                            <h2>Deadline</h2>
-                            <p class="section-subtitle">Final date for assigned
-                                lecturers to complete their tasks</p>
-                        </div>
-
-                        <div class="deadline-list">
-                            <div class="deadline-item">
-                                <div class="deadline-content">
-                                    <h3>Deadline: Exam - E1010 - Overdue</h3>
-                                    <p>Overdue assignments detected. Please
-                                        check</p>
-                                </div>
-                                <button class="check-btn">Check</button>
-                            </div>
-
-                            <div class="deadline-item">
-                                <div class="deadline-content">
-                                    <h3>Deadline: Assignment - Check</h3>
-                                    <p>Vo Van E has updated questions for
-                                        Computer Architecture. Please check</p>
-                                </div>
-                                <button class="check-btn">Check</button>
-                            </div>
-
-                            <div class="deadline-item">
-                                <div class="deadline-content">
-                                    <h3>Deadline: Exam - E1001</h3>
-                                    <p>Upcoming exam needs your approval. Please
-                                        check</p>
-                                </div>
-                                <button class="check-btn">Check</button>
-                            </div>
-                        </div>
+            <!-- Content Grid for Deadline and Activities -->
+            <div class="content-sections">
+                <!-- Deadline Section -->
+                <div class="deadline-section">
+                    <div class="section-header">
+                        <h2>Deadline</h2>
+                        <p class="section-subtitle">Final date for assigned
+                            lecturers to complete their tasks</p>
                     </div>
 
-                    <!-- Recent Activities -->
-                    <div class="activities-section">
-                        <div class="section-header">
-                            <h2>Recent Activities</h2>
-                            <p class="section-subtitle">Activities related in
-                                the last 7 days</p>
+                    <div class="deadline-list">
+                        <div class="deadline-item">
+                            <div class="deadline-content">
+                                <h3>Deadline: Exam - E1010 - Overdue</h3>
+                                <p>Overdue assignments detected. Please
+                                    check</p>
+                            </div>
+                            <button class="check-btn">Check</button>
                         </div>
 
-                        <div class="activities-list">
-                            <div class="activity-item">
-                                <div class="activity-content">
-                                    <h3>New Assignment: Assign Lecturer(s) - Web
-                                        Programming</h3>
-                                    <p>Assign lecturer(s) to the Web Programming
-                                        Subject</p>
-                                </div>
-                                <button class="check-btn">Check</button>
+                        <div class="deadline-item">
+                            <div class="deadline-content">
+                                <h3>Deadline: Assignment - Check</h3>
+                                <p>Vo Van E has updated questions for
+                                    Computer Architecture. Please check</p>
                             </div>
+                            <button class="check-btn">Check</button>
+                        </div>
 
-                            <div class="activity-item">
-                                <div class="activity-content">
-                                    <h3>New Approve: Lecturer Vo Van E - Update
-                                        Question</h3>
-                                    <p>Lecturer Vo Van E has updated questions
-                                        for Computer Architecture</p>
-                                </div>
-                                <button class="check-btn">Check</button>
+                        <div class="deadline-item">
+                            <div class="deadline-content">
+                                <h3>Deadline: Exam - E1001</h3>
+                                <p>Upcoming exam needs your approval. Please
+                                    check</p>
                             </div>
-
-                            <div class="activity-item">
-                                <div class="activity-content">
-                                    <h3>New Assignment: Nguyen Van A -
-                                        Responded</h3>
-                                    <p>The lecturer has just responded to your
-                                        feedback.</p>
-                                </div>
-                                <button class="check-btn">Check</button>
-                            </div>
+                            <button class="check-btn">Check</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Charts Section -->
-                <div class="charts-container">
-                    <!-- Question Progress Chart -->
-                    <div class="chart-section">
-                        <h2>Question Progress by Subject</h2>
-                        <p class="section-subtitle">Number of Questions Created
-                            vs Target</p>
-                        <div class="bar-chart">
-                            <div class="chart-area">
-                                <div class="y-axis">
-                                    <span>100</span>
-                                    <span>80</span>
-                                    <span>60</span>
-                                    <span>40</span>
-                                    <span>20</span>
-                                    <span>0</span>
-                                </div>
-                                <div class="chart-bars">
-                                    <div class="bar-group"
-                                        data-subject="Database Systems">
-                                        <div class="bar created"
-                                            style="height: 44px;"></div>
-                                        <div class="bar target"
-                                            style="height: 54px;"></div>
-                                    </div>
-                                    <div class="bar-group"
-                                        data-subject="Web Development">
-                                        <div class="bar created"
-                                            style="height: 30px;"></div>
-                                        <div class="bar target"
-                                            style="height: 82px;"></div>
-                                    </div>
-                                    <div class="bar-group"
-                                        data-subject="Data Structures">
-                                        <div class="bar created"
-                                            style="height: 56px;"></div>
-                                        <div class="bar target"
-                                            style="height: 74px;"></div>
-                                    </div>
-                                    <div class="bar-group"
-                                        data-subject="Algorithms">
-                                        <div class="bar created"
-                                            style="height: 24px;"></div>
-                                        <div class="bar target"
-                                            style="height: 84px;"></div>
-                                    </div>
-                                    <div class="bar-group"
-                                        data-subject="Operating System">
-                                        <div class="bar created"
-                                            style="height: 60px;"></div>
-                                        <div class="bar target"
-                                            style="height: 82px;"></div>
-                                    </div>
-                                    <div class="bar-group"
-                                        data-subject="Networks">
-                                        <div class="bar created"
-                                            style="height: 18px;"></div>
-                                        <div class="bar target"
-                                            style="height: 42px;"></div>
-                                    </div>
-                                    <div class="bar-group"
-                                        data-subject="Security">
-                                        <div class="bar created"
-                                            style="height: 24px;"></div>
-                                        <div class="bar target"
-                                            style="height: 30px;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="chart-legend">
-                                <div class="legend-item">
-                                    <span class="legend-color created"></span>
-                                    <span>Created</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-color target"></span>
-                                    <span>Target</span>
-                                </div>
-                            </div>
-                            <div class="chart-tooltip" id="chart-tooltip"
-                                style="display: none;">Operating System</div>
-                        </div>
+                <!-- Recent Activities -->
+                <div class="activities-section">
+                    <div class="section-header">
+                        <h2>Recent Activities</h2>
+                        <p class="section-subtitle">Activities related in
+                            the last 7 days</p>
                     </div>
 
-                    <!-- Overall Progress -->
-                    <div class="progress-section">
-                        <h2>Overall Progress</h2>
-                        <div class="progress-content">
-                            <div class="progress-percentage-text">72%
-                                Completed</div>
-                            <div class="circular-progress">
-                                <svg width="180" height="180"
-                                    viewBox="0 0 180 180">
-                                    <circle cx="90" cy="90" r="75"
-                                        stroke="#e5e7eb" stroke-width="20"
-                                        fill="none" />
-                                    <circle cx="90" cy="90" r="75"
-                                        stroke="#10b981" stroke-width="20"
-                                        fill="none"
-                                        stroke-dasharray="471"
-                                        stroke-dashoffset="132"
-                                        stroke-linecap="round"
-                                        transform="rotate(-90 90 90)" />
-                                </svg>
+                    <div class="activities-list">
+                        <div class="activity-item">
+                            <div class="activity-content">
+                                <h3>New Assignment: Assign Lecturer(s) - Web
+                                    Programming</h3>
+                                <p>Assign lecturer(s) to the Web Programming
+                                    Subject</p>
                             </div>
-                            <div class="progress-legend">
-                                <div class="legend-item">
-                                    <span class="legend-color completed"></span>
-                                    <span>Completed</span>
+                            <button class="check-btn">Check</button>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-content">
+                                <h3>New Approve: Lecturer Vo Van E - Update
+                                    Question</h3>
+                                <p>Lecturer Vo Van E has updated questions
+                                    for Computer Architecture</p>
+                            </div>
+                            <button class="check-btn">Check</button>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-content">
+                                <h3>New Assignment: Nguyen Van A -
+                                    Responded</h3>
+                                <p>The lecturer has just responded to your
+                                    feedback.</p>
+                            </div>
+                            <button class="check-btn">Check</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-container">
+                <!-- Question Progress Chart -->
+                <div class="chart-section">
+                    <h2>Question Progress by Subject</h2>
+                    <p class="section-subtitle">Number of Questions Created
+                        vs Target</p>
+                    <div class="bar-chart">
+                        <div class="chart-area">
+                            <div class="y-axis">
+                                <span>100</span>
+                                <span>80</span>
+                                <span>60</span>
+                                <span>40</span>
+                                <span>20</span>
+                                <span>0</span>
+                            </div>
+                            <div class="chart-bars">
+                                <div class="bar-group" data-subject="Database Systems">
+                                    <div class="bar created" style="height: 44px;"></div>
+                                    <div class="bar target" style="height: 54px;"></div>
                                 </div>
-                                <div class="legend-item">
-                                    <span class="legend-color remaining"></span>
-                                    <span>Remaining</span>
+                                <div class="bar-group" data-subject="Web Development">
+                                    <div class="bar created" style="height: 30px;"></div>
+                                    <div class="bar target" style="height: 82px;"></div>
                                 </div>
+                                <div class="bar-group" data-subject="Data Structures">
+                                    <div class="bar created" style="height: 56px;"></div>
+                                    <div class="bar target" style="height: 74px;"></div>
+                                </div>
+                                <div class="bar-group" data-subject="Algorithms">
+                                    <div class="bar created" style="height: 24px;"></div>
+                                    <div class="bar target" style="height: 84px;"></div>
+                                </div>
+                                <div class="bar-group" data-subject="Operating System">
+                                    <div class="bar created" style="height: 60px;"></div>
+                                    <div class="bar target" style="height: 82px;"></div>
+                                </div>
+                                <div class="bar-group" data-subject="Networks">
+                                    <div class="bar created" style="height: 18px;"></div>
+                                    <div class="bar target" style="height: 42px;"></div>
+                                </div>
+                                <div class="bar-group" data-subject="Security">
+                                    <div class="bar created" style="height: 24px;"></div>
+                                    <div class="bar target" style="height: 30px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-color created"></span>
+                                <span>Created</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color target"></span>
+                                <span>Target</span>
+                            </div>
+                        </div>
+                        <div class="chart-tooltip" id="chart-tooltip" style="display: none;">Operating System</div>
+                    </div>
+                </div>
+
+                <!-- Overall Progress -->
+                <div class="progress-section">
+                    <h2>Overall Progress</h2>
+                    <div class="progress-content">
+                        <div class="progress-percentage-text">72%
+                            Completed</div>
+                        <div class="circular-progress">
+                            <svg width="180" height="180" viewBox="0 0 180 180">
+                                <circle cx="90" cy="90" r="75" stroke="#e5e7eb" stroke-width="20" fill="none" />
+                                <circle cx="90" cy="90" r="75" stroke="#10b981" stroke-width="20" fill="none"
+                                    stroke-dasharray="471" stroke-dashoffset="132" stroke-linecap="round"
+                                    transform="rotate(-90 90 90)" />
+                            </svg>
+                        </div>
+                        <div class="progress-legend">
+                            <div class="legend-item">
+                                <span class="legend-color completed"></span>
+                                <span>Completed</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color remaining"></span>
+                                <span>Remaining</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- ma nhung header vs menu -->
-        <script>
-            // Load header
-            fetch('../header_user.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('header-placeholder').innerHTML = data;
+    <!-- ma nhung header vs menu -->
+    <script>
+        // Load header
+        fetch('../header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
+
+        // Load menu
+        fetch('Menu-HED.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
+
+        // Chart tooltip functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const barGroups = document.querySelectorAll('.bar-group');
+            const tooltip = document.getElementById('chart-tooltip');
+
+            barGroups.forEach(group => {
+                group.addEventListener('mouseenter', function () {
+                    const subject = this.getAttribute('data-subject');
+                    tooltip.textContent = subject;
+                    tooltip.style.display = 'block';
+
+                    const rect = this.getBoundingClientRect();
+                    const chartRect = document.querySelector('.chart-area').getBoundingClientRect();
+                    tooltip.style.left = (rect.left - chartRect.left + rect.width / 2) + 'px';
+                    tooltip.style.bottom = '10px';
                 });
 
-            // Load menu
-            fetch('Menu-HED.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('menu-HTML').innerHTML = data;
-                });
-
-            // Chart tooltip functionality
-            document.addEventListener('DOMContentLoaded', function() {
-                const barGroups = document.querySelectorAll('.bar-group');
-                const tooltip = document.getElementById('chart-tooltip');
-
-                barGroups.forEach(group => {
-                    group.addEventListener('mouseenter', function() {
-                        const subject = this.getAttribute('data-subject');
-                        tooltip.textContent = subject;
-                        tooltip.style.display = 'block';
-                        
-                        const rect = this.getBoundingClientRect();
-                        const chartRect = document.querySelector('.chart-area').getBoundingClientRect();
-                        tooltip.style.left = (rect.left - chartRect.left + rect.width/2) + 'px';
-                        tooltip.style.bottom = '10px';
-                    });
-
-                    group.addEventListener('mouseleave', function() {
-                        tooltip.style.display = 'none';
-                    });
-                });
-
-                // Check button functionality
-                const checkButtons = document.querySelectorAll('.check-btn');
-                checkButtons.forEach(button => {
-                    button.addEventListener('click', function() {
-                        // Add click animation
-                        this.style.transform = 'scale(0.95)';
-                        setTimeout(() => {
-                            this.style.transform = 'scale(1)';
-                        }, 150);
-                        
-                        // You can add your check functionality here
-                        console.log('Check button clicked');
-                    });
+                group.addEventListener('mouseleave', function () {
+                    tooltip.style.display = 'none';
                 });
             });
-        </script>
-    </body>
+
+            // Check button functionality
+            const checkButtons = document.querySelectorAll('.check-btn');
+            checkButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    // Add click animation
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+
+                    // You can add your check functionality here
+                    console.log('Check button clicked');
+                });
+            });
+        });
+    </script>
+</body>
+
 </html>

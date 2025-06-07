@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
     <link rel="stylesheet" href="../../Static/css/subjectLeader/slQuesAssignment.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div id="header-placeholder"></div>
 
@@ -68,7 +70,8 @@
                                 </td>
                                 <td class="actions-cell">
                                     <div class="actions">
-                                        <button class="action-button view-button" data-id="1"><i class="fa fa-eye"></i></button>
+                                        <button class="action-button view-button" data-id="1"><i
+                                                class="fa fa-eye"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -83,8 +86,10 @@
                                 </td>
                                 <td class="actions-cell">
                                     <div class="actions">
-                                        <button class="action-button view-button" data-id="2"><i class="fa fa-eye"></i></button>
-                                        <button class="action-button edit-button" data-id="2"><i class="fa fa-pencil"></i></button>
+                                        <button class="action-button view-button" data-id="2"><i
+                                                class="fa fa-eye"></i></button>
+                                        <button class="action-button edit-button" data-id="2"><i
+                                                class="fa fa-pencil"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -99,15 +104,20 @@
                                 </td>
                                 <td class="actions-cell">
                                     <div class="actions">
-                                        <button class="action-button view-button" data-id="3"><i class="fa fa-eye"></i></button>
-                                        <button class="action-button edit-button" data-id="3"><i class="fa fa-pencil"></i></button>
+                                        <button class="action-button view-button" data-id="3"><i
+                                                class="fa fa-eye"></i></button>
+                                        <button class="action-button edit-button" data-id="3"><i
+                                                class="fa fa-pencil"></i></button>
                                     </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-            </div> </div> </div> <div id="newAssignModal" class="modal">
+            </div>
+        </div>
+    </div>
+    <div id="newAssignModal" class="modal">
         <div class="modal-content">
             <button type="button" class="close-button">&times;</button>
             <h2>New Assign</h2>
@@ -173,7 +183,8 @@
                 </div>
                 <div class="form-group full-width">
                     <label for="notes">Notes</label>
-                    <textarea id="notes" name="notes">Please prepare the exam questions based on the course content, covering different levels of difficulty and question types where appropriate.</textarea>
+                    <textarea id="notes"
+                        name="notes">Please prepare the exam questions based on the course content, covering different levels of difficulty and question types where appropriate.</textarea>
                 </div>
                 <div class="form-actions centered">
                     <button type="button" class="cancel-button">Cancel</button>
@@ -245,7 +256,8 @@
             <button type="button" class="close-button">&times;</button>
             <h2 id="editAssignmentTitle">Edit No. 1</h2>
             <form id="editAssignmentForm">
-                <input type="hidden" id="editAssignmentId"> <div class="form-row">
+                <input type="hidden" id="editAssignmentId">
+                <div class="form-row">
                     <div class="form-group">
                         <label for="editLecturer">Lecturer</label>
                         <select id="editLecturer" name="editLecturer" required>
@@ -334,7 +346,7 @@
             });
 
         // Load menu
-        fetch('../Menu-Staff.html')
+        fetch('Menu-SL.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
@@ -342,4 +354,5 @@
     </script>
     <script src="../../Static/js/slQuesAssignment.js"></script>
 </body>
+
 </html>
