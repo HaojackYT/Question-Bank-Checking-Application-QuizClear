@@ -72,14 +72,6 @@ body {
 }
 /* ===================== */
 
-.main-context {
-    width: 100%;
-    border-radius: 1rem; /* đã là rem rồi */
-    border: 0.0625rem solid #E0EAFA; /* 1px -> 0.0625rem */
-    padding: 0.9375rem; /* 15px -> 0.9375rem */
-    box-sizing: border-box;
-}
-
 .fillter-container {
     display: flex;
     flex-direction: row;

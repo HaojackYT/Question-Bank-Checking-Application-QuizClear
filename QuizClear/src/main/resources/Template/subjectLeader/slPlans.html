@@ -27,20 +27,26 @@
         <!-- Main content -->
         <div id="main">
             <!-- noi dung duoc nhap trong day -->
-            <div class="main-context">
+            <div class="page-header">
                 <div class="title">Plans</div>
                 <div class="subtitle">Access and confirm assigned question development tasks</div>
-                <div class="filter-select">
-                    <div class="search-container">
-                        <input type="text" id="search" placeholder="Search...">
-                        <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+                <div class="search-filter-bar">
+                    <div class="search-box">
+                        <input type="text" placeholder="Enter search content ..." class="search-input">
+                        <button class="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
                     </div>
-                    <label for="department"></label>
-                    <select id="department" name="departments">
-                        <option value="AllDepartment">All Plans</option>
-                        <option value="IT">gsdjsg</option>
-                        <option value="DB">gfre</option>
-                    </select>
+                    <div class="filter-dropdown">
+                        <select class="filter-select">
+                            <option>All Status</option>
+                            <option>Pending</option>
+                            <option>Accepted</option>
+                            <option>New</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
                 </div>
                 <table class="course-table">
                     <thead>
@@ -152,7 +158,6 @@
                             </td>
                         </tr>
                     </tbody>
-            </div>
         </div>
 
 

@@ -19,7 +19,8 @@ let currentFilters = {
 
 async function loadFilterOptions() {
   try {
-    const res = await fetch("http://localhost:8080/api/duplications/filters");
+    // SỬA CỔNG TỪ 8080 THÀNH 8081
+    const res = await fetch("http://localhost:8081/api/duplications/filters");
     const data = await res.json();
 
     const subjectSelect = document.querySelectorAll(".filter-select")[0];
@@ -42,154 +43,104 @@ async function loadFilterOptions() {
       submitterSelect.appendChild(opt);
     });
   } catch (err) {
-    console.error("Failed to load filters:", err);
+    console.error("Error loading filter options:", err);
   }
 }
 
-async function loadDuplications() {
+async function loadDuplications(filters = currentFilters) {
   try {
-    const params = new URLSearchParams();
-    if (currentFilters.subject) params.append("subject", currentFilters.subject);
-    if (currentFilters.submitter) params.append("submitter", currentFilters.submitter);
+    const query = new URLSearchParams(filters).toString();
+    // SỬA CỔNG TỪ 8080 THÀNH 8081
+    const res = await fetch(`http://localhost:8081/api/duplications?${query}`);
+    const data = await res.json();
+    const tableBody = document.querySelector(".detection-section tbody");
+    tableBody.innerHTML = ""; // Clear existing rows
 
-    const response = await fetch(`http://localhost:8080/api/duplications?${params}`);
-    const data = await response.json();
+    if (data.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="6">No duplicate questions found.</td></tr>';
+      return;
+    }
 
-    const tableBody = document.querySelector(".table tbody");
-    tableBody.innerHTML = "";
-
-    data.forEach((item) => {
+    data.forEach((dup) => {
       const row = document.createElement("tr");
+      row.dataset.id = dup.detection_id; // Store ID for detail loading
       row.innerHTML = `
-        <td class="question-cell">${item.newQuestion}</td>
-        <td class="question-cell">${item.similarQuestion}</td>
-        <td><div class="similarity-badge">${item.similarityLabel}</div></td>
-        <td><span class="subject-badge">${item.courseName}</span></td>
-        <td class="submitter-name">${item.submitterName}</td>
-        <td>
-          <div class="action-buttons">
-            <button class="action-btn btn-view" data-id="${item.detectionId}">🔍</button>
-            <button class="action-btn btn-approve" data-id="${item.detectionId}">✓</button>
-            <button class="action-btn btn-reject" data-id="${item.detectionId}">✗</button>
-          </div>
-        </td>`;
+                <td><span class="question-text">${dup.new_question_text}</span></td>
+                <td><span class="question-text">${dup.similar_question_text}</span></td>
+                <td><span class="similarity-score">${(dup.similarity_score * 100).toFixed(2)}%</span></td>
+                <td>${dup.subject}</td>
+                <td>${dup.submitter_name}</td>
+                <td class="actions">
+                    <button class="btn btn-view" data-id="${dup.detection_id}">View</button>
+                    </td>
+            `;
       tableBody.appendChild(row);
     });
-  } catch (error) {
-    console.error("Error loading duplications:", error);
-  }
-}
 
-function bindInnerEvents() {
-  document.querySelectorAll(".filter-select").forEach((select) => {
-    select.addEventListener("change", (e) => {
-      if (select === document.querySelectorAll(".filter-select")[0]) {
-        currentFilters.subject = e.target.value;
-      } else {
-        currentFilters.submitter = e.target.value;
-      }
-      loadDuplications();
-    });
-  });
-
-  const exportBtn = document.querySelector(".export-btn");
-  if (exportBtn) {
-    exportBtn.addEventListener("click", () => alert("Export clicked"));
-  }
-
-  loadFilterOptions();
-  loadDuplications();
-}
-
-function bindTabEvents() {
-  document.querySelectorAll(".tab").forEach((tab) => {
-    tab.addEventListener("click", () => handleTabClick(tab));
-  });
-}
-
-function handleTabClick(tab) {
-  document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
-  tab.classList.add("active");
-
-  const tabName = tab.dataset.tab;
-  const contentArea = document.getElementById("tab-content");
-
-  const tabConfig = {
-    detection: {
-      file: "../../Template/Staff/staffDupContent.html",
-      css: "../../Static/css/staff/staffDup.css",
-    },
-    stat: {
-      file: "../../Template/Staff/staffStatContent.html",
-      css: "../../Static/css/staff/staffStats.css",
-    },
-    proc_log: {
-      file: "../../Template/Staff/staffLogContent.html",
-      css: "../../Static/css/staff/staffLogs.css",
-    },
-  };
-
-  const { file, css } = tabConfig[tabName] || {};
-  if (file) {
-    fetch(file)
-      .then((res) => res.text())
-      .then((html) => {
-        contentArea.innerHTML = html;
-        if (css) loadCSS(css);
-        bindInnerEvents();
-      })
-      .catch((err) => {
-        contentArea.innerHTML = "<p>Error loading content.</p>";
-        console.error("Error:", err);
+    document.querySelectorAll(".btn-view").forEach((button) => {
+      button.addEventListener("click", (e) => {
+        showDetail(e.target.dataset.id);
       });
+    });
+  } catch (err) {
+    console.error("Error loading duplications:", err);
+    const tableBody = document.querySelector(".detection-section tbody");
+    tableBody.innerHTML = '<tr><td colspan="6">Error loading data.</td></tr>';
   }
 }
 
-function bindGlobalEvents() {
-  document.addEventListener("click", function (e) {
-    const target = e.target;
-
-    if (target.classList.contains("btn-view")) {
-      e.preventDefault();
-      handleViewDetail(target);
-    } else if (target.classList.contains("back-link")) {
-      e.preventDefault();
-      document.getElementById("comparison-container").style.display = "none";
-      document.getElementById("tab-content").style.display = "block";
-    } else if (target.classList.contains("action-btn")) {
-      e.preventDefault();
-      handleActionButton(target);
-    }
-  });
-}
-
-async function handleViewDetail(button) {
-  const id = button.dataset.id;
-  if (!id) return;
-
-  const tabContent = document.getElementById("tab-content");
-  const comparisonContainer = document.getElementById("comparison-container");
-
-  tabContent.style.display = "none";
-
+async function showDetail(id) {
   try {
-    const res = await fetch(`http://localhost:8080/api/duplications/${id}`);
-    const data = await res.json();
+    const tabContent = document.getElementById("tab-content");
+    const comparisonContainer = document.getElementById("comparison-container");
 
-    const html = await fetch("../../Template/Staff/staffDupDetails.html").then((r) => r.text());
-    comparisonContainer.innerHTML = html;
+    tabContent.style.display = "none";
     comparisonContainer.style.display = "block";
-    loadCSS("../../Static/css/staff/staffDupDetails.css");
 
-    document.querySelectorAll(".question-text")[0].innerText = data.newQuestion.content;
-    document.querySelectorAll(".question-text")[1].innerText = data.similarQuestion.content;
+    // Tải nội dung staffDupDetails.html động
+    // SỬA CỔNG TỪ 8080 THÀNH 8081
+    const htmlRes = await fetch("http://localhost:8081/api/html/staff/duplication-details");
+    const htmlContent = await htmlRes.text();
+    comparisonContainer.innerHTML = htmlContent;
 
-    document.querySelector(".btn-primary").addEventListener("click", async () => {
+    // Tải dữ liệu chi tiết
+    // SỬA CỔNG TỪ 8080 THÀNH 8081
+    const dataRes = await fetch(`http://localhost:8081/api/duplications/${id}`);
+    const data = await dataRes.json();
+
+    document.querySelector(".question-card #new-question-text").textContent = data.new_question_text;
+    document.getElementById("new-question-subject").textContent = data.new_question_subject;
+    document.getElementById("new-question-clo").textContent = data.new_question_clo;
+    document.getElementById("new-question-difficulty").textContent = data.new_question_difficulty;
+    document.getElementById("new-question-creator").textContent = data.new_question_creator;
+    document.getElementById("new-question-created-at").textContent = new Date(data.new_question_created_at).toLocaleString();
+    document.querySelector(".question-card #new-question-options").innerHTML = data.new_question_options;
+
+    document.querySelector(".question-card #similar-question-text").textContent = data.similar_question_text;
+    document.getElementById("similar-question-subject").textContent = data.similar_question_subject;
+    document.getElementById("similar-question-clo").textContent = data.similar_question_clo;
+    document.getElementById("similar-question-difficulty").textContent = data.similar_question_difficulty;
+    document.getElementById("similar-question-creator").textContent = data.similar_question_creator;
+    document.getElementById("similar-question-created-at").textContent = new Date(data.similar_question_created_at).toLocaleString();
+    document.querySelector(".question-card #similar-question-options").innerHTML = data.similar_question_options;
+
+    // Thêm event listener cho nút Back to List
+    const backLink = document.querySelector(".back-link");
+    backLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      comparisonContainer.style.display = "none";
+      tabContent.style.display = "block";
+    });
+
+    // Thêm event listener cho nút Submit Action
+    const submitActionBtn = document.getElementById("submit-action");
+    submitActionBtn.addEventListener("click", async () => {
       const action = document.querySelector("input[name='action']:checked").id;
       const feedback = document.getElementById("feedback").value;
-      const processedBy = 1;
+      const processedBy = 1; // You might want to get this from user session
 
-      await fetch(`http://localhost:8080/api/duplications/${id}/process`, {
+      // SỬA CỔNG TỪ 8080 THÀNH 8081
+      await fetch(`http://localhost:8081/api/duplications/${id}/process`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, feedback, processedBy }),
@@ -220,12 +171,119 @@ function handleActionButton(button) {
 }
 
 // Đảm bảo khởi chạy đúng khi load trang
-document.addEventListener("DOMContentLoaded", () => {
-  bindTabEvents();
-  bindGlobalEvents();
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadFilterOptions();
+  await loadDuplications();
 
-  const firstTab = document.querySelector(".tab.active") || document.querySelector(".tab");
-  if (firstTab) {
-    handleTabClick(firstTab);
+  // Handle tab switching
+  document.querySelectorAll(".tab").forEach((tab) => {
+    tab.addEventListener("click", async (e) => {
+      document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
+      e.target.classList.add("active");
+
+      const tabId = e.target.dataset.tab;
+      const tabContentDiv = document.getElementById("tab-content");
+      let htmlUrl = "";
+      if (tabId === "detection") {
+        htmlUrl = "/api/html/staff/duplication-content";
+      } else if (tabId === "stat") {
+        htmlUrl = "/api/html/staff/stat-content";
+        loadCSS("/Static/css/staff/staffStat.css"); // Load CSS cho tab Stat
+      } else if (tabId === "proc_log") {
+        htmlUrl = "/api/html/staff/log-content";
+        loadCSS("/Static/css/staff/staffLogs.css"); // Load CSS cho tab Logs
+      }
+
+      try {
+        // SỬA CỔNG TỪ 8080 THÀNH 8081 (nếu có trong URL)
+        const res = await fetch(`http://localhost:8081${htmlUrl}`);
+        const html = await res.text();
+        tabContentDiv.innerHTML = html;
+
+        // Load content-specific JavaScript (if any)
+        if (tabId === "detection") {
+          await loadFilterOptions();
+          await loadDuplications();
+        } else if (tabId === "proc_log") {
+          await loadProcessingLogs(); // Assume this function exists
+        }
+      } catch (err) {
+        console.error("Error loading tab content:", err);
+        tabContentDiv.innerHTML = "<p>Error loading content.</p>";
+      }
+    });
+  });
+
+  // Tải nội dung mặc định khi trang load (tab "detection")
+  const tabContentDiv = document.getElementById("tab-content");
+  try {
+    // SỬA CỔNG TỪ 8080 THÀNH 8081
+    const res = await fetch("http://localhost:8081/api/html/staff/duplication-content");
+    const html = await res.text();
+    tabContentDiv.innerHTML = html;
+  } catch (err) {
+    console.error("Error loading initial tab content:", err);
+    tabContentDiv.innerHTML = "<p>Error loading initial content.</p>";
   }
 });
+
+
+// Các hàm cho tab Processing Logs (giả định, bạn cần đảm bảo các hàm này có)
+async function loadProcessingLogs() {
+  try {
+    // SỬA CỔNG TỪ 8080 THÀNH 8081
+    const res = await fetch("http://localhost:8081/api/processing-logs"); // Thay thế bằng API của bạn
+    const logs = await res.json();
+    const logTableBody = document.querySelector("#proc-log-table tbody"); // Giả định có bảng với id này
+    if (logTableBody) {
+      logTableBody.innerHTML = "";
+      logs.forEach(log => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${log.id}</td>
+          <td>${log.questionId}</td>
+          <td>${log.action}</td>
+          <td>${log.processedBy}</td>
+          <td>${new Date(log.timestamp).toLocaleString()}</td>
+          <td><button class="btn btn-view-log" data-log-id="${log.id}">View Details</button></td>
+        `;
+        logTableBody.appendChild(row);
+      });
+
+      document.querySelectorAll(".btn-view-log").forEach(button => {
+        button.addEventListener("click", (e) => showLogDetail(e.target.dataset.logId));
+      });
+    }
+  } catch (err) {
+    console.error("Error loading processing logs:", err);
+    const logTableBody = document.querySelector("#proc-log-table tbody");
+    if (logTableBody) {
+      logTableBody.innerHTML = '<tr><td colspan="6">Error loading logs.</td></tr>';
+    }
+  }
+}
+
+async function showLogDetail(logId) {
+  try {
+    // SỬA CỔNG TỪ 8080 THÀNH 8081
+    const res = await fetch(`http://localhost:8081/api/processing-logs/${logId}`);
+    const logDetail = await res.json();
+    const modalContent = document.getElementById("modalContent");
+    modalContent.innerHTML = `
+      <p><strong>Log ID:</strong> ${logDetail.id}</p>
+      <p><strong>Question ID:</strong> ${logDetail.questionId}</p>
+      <p><strong>Action:</strong> ${logDetail.action}</p>
+      <p><strong>Feedback:</strong> ${logDetail.feedback || 'N/A'}</p>
+      <p><strong>Processed By:</strong> ${logDetail.processedBy}</p>
+      <p><strong>Timestamp:</strong> ${new Date(logDetail.timestamp).toLocaleString()}</p>
+    `;
+    document.getElementById("logDetailModal").style.display = "flex";
+  } catch (err) {
+    console.error("Error loading log detail:", err);
+    document.getElementById("modalContent").innerHTML = "<p>Error loading log details.</p>";
+  }
+}
+
+function closeModal() {
+  document.getElementById("logDetailModal").style.display = "none";
+}
