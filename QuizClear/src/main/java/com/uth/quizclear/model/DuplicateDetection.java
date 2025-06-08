@@ -2,11 +2,10 @@ package com.uth.quizclear.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "DuplicateDetections")
+@Table(name = "duplicate_detections")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,32 +13,40 @@ import java.util.Date;
 public class DuplicateDetection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "detection_id")
     private Integer detectionId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "new_question_id")
     private Question newQuestion;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "similar_question_id")
     private Question similarQuestion;
 
+    @Column(name = "similarity_score")
     private Double similarityScore;
 
-    private String status;
-    private String action;
+    @Column(name = "status")
+    private String status; // pending, accepted, rejected, sent_back, merged
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "action")
+    private String action; // accept, reject, send_back, merged
+
+    @Column(name = "feedback", columnDefinition = "TEXT")
     private String feedback;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "detected_by")
     private User detectedBy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "processed_by")
     private User processedBy;
 
-    private Date detectedAt;
-    private Date processedAt;
+    @Column(name = "detected_at")
+    private LocalDateTime detectedAt;
+
+    @Column(name = "processed_at")
+    private LocalDateTime processedAt;
 }

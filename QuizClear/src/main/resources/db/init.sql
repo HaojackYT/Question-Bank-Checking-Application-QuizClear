@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS users (
 ) ENGINE=InnoDB;
 
 -- 2. Courses (Khóa học)
-CREATE TABLE courses (
+CREATE TABLE IF NOT EXISTS courses (
     course_id INT PRIMARY KEY AUTO_INCREMENT, -- ID khóa học
     course_code VARCHAR(50) NOT NULL UNIQUE, -- Mã khóa học (unique)
     course_name VARCHAR(255) NOT NULL, -- Tên khóa học
@@ -37,7 +37,7 @@ CREATE TABLE courses (
 ) ENGINE=InnoDB;
 
 -- 3. CLOs (Course Learning Outcomes)
-CREATE TABLE clos (
+CREATE TABLE IF NOT EXISTS clos (
     clo_id INT PRIMARY KEY AUTO_INCREMENT, -- ID CLO
     course_id INT NOT NULL, -- Khóa học liên quan
     clo_code VARCHAR(50) NOT NULL, -- Mã CLO
@@ -49,7 +49,7 @@ CREATE TABLE clos (
 ) ENGINE=InnoDB;
 
 -- 5. Questions (Câu hỏi)
-CREATE TABLE questions (
+CREATE TABLE IF NOT EXISTS questions (
     question_id INT PRIMARY KEY AUTO_INCREMENT,                 -- ID câu hỏi
     course_id INT NOT NULL,                                             -- Khóa học liên quan
     clo_id INT NOT NULL,                                                -- CLO (chuẩn đầu ra học phần) liên quan
@@ -74,7 +74,7 @@ CREATE TABLE questions (
 
 
 -- 6. Plans (Kế hoạch)
-CREATE TABLE plans (
+CREATE TABLE IF NOT EXISTS plans (
     plan_id INT PRIMARY KEY AUTO_INCREMENT, -- ID kế hoạch
     course_id INT NOT NULL, -- Khóa học liên quan
     total_questions INT, -- Tổng số câu hỏi
@@ -89,7 +89,7 @@ CREATE TABLE plans (
 ) ENGINE=InnoDB;
 
 -- 7. Exams (Đề thi)
-CREATE TABLE exams (
+CREATE TABLE IF NOT EXISTS exams (
     exam_id INT PRIMARY KEY AUTO_INCREMENT, -- ID đề thi
     course_id INT NOT NULL, -- Khóa học liên quan
     plan_id INT, -- Kế hoạch đề thi
@@ -107,7 +107,7 @@ CREATE TABLE exams (
 ) ENGINE=InnoDB;
 
 -- 8. ExamQuestions (Câu hỏi trong đề thi)
-CREATE TABLE exam_questions (
+CREATE TABLE IF NOT EXISTS exam_questions (
     exam_question_id INT PRIMARY KEY AUTO_INCREMENT, -- ID quan hệ đề-câu hỏi
     exam_id INT NOT NULL, -- Đề thi
     question_id INT NOT NULL, -- Câu hỏi
@@ -117,7 +117,7 @@ CREATE TABLE exam_questions (
 
 
 -- 9. PlanAssignments (Giao kế hoạch)
-CREATE TABLE plan_assignments (
+CREATE TABLE IF NOT EXISTS plan_assignments (
     assignment_id INT PRIMARY KEY AUTO_INCREMENT, -- ID giao kế hoạch
     plan_id INT NOT NULL, -- Kế hoạch
     assigned_to INT NOT NULL, -- Người được giao
@@ -129,7 +129,7 @@ CREATE TABLE plan_assignments (
 ) ENGINE=InnoDB;
 
 -- 10. ExamSubmissions (Nộp đề thi)
-CREATE TABLE exam_submissions (
+CREATE TABLE IF NOT EXISTS exam_submissions (
     submission_id INT PRIMARY KEY AUTO_INCREMENT, -- ID nộp bài
     submitted_by INT NOT NULL, -- Người nộp
     course_id INT NOT NULL, -- Khóa học
@@ -140,7 +140,7 @@ CREATE TABLE exam_submissions (
 ) ENGINE=InnoDB;
 
 -- 11. SubmissionQuestions (Câu hỏi nộp bài)
-CREATE TABLE submission_questions (
+CREATE TABLE IF NOT EXISTS submission_questions (
     submission_question_id INT PRIMARY KEY AUTO_INCREMENT, -- ID câu hỏi nộp
     submission_id INT NOT NULL, -- Bài nộp
     course_id INT NOT NULL, -- Khóa học
@@ -151,7 +151,7 @@ CREATE TABLE submission_questions (
 ) ENGINE=InnoDB;
 
 -- 12. Tasks (Nhiệm vụ)
-CREATE TABLE tasks (
+CREATE TABLE IF NOT EXISTS tasks (
     task_id INT PRIMARY KEY AUTO_INCREMENT, -- ID nhiệm vụ
     course_id INT, -- Khóa học
     title VARCHAR(255) NOT NULL, -- Tiêu đề nhiệm vụ
@@ -169,7 +169,7 @@ CREATE TABLE tasks (
 ) ENGINE=InnoDB;
 
 -- 13. Comments (Bình luận)
-CREATE TABLE comments (
+CREATE TABLE IF NOT EXISTS comments (
     comment_id INT PRIMARY KEY AUTO_INCREMENT, -- ID bình luận
     submission_id INT NOT NULL, -- Bài nộp liên quan
     commenter_id INT NOT NULL, -- Người bình luận
@@ -180,7 +180,7 @@ CREATE TABLE comments (
 ) ENGINE=InnoDB;
 
 -- 14. Notifications (Thông báo)
-CREATE TABLE notifications (
+CREATE TABLE IF NOT EXISTS notifications (
     notification_id INT PRIMARY KEY AUTO_INCREMENT, -- ID thông báo
     user_id INT NOT NULL, -- Người nhận thông báo
     content TEXT NOT NULL, -- Nội dung thông báo
@@ -190,7 +190,7 @@ CREATE TABLE notifications (
 ) ENGINE=InnoDB;
 
 -- 15. QuestionSimilarity (Tương đồng câu hỏi)
-CREATE TABLE question_similarity (
+CREATE TABLE IF NOT EXISTS question_similarity (
     id INT PRIMARY KEY AUTO_INCREMENT, -- ID quan hệ tương đồng
     question1_id INT NOT NULL, -- Câu hỏi 1
     question2_id INT NOT NULL, -- Câu hỏi 2
@@ -200,7 +200,7 @@ CREATE TABLE question_similarity (
 ) ENGINE=InnoDB;
 
 -- 16. FeedbackExam (Phản hồi đề thi)
-CREATE TABLE feedback_exam (
+CREATE TABLE IF NOT EXISTS feedback_exam (
     feedback_id INT PRIMARY KEY AUTO_INCREMENT, -- ID phản hồi
     exam_id INT NOT NULL, -- Đề thi
     user_id INT NOT NULL, -- Người phản hồi
@@ -211,7 +211,7 @@ CREATE TABLE feedback_exam (
 ) ENGINE=InnoDB;
 
 -- 17. ExamReview (Đánh giá đề thi)
-CREATE TABLE exam_review (
+CREATE TABLE IF NOT EXISTS exam_review (
     review_id INT PRIMARY KEY AUTO_INCREMENT, -- ID đánh giá
     exam_id INT NOT NULL, -- Đề thi
     reviewer_id INT NOT NULL, -- Người đánh giá
@@ -223,7 +223,7 @@ CREATE TABLE exam_review (
 ) ENGINE=InnoDB;
 
 -- 18. Activity_logs (Nhật ký hoạt động người dùng)
-CREATE TABLE activity_logs (
+CREATE TABLE IF NOT EXISTS activity_logs (
     id INT AUTO_INCREMENT PRIMARY KEY, -- ID nhật ký
     user_id INT, -- Người dùng thực hiện hoạt động
     activity TEXT, -- Nội dung hoạt động
@@ -232,7 +232,7 @@ CREATE TABLE activity_logs (
 ) ENGINE=InnoDB;
 
 -- 19. DuplicateDetections (Phát hiện và xử lý trùng lặp câu hỏi)
-CREATE TABLE duplicate_detections (
+CREATE TABLE IF NOT EXISTS duplicate_detections (
     detection_id INT PRIMARY KEY AUTO_INCREMENT,                     -- ID phát hiện trùng lặp
     new_question_id INT NOT NULL,                                    -- ID câu hỏi mới được thêm vào
     similar_question_id INT NOT NULL,                                -- ID câu hỏi đã tồn tại

@@ -5,28 +5,22 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "courses")
+@Table(name = "clos")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Course {
+public class CLO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "course_id")
-    private Integer courseId;
+    @Column(name = "clo_id")
+    private Integer cloId;
 
-    @Column(name = "course_code", nullable = false, unique = true)
-    private String courseCode;
-
-    @Column(name = "course_name", nullable = false)
-    private String courseName;
+    @Column(name = "clo_name", nullable = false)
+    private String cloName;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
-
-    @Column(name = "credit_hours")
-    private Integer creditHours;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
