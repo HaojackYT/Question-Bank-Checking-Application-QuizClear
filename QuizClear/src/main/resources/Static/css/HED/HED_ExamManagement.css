@@ -37,25 +37,45 @@ body {
 
 /* Search Box */
 
-.search-container {
+.search-filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5625rem;
+    gap: 1.25rem;
+}
+
+.search-box {
     position: relative;
-    width: 18.75rem;
+    flex: 1;
+    max-width: 25rem;
 }
 
-.search-container input {
+.search-input {
     width: 100%;
-    padding: 0.625rem 2.1875rem 0.625rem 0.625rem;
-    border-radius: 0.3125rem;
-    border: 0.0625rem solid #D9D9D9;
+    padding: 0.75rem 3.125rem 0.75rem 1rem;
+    border: 0.0625rem solid #dee2e6;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background-color: white;
+    transition: border-color 0.2s ease;
 }
 
-.search-container i {
+.search-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.1875rem rgba(0, 123, 255, 0.1);
+}
+
+.search-btn {
     position: absolute;
-    right: 0.625rem;
+    right: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
-    color: #999;
-    pointer-events: none;
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
 }
 
 /* Filter Controls */
@@ -64,25 +84,29 @@ body {
     gap: 25px;
 }
 
+.filter-dropdown {
+    position: relative;
+    min-width: 11.25rem;
+}
+
 .filter-select {
-    width: 200px;
-    height: 44px;
-    background: #FFFFFF;
-    border: 1px solid #C6DCFF;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 13px;
-    color: #000000;
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    border: 0.0625rem solid #dee2e6;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background-color: white;
     cursor: pointer;
-    padding: 0 40px 0 15px;
-    box-sizing: border-box;
     appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23000000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 15px center;
-    background-repeat: no-repeat;
-    background-size: 15px;
+}
+
+.filter-dropdown i {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    pointer-events: none;
 }
 
 /*table container */

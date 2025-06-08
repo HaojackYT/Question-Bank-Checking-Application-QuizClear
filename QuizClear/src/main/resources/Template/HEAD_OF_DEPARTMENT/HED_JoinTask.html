@@ -51,25 +51,33 @@
             </div>
 
             <!-- Search and Filter Section -->
-            <div class="search-filter-section">
-                <div class="search-container">
-                    <input type="text" id="search" placeholder="Search...">
-                    <i class="fa-solid fa-magnifying-glass"></i>
+            <div class="search-filter-bar">
+                <div class="search-box">
+                    <input type="text" placeholder="Enter search content ..." class="search-input">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
                 <div class="filter-controls">
-                    <select class="filter-select">
-                        <option value="">Job Status</option>
-                        <option value="assigned">Assigned</option>
-                        <option value="received">Received</option>
-                        <option value="pending">Pending</option>
-                        <option value="incomplete">Incomplete</option>
-                    </select>
-                    <select class="filter-select">
-                        <option value="">All Subject</option>
-                        <option value="cs">Computer Science</option>
-                        <option value="is">Information System</option>
-                        <option value="se">Software Engineering</option>
-                    </select>
+                    <div class="filter-dropdown">
+                        <select class="filter-select">
+                            <option value="">All Status</option>
+                            <option value="assigned">Assigned</option>
+                            <option value="received">Received</option>
+                            <option value="pending">Pending</option>
+                            <option value="incomplete">Incomplete</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="filter-dropdown">
+                        <select class="filter-select">
+                            <option value="">All Subject</option>
+                            <option value="cs">Computer Science</option>
+                            <option value="is">Information System</option>
+                            <option value="se">Software Engineering</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
                 </div>
             </div>
 
@@ -302,7 +310,7 @@
                 </table>
             </div>
 
-           <!-- Pagination -->
+            <!-- Pagination -->
             <div class="pagination">
                 <i class="fa-solid fa-bullhorn" style="padding: 20px;"></i>
                 <p class="page-info" style="padding: 10px;">Total Pages:</p>
@@ -315,262 +323,265 @@
                             style="padding: 0px 5px;"></i></button>
                 </div>
             </div>
-           
 
-    <!-- Course Details Modal -->
-    <div id="courseDetailsModal" class="modal">
-        <div class="modal-content details-modal">
-            <div class="modal-header">
-                <h2>Details</h2>
-                <div class="modal-controls">
-                    <button class="expand-btn" title="Expand">
-                        <i class="fas fa-expand"></i>
-                    </button>
-                    <button class="close-btn" title="Close">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
 
-            <div class="modal-body">
-                <p class="details-subtitle">
-                    Detailed information about the course. <span class="due-date">Due: <span
-                            id="modalDueDate">2025-08-15</span></span>
-                </p>
+            <!-- Course Details Modal -->
+            <div id="courseDetailsModal" class="modal">
+                <div class="modal-content details-modal">
+                    <div class="modal-header">
+                        <h2>Details</h2>
+                        <div class="modal-controls">
+                            <button class="expand-btn" title="Expand">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                            <button class="close-btn" title="Close">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
 
-                <div class="details-section">
-                    <h3>R&D Staff</h3>
-                    <div class="instructor-info">
-                        <span id="modalStaff">Nguyen Van A</span>
-                        <button class="download-btn" title="Download">
-                            <i class="fas fa-download"></i>
+                    <div class="modal-body">
+                        <p class="details-subtitle">
+                            Detailed information about the course. <span class="due-date">Due: <span
+                                    id="modalDueDate">2025-08-15</span></span>
+                        </p>
+
+                        <div class="details-section">
+                            <h3>R&D Staff</h3>
+                            <div class="instructor-info">
+                                <span id="modalStaff">Nguyen Van A</span>
+                                <button class="download-btn" title="Download">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="details-section">
+                            <h3>Title</h3>
+                            <p id="modalTitle">Web Programming course for advanced students</p>
+                        </div>
+
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <h4>Total Question</h4>
+                                <span id="modalTotalQuestion">45</span>
+                            </div>
+                            <div class="detail-item">
+                                <h4>Subject</h4>
+                                <span id="modalSubject">Web Programming</span>
+                            </div>
+                            <div class="detail-item">
+                                <h4>Deadline</h4>
+                                <span id="modalDeadline">2025-08-15</span>
+                            </div>
+                            <div class="detail-item">
+                                <h4>Status</h4>
+                                <span id="modalStatus" class="approved">Active</span>
+                            </div>
+                        </div>
+
+                        <div class="details-section">
+                            <h3>Description</h3>
+                            <p id="modalDescription">This is a comprehensive web programming course that covers modern
+                                web
+                                development technologies and best practices. Students will learn HTML, CSS, JavaScript,
+                                and
+                                various frameworks.</p>
+                        </div>
+
+                        <div class="details-section">
+                            <h3>Feedback</h3>
+                            <textarea id="modalFeedback"
+                                placeholder="Enter your feedback about this course..."></textarea>
+                        </div>
+
+                        <div class="see-more">
+                            <a href="#" class="see-more-link">See more...</a>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="reject-btn">
+                            <i class="fas fa-times-circle"></i>
+                            <span>Reject</span>
+                        </button>
+                        <button class="approve-btn">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Approve</span>
                         </button>
                     </div>
                 </div>
-
-                <div class="details-section">
-                    <h3>Title</h3>
-                    <p id="modalTitle">Web Programming course for advanced students</p>
-                </div>
-
-                <div class="details-grid">
-                    <div class="detail-item">
-                        <h4>Total Question</h4>
-                        <span id="modalTotalQuestion">45</span>
-                    </div>
-                    <div class="detail-item">
-                        <h4>Subject</h4>
-                        <span id="modalSubject">Web Programming</span>
-                    </div>
-                    <div class="detail-item">
-                        <h4>Deadline</h4>
-                        <span id="modalDeadline">2025-08-15</span>
-                    </div>
-                    <div class="detail-item">
-                        <h4>Status</h4>
-                        <span id="modalStatus" class="approved">Active</span>
-                    </div>
-                </div>
-
-                <div class="details-section">
-                    <h3>Description</h3>
-                    <p id="modalDescription">This is a comprehensive web programming course that covers modern web
-                        development technologies and best practices. Students will learn HTML, CSS, JavaScript, and
-                        various frameworks.</p>
-                </div>
-
-                <div class="details-section">
-                    <h3>Feedback</h3>
-                    <textarea id="modalFeedback" placeholder="Enter your feedback about this course..."></textarea>
-                </div>
-
-                <div class="see-more">
-                    <a href="#" class="see-more-link">See more...</a>
-                </div>
             </div>
 
-            <div class="modal-footer">
-                <button class="reject-btn">
-                    <i class="fas fa-times-circle"></i>
-                    <span>Reject</span>
-                </button>
-                <button class="approve-btn">
-                    <i class="fas fa-check-circle"></i>
-                    <span>Approve</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Load header and menu -->
-    <script>
-        // Load header
-        fetch('../header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-
-        // Load menu
-        fetch('Menu-HED.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-            });
-    </script>
-
-    <script src="../../Static/js/HED_ExamManagement.js"></script>
-
-    <!-- Course Management specific script - FIXED VERSION -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Wait for other scripts to load first
-            setTimeout(function () {
-                // Course Management specific functionality
-                const courseModal = document.getElementById('courseDetailsModal');
-
-                if (!courseModal) {
-                    console.error('Course modal not found');
-                    return;
-                }
-
-                const courseCloseBtn = courseModal.querySelector('.close-btn');
-                const courseExpandBtn = courseModal.querySelector('.expand-btn');
-
-                // REMOVE all existing event listeners first
-                const actionButtons = document.querySelectorAll('#main .action-btn');
-
-                // Clone buttons to remove all existing event listeners
-                actionButtons.forEach(button => {
-                    const newButton = button.cloneNode(true);
-                    button.parentNode.replaceChild(newButton, button);
-                });
-
-                // Add NEW event listeners to cloned buttons
-                document.querySelectorAll('#main .action-btn').forEach(button => {
-                    button.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        e.stopImmediatePropagation(); // Stop all other listeners
-
-                        const icon = this.querySelector('i');
-                        const row = this.closest('tr');
-
-                        // Check icon class and execute only ONE action
-                        if (icon.classList.contains('fa-eye')) {
-                            console.log('View button clicked');
-                            openCourseModal(row);
-                            return false;
-                        }
-
-                        if (icon.classList.contains('fa-edit')) {
-                            console.log('Edit button clicked');
-                            editCourse(row);
-                            return false;
-                        }
-
-                        if (icon.classList.contains('fa-trash')) {
-                            console.log('Delete button clicked');
-                            deleteCourse(row);
-                            return false;
-                        }
-                    }, true); // Use capture phase
-                });
-
-                function openCourseModal(row) {
-                    console.log('Opening course modal...');
-                    const cells = row.querySelectorAll('td');
-
-                    // Populate modal with course data
-                    document.getElementById('modalDueDate').textContent = cells[2].textContent;
-                    document.getElementById('modalStaff').textContent = cells[4].textContent;
-                    document.getElementById('modalTitle').textContent = cells[1].textContent + ' course for advanced students';
-                    document.getElementById('modalTotalQuestion').textContent = cells[3].textContent;
-                    document.getElementById('modalSubject').textContent = cells[1].textContent;
-                    document.getElementById('modalDeadline').textContent = cells[2].textContent;
-
-                    // Set status
-                    const statusBadge = cells[5].querySelector('.status-badge');
-                    const modalStatus = document.getElementById('modalStatus');
-                    modalStatus.textContent = statusBadge.textContent;
-                    modalStatus.className = statusBadge.className.replace('status-badge', '').trim();
-
-                    // Update description based on course
-                    document.getElementById('modalDescription').textContent =
-                        `This is a comprehensive ${cells[1].textContent.toLowerCase()} course that covers modern technologies and best practices for students.`;
-
-                    // Show modal
-                    courseModal.style.display = 'block';
-                }
-
-                function editCourse(row) {
-                    const courseId = row.querySelector('td').textContent;
-                    const courseName = row.querySelectorAll('td')[1].textContent;
-                    console.log('Edit course:', courseId, courseName);
-                    alert(`Edit Course: ${courseName} (${courseId})`);
-                }
-
-                function deleteCourse(row) {
-                    const courseId = row.querySelector('td').textContent;
-                    const courseName = row.querySelectorAll('td')[1].textContent;
-
-                    if (confirm(`Are you sure you want to delete course "${courseName}" (${courseId})?`)) {
-                        console.log('Delete course:', courseId);
-                        row.remove();
-                        alert(`Course "${courseName}" has been deleted!`);
-                    }
-                }
-
-                // Modal close events
-                if (courseCloseBtn) {
-                    courseCloseBtn.addEventListener('click', function (e) {
-                        e.stopPropagation();
-                        courseModal.style.display = 'none';
+            <!-- Load header and menu -->
+            <script>
+                // Load header
+                fetch('../header_user.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('header-placeholder').innerHTML = data;
                     });
-                }
 
-                if (courseExpandBtn) {
-                    courseExpandBtn.addEventListener('click', function (e) {
-                        e.stopPropagation();
-                        courseModal.classList.toggle('expanded');
+                // Load menu
+                fetch('Menu-HED.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('menu-HTML').innerHTML = data;
                     });
-                }
+            </script>
 
-                // Close modal when clicking outside
-                window.addEventListener('click', function (e) {
-                    if (e.target === courseModal) {
-                        courseModal.style.display = 'none';
-                    }
-                });
+            <script src="../../Static/js/HED_ExamManagement.js"></script>
 
-                // Handle approve/reject buttons for courses
-                const approveBtn = courseModal.querySelector('.approve-btn');
-                const rejectBtn = courseModal.querySelector('.reject-btn');
+            <!-- Course Management specific script - FIXED VERSION -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Wait for other scripts to load first
+                    setTimeout(function () {
+                        // Course Management specific functionality
+                        const courseModal = document.getElementById('courseDetailsModal');
 
-                if (approveBtn) {
-                    approveBtn.addEventListener('click', function (e) {
-                        e.stopPropagation();
-                        alert('Course approved successfully!');
-                        courseModal.style.display = 'none';
-                    });
-                }
-
-                if (rejectBtn) {
-                    rejectBtn.addEventListener('click', function (e) {
-                        e.stopPropagation();
-                        const feedback = courseModal.querySelector('#modalFeedback').value;
-                        if (feedback.trim() === '') {
-                            alert('Please provide feedback before rejecting the course.');
+                        if (!courseModal) {
+                            console.error('Course modal not found');
                             return;
                         }
-                        alert('Course rejected with feedback: ' + feedback);
-                        courseModal.style.display = 'none';
-                    });
-                }
 
-            }, 100); // Wait 100ms for other scripts to load
-        });
-    </script>
+                        const courseCloseBtn = courseModal.querySelector('.close-btn');
+                        const courseExpandBtn = courseModal.querySelector('.expand-btn');
+
+                        // REMOVE all existing event listeners first
+                        const actionButtons = document.querySelectorAll('#main .action-btn');
+
+                        // Clone buttons to remove all existing event listeners
+                        actionButtons.forEach(button => {
+                            const newButton = button.cloneNode(true);
+                            button.parentNode.replaceChild(newButton, button);
+                        });
+
+                        // Add NEW event listeners to cloned buttons
+                        document.querySelectorAll('#main .action-btn').forEach(button => {
+                            button.addEventListener('click', function (e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                e.stopImmediatePropagation(); // Stop all other listeners
+
+                                const icon = this.querySelector('i');
+                                const row = this.closest('tr');
+
+                                // Check icon class and execute only ONE action
+                                if (icon.classList.contains('fa-eye')) {
+                                    console.log('View button clicked');
+                                    openCourseModal(row);
+                                    return false;
+                                }
+
+                                if (icon.classList.contains('fa-edit')) {
+                                    console.log('Edit button clicked');
+                                    editCourse(row);
+                                    return false;
+                                }
+
+                                if (icon.classList.contains('fa-trash')) {
+                                    console.log('Delete button clicked');
+                                    deleteCourse(row);
+                                    return false;
+                                }
+                            }, true); // Use capture phase
+                        });
+
+                        function openCourseModal(row) {
+                            console.log('Opening course modal...');
+                            const cells = row.querySelectorAll('td');
+
+                            // Populate modal with course data
+                            document.getElementById('modalDueDate').textContent = cells[2].textContent;
+                            document.getElementById('modalStaff').textContent = cells[4].textContent;
+                            document.getElementById('modalTitle').textContent = cells[1].textContent + ' course for advanced students';
+                            document.getElementById('modalTotalQuestion').textContent = cells[3].textContent;
+                            document.getElementById('modalSubject').textContent = cells[1].textContent;
+                            document.getElementById('modalDeadline').textContent = cells[2].textContent;
+
+                            // Set status
+                            const statusBadge = cells[5].querySelector('.status-badge');
+                            const modalStatus = document.getElementById('modalStatus');
+                            modalStatus.textContent = statusBadge.textContent;
+                            modalStatus.className = statusBadge.className.replace('status-badge', '').trim();
+
+                            // Update description based on course
+                            document.getElementById('modalDescription').textContent =
+                                `This is a comprehensive ${cells[1].textContent.toLowerCase()} course that covers modern technologies and best practices for students.`;
+
+                            // Show modal
+                            courseModal.style.display = 'block';
+                        }
+
+                        function editCourse(row) {
+                            const courseId = row.querySelector('td').textContent;
+                            const courseName = row.querySelectorAll('td')[1].textContent;
+                            console.log('Edit course:', courseId, courseName);
+                            alert(`Edit Course: ${courseName} (${courseId})`);
+                        }
+
+                        function deleteCourse(row) {
+                            const courseId = row.querySelector('td').textContent;
+                            const courseName = row.querySelectorAll('td')[1].textContent;
+
+                            if (confirm(`Are you sure you want to delete course "${courseName}" (${courseId})?`)) {
+                                console.log('Delete course:', courseId);
+                                row.remove();
+                                alert(`Course "${courseName}" has been deleted!`);
+                            }
+                        }
+
+                        // Modal close events
+                        if (courseCloseBtn) {
+                            courseCloseBtn.addEventListener('click', function (e) {
+                                e.stopPropagation();
+                                courseModal.style.display = 'none';
+                            });
+                        }
+
+                        if (courseExpandBtn) {
+                            courseExpandBtn.addEventListener('click', function (e) {
+                                e.stopPropagation();
+                                courseModal.classList.toggle('expanded');
+                            });
+                        }
+
+                        // Close modal when clicking outside
+                        window.addEventListener('click', function (e) {
+                            if (e.target === courseModal) {
+                                courseModal.style.display = 'none';
+                            }
+                        });
+
+                        // Handle approve/reject buttons for courses
+                        const approveBtn = courseModal.querySelector('.approve-btn');
+                        const rejectBtn = courseModal.querySelector('.reject-btn');
+
+                        if (approveBtn) {
+                            approveBtn.addEventListener('click', function (e) {
+                                e.stopPropagation();
+                                alert('Course approved successfully!');
+                                courseModal.style.display = 'none';
+                            });
+                        }
+
+                        if (rejectBtn) {
+                            rejectBtn.addEventListener('click', function (e) {
+                                e.stopPropagation();
+                                const feedback = courseModal.querySelector('#modalFeedback').value;
+                                if (feedback.trim() === '') {
+                                    alert('Please provide feedback before rejecting the course.');
+                                    return;
+                                }
+                                alert('Course rejected with feedback: ' + feedback);
+                                courseModal.style.display = 'none';
+                            });
+                        }
+
+                    }, 100); // Wait 100ms for other scripts to load
+                });
+            </script>
 </body>
 
 </html>

@@ -1,512 +1,547 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-        <link rel="stylesheet" href="../../Static/header.css">
-        <link rel="stylesheet" href="../../Static/web_styles.css">
-        <link rel="stylesheet" href="../../Static/css/HED/HED_AssignManagement.css">
-        <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-        <title>Assignment Management</title>
-    </head>
 
-    <body>
-        <!--header-->
-        <div id="header-placeholder"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/css/HED/HED_AssignManagement.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Assignment Management</title>
+</head>
 
-        <!-- body -->
-        <div id="Container-body">
-            <!-- Menu -->
-            <div id="menu-HTML"></div>
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
 
-            <!-- Main content -->
-            <div id="main">
-                <div class="assignment-container">
-                    <div class="assignment-header">
-                        <h1>Assignment Management</h1>
-                        <button class="new-assign-btn" onclick="openNewAssignModal()">
-                            <i class="fas fa-plus"></i> New Assign
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <div class="assignment-container">
+                <div class="assignment-header">
+                    <h1>Assignment Management</h1>
+                    <button class="new-assign-btn" onclick="openNewAssignModal()">
+                        <i class="fas fa-plus"></i> New Assign
+                    </button>
+                </div>
+
+                <!-- Notifications -->
+                <div class="notification-section">
+                    <h2>New Notification</h2>
+                    <p class="notification-subtitle">Assignments to be completed</p>
+                    <div class="notification_items">
+                        <div class="notification_item">
+                            <input type="checkbox" checked>
+                            <div class="notification-text">
+                                <strong>New Assignment: Assign lecturer(s) to the Web Programming Subject</strong>
+                                <p>Due: 20/05/2025</p>
+                            </div>
+                        </div>
+                        <div class="notification_item">
+                            <input type="checkbox" checked>
+                            <div class="notification-text">
+                                <strong>New Assignment: Assign lecturer(s) to the Database Subject</strong>
+                                <p>Due: 25/05/2025</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="see-more">See more...</a>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="search-filter-bar">
+                    <div class="search-box">
+                        <input type="text" placeholder="Enter search content ..." class="search-input">
+                        <button class="search-btn">
+                            <i class="fas fa-search"></i>
                         </button>
                     </div>
-
-                    <!-- Notifications -->
-                    <div class="notification-section">
-                        <h2>New Notification</h2>
-                        <p class="notification-subtitle">Assignments to be completed</p>
-                        <div class="notification_items">
-                            <div class="notification_item">
-                                <input type="checkbox" checked>
-                                <div class="notification-text">
-                                    <strong>New Assignment: Assign lecturer(s) to the Web Programming Subject</strong>
-                                    <p>Due: 20/05/2025</p>
-                                </div>
-                            </div>
-                            <div class="notification_item">
-                                <input type="checkbox" checked>
-                                <div class="notification-text">
-                                    <strong>New Assignment: Assign lecturer(s) to the Database Subject</strong>
-                                    <p>Due: 25/05/2025</p>
-                                </div>
-                            </div>
+                    <div class="filter-controls">
+                        <div class="filter-dropdown">
+                            <select class="filter-select">
+                                <option value="">All Status</option>
+                                <option value="approved">Approved</option>
+                                <option value="pending">Pending</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
                         </div>
-                        <a href="#" class="see-more">See more...</a>
-                    </div>
-
-                    <!-- Search and Filter -->
-                    <div class="search-filter-section">
-                        <div class="search-container">
-                            <input type="text" placeholder="Enter search content..." class="search-input">
-                            <button class="search-btn">
-                                <i class="fas fa-search"></i>
-                            </button>
+                        <div class="filter-dropdown">
+                            <select class="filter-select">
+                                <option value="">All Subject</option>
+                                <option value="os">Operating System</option>
+                                <option value="db">Database</option>
+                                <option value="ca">Computer Architecture</option>
+                                <option value="oop">Object Oriented Programming</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
                         </div>
-                        <select class="subject-filter">
-                            <option>All Subject</option>
-                            <option>Operating System</option>
-                            <option>Database</option>
-                            <option>Computer architecture</option>
-                            <option>DBMS</option>
-                            <option>Object Oriented Programming</option>
-                        </select>
                     </div>
+                </div>
 
-                    <!-- Assignment Table -->
-                    <div class="table-container">
-                        <table class="assignment-table">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Subject</th>
-                                    <th>Questions Required</th>
-                                    <th>Assigned Lecturer</th>
-                                    <th>Completed</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Title 1 he</td>
-                                    <td>Operating System</td>
-                                    <td>40</td>
-                                    <td>Nguyen Van A (40)</td>
-                                    <td>35</td>
-                                    <td><span class="status in-progress">In Progress</span></td>
-                                    <td>
-                                        <button onclick="openDetailsModal(1)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button>
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button>
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Title 1 he</td>
-                                    <td>Database</td>
-                                    <td>20</td>
-                                    <td>Huynh D</td>
-                                    <td>20</td>
-                                    <td><span class="status completed">Completed</span></td>
-                                    <td>
-                                        <button onclick="openDetailsModal(2)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Title 1 he</td>
-                                    <td>Computer architecture</td>
-                                    <td>8</td>
-                                    <td>Van Thi F</td>
-                                    <td>8</td>
-                                    <td><span class="status pending">Pending</span></td>
-                                    <td>
-                                        <button onclick="openDetailsModal(3)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button>
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button>
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Title 1 he</td>
-                                    <td>DBMS</td>
-                                    <td>70</td>
-                                    <td>Chu Van E</td>
-                                    <td>40</td>
-                                    <td><span class="status in-progress">In Progress</span></td>
-                                    <td>
-                                        <button onclick="openDetailsModal(4)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button >
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button>
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Title 1 he</td>
-                                    <td>Object Oriented Programming</td>
-                                    <td>30</td>
-                                    <td>Tran K</td>
-                                    <td>15</td>
-                                    <td><span class="status in-progress">In Progress</span></td>
-                                    <td>
-                                        <button onclick="openDetailsModal(5)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button >
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button>
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <!-- Assignment Table -->
+                <div class="table-container">
+                    <table class="assignment-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Subject</th>
+                                <th>Questions Required</th>
+                                <th>Assigned Lecturer</th>
+                                <th>Completed</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Title 1 he</td>
+                                <td>Operating System</td>
+                                <td>40</td>
+                                <td>Nguyen Van A (40)</td>
+                                <td>35</td>
+                                <td><span class="status in-progress">In Progress</span></td>
+                                <td>
+                                    <button onclick="openDetailsModal(1)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button>
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button>
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Title 1 he</td>
+                                <td>Database</td>
+                                <td>20</td>
+                                <td>Huynh D</td>
+                                <td>20</td>
+                                <td><span class="status completed">Completed</span></td>
+                                <td>
+                                    <button onclick="openDetailsModal(2)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Title 1 he</td>
+                                <td>Computer architecture</td>
+                                <td>8</td>
+                                <td>Van Thi F</td>
+                                <td>8</td>
+                                <td><span class="status pending">Pending</span></td>
+                                <td>
+                                    <button onclick="openDetailsModal(3)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button>
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button>
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Title 1 he</td>
+                                <td>DBMS</td>
+                                <td>70</td>
+                                <td>Chu Van E</td>
+                                <td>40</td>
+                                <td><span class="status in-progress">In Progress</span></td>
+                                <td>
+                                    <button onclick="openDetailsModal(4)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button>
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button>
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Title 1 he</td>
+                                <td>Object Oriented Programming</td>
+                                <td>30</td>
+                                <td>Tran K</td>
+                                <td>15</td>
+                                <td><span class="status in-progress">In Progress</span></td>
+                                <td>
+                                    <button onclick="openDetailsModal(5)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button>
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button>
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                    <!-- Pagination -->
-                    <div class="pagination">
-                        <span class="page-info">Total Pages: 9</span>
-                        <div class="pagination-controls">
-                            <button class="page-btn" disabled>< Previous</button>
-                            <span class="current-page">1</span>
-                            <button class="page-btn">Next ></button>
-                        </div>
+                <!-- Pagination -->
+                <div class="pagination">
+                    <span class="page-info">Total Pages: 9</span>
+                    <div class="pagination-controls">
+                        <button class="page-btn" disabled>
+                            < Previous</button>
+                                <span class="current-page">1</span>
+                                <button class="page-btn">Next ></button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- New Assignment Modal -->
-        <div id="newAssignModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>New Assign</h2>
-                    <span class="close" onclick="closeNewAssignModal()">&times;</span>
-                </div>
-                <p class="modal-subtitle">Create new assign for the lecturer.</p>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Lecturer</label>
-                        <select>
-                            <option>Nguyen Van A</option>
-                            <option>Huynh D</option>
-                            <option>Van Thi F</option>
-                            <option>Chu Van E</option>
-                            <option>Tran K</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Subject</label>
-                        <select>
-                            <option>Operating System</option>
-                            <option>Database</option>
-                            <option>Computer architecture</option>
-                            <option>DBMS</option>
-                            <option>Object Oriented Programming</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Total Question</label>
-                        <input type="text" placeholder="----" class="small-input">
-                    </div>
-                </div>
+    <!-- New Assignment Modal -->
+    <div id="newAssignModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>New Assign</h2>
+                <span class="close" onclick="closeNewAssignModal()">&times;</span>
+            </div>
+            <p class="modal-subtitle">Create new assign for the lecturer.</p>
 
+            <div class="form-row">
                 <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" placeholder="Enter title">
+                    <label>Lecturer</label>
+                    <select>
+                        <option>Nguyen Van A</option>
+                        <option>Huynh D</option>
+                        <option>Van Thi F</option>
+                        <option>Chu Van E</option>
+                        <option>Tran K</option>
+                    </select>
                 </div>
-
                 <div class="form-group">
-                    <label>Context</label>
-                    <textarea placeholder="This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document."></textarea>
+                    <label>Subject</label>
+                    <select>
+                        <option>Operating System</option>
+                        <option>Database</option>
+                        <option>Computer architecture</option>
+                        <option>DBMS</option>
+                        <option>Object Oriented Programming</option>
+                    </select>
                 </div>
-
                 <div class="form-group">
-                    <label>Duration</label>
-                    <div class="calendar-section">
-                        <div class="calendar-header">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Calendar</span>
-                        </div>
-                        <div class="date-time-row">
-                            <span class="date-label">Start</span>
-                            <select class="date-select">
-                                <option>25</option>
-                            </select>
-                            <select class="date-select">
-                                <option>May</option>
-                            </select>
-                            <select class="date-select">
-                                <option>2025</option>
-                            </select>
-                            <select class="time-select">
-                                <option>8</option>
-                            </select>
-                            <select class="time-select">
-                                <option>00</option>
-                            </select>
-                            <select class="time-select">
-                                <option>PM</option>
-                            </select>
-                        </div>
-                        <div class="date-time-row">
-                            <span class="date-label">End</span>
-                            <select class="date-select">
-                                <option>10</option>
-                            </select>
-                            <select class="date-select">
-                                <option>June</option>
-                            </select>
-                            <select class="date-select">
-                                <option>2025</option>
-                            </select>
-                            <select class="time-select">
-                                <option>8</option>
-                            </select>
-                            <select class="time-select">
-                                <option>00</option>
-                            </select>
-                            <select class="time-select">
-                                <option>PM</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="submit-btn">Submit</button>
+                    <label>Total Question</label>
+                    <input type="text" placeholder="----" class="small-input">
                 </div>
             </div>
-        </div>
 
-        <!-- Details Modal -->
-        <div id="detailsModal" class="modal">
-            <div class="modal-content details-modal">
-                <div class="modal-header">
-                    <h2>Details</h2>
-                    <div class="header-actions">
-                        <span class="close" onclick="closeDetailsModal()">&times;</span>
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" placeholder="Enter title">
+            </div>
+
+            <div class="form-group">
+                <label>Context</label>
+                <textarea
+                    placeholder="This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Duration</label>
+                <div class="calendar-section">
+                    <div class="calendar-header">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Calendar</span>
                     </div>
-                </div>
-                <p class="modal-subtitle">Detailed information about the assignment Due: <span class="due-date">2025-25-05</span></p>
-                
-                <div class="details-content">
-                    <div class="detail-section">
-                        <h3>Lecturer</h3>
-                        <div class="lecturer-info">
-                            <span>Nguyen Van A - 1001</span>
-                            <button class="download-btn">
-                                <i class="fas fa-download"></i>
-                            </button>
-                        </div>
+                    <div class="date-time-row">
+                        <span class="date-label">Start</span>
+                        <select class="date-select">
+                            <option>25</option>
+                        </select>
+                        <select class="date-select">
+                            <option>May</option>
+                        </select>
+                        <select class="date-select">
+                            <option>2025</option>
+                        </select>
+                        <select class="time-select">
+                            <option>8</option>
+                        </select>
+                        <select class="time-select">
+                            <option>00</option>
+                        </select>
+                        <select class="time-select">
+                            <option>PM</option>
+                        </select>
                     </div>
-
-                    <div class="detail-section">
-                        <h3>Title</h3>
-                        <p>Midterm exam of the Object Oriented Programming subject</p>
+                    <div class="date-time-row">
+                        <span class="date-label">End</span>
+                        <select class="date-select">
+                            <option>10</option>
+                        </select>
+                        <select class="date-select">
+                            <option>June</option>
+                        </select>
+                        <select class="date-select">
+                            <option>2025</option>
+                        </select>
+                        <select class="time-select">
+                            <option>8</option>
+                        </select>
+                        <select class="time-select">
+                            <option>00</option>
+                        </select>
+                        <select class="time-select">
+                            <option>PM</option>
+                        </select>
                     </div>
-
-                    <div class="details-grid">
-                        <div class="detail-item">
-                            <h3>Total Question</h3>
-                            <p>4</p>
-                        </div>
-                        <div class="detail-item">
-                            <h3>Subject</h3>
-                            <p>Object Oriented Programming</p>
-                        </div>
-                        <div class="detail-item">
-                            <h3>Deadline</h3>
-                            <p>2025-25-05</p>
-                        </div>
-                        <div class="detail-item">
-                            <h3>Status</h3>
-                            <span class="status pending">Pending</span>
-                        </div>
-                    </div>
-
-                    <div class="detail-section">
-                        <h3>Description</h3>
-                        <p>This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document.</p>
-                    </div>
-
-                    <div class="detail-section">
-                        <h3>Feedback</h3>
-                        <div class="feedback-box">
-                        <p>This is a detailed description of the content that needs to be approved. It includes specific information, requirements, and the purpose of the document.</p>
-                        </div>
-                    </div>
-
-                    <div id="expandedContent" class="expanded-content" style="display: none;">
-                        <div class="detail-section">
-                            <h3>Question(s)</h3>
-                            <div class="question-item">
-                                <div class="question-header">
-                                    <span class="question-title">Question 1: What is the main feature of encapsulation in OOP?</span>
-                                    <span class="difficulty-badge">Easy</span>
-                                </div>
-                                <div class="question-options">
-                                    <div class="option incorrect">A. Inheriting behavior from another class <i class="fas fa-times"></i></div>
-                                    <div class="option correct">B. Hiding internal data from outside access <i class="fas fa-check"></i></div>
-                                    <div class="option incorrect">C. Defining multiple methods with the same name <i class="fas fa-times"></i></div>
-                                    <div class="option incorrect">D. Creating abstract classes <i class="fas fa-times"></i></div>
-                                </div>
-                                <div class="question-actions">
-                                    <button class="question-action-btn reject-btn">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                    <button class="question-action-btn approve-btn">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="question-item">
-                                <div class="question-header">
-                                    <span class="question-title">Question 1: What is the main feature of encapsulation in OOP?</span>
-                                    <span class="difficulty-badge">Easy</span>
-                                </div>
-                                <div class="question-options">
-                                    <div class="option incorrect">A. Inheriting behavior from another class <i class="fas fa-times"></i></div>
-                                    <div class="option correct">B. Hiding internal data from outside access <i class="fas fa-check"></i></div>
-                                    <div class="option incorrect">C. Defining multiple methods with the same name <i class="fas fa-times"></i></div>
-                                    <div class="option incorrect">D. Creating abstract classes <i class="fas fa-times"></i></div>
-                                </div>
-                                <div class="question-actions">
-                                    <button class="question-action-btn reject-btn">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                    <button class="question-action-btn approve-btn">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="question-item">
-                                <div class="question-header">
-                                    <span class="question-title">Question 1: What is the main feature of encapsulation in OOP?</span>
-                                    <span class="difficulty-badge">Easy</span>
-                                </div>
-                                <div class="question-options">
-                                    <div class="option incorrect">A. Inheriting behavior from another class <i class="fas fa-times"></i></div>
-                                    <div class="option correct">B. Hiding internal data from outside access <i class="fas fa-check"></i></div>
-                                    <div class="option incorrect">C. Defining multiple methods with the same name <i class="fas fa-times"></i></div>
-                                    <div class="option incorrect">D. Creating abstract classes <i class="fas fa-times"></i></div>
-                                </div>
-                                <div class="question-actions">
-                                    <button class="question-action-btn reject-btn">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                    <button class="question-action-btn approve-btn">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="see-more-container">
-                        <button class="see-more-btn" onclick="toggleExpand()">See more...</button>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="reject-btn-modal">
-                        <i class="fas fa-times"></i> Reject
-                    </button>
-                    <button class="approve-btn-modal">
-                        <i class="fas fa-check"></i> Approve
-                    </button>
                 </div>
             </div>
+
+            <div class="modal-footer">
+                <button class="submit-btn">Submit</button>
+            </div>
         </div>
+    </div>
 
-        <!-- JavaScript -->
-        <script>
-            function openNewAssignModal() {
-                document.getElementById('newAssignModal').style.display = 'block';
+    
+    <!-- Details Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content details-modal">
+            <div class="modal-header">
+                <h2>Details</h2>
+                <div class="header-actions">
+                    <span class="close" onclick="closeDetailsModal()">&times;</span>
+                </div>
+            </div>
+            <p class="modal-subtitle">Detailed information about the assignment Due: <span
+                    class="due-date">2025-25-05</span></p>
+
+            <div class="details-content">
+                <div class="detail-section">
+                    <h3>Lecturer</h3>
+                    <div class="lecturer-info">
+                        <span>Nguyen Van A - 1001</span>
+                        <button class="download-btn">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Title</h3>
+                    <p>Midterm exam of the Object Oriented Programming subject</p>
+                </div>
+
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <h3>Total Question</h3>
+                        <p>4</p>
+                    </div>
+                    <div class="detail-item">
+                        <h3>Subject</h3>
+                        <p>Object Oriented Programming</p>
+                    </div>
+                    <div class="detail-item">
+                        <h3>Deadline</h3>
+                        <p>2025-25-05</p>
+                    </div>
+                    <div class="detail-item">
+                        <h3>Status</h3>
+                        <span class="status pending">Pending</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Description</h3>
+                    <p>This is a detailed description of the content that needs to be approved. It includes specific
+                        information, requirements, and the purpose of the document.</p>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Feedback</h3>
+                    <div class="feedback-box">
+                        <p>This is a detailed description of the content that needs to be approved. It includes specific
+                            information, requirements, and the purpose of the document.</p>
+                    </div>
+                </div>
+
+                <div id="expandedContent" class="expanded-content" style="display: none;">
+                    <div class="detail-section">
+                        <h3>Question(s)</h3>
+                        <div class="question-item">
+                            <div class="question-header">
+                                <span class="question-title">Question 1: What is the main feature of encapsulation in
+                                    OOP?</span>
+                                <span class="difficulty-badge">Easy</span>
+                            </div>
+                            <div class="question-options">
+                                <div class="option incorrect">A. Inheriting behavior from another class <i
+                                        class="fas fa-times"></i></div>
+                                <div class="option correct">B. Hiding internal data from outside access <i
+                                        class="fas fa-check"></i></div>
+                                <div class="option incorrect">C. Defining multiple methods with the same name <i
+                                        class="fas fa-times"></i></div>
+                                <div class="option incorrect">D. Creating abstract classes <i class="fas fa-times"></i>
+                                </div>
+                            </div>
+                            <div class="question-actions">
+                                <button class="question-action-btn reject-btn">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <button class="question-action-btn approve-btn">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-header">
+                                <span class="question-title">Question 1: What is the main feature of encapsulation in
+                                    OOP?</span>
+                                <span class="difficulty-badge">Easy</span>
+                            </div>
+                            <div class="question-options">
+                                <div class="option incorrect">A. Inheriting behavior from another class <i
+                                        class="fas fa-times"></i></div>
+                                <div class="option correct">B. Hiding internal data from outside access <i
+                                        class="fas fa-check"></i></div>
+                                <div class="option incorrect">C. Defining multiple methods with the same name <i
+                                        class="fas fa-times"></i></div>
+                                <div class="option incorrect">D. Creating abstract classes <i class="fas fa-times"></i>
+                                </div>
+                            </div>
+                            <div class="question-actions">
+                                <button class="question-action-btn reject-btn">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <button class="question-action-btn approve-btn">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="question-item">
+                            <div class="question-header">
+                                <span class="question-title">Question 1: What is the main feature of encapsulation in
+                                    OOP?</span>
+                                <span class="difficulty-badge">Easy</span>
+                            </div>
+                            <div class="question-options">
+                                <div class="option incorrect">A. Inheriting behavior from another class <i
+                                        class="fas fa-times"></i></div>
+                                <div class="option correct">B. Hiding internal data from outside access <i
+                                        class="fas fa-check"></i></div>
+                                <div class="option incorrect">C. Defining multiple methods with the same name <i
+                                        class="fas fa-times"></i></div>
+                                <div class="option incorrect">D. Creating abstract classes <i class="fas fa-times"></i>
+                                </div>
+                            </div>
+                            <div class="question-actions">
+                                <button class="question-action-btn reject-btn">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <button class="question-action-btn approve-btn">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="see-more-container">
+                    <button class="see-more-btn" onclick="toggleExpand()">See more...</button>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="reject-btn-modal">
+                    <i class="fas fa-times"></i> Reject
+                </button>
+                <button class="approve-btn-modal">
+                    <i class="fas fa-check"></i> Approve
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function openNewAssignModal() {
+            document.getElementById('newAssignModal').style.display = 'block';
+        }
+
+        function closeNewAssignModal() {
+            document.getElementById('newAssignModal').style.display = 'none';
+        }
+
+        function openDetailsModal(id) {
+            document.getElementById('detailsModal').style.display = 'block';
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('detailsModal').style.display = 'none';
+            // Reset expanded state
+            document.getElementById('expandedContent').style.display = 'none';
+            document.querySelector('.see-more-btn').textContent = 'See more...';
+            document.querySelector('.details-modal').classList.remove('expanded');
+        }
+
+        function toggleExpand() {
+            const expandedContent = document.getElementById('expandedContent');
+            const seeMoreBtn = document.querySelector('.see-more-btn');
+            const modal = document.querySelector('.details-modal');
+
+            if (expandedContent.style.display === 'none') {
+                expandedContent.style.display = 'block';
+                seeMoreBtn.textContent = 'See less...';
+                modal.classList.add('expanded');
+            } else {
+                expandedContent.style.display = 'none';
+                seeMoreBtn.textContent = 'See more...';
+                modal.classList.remove('expanded');
             }
+        }
 
-            function closeNewAssignModal() {
-                document.getElementById('newAssignModal').style.display = 'none';
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            const newAssignModal = document.getElementById('newAssignModal');
+            const detailsModal = document.getElementById('detailsModal');
+
+            if (event.target == newAssignModal) {
+                closeNewAssignModal();
             }
-
-            function openDetailsModal(id) {
-                document.getElementById('detailsModal').style.display = 'block';
+            if (event.target == detailsModal) {
+                closeDetailsModal();
             }
+        }
+    </script>
 
-            function closeDetailsModal() {
-                document.getElementById('detailsModal').style.display = 'none';
-                // Reset expanded state
-                document.getElementById('expandedContent').style.display = 'none';
-                document.querySelector('.see-more-btn').textContent = 'See more...';
-                document.querySelector('.details-modal').classList.remove('expanded');
-            }
+    <!-- ma nhung header vs menu -->
+    <script>
+        // Load header
+        fetch('../header_user.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+            });
 
-            function toggleExpand() {
-                const expandedContent = document.getElementById('expandedContent');
-                const seeMoreBtn = document.querySelector('.see-more-btn');
-                const modal = document.querySelector('.details-modal');
+        // Load menu
+        fetch('Menu-HED.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('menu-HTML').innerHTML = data;
+            });
 
-                if (expandedContent.style.display === 'none') {
-                    expandedContent.style.display = 'block';
-                    seeMoreBtn.textContent = 'See less...';
-                    modal.classList.add('expanded');
-                } else {
-                    expandedContent.style.display = 'none';
-                    seeMoreBtn.textContent = 'See more...';
-                    modal.classList.remove('expanded');
-                }
-            }
-
-            // Close modal when clicking outside
-            window.onclick = function(event) {
-                const newAssignModal = document.getElementById('newAssignModal');
-                const detailsModal = document.getElementById('detailsModal');
-                
-                if (event.target == newAssignModal) {
-                    closeNewAssignModal();
-                }
-                if (event.target == detailsModal) {
-                    closeDetailsModal();
-                }
-            }
-        </script>
-
-        <!-- ma nhung header vs menu -->
-        <script>
-            // Load header
-            fetch('../header_user.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('header-placeholder').innerHTML = data;
-                });
-
-            // Load menu
-            fetch('Menu-HED.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('menu-HTML').innerHTML = data;
-                });
-
-            const currentPath = window.location.pathname.split("/").pop(); // Lấy tên file HTML hiện tại
+        const currentPath = window.location.pathname.split("/").pop(); // Lấy tên file HTML hiện tại
         const menuItems = document.querySelectorAll('#Menu-Staff .elements');
 
         menuItems.forEach(item => {
@@ -517,6 +552,7 @@
                 item.classList.remove("active");
             }
         });
-        </script>
-    </body>
+    </script>
+</body>
+
 </html>

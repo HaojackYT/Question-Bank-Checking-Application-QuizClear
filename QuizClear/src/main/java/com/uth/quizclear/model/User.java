@@ -2,6 +2,7 @@ package com.uth.quizclear.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -10,8 +11,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor // Quan trọng để Lombok tạo constructor với tất cả các trường
+@AllArgsConstructor
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -28,30 +30,30 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private UserRole role; // Sử dụng enum UserRole
+    private UserRole role;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private UserStatus status; // Sử dụng enum UserStatus
+    private UserStatus status;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt; // Nullable, tự động cập nhật bởi DB
+    private LocalDateTime updatedAt;
 
     @Column(name = "department")
     private String department;
 
-    @Column(name = "start_date") // Đổi tên cột cho rõ ràng hơn (nếu trong DB là 'start')
+    @Column(name = "start")
     private LocalDateTime startDate;
 
-    @Column(name = "end_date") // Đổi tên cột cho rõ ràng hơn (nếu trong DB là 'end')
+    @Column(name = "end")
     private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
-    private Gender gender; // Sử dụng enum Gender
+    private Gender gender;
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
@@ -67,4 +69,16 @@ public class User {
 
     @Column(name = "contact_address")
     private String contactAddress;
+
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
+    @Column(name = "last_login")
+    private LocalDateTime lastLogin;
+
+    @Column(name = "login_attempts")
+    private Integer loginAttempts;
+
+    @Column(name = "is_locked")
+    private Boolean isLocked;
 }

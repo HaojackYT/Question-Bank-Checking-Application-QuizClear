@@ -1,20 +1,19 @@
 /* Dashboard Header */
-.dashboard-header {
-    margin-bottom: 1.875rem;
-}
-
-.dashboard-header h1 {
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: #1e293b;
+.title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #120368;
     margin: 0 0 0.5rem 0;
 }
 
-.welcome-text {
-    color: #64748b;
+.subtitle {
+    color: #6c757d;
     font-size: 1rem;
-    line-height: 1.5;
     margin: 0;
+}
+
+.dashboard-header {
+    margin-bottom: 1.875rem;
 }
 
 /* Statistics Grid */
@@ -35,7 +34,7 @@
 
 .stat-label {
     font-size: 0.85rem;
-    color: #4338ca;
+    color: #120368;
     font-weight: 600;
     margin-bottom: 0.5rem;
 }
@@ -43,13 +42,13 @@
 .stat-number {
     font-size: 2.2rem;
     font-weight: 700;
-    color: #312e81;
+    color: #120368;
     margin-bottom: 0.3125rem;
 }
 
 .stat-change {
     font-size: 0.8rem;
-    color: #6366f1;
+    color: #6b7280;
     font-weight: 500;
 }
 
@@ -61,14 +60,17 @@
     margin-bottom: 1.875rem;
 }
 
-.chart-container, .progress-container {
+.chart-container,
+.progress-container {
     background: white;
     padding: 1.5625rem;
     border-radius: 0.75rem;
-    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
+    border: 1px solid #E0EAFA;
 }
 
-.chart-container h2, .progress-container h3, .recent-updates h3 {
+.chart-container h2,
+.progress-container h3,
+.recent-updates h3 {
     font-size: 1.25rem;
     font-weight: 600;
     color: #1e293b;
@@ -94,7 +96,7 @@
     margin-bottom: 0.625rem;
     margin-top: 5rem;
     position: relative;
-    background-image: 
+    background-image:
         linear-gradient(to right, #e5e7eb 1px, transparent 1px),
         linear-gradient(to top, #e5e7eb 1px, transparent 1px);
     background-size: 3.75rem 1.5rem;
@@ -232,7 +234,7 @@
     background: white;
     padding: 1.5625rem;
     border-radius: 0.75rem;
-    box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08);
+    border: 1px solid #E0EAFA;
 }
 
 .updates-list {
