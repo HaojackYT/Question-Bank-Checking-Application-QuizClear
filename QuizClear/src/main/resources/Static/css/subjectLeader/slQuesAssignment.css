@@ -1,161 +1,136 @@
 /* slQuesAssignment.css */
+.assignment-header {
+    margin-bottom: 2rem;
+}
 
 .assignment-header h1 {
-    color: #000000;
-    margin-bottom: 0.3125rem;
-    margin-left: 0.9375rem;
-    font-size: 2.375rem;
+    font-size: 2.25rem;
+    font-weight: bold;
+    color: #120368;
+    margin: 0;
 }
 
 .assignment-header p {
-    color: #6c757d;
-    font-size: 0.875rem;
-    margin-bottom: 1.875rem;
-    margin-left: 0.9375rem;
+    color: #718096;
+    font-size: 1rem;
+    margin: 0;
 }
 
 /* Container cho các hành động (search, filter, button) */
 .assignment-actions {
     display: flex;
-    gap: 1.25rem;
     align-items: center;
-    margin-bottom: 1.875rem;
-    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
-.search-bar {
+.search-filter-bar {
     display: flex;
+    gap: 2.5rem;
     align-items: center;
-    background-color: #e0f2f7;
-    border-radius: 1.5625rem;
-    box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.08);
-    flex-grow: 1;
+    flex: 1;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
     max-width: 25rem;
-    padding: 0.5rem 0.9375rem;
-    border: none;
-    overflow: hidden;
 }
 
-.search-bar input {
-    flex-grow: 1;
-    padding: 0;
-    border: none;
-    background-color: transparent;
-    font-size: 0.9375rem;
-    color: #34495e;
+.search-input {
+    width: 100%;
+    padding: 0.75rem 3.125rem 0.75rem 1rem;
+    border: 0.0625rem solid #dee2e6;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background-color: white;
+    transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
     outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.1875rem rgba(0, 123, 255, 0.1);
 }
 
-.search-bar input::placeholder {
-    color: #8c979d;
-}
-
-.search-bar button {
-    background-color: transparent;
-    color: #495057;
+.search-btn {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
     border: none;
-    padding: 0 0.5rem;
+    color: #6c757d;
     cursor: pointer;
-    font-size: 1.125rem;
-    transition: color 0.2s ease;
-}
-
-.search-bar button:hover {
-    color: #007bff;
 }
 
 .filter-dropdown {
-    display: inline-block;
+    position: relative;
+    min-width: 11.25rem;
 }
 
-.filter-dropdown select {
-    padding: 0.625rem 3.125rem 0.625rem 0.9375rem;
-    border: 0.0625rem solid #a7d9ef;
-    border-radius: 0.625rem;
-    font-size: 0.9375rem;
+.filter-select {
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    border: 0.0625rem solid #dee2e6;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
     background-color: white;
-    color: #34495e;
-    outline: none;
     cursor: pointer;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
-    background-image: url('data:image/svg+xml;utf8,<svg fill="%23343a40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
-    background-repeat: no-repeat;
-    background-position-x: calc(100% - 0.9375rem);
-    background-position-y: 50%;
-    box-shadow: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.filter-dropdown select:hover {
-    border-color: #7fc6e6;
-}
-
-.filter-dropdown select:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 0 0.1875rem rgba(52, 152, 219, 0.2);
+.filter-dropdown i {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    pointer-events: none;
 }
 
 .new-assign-button {
-    margin-left: 18.75rem; /* Điều chỉnh lại khoảng cách nếu cần, hoặc dùng auto margin */
-    background-color: #007bff;
-    color: white;
+    background: #49AFE8;
+    color: #000;
     border: none;
-    padding: 0.625rem 0.9375rem;
+    padding: 0.75rem 1.25rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-size: 1.25rem;
+    font-size: 0.875rem;
+    font-weight: bold;
     display: flex;
     align-items: center;
-    gap: 0.3125rem;
-    transition: background-color 0.2s ease;
+    gap: 0.5rem;
+    transition: background-color 0.3s;
 }
 
 .new-assign-button:hover {
     background-color: #0056b3;
 }
 
-/* CONTAINER BẢNG */
-.assignment-table-container {
-    overflow-x: auto;
-    background-color: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
-    margin-top: 1.25rem;
-}
-
 /* BẢNG CHÍNH */
-.assignment-table {
+table {
     width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-    color: #333;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 0.0625rem solid #D9D9D9;
+    border-radius: 0.3125rem;
 }
 
-/* TIÊU ĐỀ BẢNG (TH và TD) */
-.assignment-table th,
-.assignment-table td {
-    padding: 0.75rem 1.25rem;
+th,
+td {
+    padding: 0.75rem 0.9375rem;
     text-align: left;
-    border-bottom: 0.0625rem solid #eee;
+    border-bottom: 0.0625rem solid #D9D9D9;
 }
 
-.assignment-table th {
-    background-color: #D9D9D9;
-    font-weight: 600;
-    color: #000000;
-    white-space: nowrap;
-}
-
-/* BỎ ĐƯỜNG VIỀN DƯỚI CÙNG CỦA HÀNG CUỐI CÙNG */
-.assignment-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-/* HIỆU ỨNG HOVER */
-.assignment-table tbody tr:hover {
+th {
     background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: #f9f9f9;
 }
 
 /* CÁC BADGE TRẠNG THÁI (Điều chỉnh màu sắc và bo góc để khớp hình ảnh mới nhất) */
@@ -167,21 +142,19 @@
     font-weight: 600;
     text-transform: capitalize;
     text-align: center;
+    color: white;
 }
 
 .status.completed {
-    background-color: #E4FFE9;
-    color: #2e2d2d;
+    background: #43A047;
 }
 
 .status.in-progress {
-    background-color: #FAFFC8;
-    color: #2e2d2d;
+    background: #1E88E5;
 }
 
 .status.not-started {
-    background-color: #FAFFC8;
-    color: #2e2d2d;
+    background-color: #2e2d2d;
 }
 
 /* CÁC NÚT HÀNH ĐỘNG (VIEW, EDIT - Điều chỉnh biểu tượng và kích thước) */
@@ -226,7 +199,7 @@
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0, 0, 0, 0.4);
     /* BỎ display: flex; KHỎI ĐÂY */
 }
 
@@ -241,7 +214,7 @@
     background-color: #fff;
     padding: 1.25rem;
     border-radius: 0.5rem;
-    box-shadow: 0 0 0.625rem rgba(0,0,0,0.2);
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.2);
     width: 90%;
     max-width: 37.5rem;
     position: relative;
@@ -249,8 +222,15 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-1.25rem); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-1.25rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .close-button {
@@ -349,12 +329,14 @@
 }
 
 /* Kiểu nút chính (Assign, Save) */
-.submit-button, .save-button {
+.submit-button,
+.save-button {
     background-color: #007bff;
     color: white;
 }
 
-.submit-button:hover, .save-button:hover {
+.submit-button:hover,
+.save-button:hover {
     background-color: #0056b3;
 }
 
