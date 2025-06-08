@@ -1,3 +1,5 @@
+<!-- đáp án đúng sẽ lấy từ csdl và so sánh với đáp án mà giảng viên chọn đã chọn ở phần -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,6 +10,7 @@
     <link rel="stylesheet" href="../../Static/header.css">
     <link rel="stylesheet" href="../../Static/web_styles.css">
     <link rel="stylesheet" href="../../Static/css/Lecturer/L-EXE_Feedbackdraft.css">
+    <link rel="stylesheet" href="../../Static/css/Lecturer/L-EXE_Feedbacksave.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>ExamEvaluation</title>
 </head>
@@ -25,8 +28,8 @@
         <div id="main">
             <!-- Tab Navigation -->
             <div class="tab-container">
-                <button class="tab-button">Task the test</button>
-                <button class="tab-button active">Feedback</button>
+                <button class="tab-button active">Task the test</button>
+                <button class="tab-button ">Feedback</button>
             </div>
 
             <!-- Exam Information -->
@@ -34,21 +37,21 @@
                 <div class="exam-details">
                     <div class="detail-row">
                         <span class="label">Title :</span>
-                        <span class="value">Middle Exam</span>
+                        <span class="value" id="title">Middle Exam</span>
                     </div>
                     <div class="detail-row">
                         <span class="label">Subject :</span>
-                        <span class="value">Database System</span>
+                        <span class="value" id="subject">Database System</span>
                     </div>
                 </div>
                 <div class="exam-stats">
                     <div class="detail-row">
                         <span class="label">Total Question :</span>
-                        <span class="value">90</span>
+                        <span class="value" id="Total_Question">90</span>
                     </div>
                     <div class="detail-row">
                         <span class="label">Test Duration :</span>
-                        <span class="value">90:00</span>
+                        <p><span class="value" id="test-duration">90</span>:00</p>
                     </div>
                 </div>
             </div>
@@ -66,28 +69,28 @@
                         <div class="answer-icon correct">
                             <i class="fas fa-check"></i>
                         </div>
-                        <input type="text" class="answer-input" placeholder>
+                        <span class="answer-input">Dap an lay tu csdl</span>
                     </div>
 
                     <div class="answer-row">
                         <div class="answer-icon incorrect">
                             <i class="fas fa-times"></i>
                         </div>
-                        <input type="text" class="answer-input" placeholder>
+                        <span class="answer-input">Dap an lay tu csdl</span>
                     </div>
 
                     <div class="answer-row">
                         <div class="answer-icon">
                             <input type="checkbox" class="checkbox">
                         </div>
-                        <input type="text" class="answer-input" placeholder>
+                        <span class="answer-input">Dap an lay tu csdl</span>
                     </div>
 
                     <div class="answer-row">
                         <div class="answer-icon">
                             <input type="checkbox" class="checkbox">
                         </div>
-                        <input type="text" class="answer-input" placeholder>
+                        <span class="answer-input">Dap an lay tu csdl</span>
                     </div>
                 </div>
 
@@ -111,12 +114,12 @@
 
             <!-- Action Buttons -->
             <div class="action-controls">
-                <button class="action-button draft">
+                <a href="leturer_ExamEvaluation.html"><button class="action-button draft">
                     <i class="fas fa-save"></i> Save Draft
-                </button>
-                <button class="action-button save">
-                    <i class="fas fa-check"></i> Save
-                </button>
+                </button></a>
+                <a href="L-EXE_FeedbackEXam.html"><button class="action-button save">
+                    <i class="fas fa-check"></i> Next Step
+                </button></a>
             </div>
 
             <!-- ma nhung header vs menu -->

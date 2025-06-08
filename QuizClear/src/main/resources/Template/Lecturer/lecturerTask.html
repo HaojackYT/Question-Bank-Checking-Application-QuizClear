@@ -253,31 +253,167 @@
             setActiveMenu(document.title);
         });
 
-    document.getElementById("subject-select").addEventListener("change", function () {
-        const selectedStatus = this.value.toLowerCase();
-        const rows = document.querySelectorAll("tbody tr");
+    document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.querySelector('#search');
+    const statusSelect = document.getElementById('subject-select');
+    const overlay = document.getElementById('overlay');
+    const closeButton = document.querySelector('.modal .close');
+    const acceptButton = document.querySelector('.modal .button-group button');
+    const rows = document.querySelectorAll('.course-table tbody tr');
+    let currentRow = null;
 
-        rows.forEach(row => {
-            const statusDiv = row.querySelector(".status");
-            const statusText = statusDiv ? statusDiv.textContent.trim().toLowerCase() : "";
+    // Kiểm tra các phần tử cần thiết
+    if (!overlay) {
+        console.error('Element with id "overlay" not found.');
+        return;
+    }
+    if (!closeButton) {
+        console.warn('Close button not found.');
+    }
+    if (!acceptButton) {
+        console.warn('Accept button not found.');
+    }
+    if (!searchInput) {
+        console.warn('Search input not found.');
+    }
+    if (!statusSelect) {
+        console.warn('Status select not found.');
+    }
 
-            if (selectedStatus === "all") {
-                row.style.display = "";
-            } else {
-                row.style.display = (statusText === selectedStatus) ? "" : "none";
+    // Hàm mở modal
+    function openModal() {
+        overlay.style.display = 'flex';
+    }
+
+    // Hàm đóng modal
+    function closeModal() {
+        overlay.style.display = 'none';
+    }
+
+    // Hàm chuyển hướng đến trang gửi task
+    function goToSendTask() {
+        window.location.href = 'lecturerTFromSendTask.html';
+    }
+
+    // Xử lý icon paper-plane và nút View
+    rows.forEach(row => {
+        const statusDiv = row.querySelector('.status');
+        const statusText = statusDiv ? statusDiv.textContent.trim().toLowerCase() : '';
+        const paperPlaneIcon = row.querySelector('.fa-paper-plane');
+        const viewIcon = row.querySelector('.fa-eye');
+
+        // Vô hiệu hóa paper-plane nếu trạng thái là Not Received
+        if (statusText === 'not received') {
+            paperPlaneIcon.style.opacity = '0.5';
+            paperPlaneIcon.style.cursor = 'not-allowed';
+            paperPlaneIcon.removeAttribute('onclick');
+        } else {
+            paperPlaneIcon.style.opacity = '1';
+            paperPlaneIcon.style.cursor = 'pointer';
+            paperPlaneIcon.onclick = goToSendTask;
+        }
+
+        // Thêm sự kiện cho nút View
+        if (viewIcon) {
+            viewIcon.addEventListener('click', () => {
+                currentRow = row;
+                const statusText = currentRow.querySelector('.status').textContent.trim().toLowerCase();
+                const modalStatus = document.querySelector('.modal .status');
+                
+                // Cập nhật trạng thái trong modal
+                if (modalStatus) {
+                    modalStatus.textContent = statusText.replace(/(^\w|\s\w)/g, letter => letter.toUpperCase());
+                    modalStatus.className = `status status-${statusText.charAt(0)}`;
+                }
+
+                // Vô hiệu hóa và làm mờ nút Accept nếu không phải Not Received
+                if (acceptButton) {
+                    acceptButton.classList.remove('faded');
+                    acceptButton.disabled = false;
+                    if (statusText !== 'not received') {
+                        acceptButton.classList.add('faded');
+                        acceptButton.disabled = true;
+                    }
+                }
+
+                openModal();
+            });
+        }
+    });
+
+    // Xử lý nút Accept
+    if (acceptButton) {
+        acceptButton.addEventListener('click', () => {
+            if (currentRow) {
+                const statusDiv = currentRow.querySelector('.status');
+                const paperPlaneIcon = currentRow.querySelector('.fa-paper-plane');
+                const modalStatus = document.querySelector('.modal .status');
+
+                // Cập nhật trạng thái thành In Progress
+                statusDiv.textContent = 'In Progress';
+                statusDiv.className = 'status status-i';
+                if (modalStatus) {
+                    modalStatus.textContent = 'In Progress';
+                    modalStatus.className = 'status status-i';
+                }
+
+                // Làm mờ và vô hiệu hóa nút Accept
+                acceptButton.classList.add('faded');
+                acceptButton.disabled = true;
+
+                // Kích hoạt paper-plane
+                if (paperPlaneIcon) {
+                    paperPlaneIcon.style.opacity = '1';
+                    paperPlaneIcon.style.cursor = 'pointer';
+                    paperPlaneIcon.onclick = goToSendTask;
+                }
+
+                closeModal();
             }
         });
-    });
-    function openModal() {
-        document.getElementById("overlay").style.display = "flex";
     }
 
-    function closeModal() {
-        document.getElementById("overlay").style.display = "none";
+    // Xử lý tìm kiếm
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            const searchText = searchInput.value.trim().toLowerCase();
+
+            rows.forEach(row => {
+                const subject = row.querySelector('td:nth-child(1)').textContent.trim().toLowerCase();
+                const description = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+
+                if (subject.includes(searchText) || description.includes(searchText)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
     }
-    function goToSendTask() {
-        window.location.href = "lecturerTFromSendTask.html";
+
+    // Xử lý lọc trạng thái
+    if (statusSelect) {
+        statusSelect.addEventListener('change', () => {
+            const selectedStatus = statusSelect.value.toLowerCase();
+
+            rows.forEach(row => {
+                const statusText = row.querySelector('.status').textContent.trim().toLowerCase();
+
+                if (selectedStatus === 'all' || statusText === selectedStatus) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
     }
+
+    // Xử lý nút Close
+    if (closeButton) {
+        closeButton.addEventListener('click', closeModal);
+    }
+});
 </script>
 <script src="../../Static/js/L_activeMenu.js"></script>
+
 </html>
