@@ -41,13 +41,17 @@ public class User {
     @Column(name = "role", nullable = false)
     private Role role;
 
+    // TODO: ACTIVE
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private UserStatus status;
+    private Status status;
 
+    // TODO: DEFAULT CURRENT_TIMESTAMP
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
     
+    // TODO: DEFAULT NULL
+    // ON UPDATE CURRENT_TIMESTAMP
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -81,9 +85,11 @@ public class User {
     @Column(name = "last_login")
     private LocalDateTime lastLogin; 
 
+    // TODO: DEFAULT 0
     @Column(name = "login_attempts")
     private Integer loginAttempts; 
 
+    // TODO: DEFAULT FALSE
     @Column(name = "is_locked")
     private Boolean isLocked;
 
