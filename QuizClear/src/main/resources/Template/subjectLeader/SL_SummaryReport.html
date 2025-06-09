@@ -27,13 +27,14 @@
             <div id="summaryReportPage" class="page-content">
                 <div class="page-header">
                     <h1>Summary Report</h1>
-                    <p class="page-subtitle">Overview of approved questions ready to submit to department heads or R&D</p>
+                    <p class="page-subtitle">Overview of approved questions ready to submit to department heads or R&D
+                    </p>
                 </div>
 
-                <div class="actions-section">
-                    <div class="search-filter-section">
+                <div class="search-filter-section">
+                    <div class="search-filter-bar">
                         <div class="search-box">
-                            <input type="text" placeholder="Enter search content..." class="search-input">
+                            <input type="text" placeholder="Enter search content ..." class="search-input">
                             <button class="search-btn">
                                 <i class="fas fa-search"></i>
                             </button>
@@ -48,11 +49,13 @@
                             <i class="fas fa-chevron-down"></i>
                         </div>
                     </div>
+
                     <button class="new-summary-btn" onclick="openNewSummaryModal()">
                         <span class="plus-icon">+</span>
-                        New assign
+                        New Summary
                     </button>
                 </div>
+
 
                 <div class="summary-table">
                     <table>
@@ -76,7 +79,8 @@
                                 <td><span class="fb-status received">Received</span></td>
                                 <td><span class="status completed">Completed</span></td>
                                 <td>
-                                    <button class="action-btn view" onclick="viewSummaryDetails('DB_S102')" title="View">
+                                    <button class="action-btn view" onclick="viewSummaryDetails('DB_S102')"
+                                        title="View">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </td>
@@ -89,7 +93,8 @@
                                 <td><span class="fb-status not-received">Not Received</span></td>
                                 <td><span class="status draft">Draft</span></td>
                                 <td>
-                                    <button class="action-btn view" onclick="viewSummaryDetails('DB_S102')" title="View">
+                                    <button class="action-btn view" onclick="viewSummaryDetails('DB_S102')"
+                                        title="View">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                     <button class="action-btn edit" onclick="editSummary('DB_S102')" title="Edit">
@@ -105,7 +110,8 @@
                                 <td><span class="fb-status not-received">Not Received</span></td>
                                 <td><span class="status pending">Pending</span></td>
                                 <td>
-                                    <button class="action-btn view" onclick="viewSummaryDetails('DB_S102')" title="View">
+                                    <button class="action-btn view" onclick="viewSummaryDetails('DB_S102')"
+                                        title="View">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                     <button class="action-btn edit" onclick="editSummary('DB_S102')" title="Edit">
@@ -235,7 +241,7 @@
                         <input type="text" id="summaryRecipient" placeholder="Department Head" class="form-input">
                     </div>
                 </div>
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label>Total Ques.</label>
@@ -262,7 +268,9 @@
 
                 <div class="form-group full-width">
                     <label>Notes</label>
-                    <textarea id="summaryNotes" placeholder="Please prepare the exam questions based on the course content, covering different levels of difficulty and question types where appropriate." class="form-textarea"></textarea>
+                    <textarea id="summaryNotes"
+                        placeholder="Please prepare the exam questions based on the course content, covering different levels of difficulty and question types where appropriate."
+                        class="form-textarea"></textarea>
                 </div>
             </div>
         </div>
@@ -339,7 +347,7 @@
             // Create summary logic
             const title = document.getElementById('summaryTitle').value;
             const recipient = document.getElementById('summaryRecipient').value;
-            
+
             if (title && recipient) {
                 alert('Summary created successfully!');
                 closeNewSummaryModal();
@@ -353,10 +361,11 @@
         document.getElementById('modalOverlay').addEventListener('click', closeNewSummaryModal);
 
         // Prevent modal from closing when clicking inside modal
-        document.getElementById('newSummaryModal').addEventListener('click', function(e) {
+        document.getElementById('newSummaryModal').addEventListener('click', function (e) {
             e.stopPropagation();
         });
     </script>
 
 </body>
+
 </html>
