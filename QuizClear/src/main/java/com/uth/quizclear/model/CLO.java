@@ -22,6 +22,23 @@ public class CLO {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
+
+    @Column(name = "type")
+    private String type;
+
+    @Column(name = "percentage")
+    private Double percentage;
+
+    @Transient
+    private Integer questionsCount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status; // Hoặc CLOStatus nếu bạn quyết định tạo enum riêng
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 

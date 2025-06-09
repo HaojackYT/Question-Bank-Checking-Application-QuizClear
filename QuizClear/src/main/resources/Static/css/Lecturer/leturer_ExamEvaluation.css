@@ -1,44 +1,90 @@
 /* Exam Evaluation Styles */
 .exam-evaluation-container {
-    padding: 2rem;
-    background-color: #f8f9fa;
+    padding: 1.55rem;
     min-height: 100vh;
 }
 
 .page-title {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #2d1b69;
-    margin-bottom: 1.5rem;
-    font-family: 'RocknRoll One', sans-serif;
+    color: #120368;
+    font-size: 2.25rem;
+    margin-bottom: 1.25rem;
+    font-weight: 800;
 }
 
 /* Tab Navigation */
-.tab-navigation {
+.nav-tabs {
     display: flex;
-    margin-bottom: 1.5rem;
-    gap: 0.5rem;
+    gap: 0;
+    margin-bottom: 1.25rem;
+    flex-shrink: 0;
 }
 
 .tab-btn {
-    padding: 0.75rem 1.5rem;
+    padding: 0.625rem 1.5rem;
     border: none;
     background-color: #e9ecef;
     color: #6c757d;
+    cursor: pointer;
+    border-radius: 0;
     font-size: 0.875rem;
     font-weight: 500;
-    cursor: pointer;
-    border-radius: 0.5rem;
     transition: all 0.3s ease;
 }
 
-.tab-btn:hover {
-    background-color: #dee2e6;
+.tab-btn:first-child {
+    border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.tab-btn:last-child {
+    border-radius: 0 0.25rem 0.25rem 0;
 }
 
 .tab-btn.active {
-    background-color: #2d1b69;
+    background-color: #120368;
     color: white;
+}
+
+.tab-btn:hover:not(.active) {
+    background-color: #dee2e6;
+}
+
+.search-container {
+    flex: 1;
+    max-width: 21.875rem;
+    position: relative;
+    margin-bottom: 1.875rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background-color: white;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #4c63d2;
+    box-shadow: 0 0 0 0.125rem rgba(76, 99, 210, 0.2);
+}
+
+.search-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.tab-search-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.875rem;
 }
 
 /* Controls Section */
@@ -156,16 +202,21 @@
     text-align: center;
     display: inline-block;
     min-width: 5rem;
+    color: black !important;
 }
 
 .status-badge.draft {
     background-color: #ffeaa7;
-    color: #d63031;
+}
+.status-badge.Not_received {
+    background-color: #FEA2A2;
+}
+.status-badge.Inprocess {
+    background-color: #ffeaa7;
 }
 
 .status-badge.submitted {
     background-color: #55efc4;
-    color: #00b894;
 }
 
 /* Action Buttons */
@@ -214,50 +265,183 @@
     .exam-evaluation-container {
         padding: 1rem;
     }
-    
+
     .controls-section {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .search-container {
         max-width: none;
     }
-    
+
     .tab-navigation {
         flex-wrap: wrap;
     }
-    
+
     .exam-table {
         font-size: 0.75rem;
     }
-    
+
     .exam-table th,
     .exam-table td {
         padding: 0.75rem 0.5rem;
     }
-    
+
     .page-title {
         font-size: 1.5rem;
     }
 }
 
 @media (max-width: 480px) {
+
     .exam-table th:nth-child(3),
     .exam-table td:nth-child(3),
     .exam-table th:nth-child(4),
     .exam-table td:nth-child(4) {
         display: none;
     }
-    
+
     .action-buttons {
         flex-direction: column;
         gap: 0.25rem;
     }
-    
+
     .status-badge {
         font-size: 0.625rem;
         padding: 0.25rem 0.5rem;
         min-width: 4rem;
     }
+}
+
+/* ====================test and feedback==================== */
+#container {
+    display: none; /* Ẩn mặc định */
+    position: fixed; /* Đặt vị trí cố định để căn giữa */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Căn giữa theo chiều dọc và ngang */
+    background-color: rgba(0, 0, 0, 0.5); /* Nền mờ để làm nổi bật infor_container */
+    width: 100%; /* Chiếm toàn bộ chiều rộng */
+    height: 100%; /* Chiếm toàn bộ chiều cao */
+    z-index: 1000; /* Đảm bảo container nằm trên các phần tử khác */
+    display: flex; /* Sử dụng flex để căn giữa infor_container */
+    justify-content: center; /* Căn giữa ngang */
+    align-items: center; /* Căn giữa dọc */
+}
+
+#infor_container {
+    border: 0.0625rem solid #ccc;
+    border-radius: 0.625rem;
+    padding: 1.25rem;
+    width: 80%;
+    background-color: #fff;
+    height: 420px;
+    position: relative;
+}
+
+#close-btn {
+    position: absolute; /* Đặt nút X ở góc trên bên phải */
+    top: 10px;
+    right: 10px;
+    background-color: #ff4d4d; /* Màu đỏ cho nút X */
+    color: white;
+    border: none;
+    border-radius: 50%; /* Hình tròn */
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu mượt */
+}
+
+#close-btn:hover {
+    background-color: #cc0000; /* Màu đỏ đậm khi hover */
+}
+
+#infor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+#title {
+    font-size: 2.25rem;
+    font-weight: bolder;
+    color: #110553;
+}
+
+.infor {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0.625rem 0;
+    width: 100%;
+}
+
+.infor p {
+    font-size: 1.375rem;
+    width: 20%;
+    font-weight: 500;
+}
+
+.infor span {
+    width: 80%;
+    font-size: 1.25rem;
+    color: #5B5B5B;
+    border: 0.0625rem solid #D9D9D9;
+    border-radius: 0.625rem;
+    padding: 0.3125rem;
+}
+
+.infor .doubleInfor {
+    width: 49%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.doubleInfor p {
+    width: 55%;
+}
+
+.fourInfor {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.fourInfor p {
+    width: 80%;
+    margin-right: 5%;
+}
+
+#infor_container #accept {
+    width: 11.375rem;
+    height: 3.1875rem;
+    background-color: #0023AE;
+    color: white;
+    border-radius: 0.625rem;
+    font-size: 1.375rem;
+    font-weight: 450;
+    float: right;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease, opacity 0.3s; /* Hiệu ứng bay lên và làm mờ */
+}
+
+#infor_container #accept:hover {
+    transform: translateY(-5px); /* Bay lên 5px khi hover */
+}
+
+#infor_container #accept.faded {
+    opacity: 0.5; /* Làm mờ nút Accept */
+    pointer-events: none; /* Vô hiệu hóa tương tác */
 }

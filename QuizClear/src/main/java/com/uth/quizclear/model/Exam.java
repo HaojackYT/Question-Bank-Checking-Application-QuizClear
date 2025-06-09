@@ -1,14 +1,19 @@
 package com.uth.quizclear.model;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 
 import java.time.LocalDateTime;
 
@@ -16,83 +21,107 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 @Entity
-@Table(name = "EXAMS")
+@Table(name = "Exams")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Exam {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "exam_id")
-    private Integer examId; // ID đề thi
+    private Integer examId;
 
-    @Column(name = "course_id", nullable = false)
-    private Integer courseId; // Khóa học liên quan
+    @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
 
-    @Column(name = "plan_id")
-    private Integer planId; // Kế hoạch đề thi
+    @ManyToOne
+    @JoinColumn(name = "plan_id")
+    private Plan plan; 
 
     @Column(name = "exam_title", nullable = false)
-    private String examTitle; // Tiêu đề đề thi
+    private String examTitle; 
 
     @Column(name = "exam_code", unique = true)
-    private String examCode; // Mã đề thi
+    private String examCode;
 
     @Column(name = "duration_minutes")
-    private Integer durationMinutes; // Thời gian làm bài (phút)
+    private Integer durationMinutes;
 
-    @JdbcTypeCode(SqlTypes.JSON) // Ánh xạ kiểu JSON từ MySQL
-    @Column(name = "difficulty_distribution", columnDefinition = "json")
-    private String difficultyDistribution; // Phân bố độ khó (dạng JSON string)
+    @Column(name = "total_marks")
+    private Double totalMarks;
 
-    @Enumerated(EnumType.STRING) // Ánh xạ Enum sang String trong cơ sở dữ liệu
-    @Column(name = "status", nullable = false)
-    private ExamStatus status = ExamStatus.DRAFT; // Trạng thái đề thi
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "difficulty_distribution")
+    private String difficultyDistribution;
 
-    @Column(name = "created_by")
-    private Integer createdBy; // Người tạo đề thi
+    // TODO: DEFAULT 'DRAFT'
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private ExamStatus status;
 
-    @Column(name = "created_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt = LocalDateTime.now(); // Ngày tạo
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
 
-    @Column(name = "hidden", nullable = false)
-    private Boolean hidden = true; // Ẩn/hiện đề thi
+    // TODO: DEFAULT CURRENT_TIMESTAMP
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    // Enum cho trạng thái đề thi
-    public enum ExamStatus {
-        DRAFT,      // Bản nháp
-        SUBMITTED,  // Đã nộp
-        APPROVED,   // Đã duyệt
-        FINALIZED   // Đã hoàn tất
-    }
+    // TODO: DEFAULT NULL
+    // TODO: ON UPDATE CURRENT_TIMESTAMP
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-    public Integer getExamId() { return examId; }
-    public void setExamId(Integer examId) { this.examId = examId; }
+    @Column(name = "submitted_at")
+    private LocalDateTime submittedAt; 
 
-    public Integer getCourseId() { return courseId; }
-    public void setCourseId(Integer courseId) { this.courseId = courseId; }
+    @Column(name = "reviewed_at")
+    private LocalDateTime reviewedAt;
 
-    public Integer getPlanId() { return planId; }
-    public void setPlanId(Integer planId) { this.planId = planId; }
+    @ManyToOne
+    @JoinColumn(name = "reviewed_by")
+    private User reviewedBy;
 
-    public String getExamTitle() { return examTitle; }
-    public void setExamTitle(String examTitle) { this.examTitle = examTitle; }
+    @Column(name = "approved_at")
+    private LocalDateTime approvedAt; 
 
-    public String getExamCode() { return examCode; }
-    public void setExamCode(String examCode) { this.examCode = examCode; }
+    @ManyToOne
+    @JoinColumn(name = "approved_by")
+    private User approvedBy;
 
-    public Integer getDurationMinutes() { return durationMinutes; }
-    public void setDurationMinutes(Integer durationMinutes) { this.durationMinutes = durationMinutes; }
+    // TODO: TRUE
+    @Column(name = "hidden")
+    private Boolean hidden;
 
-    public String getDifficultyDistribution() { return difficultyDistribution; }
-    public void setDifficultyDistribution(String difficultyDistribution) { this.difficultyDistribution = difficultyDistribution; }
+    // TODO: DEFAULT 'QUIZ'
+    @Enumerated(EnumType.STRING)
+    @Column(name = "exam_type")
+    private ExamType examType;
 
-    public ExamStatus getStatus() { return status; }
-    public void setStatus(ExamStatus status) { this.status = status; }
+    private String instructions;
 
-    public Integer getCreatedBy() { return createdBy; }
-    public void setCreatedBy(Integer createdBy) { this.createdBy = createdBy; }
+    @Column(name = "exam_date")
+    private LocalDateTime examDate; 
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    private String semester;
 
-    public Boolean getHidden() { return hidden; }
-    public void setHidden(Boolean hidden) { this.hidden = hidden; }
+    @Column(name = "academic_year")
+    private String academicYear; 
+
+    private String feedback;
+
+    // Relationships
+    // @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
+    // private Set<ExamQuestion> examQuestions;
+
+    // @OneToMany(mappedBy = "exam")
+    // private Set<Comment> comments;
+
+    // @OneToMany(mappedBy = "exam")
+    // private Set<ExamReview> examReviews;
+
+    // @OneToMany(mappedBy = "exam")
+    // private Set<ExamExport> examExports;
 }

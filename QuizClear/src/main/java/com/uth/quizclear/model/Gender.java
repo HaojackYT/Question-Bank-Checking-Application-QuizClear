@@ -1,6 +1,8 @@
 package com.uth.quizclear.model;
 
 public enum Gender {
-    male, female, other
+    MALE,
+    FEMALE,
+    OTHER 
 }
 

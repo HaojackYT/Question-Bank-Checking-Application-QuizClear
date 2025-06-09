@@ -121,6 +121,7 @@
 
 /* Feedback Areas */
 .feedback-area {
+    width: 100%;
     margin-top: 1rem;
 }
 

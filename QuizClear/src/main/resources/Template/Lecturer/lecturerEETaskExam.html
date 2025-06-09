@@ -30,9 +30,9 @@
 
                 <div class="tab-search-wrapper">
                     <div class="nav-tabs">
-                        <button class="tab-btn active">Task Exams</button>
-                        <button class="tab-btn">Test & Feedback</button>
-                        <button class="tab-btn">Test Repository</button>
+                        <a href="lecturerEETaskExam.html"><button class="tab-btn active">Task Exams</button></a>
+                        <a href="L_testFeedback.html"><button class="tab-btn">Test & Feedback</button></a>
+                        <a href="leturer_ExamEvaluation.html"><button class="tab-btn">Test Repository</button></a>
                     </div>
 
                     <div class="search-container">
@@ -303,6 +303,74 @@
                     button.parentElement.addEventListener('click', function () {
                         // Chuyển hướng đến trang lectureEETaskExamCreateExam.html
                         window.location.href = 'lectureEETaskExamCreateExam.html';
+                    });
+                });
+            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const rows = document.querySelectorAll('.exam-table tbody tr');
+                const acceptButton = document.querySelector('.accept-btn');
+                let currentRow = null;
+
+                // Hàm cập nhật trạng thái nút Accept dựa trên status-badge
+                function updateAcceptButton(status) {
+                    if (status === 'Not Received') {
+                        acceptButton.style.opacity = '1';
+                        acceptButton.disabled = false;
+                    } else {
+                        acceptButton.style.opacity = '0.5';
+                        acceptButton.disabled = true;
+                    }
+                }
+
+                // Gắn sự kiện cho nút Search (fa-search) để lưu hàng hiện tại và cập nhật nút Accept
+                rows.forEach(row => {
+                    const searchButton = row.querySelector('.action-btn i.fas.fa-search');
+                    searchButton.parentElement.addEventListener('click', function () {
+                        currentRow = row;
+                        const status = row.querySelector('.status-badge').textContent.trim();
+                        showInfoModal();
+                        updateAcceptButton(status);
+                    });
+                });
+
+                // Xử lý sự kiện nhấn nút Accept
+                acceptButton.addEventListener('click', function () {
+                    if (currentRow) {
+                        const statusBadge = currentRow.querySelector('.status-badge');
+                        if (statusBadge.textContent.trim() === 'Not Received') {
+                            // Cập nhật trạng thái thành In Progress
+                            statusBadge.textContent = 'In Progress';
+                            statusBadge.className = 'status-badge in-progress';
+                            // Làm mờ nút Accept và vô hiệu hóa
+                            acceptButton.style.opacity = '0.5';
+                            acceptButton.disabled = true;
+                            // Đóng modal
+                            closeInfoModal();
+                            alert('Nhiệm vụ đã được chấp nhận và chuyển sang trạng thái In Progress.');
+                        }
+                    }
+                });
+            });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const searchInput = document.querySelector('.search-input');
+                const rows = document.querySelectorAll('.exam-table tbody tr');
+
+                searchInput.addEventListener('input', function () {
+                    const searchText = this.value.trim().toLowerCase();
+
+                    rows.forEach(row => {
+                        const subject = row.querySelector('td:nth-child(1)').textContent.trim().toLowerCase();
+                        const description = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+
+                        // Kiểm tra nếu Subject hoặc Description chứa searchText
+                        if (subject.includes(searchText) || description.includes(searchText)) {
+                            row.style.display = ''; // Hiển thị hàng
+                        } else {
+                            row.style.display = 'none'; // Ẩn hàng
+                        }
                     });
                 });
             });

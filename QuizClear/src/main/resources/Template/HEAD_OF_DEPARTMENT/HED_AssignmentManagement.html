@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../../Static/web_styles.css">
     <link rel="stylesheet" href="../../Static/css/HED/HED_AssignManagement.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Assignment Management</title>
+    <title>Assignment_Management</title>
 </head>
 
 <body>
@@ -539,6 +539,7 @@
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
+                setActiveMenu(document.title);
             });
 
         const currentPath = window.location.pathname.split("/").pop(); // Lấy tên file HTML hiện tại
@@ -553,6 +554,7 @@
             }
         });
     </script>
+    <script src="../../Static/js/L_activeMenu.js"></script>
 </body>
 
 </html>
