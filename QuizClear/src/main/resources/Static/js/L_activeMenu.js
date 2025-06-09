@@ -5,7 +5,7 @@ function setActiveMenu(title) {
     { title: "QuestionManager", link: "lectureQuesManagement.html" },
     { title: "FeedbackRevisions", link: "lecturerFeedback.html" },
     { title: "Task", link: "lecturerTask.html" },
-    { title: "ExamEvaluation", link: "lecturerEETaskExam.html" },
+    { title: "Exam Evaluation", link: "lecturerEETaskExam.html" },
     { title: "Dashboard_HOE", link: "HOE_Dashboard.html" },
     { title: "Review_Assignment", link: "HOE_ReviewAssignment.html" },
     { title: "Approvals", link: "HOE_Approval.html" },
