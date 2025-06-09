@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/css/Lecturer/L-EXE_Feedbackdraft.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>ExamEvaluation</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- Tab Navigation -->
+            <div class="tab-container">
+                <button class="tab-button">Task the test</button>
+                <button class="tab-button active">Feedback</button>
+            </div>
+
+            <!-- Exam Information -->
+            <div class="exam-info">
+                <div class="exam-details">
+                    <div class="detail-row">
+                        <span class="label">Title :</span>
+                        <span class="value" id="title">Middle Exam</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Subject :</span>
+                        <span class="value" id="subject">Database System</span>
+                    </div>
+                </div>
+                <div class="exam-stats">
+                    <div class="detail-row">
+                        <span class="label">Total Question :</span>
+                        <span class="value" id="Total_Question">90</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Test Duration :</span>
+                        <p><span class="value" id="test-duration">90</span>:00</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Action Buttons -->
+            <div class="action-controls time">
+                <span id="countdown">10</span>
+                <a href="L-EXE_FeedbackExam_OneQuestion.html""><button class="action-button draft"> skip the exercise</button></a>
+            </div>
+            <!-- Question Content -->
+            <div class="question-container">
+                <div class="question-text">
+                    Write a SQL query to retrieve all customers who have
+                    made purchases totaling more than $1000.
+                </div>
+
+                <!-- Answer Options -->
+                <div class="answer-options">
+                    <div class="answer-row">
+                        <div class="answer-icon">
+                            <input type="radio" class="checkbox" name="question">
+                        </div>
+                        <!--dien dap an trong csdl vao day -->
+                        <span answer-input>Day la dap an(hay chon 1 trong 4).</span>
+                    </div>
+
+                    <div class="answer-row">
+                        <div class="answer-icon">
+                            <input type="radio" class="checkbox" name="question">
+                        </div>
+                        <!--dien dap an trong csdl vao day -->
+                        <span answer-input>Day la dap an(hay chon 1 trong 4).</span>
+                    </div>
+
+                    <div class="answer-row">
+                        <div class="answer-icon">
+                            <input type="radio" class="checkbox" name="question">
+                        </div>
+                        <!--dien dap an trong csdl vao day -->
+                        <span answer-input>Day la dap an(hay chon 1 trong 4).</span>
+                    </div>
+
+                    <div class="answer-row">
+                        <div class="answer-icon">
+                            <input type="radio" class="checkbox" name="question">
+                        </div>
+                        <!--dien dap an trong csdl vao day -->
+                        <span answer-input>Day la dap an(hay chon 1 trong 4).</span>
+                    </div>
+                    
+                </div>
+                <p id="page">Page :<span id="thisPage">1</span>/ <span id="totalPage">90</span></p>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="navigation-controls">
+                <button class="nav-button prev">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <button class="nav-button next">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+
+
+            <!-- ma nhung header vs menu -->
+            <script>
+                // Load header
+                fetch('../header_user.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('header-placeholder').innerHTML = data;
+                    });
+
+                // Load menu
+                fetch('Menu-Lecturer.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('menu-HTML').innerHTML = data;
+                        setActiveMenu(document.title);
+                    });
+
+            </script>
+            <script>
+                function startCountdown() {
+                    const rawTime = document.getElementById("test-duration").textContent.trim();
+
+                    // Lấy 2 số đầu làm phút
+                    const minutes = parseInt(rawTime.slice(0, 2), 10);
+
+                    // Tính tổng số giây (chỉ từ phút)
+                    let totalSeconds = minutes * 60;
+
+                    const countdownEl = document.getElementById("countdown");
+
+                    function formatTime(sec) {
+                        const m = String(Math.floor(sec / 60)).padStart(2, '0');
+                        const s = String(sec % 60).padStart(2, '0');
+                        return `${m}:${s}`;
+                    }
+
+                    countdownEl.textContent = formatTime(totalSeconds);
+
+                    const countdown = setInterval(() => {
+                        totalSeconds--;
+                        countdownEl.textContent = formatTime(totalSeconds);
+
+                        if (totalSeconds <= 0) {
+                            clearInterval(countdown);
+                            // Chuyển sang trang khác
+                            window.location.href = "L-EXE_FeedbackExam_OneQuestion.html"; // Thay đường dẫn bạn muốn
+                        }
+                    }, 1000);
+                }
+
+                // Bắt đầu đếm
+                startCountdown();
+            </script>
+            <script src="../../Static/js/L_activeMenu.js"></script>
+</body>
+
+</html>

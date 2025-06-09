@@ -5,7 +5,9 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+#main {
+    padding: 2rem !important;
+} 
 body {
     font-family: 'Roboto', sans-serif;
     background-color: #fff;
@@ -258,4 +260,7 @@ select {
     background-color: #0d0258;
 }
 
-/* form gửi bài */
+.faded {
+    opacity: 0.5;
+    filter: grayscale(100%);;
+}

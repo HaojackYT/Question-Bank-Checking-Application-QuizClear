@@ -21,9 +21,13 @@ body {
 }
 
 .subtitle {
-    font-size: 1.125rem;
-    margin-bottom: 1.25rem;
-    color: #555;
+    color: #718096;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.page-header{
+    margin-bottom: 1rem;
 }
 
 table {
@@ -49,43 +53,71 @@ th {
 tr:hover {
     background-color: #f9f9f9;
 }
-select {
-    padding: 0.625rem;
-    border-radius: 0.3125rem;
-    border: 0.2rem solid #E0EAFA;
-    margin-bottom: 1.25rem;
+
+.search-filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5625rem;
+    gap: 1.25rem;
 }
 
-.search-container {
+.search-box {
     position: relative;
-    width: 18.75rem;
-    margin-bottom: 1.25rem;
-    border-color: #E0EAFA;
+    flex: 1;
+    max-width: 25rem;
 }
 
-.search-container input {
+.search-input {
     width: 100%;
-    padding: 0.625rem 2.1875rem 0.625rem 0.625rem;
+    padding: 0.75rem 3.125rem 0.75rem 1rem;
+    border: 0.0625rem solid #dee2e6;
     border-radius: 0.5rem;
-    border: 0.0625rem solid #E0EAFA;
-    background-color: #E0EAFA;
+    font-size: 0.875rem;
+    background-color: white;
+    transition: border-color 0.2s ease;
 }
 
-.search-container i {
+.search-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.1875rem rgba(0, 123, 255, 0.1);
+}
+
+.search-btn {
     position: absolute;
-    right: 0.625rem;
+    right: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
-    color: #999;
-    pointer-events: none;
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+}
+
+.filter-dropdown {
+    position: relative;
+    min-width: 11.25rem;
 }
 
 .filter-select {
-    display: flex;
-    align-items: center;
-    justify-content:flex-start;
-    gap: 1.25rem;
-    margin-bottom: 1.25rem;
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    border: 0.0625rem solid #dee2e6;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background-color: white;
+    cursor: pointer;
+    appearance: none;
+}
+
+.filter-dropdown i {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    pointer-events: none;
 }
 
 /* === TRẠNG THÁI === */

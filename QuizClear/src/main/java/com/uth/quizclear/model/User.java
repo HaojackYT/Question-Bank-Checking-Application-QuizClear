@@ -1,28 +1,19 @@
 package com.uth.quizclear.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -33,13 +24,13 @@ public class User {
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
-    
+
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private Role role;
+    private UserRole role;
 
     // TODO: ACTIVE
     @Enumerated(EnumType.STRING)
@@ -55,25 +46,29 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "department")
     private String department;
 
     @Column(name = "start")
-    private LocalDateTime startDate; 
+    private LocalDateTime startDate;
 
     @Column(name = "end")
-    private LocalDateTime endDate; 
+    private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
     private Gender gender;
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
+    @Column(name = "nation")
     private String nation;
 
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Column(name = "hometown")
     private String hometown;
 
     @Column(name = "contact_address")
@@ -83,83 +78,13 @@ public class User {
     private String avatarUrl;
 
     @Column(name = "last_login")
-    private LocalDateTime lastLogin; 
+    private LocalDateTime lastLogin;
 
     // TODO: DEFAULT 0
     @Column(name = "login_attempts")
-    private Integer loginAttempts; 
+    private Integer loginAttempts;
 
     // TODO: DEFAULT FALSE
     @Column(name = "is_locked")
     private Boolean isLocked;
-
-    // Relationships
-    // @OneToMany(mappedBy = "createdBy")
-    // private Set<Course> coursesCreated;
-
-    // @OneToMany(mappedBy = "assignedTo")
-    // private Set<Plan> plansAssigned;
-
-    // @OneToMany(mappedBy = "assignedBy")
-    // private Set<Plan> plansAssignedBy; 
-
-    // @OneToMany(mappedBy = "assignedTo")
-    // private Set<Task> tasksAssigned;
-
-    // @OneToMany(mappedBy = "assignedBy")
-    // private Set<Task> tasksAssignedBy;
-
-    // @OneToMany(mappedBy = "createdBy")
-    // private Set<Question> questionsCreated;
-
-    // @OneToMany(mappedBy = "reviewedBy")
-    // private Set<Question> questionsReviewed; 
-
-    // @OneToMany(mappedBy = "approvedBy")
-    // private Set<Question> questionsApproved; 
-
-    // @OneToMany(mappedBy = "createdBy")
-    // private Set<Exam> examsCreated;
-
-    // @OneToMany(mappedBy = "reviewedBy")
-    // private Set<Exam> examsReviewed; 
-
-    // @OneToMany(mappedBy = "approvedBy")
-    // private Set<Exam> examsApproved; 
-
-    // @OneToMany(mappedBy = "checkedBy")
-    // private Set<AI_DuplicateCheck> aiDuplicateChecks;
-
-    // @OneToMany(mappedBy = "detectedBy")
-    // private Set<DuplicateDetection> detectionsDetected; 
-
-    // @OneToMany(mappedBy = "processedBy")
-    // private Set<DuplicateDetection> detectionsProcessed;
-
-    // @OneToMany(mappedBy = "commenter")
-    // private Set<Comment> comments; 
-
-    // @OneToMany(mappedBy = "user")
-    // private Set<Notification> notifications;
-
-    // @OneToMany(mappedBy = "user")
-    // private Set<ActivityLog> activityLogs;
-
-    // @OneToMany(mappedBy = "reviewer")
-    // private Set<ExamReview> examReviews;
-
-    // @OneToMany(mappedBy = "uploadedBy")
-    // private Set<QuestionAttachment> questionAttachments; 
-
-    // @OneToMany(mappedBy = "updatedBy")
-    // private Set<SystemConfig> systemConfigs;
-
-    // @OneToMany(mappedBy = "user")
-    // private Set<UserSession> userSessions;
-
-    // @OneToMany(mappedBy = "user")
-    // private Set<DashboardStat> dashboardStats;
-
-    // @OneToMany(mappedBy = "exportedBy")
-    // private Set<ExamExport> examExports;
 }

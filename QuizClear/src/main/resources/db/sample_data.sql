@@ -1,4 +1,6 @@
-INSERT INTO `users` VALUES
+
+
+INSERT INTO `users` (user_id, full_name, email, password_hash, role, status, created_at, updated_at, department, start, end, gender, date_of_birth, nation, phone_number, hometown, contact_address) VALUES
 (1,'John Smith','rnd@uth.edu.vn','hash1','R&D','active','2025-06-06 09:17:19',NULL,'R&D',NULL,NULL,'male','1980-01-01','Vietnam','0901111111','Ho Chi Minh City','123 Main St'),
 (2,'Alice Johnson','hod@uth.edu.vn','hash2','HoD','active','2025-06-06 09:17:19',NULL,'IT',NULL,NULL,'female','1975-05-10','Vietnam','0902222222','Ho Chi Minh City','456 Second St'),
 (3,'Michael Brown','sl@uth.edu.vn','hash3','SL','active','2025-06-06 09:17:19',NULL,'IT',NULL,NULL,'male','1985-03-15','Vietnam','0903333333','Ho Chi Minh City','789 Third St'),

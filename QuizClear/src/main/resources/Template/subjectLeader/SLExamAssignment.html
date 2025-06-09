@@ -125,31 +125,32 @@
         <!-- Main content -->
         <div id="main">
             <div class="main-content-area">
-                <div class="exam-assignment-header">
+                <div class="assignment-header">
                     <h1>Exam Assignment</h1>
                     <p>View, assign tasks and track exam progress.</p>
                 </div>
 
-                <div class="exam-assignment-controls">
-                    <div class="search-bar">
-                        <input type="text" placeholder="Enter search content...">
-                        <button type="button" class="search-icon"> </button>
+                <div class="assignment-actions">
+                    <div class="search-filter-bar">
+                        <div class="search-box">
+                            <input type="text" placeholder="Enter search content ..." class="search-input">
+                            <button class="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div class="filter-dropdown">
+                            <select class="filter-select">
+                                <option>All Status</option>
+                                <option>Pending</option>
+                                <option>In Completed</option>
+                                <option>Completed</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
                     </div>
-                    <div class="dropdown">
-                        <select>
-                            <option value="all-tasks">All Tasks</option>
-                        </select>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16px"
-                            height="16px" class="dropdown-arrow">
-                            <path d="M7 10l5 5 5-5z" />
-                        </svg>
-                    </div>
-                    <button class="new-assign-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20px"
-                            height="20px">
-                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-                        </svg>
-                        New assign
+
+                    <button class="new-assign-button" id="newAssignBtn">
+                        <i class="fa fa-plus"></i> New assign
                     </button>
                 </div>
 
@@ -176,18 +177,10 @@
                                 <td><span class="status completed">Completed</span></td>
                                 <td class="actions completed-row-actions">
                                     <button class="action-icon view-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            width="20px" height="20px">
-                                            <path
-                                                d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 13c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
-                                        </svg>
+                                        <i class="fa-solid fa-eye"></i>
                                     </button>
                                     <button class="action-icon edit-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            width="20px" height="20px">
-                                            <path
-                                                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-                                        </svg>
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -200,18 +193,10 @@
                                 <td><span class="status in-progress">In Prog.</span></td>
                                 <td class="actions">
                                     <button class="action-icon view-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            width="20px" height="20px">
-                                            <path
-                                                d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 13c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
-                                        </svg>
+                                        <i class="fa-solid fa-eye"></i>
                                     </button>
                                     <button class="action-icon edit-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            width="20px" height="20px">
-                                            <path
-                                                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-                                        </svg>
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -224,18 +209,10 @@
                                 <td><span class="status new">New</span></td>
                                 <td class="actions">
                                     <button class="action-icon view-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            width="20px" height="20px">
-                                            <path
-                                                d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 13c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
-                                        </svg>
+                                        <i class="fa-solid fa-eye"></i>
                                     </button>
                                     <button class="action-icon edit-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            width="20px" height="20px">
-                                            <path
-                                                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-                                        </svg>
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
                                 </td>
                             </tr>

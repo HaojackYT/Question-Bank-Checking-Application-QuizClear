@@ -18,7 +18,7 @@ import jakarta.persistence.JoinColumn;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Courses")
+@Table(name = "courses")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,19 +27,19 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
-    private Integer courseId; // 
+    private Integer courseId; 
 
     @Column(name = "course_code", nullable = false, unique = true)
-    private String courseCode; // 
+    private String courseCode; 
 
     @Column(name = "course_name", nullable = false)
-    private String courseName; // 
+    private String courseName; 
 
-    private Byte credits; // 
+    private Byte credits;
 
-    private String department; // 
+    private String department; 
 
-    private String description; // 
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
@@ -55,7 +55,7 @@ public class Course {
     private LocalDateTime updatedAt;
 
     @Column(name = "course_note")
-    private String courseNote; // 
+    private String courseNote;
 
     // TODO: DEFAULT 'ACTIVE'
     @Enumerated(EnumType.STRING)
