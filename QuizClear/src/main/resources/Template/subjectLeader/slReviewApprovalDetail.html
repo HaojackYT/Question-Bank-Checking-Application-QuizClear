@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
     <link rel="stylesheet" href="../../Static/header.css">
     <link rel="stylesheet" href="../../Static/web_styles.css">
-      <link rel="stylesheet" href="../../static/css/subjectLeader/slReviewApprovalDetail.css">
+    <link rel="stylesheet" href="../../static/css/subjectLeader/slReviewApprovalDetail.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>sl - Details</title>
@@ -26,9 +26,11 @@
         <div id="main">
             <div class="details-container">
                 <div class="page-header">
-                    <button class="back-btn" onclick="goBack()">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
+                    <a href="slReviewApproval.html">
+                        <button class="back-btn">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </a>
                     <h1>Details</h1>
                 </div>
 
@@ -142,9 +144,11 @@
                                     <td>22/04/25</td>
                                     <td><span class="status completed">Completed</span></td>
                                     <td>
-                                        <button class="action-btn edit" onclick="openEditModal()"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn edit" onclick="openEditModal()"><i
+                                                class="fas fa-edit"></i></button>
                                         <button class="action-btn approve"><i class="fas fa-check"></i></button>
-                                        <button class="action-btn decline" onclick="openDeclineModal()"><i class="fas fa-times"></i></button>
+                                        <button class="action-btn decline" onclick="openDeclineModal()"><i
+                                                class="fas fa-times"></i></button>
                                     </td>
                                 </tr>
                                 <tr data-status="declined">
@@ -180,7 +184,8 @@
         </div>
         <div class="modal-body">
             <p>Please provide any comments or edit suggestions for this question</p>
-            <textarea class="modal-textarea" id="editTextarea" placeholder="Enter your comments or suggestions here..."></textarea>
+            <textarea class="modal-textarea" id="editTextarea"
+                placeholder="Enter your comments or suggestions here..."></textarea>
         </div>
         <div class="modal-footer">
             <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
@@ -196,7 +201,8 @@
         </div>
         <div class="modal-body">
             <p>Provide a reason for declining this question.</p>
-            <textarea class="modal-textarea" id="declineTextarea" placeholder="Enter your decline reason here..."></textarea>
+            <textarea class="modal-textarea" id="declineTextarea"
+                placeholder="Enter your decline reason here..."></textarea>
         </div>
         <div class="modal-footer">
             <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
@@ -259,7 +265,7 @@
         function sendEditComment() {
             const textarea = document.getElementById('editTextarea');
             const comment = textarea.value.trim();
-            
+
             if (comment) {
                 // Here you would typically send the comment to your backend
                 console.log('Edit comment sent:', comment);
@@ -274,7 +280,7 @@
         function sendDeclineReason() {
             const textarea = document.getElementById('declineTextarea');
             const reason = textarea.value.trim();
-            
+
             if (reason) {
                 // Here you would typically send the decline reason to your backend
                 console.log('Decline reason sent:', reason);

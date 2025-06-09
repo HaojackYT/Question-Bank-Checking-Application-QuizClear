@@ -1,12 +1,9 @@
-#main {
-    padding: 1.25rem;
-    flex-grow: 1;
-}
 
 .duplication-check {
     border-radius: 0.5rem;
     padding: 1.25rem;
 }
+
 
 .duplication-check h1 {
     font-size: 3rem;
@@ -27,43 +24,38 @@
     padding: 1.25rem;
     border: 0.0625rem solid #E0EAFA;
     border-radius: 0.5rem;
-    box-shadow: #E0EAFA 0.125rem 0.125rem 0.3125rem;
-}
-
-.automatic-duplication-detection p {
-    margin: 0 0 0.625rem;
-    font-size: 0.875rem;
-    color: #6B7280;
-}
-
-.automatic-duplication-detection p:last-child {
-    font-size: 0.875rem;
-    color: #666;
 }
 
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 0.0625rem solid #D9D9D9;
+    border-radius: 0.3125rem;
 }
 
-th, td {
-    padding: 0.75rem;
+th,
+td {
+    padding: 0.75rem 0.9375rem;
     text-align: left;
-    border-bottom: 0.0625rem solid #eee;
+    border-bottom: 0.0625rem solid #D9D9D9;
+    font-size: 14px;
 }
 
 th {
-    background-color: #f5f5f5;
-    font-weight: 600;
-    color: #1a2a44;
+    background-color: #f2f2f2;
+    font-weight: bold;
 }
 
-td {
-    color: #333;
+tr:hover {
+    background-color: #f9f9f9;
 }
 
-td span {
-    display: block;
+td i {
+    font-size: 1rem; /* 16px */
+    margin: 0 0.5rem; /* 8px */
+    cursor: pointer;
+    vertical-align: middle;
 }
 
 .high {
