@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/css/Lecturer/L_createQuestion.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>QuestionManager</title>
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- noi dung duoc nhap trong day -->
+            <div class="page-header">
+                <a href="lectureQuesManagement.html">
+                    <button class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                </a>
+                <div class="page-text">
+                    <h1>New Question</h1>
+                    <p>Don't forget to confirm your assigned task before starting a question!</p>
+                </div>
+            </div>
+
+            <div id="main_container">
+                <div class="info-section">
+                    <h2 class="section-title">Information</h2>
+                    <p class="section-subtitle">Enter detailed information for the new question</p>
+
+                    <form>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Subject <span class="required">(*)</span></label>
+                                <select class="form-input" id="subject" required>
+                                    <option value="">Select subject...</option>
+                                    <option value="Mathematics">Mathematics</option>
+                                    <option value="Physics">Physics</option>
+                                    <option value="Chemistry">Chemistry</option>
+                                    <option value="Biology">Biology</option>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="English">English</option>
+                                    <option value="History">History</option>
+                                    <option value="Geography">Geography</option>
+                                    <option value="Literature">Literature</option>
+                                    <option value="Economics">Economics</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Difficulty Level <span class="required">(*)</span></label>
+                                <select class="form-input" id="difficulty" required>
+                                    <option value="">Select difficulty level...</option>
+                                    <option value="remember">Remember</option>
+                                    <option value="understand">Understand</option>
+                                    <option value="apply">Apply(Basic)</option>
+                                    <option value="analyze">Apply(Advance)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Question Title</label>
+                            <input type="text" class="form-input" placeholder="The title question...">
+                        </div>
+
+                        <!-- Duplicate Check -->
+                        <div class="duplicate-check">
+                            <div class="duplicate-header">
+                                <i class="fas fa-exclamation-triangle duplicate-icon"></i>
+                                <span class="duplicate-title">Duplicate Detection Check</span>
+                            </div>
+                            <p class="duplicate-subtitle">Check for similar questions before proceeding with submission
+                            </p>
+                            <div class="duplicate-status">
+                                <span class="status-text">Ready to check</span>
+                                <button type="button" class="check-button">Check Duplicates</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Correct Answer <span class="required">(*)</span></label>
+                            <input type="text" class="form-input" placeholder="Enter the correct answer...">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Incorrect Answers <span class="required">(*)</span></label>
+                            <div class="incorrect-answers">
+                                <input type="text" class="form-input" placeholder="Enter an incorrect answer...">
+                                <input type="text" class="form-input" placeholder="Enter an incorrect answer...">
+                                <input type="text" class="form-input" placeholder="Enter an incorrect answer...">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Correct answer explanation</label>
+                            <textarea class="form-input" rows="4" placeholder="Enter explanation here..."></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Footer -->
+                <p class="footer-message">Check for similar questions before proceeding with submission</p>
+                <div class="footer-button">
+                    <button class="save-draft">
+                        Save Draft <i class="fa-regular fa-floppy-disk"></i>
+                    </button>
+                    <button class="submit-button">
+                        Submit <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- ma nhung header vs menu -->
+            <script>
+                // Load header
+                fetch('../header_user.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('header-placeholder').innerHTML = data;
+                    });
+
+                // Load menu
+                fetch('Menu-Lecturer.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('menu-HTML').innerHTML = data;
+                        setActiveMenu(document.title);
+                    });
+            </script>
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const checkButton = document.querySelector('#duplicate_question_container button');
+                    const numberSpan = document.querySelector('#number');
+                    const numberOfDuplicate = document.querySelector('#numberOfDuplicate');
+
+                    if (checkButton && numberSpan && numberOfDuplicate) {
+                        checkButton.addEventListener('click', () => {
+                            const numberValue = numberSpan.textContent.trim();
+
+                            // Nếu span rỗng, không làm gì
+                            if (numberValue === '') {
+                                return;
+                            }
+
+                            // Chuyển giá trị sang số
+                            const value = parseInt(numberValue, 10);
+
+                            // Xóa các class hiện có
+                            numberOfDuplicate.classList.remove('safety', 'warring', 'error');
+                            if (value === 0) {
+                                numberOfDuplicate.textContent = 'No duplicates found';
+                                numberOfDuplicate.classList.add('safety');
+                            } else if (value > 0 && value < 50) {
+                                numberOfDuplicate.textContent = `${value}% duplicated`;
+                                numberOfDuplicate.classList.add('warring');
+                            } else if (value >= 50) {
+                                numberOfDuplicate.textContent = `${value}% duplicated`;
+                                numberOfDuplicate.classList.add('error');
+                            }
+                        });
+                    }
+                });
+
+                // Add interactivity
+                document.querySelector('.check-button').addEventListener('click', function () {
+                    this.textContent = 'Checking...';
+                    this.disabled = true;
+
+                    setTimeout(() => {
+                        this.textContent = 'Check Duplicates';
+                        this.disabled = false;
+                        alert('No duplicates found!');
+                    }, 2000);
+                });
+
+                document.querySelector('.submit-button').addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    // Basic validation - cập nhật để kiểm tra cả select
+                    const requiredInputs = document.querySelectorAll('input.form-input[placeholder*="Enter"]');
+                    const requiredSelects = document.querySelectorAll('select.form-input[required]');
+                    const incorrectAnswers = document.querySelectorAll('.incorrect-answers input');
+
+                    let isValid = true;
+
+                    // Kiểm tra select fields
+                    requiredSelects.forEach(select => {
+                        if (!select.value.trim()) {
+                            select.style.borderColor = '#ef4444';
+                            isValid = false;
+                        } else {
+                            select.style.borderColor = '#d1d5db';
+                        }
+                    });
+
+                    // Kiểm tra required input fields
+                    requiredInputs.forEach(field => {
+                        if (!field.value.trim()) {
+                            field.style.borderColor = '#ef4444';
+                            isValid = false;
+                        } else {
+                            field.style.borderColor = '#d1d5db';
+                        }
+                    });
+
+                    // Kiểm tra incorrect answers
+                    incorrectAnswers.forEach(field => {
+                        if (!field.value.trim()) {
+                            field.style.borderColor = '#ef4444';
+                            isValid = false;
+                        } else {
+                            field.style.borderColor = '#d1d5db';
+                        }
+                    });
+
+                    if (isValid) {
+                        // Lấy dữ liệu form
+                        const formData = {
+                            subject: document.getElementById('subject').value,
+                            difficulty: document.getElementById('difficulty').value,
+                            questionTitle: document.querySelector('input[placeholder="The title question..."]').value,
+                            correctAnswer: document.querySelector('input[placeholder="Enter the correct answer..."]').value,
+                            incorrectAnswers: Array.from(incorrectAnswers).map(input => input.value),
+                            explanation: document.querySelector('textarea').value
+                        };
+
+                        console.log('Form Data:', formData);
+                        alert('Question submitted successfully!');
+                    } else {
+                        alert('Please fill in all required fields.');
+                    }
+                });
+
+                // Save draft functionality
+                document.querySelector('.save-draft').addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    const formData = {
+                        subject: document.getElementById('subject').value,
+                        difficulty: document.getElementById('difficulty').value,
+                        questionTitle: document.querySelector('input[placeholder="The title question..."]').value,
+                        correctAnswer: document.querySelector('input[placeholder="Enter the correct answer..."]').value,
+                        incorrectAnswers: Array.from(document.querySelectorAll('.incorrect-answers input')).map(input => input.value),
+                        explanation: document.querySelector('textarea').value
+                    };
+
+                    console.log('Draft saved:', formData);
+                    alert('Draft saved successfully!');
+                });
+            </script>
+
+            <script src="../../Static/js/L_activeMenu.js"></script>
+</body>
+
+</html>
