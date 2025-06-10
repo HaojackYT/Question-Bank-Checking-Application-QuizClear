@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../../Static/Menu-Staff.css">
     <link rel="stylesheet" href="../../Static/css/subjectLeader/SLExamAssignment.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Template</title>
+    <title>ExamAssignment</title>
 </head>
 
 <body>
@@ -239,9 +239,11 @@
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
+                setActiveMenu(document.title);
             });
 
     </script>
+    <script src="../../Static/js/L_activeMenu.js"></script>
 </body>
 
 </html>

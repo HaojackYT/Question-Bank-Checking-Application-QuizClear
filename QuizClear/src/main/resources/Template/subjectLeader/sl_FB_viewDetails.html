@@ -235,6 +235,7 @@
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
+                setActiveMenu(document.title);
             });
 
         // Function to format date to YYYY-MM-DD
@@ -304,6 +305,7 @@
             }
         }
     </script>
+    <script src="../../Static/js/L_activeMenu.js"></script>
 </body>
 
 </html>

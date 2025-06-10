@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../../static/css/subjectLeader/slReviewApprovalDetail.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>sl - Details</title>
+    <title>Review&Approval</title>
 </head>
 
 <body>
@@ -222,6 +222,7 @@
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
+                setActiveMenu(document.title);
             });
 
         function goBack() {
@@ -295,6 +296,7 @@
         // Close modal when clicking on overlay
         document.getElementById('modalOverlay').addEventListener('click', closeModal);
     </script>
+    <script src="../../Static/js/L_activeMenu.js"></script>
 </body>
 
 </html>

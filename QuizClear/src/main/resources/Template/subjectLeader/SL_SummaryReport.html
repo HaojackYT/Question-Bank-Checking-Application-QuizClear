@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../../Static/web_styles.css">
     <link rel="stylesheet" href="../../Static/css/subjectLeader/SL_SummaryReport.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>SL - Summary Report</title>
+    <title>SummaryReport</title>
 </head>
 
 <body>
@@ -294,6 +294,7 @@
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
+                setActiveMenu(document.title);
             });
 
         // Navigation functions
@@ -365,7 +366,7 @@
             e.stopPropagation();
         });
     </script>
-
+<script src="../../Static/js/L_activeMenu.js"></script>
 </body>
 
 </html>

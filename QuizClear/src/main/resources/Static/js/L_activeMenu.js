@@ -14,6 +14,14 @@ function setActiveMenu(title) {
     { title: "Approve_Question", link: "HED_ApproveQuestion.html" },
     { title: "Join_Task", link: "HED_JoinTask.html" },
     { title: "Statics&Report", link: "HED_Static-reports.html" },
+    { title: "Dashboard_sl", link: "slDashboard.html" },
+    { title: "Plans", link: "slPlans.html" },
+    { title: "QuestionAssignment", link: "slQuesAssignment.html" },
+    { title: "ExamAssignment", link: "SLExamAssignment.html" },
+    { title: "DuplicationCheck", link: "sl_duplicationCheck.html" },
+    { title: "Review&Approval", link: "slReviewApproval.html" },
+    { title: "SummaryReport", link: "SL_SummaryReport.html" },
+    { title: "Feedback", link: "sl_feedBack.html" },
   ];
 
   // Lấy tất cả các phần tử menu
