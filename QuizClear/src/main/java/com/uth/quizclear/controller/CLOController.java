@@ -28,7 +28,7 @@ public class CLOController {
             @RequestParam(required = false) String difficultyLevel,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "cloName") String sortBy,
+            @RequestParam(defaultValue = "cloCode") String sortBy, // Sửa từ "cloName" thành "cloCode"
             @RequestParam(defaultValue = "asc") String sortDir
     ) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortBy);

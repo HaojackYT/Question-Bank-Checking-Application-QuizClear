@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
     Optional<Question> findByContent(String content);
-    Integer countByClos_CloId(Integer cloId);
+    Integer countByCloId(Integer cloId);  // Đã sửa
 }
