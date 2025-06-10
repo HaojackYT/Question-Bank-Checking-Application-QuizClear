@@ -1,47 +1,38 @@
-<!-- header cua trang chu -->
-<link rel="stylesheet" href="../Static/header.css">
-<link rel="stylesheet" href="../Static/fontawesome/css/all.css">
-<!-- header cua trang chu -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/Static/header.css}" />
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}" />
+</head>
 <body>
-    <div id="header-user">
-        <p id="LOGO" style="font-family: 'RocknRoll One',serif; font-weight: 500;"> QuizClear</p>
-        <div id="element">
-            <!-- Biểu tượng chuông và dropdown thông báo -->
-            <div class="dropdown">
-                <i class="fa-regular fa-bell icon-user icon" style="border: 0;font-size: 1.8rem;padding-left: 2vw;"></i>
-                <div class="dropdown-content notification-dropdown">
-                    <h3>Notification</h3>
-                    <!-- Mỗi thông báo là một liên kết -->
-                    <a href="/assignment/1" class="notification-item" data-assignment-id="1">
-                        <p class="notification-title">NEW Assignment: Assign lecturer(s) to the Database Subject</p>
-                        <p class="due-date">Due: 2025 - 05 - 25</p>
-                    </a>
-                    <a href="/assignment/2" class="notification-item" data-assignment-id="2">
-                        <p class="notification-title">NEW Assignment: Assign lecturer(s) to the Database Subject</p>
-                        <p class="due-date">Due: 2025 - 05 - 25</p>
-                    </a>
-                    <a href="/assignment/3" class="notification-item" data-assignment-id="3">
-                        <p class="notification-title">NEW Assignment: Assign lecturer(s) to the Database Subject</p>
-                        <p class="due-date">Due: 2025 - 05 - 25</p>
-                    </a>
-                    <a href="/assignment/4" class="notification-item" data-assignment-id="4">
-                        <p class="notification-title">NEW Assignment: Assign lecturer(s) to the Database Subject</p>
-                        <p class="due-date">Due: 2025 - 05 - 25</p>
-                    </a>
-                    <a href="/assignment/5" class="notification-item" data-assignment-id="5">
-                        <p class="notification-title">NEW Assignment: Assign lecturer(s) to the Database Subject</p>
-                        <p class="due-date">Due: 2025 - 05 - 25</p>
-                    </a>
-                </div>
+<div id="header-user" th:fragment="header">
+    <p id="LOGO" style="font-family: 'RocknRoll One', serif; font-weight: 500;">QuizClear</p>
+    <div id="element">
+        <!-- Bell icon -->
+        <div class="dropdown">
+            <i class="fa-regular fa-bell icon-user icon" style="font-size: 1.8rem; padding-left: 2vw;"></i>
+            <div class="dropdown-content notification-dropdown">
+                <h3>Notification</h3>
+                <a href="/assignment/1" class="notification-item">
+                    <p class="notification-title">NEW Assignment: Assign lecturer(s) to the Database Subject</p>
+                    <p class="due-date">Due: 2025 - 05 - 25</p>
+                </a>
+                <a href="/assignment/2" class="notification-item">
+                    <p class="notification-title">NEW Assignment: Assign lecturer(s) to the Database Subject</p>
+                    <p class="due-date">Due: 2025 - 05 - 25</p>
+                </a>
+                <!-- Thêm bao nhiêu thông báo tùy ý -->
             </div>
-            <!-- Biểu tượng người dùng và dropdown profile/logout -->
-            <div class="dropdown">
-                <i class="fa-solid fa-user icon-user"></i>
-                <div class="dropdown-content profile-dropdown">
-                    <a href="../HEAD_OF_DEPARTMENT/HED_Profile.html">Profile</a>
-                    <a href="#">Logout</a>
-                </div>
+        </div>
+        <!-- User icon -->
+        <div class="dropdown">
+            <i class="fa-solid fa-user icon-user"></i>
+            <div class="dropdown-content profile-dropdown">
+                <a href="/HEAD_OF_DEPARTMENT/HED_Profile.html">Profile</a>
+                <a href="#">Logout</a>
             </div>
         </div>
     </div>
+</div>
 </body>
+</html>

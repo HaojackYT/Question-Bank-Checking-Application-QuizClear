@@ -1,11 +1,15 @@
-<link rel="stylesheet" href="../Static/fontawesome/css/all.css">
-<link rel="stylesheet" href="../Static/Menu-Staff.css">
-<div id="Menu-Staff">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}" />
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
+</head>
+<body>
+<div id="Menu-Staff" th:fragment="menu">
     <div style="padding: 1rem;">
         <div class="elements active">
-            <i class="fa-solid fa-house "></i>
-
-            <a href>Dashboard</a>
+            <i class="fa-solid fa-house"></i>
+            <a href="#">Dashboard</a>
         </div>
         <div class="elements">
             <i class="fa-solid fa-book"></i>
@@ -28,5 +32,6 @@
             <a href="staffStatReport.html">Statics & Reporting</a>
         </div>
     </div>
-
 </div>
+</body>
+</html>

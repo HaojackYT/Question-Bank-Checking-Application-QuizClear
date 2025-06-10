@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -32,17 +32,22 @@ public class User {
     @Column(name = "role", nullable = false)
     private UserRole role;
 
-    // TODO: ACTIVE
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private Status status;
+    private Status status = Status.ACTIVE;
 
-    // TODO: DEFAULT CURRENT_TIMESTAMP
+    @Column(name = "is_locked", nullable = false)
+    private Boolean isLocked = false;
+
+    @Column(name = "login_attempts", nullable = false)
+    private Integer loginAttempts = 0;
+
+    @Column(name = "last_login")
+    private LocalDateTime lastLogin;
+
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-    
-    // TODO: DEFAULT NULL
-    // ON UPDATE CURRENT_TIMESTAMP
+    private LocalDateTime createdAt = LocalDateTime.now();
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -50,10 +55,10 @@ public class User {
     private String department;
 
     @Column(name = "start")
-    private LocalDateTime startDate;
+    private LocalDateTime start;
 
     @Column(name = "end")
-    private LocalDateTime endDate;
+    private LocalDateTime end;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
@@ -77,14 +82,96 @@ public class User {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @Column(name = "last_login")
-    private LocalDateTime lastLogin;
+    // JPA lifecycle callbacks
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (status == null) {
+            status = Status.ACTIVE;
+        }
+        if (isLocked == null) {
+            isLocked = false;
+        }
+        if (loginAttempts == null) {
+            loginAttempts = 0;
+        }
+    }
 
-    // TODO: DEFAULT 0
-    @Column(name = "login_attempts")
-    private Integer loginAttempts;
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
-    // TODO: DEFAULT FALSE
-    @Column(name = "is_locked")
-    private Boolean isLocked;
+    // Business logic methods
+    public void lockAccount() {
+        this.isLocked = true;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void unlockAccount() {
+        this.isLocked = false;
+        this.loginAttempts = 0;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void incrementLoginAttempts() {
+        this.loginAttempts++;
+        this.updatedAt = LocalDateTime.now();
+        
+        // Auto-lock after 5 failed attempts
+        if (this.loginAttempts >= 5) {
+            lockAccount();
+        }
+    }
+
+    public void resetLoginAttempts() {
+        this.loginAttempts = 0;
+        this.lastLogin = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void deactivateAccount() {
+        this.status = Status.INACTIVE;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void activateAccount() {
+        this.status = Status.ACTIVE;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // Helper methods
+    public boolean isActive() {
+        return status == Status.ACTIVE && !isLocked;
+    }
+
+    public boolean canLogin() {
+        return isActive() && loginAttempts < 5;
+    }
+
+    public String getDisplayName() {
+        return fullName != null ? fullName : email;
+    }
+
+    public boolean hasRole(UserRole expectedRole) {
+        return role == expectedRole;
+    }
+
+    public boolean isAdmin() {
+        return UserRole.RD.equals(role) || UserRole.HOD.equals(role);
+    }
+
+    public boolean isLecturer() {
+        return UserRole.LEC.equals(role);
+    }
+
+    public boolean isSubjectLeader() {
+        return UserRole.SL.equals(role);
+    }
+
+    public boolean isHeadOfExaminationDepartment() {
+        return UserRole.HOED.equals(role);
+    }
 }

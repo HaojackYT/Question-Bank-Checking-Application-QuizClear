@@ -1,36 +1,25 @@
 package com.uth.quizclear.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
 @Entity
-@Table(name = "Exams")
+@Table(name = "exams")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Exam {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "exam_id")
-    private Integer examId;
+    private Long examId;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
@@ -38,90 +27,109 @@ public class Exam {
 
     @ManyToOne
     @JoinColumn(name = "plan_id")
-    private Plan plan; 
+    private Plan plan;
 
     @Column(name = "exam_title", nullable = false)
-    private String examTitle; 
+    private String examTitle;
 
     @Column(name = "exam_code", unique = true)
     private String examCode;
 
-    @Column(name = "duration_minutes")
+    @Column(name = "duration_minutes", nullable = false)
     private Integer durationMinutes;
 
-    @Column(name = "total_marks")
-    private Double totalMarks;
+    @Column(name = "total_marks", precision = 5, scale = 2)
+    private BigDecimal totalMarks = BigDecimal.valueOf(10.00);
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "difficulty_distribution")
+    @Column(name = "difficulty_distribution", columnDefinition = "JSON")
     private String difficultyDistribution;
 
-    // TODO: DEFAULT 'DRAFT'
+    @Enumerated(EnumType.STRING)
+    @Column(name = "exam_type")
+    private ExamType examType = ExamType.QUIZ;
+
+    @Column(name = "instructions", columnDefinition = "TEXT")
+    private String instructions;
+
+    @Column(name = "exam_date")
+    private LocalDateTime examDate;
+
+    @Column(name = "semester", length = 50)
+    private String semester;
+
+    @Column(name = "academic_year", length = 20)
+    private String academicYear;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private ExamStatus status;
+    private ExamStatus status = ExamStatus.DRAFT;
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
-    // TODO: DEFAULT CURRENT_TIMESTAMP
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    // TODO: DEFAULT NULL
-    // TODO: ON UPDATE CURRENT_TIMESTAMP
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "submitted_at")
-    private LocalDateTime submittedAt; 
-
-    @Column(name = "reviewed_at")
-    private LocalDateTime reviewedAt;
-
     @ManyToOne
     @JoinColumn(name = "reviewed_by")
     private User reviewedBy;
-
-    @Column(name = "approved_at")
-    private LocalDateTime approvedAt; 
 
     @ManyToOne
     @JoinColumn(name = "approved_by")
     private User approvedBy;
 
-    // TODO: TRUE
-    @Column(name = "hidden")
-    private Boolean hidden;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    // TODO: DEFAULT 'QUIZ'
-    @Enumerated(EnumType.STRING)
-    @Column(name = "exam_type")
-    private ExamType examType;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-    private String instructions;
+    @Column(name = "submitted_at")
+    private LocalDateTime submittedAt;
 
-    @Column(name = "exam_date")
-    private LocalDateTime examDate; 
+    @Column(name = "reviewed_at")
+    private LocalDateTime reviewedAt;
 
-    private String semester;
+    @Column(name = "approved_at")
+    private LocalDateTime approvedAt;
 
-    @Column(name = "academic_year")
-    private String academicYear; 
-
+    @Column(name = "feedback", columnDefinition = "TEXT")
     private String feedback;
 
-    // Relationships
-    // @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private Set<ExamQuestion> examQuestions;
+    @Column(name = "hidden")
+    private Boolean hidden = true;
 
-    // @OneToMany(mappedBy = "exam")
-    // private Set<Comment> comments;
+    // Enums
+    public enum ExamStatus {
+        DRAFT("draft"),
+        SUBMITTED("submitted"),
+        APPROVED("approved"),
+        FINALIZED("finalized"),
+        REJECTED("rejected");
 
-    // @OneToMany(mappedBy = "exam")
-    // private Set<ExamReview> examReviews;
+        private final String value;
 
-    // @OneToMany(mappedBy = "exam")
-    // private Set<ExamExport> examExports;
+        ExamStatus(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public enum ExamType {
+        MIDTERM("midterm"),
+        FINAL("final"),
+        QUIZ("quiz"),
+        PRACTICE("practice");
+
+        private final String value;
+
+        ExamType(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 }

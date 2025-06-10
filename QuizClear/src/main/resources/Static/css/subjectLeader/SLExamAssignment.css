@@ -258,7 +258,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 }
 
 .search-filter-bar {
@@ -394,12 +394,6 @@ tr:hover {
 }
 
 /* Actions Column */
-.exam-assignment-table td.actions {
-    display: flex;
-    gap: 0.3125rem;
-    align-items: center;
-}
-
 .exam-assignment-table .action-icon {
     background: none;
     border: none;
@@ -408,40 +402,8 @@ tr:hover {
     border-radius: 0.25rem;
     transition: background-color 0.2s ease;
     color: var(--quizclear-icon-color);
-    display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.exam-assignment-table .action-icon svg {
-    width: 1.25rem;
-    height: 1.25rem;
-}
-
-.completed-row-actions .edit-icon {
-    display: none;
-}
-
-.exam-assignment-table .action-icon:hover {
-    background-color: var(--quizclear-border-color);
-}
-
-.completed-actions .edit-icon {
-    display: none;
-}
-
-/* Specific styling for table corners */
-.exam-assignment-table thead tr:first-child th:first-child {
-    border-top-left-radius: 0.5rem;
-}
-.exam-assignment-table thead tr:first-child th:last-child {
-    border-top-right-radius: 0.5rem;
-}
-.exam-assignment-table tbody tr:last-child td:first-child {
-    border-bottom-left-radius: 0.5rem;
-}
-.exam-assignment-table tbody tr:last-child td:last-child {
-    border-bottom-right-radius: 0.5rem;
 }
 
 /* Media queries for responsiveness (example) */

@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.uth.quizclear.model.ExamStatus;
-import com.uth.quizclear.model.ExamReviewStatus;
+import com.uth.quizclear.model.Exam.ExamStatus;
+import com.uth.quizclear.model.ExamReview.ExamReviewStatus;
 
 import com.uth.quizclear.model.ExamReview;
 import com.uth.quizclear.model.Exam;
@@ -47,22 +47,22 @@ public class ExamService {
     }
 
     public List<Exam> getExamsByStatus(ExamStatus status) {
-        return examRepository.findByStatus(status); // 
+        return examRepository.findByStatus(status);
     }
 
-    public Optional<Exam> getExamById(Integer examId) {
+    public Optional<Exam> getExamById(Long examId) {
         return examRepository.findById(examId);
     }
 
     // TODO: Check 
-    public Exam updateExamStatus(Integer examId, ExamStatus newStatus) {
+    public Exam updateExamStatus(Long examId, ExamStatus newStatus) {
         Optional<Exam> optionalExam = examRepository.findById(examId);
         if (optionalExam.isPresent()) {
             Exam exam = optionalExam.get();
-            exam.setStatus(newStatus); // 
-            exam.setUpdatedAt(LocalDateTime.now()); // 
+            exam.setStatus(newStatus);
+            exam.setUpdatedAt(LocalDateTime.now());
             if (newStatus == ExamStatus.APPROVED) {
-                exam.setApprovedAt(LocalDateTime.now()); // 
+                exam.setApprovedAt(LocalDateTime.now());
                 // TODO: exam.setApprovedBy(currentUser); // Cần thông tin người dùng hiện tại
             } else if (newStatus == ExamStatus.REJECTED) {
                 // TODO: Xử lý logic khi bị từ chối
@@ -72,21 +72,20 @@ public class ExamService {
         return null;
     }
 
-
     public ExamReview createExamReview(ExamReview examReview) {
         examReview.setCreatedAt(LocalDateTime.now()); 
         return examReviewRepository.save(examReview);
     }
 
     // TODO: Check 
-    public Exam updateExamReviewStatus(Integer reviewId, ExamReviewStatus newStatus, String comments, String suggestions) {
+    public Exam updateExamReviewStatus(Long reviewId, ExamReviewStatus newStatus, String comments, String suggestions) {
         Optional<ExamReview> optionalExamReview = examReviewRepository.findById(reviewId);
         if (optionalExamReview.isPresent()) {
             ExamReview examReview = optionalExamReview.get();
             examReview.setStatus(newStatus);
-            examReview.setComments(comments); 
-            examReview.setSuggestions(suggestions); 
-            examReview.setUpdatedAt(LocalDateTime.now()); 
+            examReview.setComments(comments);
+            // Note: suggestions parameter is kept for controller compatibility but ExamReview model doesn't have suggestions field
+            examReview.setCreatedAt(LocalDateTime.now()); // Cập nhật thời gian
             examReviewRepository.save(examReview);
 
             // Cập nhật trạng thái của Exam dựa trên review cuối cùng (có thể có nhiều review)

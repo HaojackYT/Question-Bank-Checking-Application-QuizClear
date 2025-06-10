@@ -1,107 +1,107 @@
 package com.uth.quizclear.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 
-import java.util.Map;
-import java.util.HashMap;
+import com.uth.quizclear.repository.ExamRepository;
+import com.uth.quizclear.repository.ExamReviewRepository;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.uth.quizclear.model.Exam;
+import com.uth.quizclear.model.Exam.ExamStatus;
+import com.uth.quizclear.model.ExamReview.ExamReviewStatus;
+
 import com.uth.quizclear.model.ExamReview;
-import com.uth.quizclear.model.ExamReviewStatus;
-import com.uth.quizclear.model.ExamStatus;
-import com.uth.quizclear.service.ExamService;
+import com.uth.quizclear.model.Exam;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-@RestController
-@RequestMapping("/api/exams")
+@Service
 public class ExamController {
+
     @Autowired
-    private ExamService examService;
+    private ExamRepository examRepository;
 
-    // API để lấy các số liệu tổng quan trên dashboard
-    @GetMapping("/summary")
-    public ResponseEntity<Map<String, Long>> getExamSummary() {
-        Map<String, Long> summary = new HashMap<>();
-        summary.put("totalExams", examService.getTotalExams());
-        summary.put("pendingApproval", examService.getPendingApprovalExams());
-        summary.put("approved", examService.getApprovedExams());
-        summary.put("rejected", examService.getRejectedExams());
-        return ResponseEntity.ok(summary);
+    @Autowired
+    private ExamReviewRepository examReviewRepository;
+
+    public long getTotalExams() {
+        return examRepository.count();
     }
 
-    // TODO: CHECK
-    // API để lấy danh sách tất cả các bài thi
-    @GetMapping
-    public ResponseEntity<List<Exam>> getAllExams(@RequestParam(required = false) String status) {
-        if (status != null && !status.isEmpty()) {
-            try {
-                ExamStatus examStatus = ExamStatus.valueOf(status.toUpperCase()); 
-                return ResponseEntity.ok(examService.getExamsByStatus(examStatus));
-            } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().build();
+    public long getPendingApprovalExams() {
+        // ExamStatus.SUBMITTED là trạng thái chờ duyệt (Pending Approval)
+        return examRepository.findByStatus(ExamStatus.SUBMITTED).size();
+    }
+
+    public long getApprovedExams() {
+        return examRepository.findByStatus(ExamStatus.APPROVED).size();
+    }
+
+    public long getRejectedExams() {
+        return examRepository.findByStatus(ExamStatus.REJECTED).size();
+    }
+
+    public List<Exam> getAllExams() {
+        return examRepository.findAll();
+    }
+
+    public List<Exam> getExamsByStatus(ExamStatus status) {
+        return examRepository.findByStatus(status);
+    }
+
+    public Optional<Exam> getExamById(Long examId) {
+        return examRepository.findById(examId);
+    }
+
+    // TODO: Check 
+    public Exam updateExamStatus(Long examId, ExamStatus newStatus) {
+        Optional<Exam> optionalExam = examRepository.findById(examId);
+        if (optionalExam.isPresent()) {
+            Exam exam = optionalExam.get();
+            exam.setStatus(newStatus);
+            exam.setUpdatedAt(LocalDateTime.now());
+            if (newStatus == ExamStatus.APPROVED) {
+                exam.setApprovedAt(LocalDateTime.now());
+                // TODO: exam.setApprovedBy(currentUser); // Cần thông tin người dùng hiện tại
+            } else if (newStatus == ExamStatus.REJECTED) {
+                // TODO: Xử lý logic khi bị từ chối
             }
+            return examRepository.save(exam);
         }
-        return ResponseEntity.ok(examService.getAllExams());
+        return null;
     }
 
-    // TODO: CHECK
-    // API để lấy chi tiết một bài thi
-    @GetMapping("/{id}")
-    public ResponseEntity<Exam> getExamById(@PathVariable Integer id) {
-        Optional<Exam> exam = examService.getExamById(id);
-        return exam.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ExamReview createExamReview(ExamReview examReview) {
+        examReview.setCreatedAt(LocalDateTime.now()); 
+        return examReviewRepository.save(examReview);
     }
 
-    // TODO: CHECK
-    // API để duyệt/từ chối một bài thi (ví dụ: người duyệt cuối cùng)
-    @PutMapping("/{id}/status")
-    public ResponseEntity<Exam> updateExamStatus(@PathVariable Integer id, @RequestParam ExamStatus newStatus) {
-        Exam updatedExam = examService.updateExamStatus(id, newStatus); // 
-        if (updatedExam != null) {
-            return ResponseEntity.ok(updatedExam);
-        }
-        return ResponseEntity.notFound().build();
-    }
+    // TODO: Check 
+    public Exam updateExamReviewStatus(Long reviewId, ExamReviewStatus newStatus, String comments, String suggestions) {
+        Optional<ExamReview> optionalExamReview = examReviewRepository.findById(reviewId);
+        if (optionalExamReview.isPresent()) {
+            ExamReview examReview = optionalExamReview.get();
+            examReview.setStatus(newStatus);
+            examReview.setComments(comments);
+            // Note: suggestions parameter is kept for controller compatibility but ExamReview model doesn't have suggestions field
+            examReview.setCreatedAt(LocalDateTime.now()); // Cập nhật thời gian
+            examReviewRepository.save(examReview);
 
-    // TODO: CHECK
-    // API để tạo một review mới cho bài thi
-    @PostMapping("/{examId}/reviews")
-    public ResponseEntity<ExamReview> createExamReview(@PathVariable Integer examId, @RequestBody ExamReview examReview) {
-        Optional<Exam> exam = examService.getExamById(examId);
-        if (exam.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            // Cập nhật trạng thái của Exam dựa trên review cuối cùng (có thể có nhiều review)
+            Exam exam = examReview.getExam();
+            if (newStatus == ExamReviewStatus.APPROVED) {
+                exam.setStatus(ExamStatus.APPROVED);
+                exam.setApprovedAt(LocalDateTime.now()); 
+            } else if (newStatus == ExamReviewStatus.REJECTED) {
+                exam.setStatus(ExamStatus.REJECTED);
+            } else if (newStatus == ExamReviewStatus.NEEDS_REVISION) {
+                exam.setStatus(ExamStatus.REJECTED);
+            }
+            exam.setReviewedAt(LocalDateTime.now()); 
+            // TODO: exam.setReviewedBy(currentUser); // Cần thông tin người dùng hiện tại
+            return examRepository.save(exam);
         }
-        examReview.setExam(exam.get()); // 
-        // Cần truyền reviewer_id từ authentication context
-        // examReview.setReviewer(currentUser);
-        ExamReview createdReview = examService.createExamReview(examReview); // 
-        return ResponseEntity.ok(createdReview);
-    }
-
-    // TODO: CHECK
-    // API để cập nhật trạng thái của một review và cập nhật trạng thái Exam tương ứng
-    @PutMapping("/reviews/{reviewId}/status")
-    public ResponseEntity<Exam> updateReviewStatus(
-            @PathVariable Integer reviewId,
-            @RequestParam ExamReviewStatus newStatus, // [cite: 34]
-            @RequestParam(required = false) String comments, // [cite: 34]
-            @RequestParam(required = false) String suggestions) { // 
-        Exam updatedExam = examService.updateExamReviewStatus(reviewId, newStatus, comments, suggestions);
-        if (updatedExam != null) {
-            return ResponseEntity.ok(updatedExam);
-        }
-        return ResponseEntity.notFound().build();
+        return null;
     }
 }

@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/Static/css/staff/staffDupDetails.css" />
+<link rel="stylesheet" th:href="@{/Static/css/staff/staffDupDetails.css}" />
 <div class="comparison-section">
   <div class="comparison-header">
     <div>
@@ -7,68 +7,34 @@
         Detailed comparison between the new question and potential duplicate
       </div>
     </div>
-    <a href="#" class="back-link">← Back to List</a>
+    <a href="#" class="back-link">&larr; Back to List</a>
   </div>
 
   <div class="question-cards">
     <div class="question-card">
       <div class="question-label">New Question</div>
-      <div class="question-text">
-        </div>
+      <div class="question-text" id="new-question-text"></div>
       <div class="question-meta">
-        <div class="meta-item">
-          <span class="meta-label">Subject:</span>
-          <span class="meta-value" id="new-question-subject"></span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">CLO:</span>
-          <span class="meta-value" id="new-question-clo"></span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Difficulty:</span>
-          <span class="meta-value" id="new-question-difficulty"></span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Creator:</span>
-          <span class="meta-value" id="new-question-creator"></span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Created At:</span>
-          <span class="meta-value" id="new-question-created-at"></span>
-        </div>
+        <div class="meta-item"><span class="meta-label">Subject:</span> <span class="meta-value" id="new-question-subject"></span></div>
+        <div class="meta-item"><span class="meta-label">CLO:</span> <span class="meta-value" id="new-question-clo"></span></div>
+        <div class="meta-item"><span class="meta-label">Difficulty:</span> <span class="meta-value" id="new-question-difficulty"></span></div>
+        <div class="meta-item"><span class="meta-label">Creator:</span> <span class="meta-value" id="new-question-creator"></span></div>
+        <div class="meta-item"><span class="meta-label">Created At:</span> <span class="meta-value" id="new-question-created-at"></span></div>
       </div>
-      <div class="question-options-container">
-        </div>
+      <div class="question-options-container" id="new-question-options"></div>
     </div>
 
     <div class="question-card">
       <div class="question-label">Similar Question</div>
-      <div class="question-text">
-        </div>
+      <div class="question-text" id="similar-question-text"></div>
       <div class="question-meta">
-        <div class="meta-item">
-          <span class="meta-label">Subject:</span>
-          <span class="meta-value" id="similar-question-subject"></span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">CLO:</span>
-          <span class="meta-value" id="similar-question-clo"></span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Difficulty:</span>
-          <span class="meta-value" id="similar-question-difficulty"></span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Creator:</span>
-          <span class="meta-value" id="similar-question-creator"></span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">Created At:</span>
-          <span class="meta-value" id="similar-question-created-at"></span>
-        </div>
+        <div class="meta-item"><span class="meta-label">Subject:</span> <span class="meta-value" id="similar-question-subject"></span></div>
+        <div class="meta-item"><span class="meta-label">CLO:</span> <span class="meta-value" id="similar-question-clo"></span></div>
+        <div class="meta-item"><span class="meta-label">Difficulty:</span> <span class="meta-value" id="similar-question-difficulty"></span></div>
+        <div class="meta-item"><span class="meta-label">Creator:</span> <span class="meta-value" id="similar-question-creator"></span></div>
+        <div class="meta-item"><span class="meta-label">Created At:</span> <span class="meta-value" id="similar-question-created-at"></span></div>
       </div>
-      <div class="question-options-container">
-        </div>
+      <div class="question-options-container" id="similar-question-options"></div>
     </div>
   </div>
 
@@ -78,48 +44,30 @@
       <div class="action-option">
         <input type="radio" name="action" id="approve" checked />
         <div class="action-content">
-          <label for="approve" class="action-label"
-            >Approve Question - Unique or sufficiently different</label
-          >
-          <div class="action-description">
-            The question will be added to the question bank and marked as approved.
-          </div>
+          <label for="approve" class="action-label">Approve Question - Unique or sufficiently different</label>
+          <div class="action-description">The question will be added to the question bank and marked as approved.</div>
         </div>
       </div>
 
       <div class="action-option">
         <input type="radio" name="action" id="reject" />
         <div class="action-content">
-          <label for="reject" class="action-label"
-            >Reject Question - Clear duplicate of existing question</label
-          >
-          <div class="action-description">
-            The question will be rejected and the creator will be notified with
-            feedback.
-          </div>
+          <label for="reject" class="action-label">Reject Question - Clear duplicate of existing question</label>
+          <div class="action-description">The question will be rejected and the creator will be notified with feedback.</div>
         </div>
       </div>
 
       <div class="action-option">
         <input type="radio" name="action" id="sendback" />
         <div class="action-content">
-          <label for="sendback" class="action-label"
-            >Send Back for Revision - Similar but could be modified</label
-          >
-          <div class="action-description">
-            The question will be sent back to the creator with specific feedback for
-            improvement.
-          </div>
+          <label for="sendback" class="action-label">Send Back for Revision - Similar but could be modified</label>
+          <div class="action-description">The question will be sent back to the creator with specific feedback for improvement.</div>
         </div>
       </div>
 
       <div class="feedback-section">
         <label for="feedback" class="feedback-label">Feedback/Reason</label>
-        <textarea
-          id="feedback"
-          class="feedback-textarea"
-          placeholder="Provide feedback or reason for your decision..."
-        ></textarea>
+        <textarea id="feedback" class="feedback-textarea" placeholder="Provide feedback or reason for your decision..."></textarea>
       </div>
 
       <div class="action-buttons">
@@ -128,3 +76,4 @@
       </div>
     </div>
   </div>
+</div>

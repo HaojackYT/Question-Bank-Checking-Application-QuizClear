@@ -1,39 +1,38 @@
-<!-- Filters -->
-<div class="filters">
-  <select class="filter-select">
-    <option value="">All Subjects</option>
-  </select>
-  <select class="filter-select">
-    <option value="">All Submitters</option>
-  </select>
-  <button class="export-btn">
-    <span>📤</span> Export
-  </button>
-</div>
-
-<!-- Detection Section -->
-<div class="detection-section">
-  <h2 class="section-title">AI-Powered Duplicate Detection</h2>
-  <p class="section-subtitle">
-    Our AI system has identified these questions as potential duplicates
-    based on lexical and semantic analysis
-  </p>
-
-  <div class="table-container">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>New Question</th>
-          <th>Similar To</th>
-          <th>Similarity</th>
-          <th>Subjects</th>
-          <th>Submitter</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Nội dung sẽ được render bằng JavaScript -->
-      </tbody>
-    </table>
+<div id="tab-content"> <!-- Thêm dòng này -->
+  <div class="filters">
+    <select class="filter-select">
+      <option value="">All Subjects</option>
+    </select>
+    <select class="filter-select">
+      <option value="">All Submitters</option>
+    </select>
+    <button class="export-btn">
+      <span>📤</span> Export
+    </button>
   </div>
-</div>
+
+  <div class="detection-section">
+    <h2 class="section-title">AI-Powered Duplicate Detection</h2>
+    <p class="section-subtitle">
+      Our AI system has identified these questions as potential duplicates
+      based on lexical and semantic analysis
+    </p>
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>New Question</th>
+            <th>Similar To</th>
+            <th>Similarity</th>
+            <th>Subjects</th>
+            <th>Submitter</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Will be filled by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div> <!-- Đóng tab-content -->

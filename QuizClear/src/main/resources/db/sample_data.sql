@@ -1,191 +1,207 @@
+-- 1. Thêm 10 bản ghi vào bảng users
+INSERT INTO users (full_name, email, password_hash, role, status, department, gender, date_of_birth, nation, phone_number, created_at, hometown, contact_address) VALUES
+('Alexander Brooks', 'alex.brooks@university.edu', 'hash_ab001', 'Lec', 'active', 'Computer Science', 'male', '1986-03-15', 'USA', '1234567101', '2025-01-01 09:00:00', 'Boston', '101 Elm St, Boston'),
+('Maria Gonzalez', 'maria.gonzalez@university.edu', 'hash_mg002', 'HoD', 'active', 'Mathematics', 'female', '1978-07-22', 'Spain', '1234567102', '2025-01-02 09:00:00', 'Madrid', '22 Gran Via, Madrid'),
+('Chen Wei', 'chen.wei@university.edu', 'hash_cw003', 'RD', 'inactive', 'Physics', 'male', '1990-05-10', 'China', '1234567103', '2025-01-03 09:00:00', 'Shanghai', '33 Nanjing Rd, Shanghai'),
+('Aisha Khan', 'aisha.khan@university.edu', 'hash_ak004', 'SL', 'active', 'Chemistry', 'female', '1984-11-30', 'Pakistan', '1234567104', '2025-01-04 09:00:00', 'Karachi', '44 Clifton Rd, Karachi'),
+('Hiroshi Tanaka', 'hiroshi.tanaka@university.edu', 'hash_ht005', 'Lec', 'active', 'Biology', 'male', '1988-09-12', 'Japan', '1234567105', '2025-01-05 09:00:00', 'Osaka', '55 Umeda St, Osaka'),
+('Elena Petrova', 'elena.petrova@university.edu', 'hash_ep006', 'HoED', 'active', 'Computer Science', 'female', '1982-04-25', 'Russia', '1234567106', '2025-01-06 09:00:00', 'Moscow', '66 Arbat St, Moscow'),
+('Lucas Silva', 'lucas.silva@university.edu', 'hash_ls007', 'Lec', 'inactive', 'Mathematics', 'male', '1992-02-18', 'Brazil', '1234567107', '2025-01-07 09:00:00', 'Sao Paulo', '77 Paulista Ave, Sao Paulo'),
+('Fatima Ali', 'fatima.ali@university.edu', 'hash_fa008', 'RD', 'active', 'Physics', 'female', '1987-06-05', 'Egypt', '1234567108', '2025-01-08 09:00:00', 'Cairo', '88 Nile St, Cairo'),
+('James Park', 'james.park@university.edu', 'hash_jp009', 'SL', 'active', 'Chemistry', 'male', '1989-12-01', 'Korea', '1234567109', '2025-01-09 09:00:00', 'Seoul', '99 Gangnam Ave, Seoul'),
+('Sophie Müller', 'sophie.muller@university.edu', 'hash_sm010', 'Lec', 'active', 'Biology', 'female', '1991-08-14', 'Germany', '1234567110', '2025-01-10 09:00:00', 'Berlin', '100 Unter den Linden, Berlin');
 
+-- 2. Thêm 10 bản ghi vào bảng courses
+INSERT INTO courses (course_code, course_name, credits, department, description, created_by, created_at, status, semester, academic_year) VALUES
+('CS105', 'Software Engineering', 3, 'Computer Science', 'Software development methodologies', 1, '2025-01-10 10:00:00', 'active', 'Fall 2025', '2025-2026'),
+('MATH205', 'Abstract Algebra', 4, 'Mathematics', 'Study of algebraic structures', 2, '2025-01-11 10:00:00', 'active', 'Spring 2025', '2025-2026'),
+('PHY105', 'Mechanics', 3, 'Physics', 'Classical mechanics principles', 3, '2025-01-12 10:00:00', 'inactive', 'Fall 2025', '2025-2026'),
+('CHEM104', 'Inorganic Chemistry', 3, 'Chemistry', 'Study of inorganic compounds', 4, '2025-01-13 10:00:00', 'active', 'Fall 2025', '2025-2026'),
+('BIO104', 'Biochemistry', 3, 'Biology', 'Chemical processes in living organisms', 5, '2025-01-14 10:00:00', 'active', 'Spring 2025', '2025-2026'),
+('CS106', 'Operating Systems', 4, 'Computer Science', 'OS design and implementation', 6, '2025-01-15 10:00:00', 'active', 'Fall 2025', '2025-2026'),
+('MATH206', 'Numerical Analysis', 3, 'Mathematics', 'Computational methods for math problems', 7, '2025-01-16 10:00:00', 'active', 'Spring 2025', '2025-2026'),
+('PHY106', 'Astrophysics', 4, 'Physics', 'Study of celestial bodies', 8, '2025-01-17 10:00:00', 'inactive', 'Fall 2025', '2025-2026'),
+('CHEM105', 'Biochemistry Lab', 3, 'Chemistry', 'Lab techniques for biochemistry', 9, '2025-01-18 10:00:00', 'active', 'Spring 2025', '2025-2026'),
+('BIO105', 'Zoology', 3, 'Biology', 'Study of animal biology', 10, '2025-01-19 10:00:00', 'active', 'Fall 2025', '2025-2026');
 
-INSERT INTO `users` (user_id, full_name, email, password_hash, role, status, created_at, updated_at, department, start, end, gender, date_of_birth, nation, phone_number, hometown, contact_address) VALUES
-(1,'John Smith','rnd@uth.edu.vn','hash1','R&D','active','2025-06-06 09:17:19',NULL,'R&D',NULL,NULL,'male','1980-01-01','Vietnam','0901111111','Ho Chi Minh City','123 Main St'),
-(2,'Alice Johnson','hod@uth.edu.vn','hash2','HoD','active','2025-06-06 09:17:19',NULL,'IT',NULL,NULL,'female','1975-05-10','Vietnam','0902222222','Ho Chi Minh City','456 Second St'),
-(3,'Michael Brown','sl@uth.edu.vn','hash3','SL','active','2025-06-06 09:17:19',NULL,'IT',NULL,NULL,'male','1985-03-15','Vietnam','0903333333','Ho Chi Minh City','789 Third St'),
-(4,'Emma Wilson','lec1@uth.edu.vn','hash4','Lec','active','2025-06-06 09:17:19',NULL,'IT',NULL,NULL,'female','1990-07-20','Vietnam','0904444444','Ho Chi Minh City','101 Fourth St'),
-(5,'David Lee','hoed@uth.edu.vn','hash5','HoED','active','2025-06-06 09:17:19',NULL,'Exam',NULL,NULL,'male','1970-12-12','Vietnam','0905555555','Ho Chi Minh City','202 Fifth St'),
-(6,'Sophia Turner','lec2@uth.edu.vn','hash6','Lec','active','2025-06-06 09:17:19',NULL,'IT',NULL,NULL,'female','1992-09-09','Vietnam','0906666666','Ho Chi Minh City','303 Sixth St'),
-(7,'James White','lec3@uth.edu.vn','hash7','Lec','inactive','2025-06-06 09:17:19',NULL,'IT',NULL,NULL,'male','1988-11-11','Vietnam','0907777777','Ho Chi Minh City','404 Seventh St'),
-(8,'Olivia Harris','rnd2@uth.edu.vn','hash8','R&D','active','2025-06-06 09:17:19',NULL,'R&D',NULL,NULL,'female','1982-02-02','Vietnam','0908888888','Ho Chi Minh City','505 Eighth St');
+-- 3. Thêm 10 bản ghi vào bảng clos
+INSERT INTO clos (course_id, clo_code, difficulty_level, weight, clo_description, created_at) VALUES
+(1, 'CLO1_CS105', 'comprehension', 0.25, 'Understand software lifecycle models', '2025-01-10 11:00:00'),
+(2, 'CLO1_MATH205', 'Advanced Application', 0.30, 'Apply group theory to solve problems', '2025-01-11 11:00:00'),
+(3, 'CLO1_PHY105', 'recognition', 0.20, 'Identify Newton’s laws', '2025-01-12 11:00:00'),
+(4, 'CLO1_CHEM104', 'Basic Application', 0.25, 'Synthesize inorganic compounds', '2025-01-13 11:00:00'),
+(5, 'CLO1_BIO104', 'comprehension', 0.20, 'Explain enzyme kinetics', '2025-01-14 11:00:00'),
+(6, 'CLO1_CS106', 'Basic Application', 0.30, 'Implement process scheduling', '2025-01-15 11:00:00'),
+(7, 'CLO1_MATH206', 'comprehension', 0.25, 'Understand numerical integration', '2025-01-16 11:00:00'),
+(8, 'CLO1_PHY106', 'Advanced Application', 0.30, 'Analyze stellar spectra', '2025-01-17 11:00:00'),
+(9, 'CLO1_CHEM105', 'recognition', 0.20, 'Identify lab safety protocols', '2025-01-18 11:00:00'),
+(10, 'CLO1_BIO105', 'comprehension', 0.25, 'Describe animal classification', '2025-01-19 11:00:00');
 
-INSERT INTO `courses` VALUES
-(1,'CS101','Introduction to Computer Science',3,'IT','Basic concepts of computer science',1,'2025-06-06 09:17:23','Note 1'),
-(2,'EN201','English for IT',2,'Foreign Language','English language for IT students',1,'2025-06-06 09:17:23','Note 2'),
-(3,'MATH301','Discrete Mathematics',3,'Math','Mathematical foundations for computer science',2,'2025-06-06 09:17:23','Note 3'),
-(4,'PHY101','Physics for Engineers',2,'Physics','Basic physics for engineering students',3,'2025-06-06 09:17:23','Note 4');
+-- 4. Thêm 10 bản ghi vào bảng plans
+INSERT INTO plans (course_id, plan_title, total_questions, total_recognition, total_comprehension, total_basic_application, total_advanced_application, assigned_to, assigned_by, status, priority, due_date, created_at) VALUES
+(1, 'CS105 Midterm Plan', 12, 4, 4, 3, 1, 1, 2, 'in_progress', 'high', '2025-04-05 23:59:00', '2025-03-01 09:00:00'),
+(2, 'MATH205 Final Plan', 15, 5, 4, 3, 3, 2, 1, 'new', 'medium', '2025-06-01 23:59:00', '2025-03-02 09:00:00'),
+(3, 'PHY105 Quiz Plan', 8, 3, 3, 2, 0, 3, 2, 'accepted', 'low', '2025-03-25 23:59:00', '2025-03-03 09:00:00'),
+(4, 'CHEM104 Midterm Plan', 10, 3, 3, 3, 1, 4, 2, 'in_progress', 'high', '2025-04-10 23:59:00', '2025-03-04 09:00:00'),
+(5, 'BIO104 Quiz Plan', 9, 4, 3, 2, 0, 5, 2, 'completed', 'medium', '2025-03-20 23:59:00', '2025-03-05 09:00:00'),
+(6, 'CS106 Final Plan', 14, 4, 4, 4, 2, 6, 2, 'new', 'high', '2025-06-05 23:59:00', '2025-03-06 09:00:00'),
+(7, 'MATH206 Midterm Plan', 11, 3, 4, 3, 1, 7, 2, 'in_progress', 'medium', '2025-04-15 23:59:00', '2025-03-07 09:00:00'),
+(8, 'PHY106 Quiz Plan', 7, 3, 2, 2, 0, 8, 2, 'accepted', 'low', '2025-03-30 23:59:00', '2025-03-08 09:00:00'),
+(9, 'CHEM105 Final Plan', 13, 4, 4, 3, 2, 9, 2, 'new', 'high', '2025-06-10 23:59:00', '2025-03-09 09:00:00'),
+(10, 'BIO105 Midterm Plan', 10, 3, 3, 3, 1, 10, 2, 'in_progress', 'medium', '2025-04-20 23:59:00', '2025-03-10 09:00:00');
 
-INSERT INTO `clos` VALUES
-(1,1,'CLO1','recognition',30.00,'Recognition','Recognize basic knowledge'),
-(2,1,'CLO2','comprehension',30.00,'Comprehension','Understand key concepts'),
-(3,2,'CLO1','Basic Application',40.00,'Application','Apply English in IT context'),
-(4,3,'CLO1','Advanced Application',50.00,'Advanced','Apply discrete math in algorithms'),
-(5,4,'CLO1','recognition',20.00,'Recognition','Recognize basic physics concepts'),
-(6,1,'CLO1','recognition',30.00,'Recognition','Recognize basic knowledge'),
-(7,1,'CLO2','comprehension',30.00,'Comprehension','Understand key concepts'),
-(8,2,'CLO1','Basic Application',40.00,'Application','Apply English in IT context'),
-(9,3,'CLO1','Advanced Application',50.00,'Advanced','Apply discrete math in algorithms'),
-(10,4,'CLO1','recognition',20.00,'Recognition','Recognize basic physics concepts');
+-- 5. Thêm 10 bản ghi vào bảng tasks
+INSERT INTO tasks (course_id, plan_id, title, task_type, total_questions, total_recognition, total_comprehension, total_basic_application, total_advanced_application, assigned_to, assigned_by, status, priority, due_date, created_at) VALUES
+(1, 1, 'Create CS105 Midterm Questions', 'create_questions', 12, 4, 4, 3, 1, 1, 2, 'in_progress', 'high', '2025-04-05 23:59:00', '2025-03-01 10:00:00'),
+(2, 2, 'Review MATH205 Final Questions', 'review_questions', 15, 5, 4, 3, 3, 2, 1, 'pending', 'medium', '2025-06-01 23:59:00', '2025-03-02 10:00:00'),
+(3, 3, 'Create PHY105 Quiz Questions', 'create_questions', 8, 3, 3, 2, 0, 3, 2, 'accepted', 'low', '2025-03-25 23:59:00', '2025-03-03 10:00:00'),
+(4, 4, 'Create CHEM104 Midterm Questions', 'create_questions', 10, 3, 3, 3, 1, 4, 2, 'in_progress', 'high', '2025-04-10 23:59:00', '2025-03-04 10:00:00'),
+(5, 5, 'Review BIO104 Quiz Questions', 'review_questions', 9, 4, 3, 2, 0, 5, 2, 'completed', 'medium', '2025-03-20 23:59:00', '2025-03-05 10:00:00'),
+(6, 6, 'Create CS106 Final Questions', 'create_questions', 14, 4, 4, 4, 2, 6, 2, 'pending', 'high', '2025-06-05 23:59:00', '2025-03-06 10:00:00'),
+(7, 7, 'Review MATH206 Midterm Questions', 'review_questions', 11, 3, 4, 3, 1, 7, 2, 'in_progress', 'medium', '2025-04-15 23:59:00', '2025-03-07 10:00:00'),
+(8, 8, 'Create PHY106 Quiz Questions', 'create_questions', 7, 3, 2, 2, 0, 8, 2, 'accepted', 'low', '2025-03-30 23:59:00', '2025-03-08 10:00:00'),
+(9, 9, 'Review CHEM105 Final Questions', 'review_questions', 13, 4, 4, 3, 2, 9, 2, 'pending', 'high', '2025-06-10 23:59:00', '2025-03-09 10:00:00'),
+(10, 10, 'Create BIO105 Midterm Questions', 'create_questions', 10, 3, 3, 3, 1, 10, 2, 'in_progress', 'medium', '2025-04-20 23:59:00', '2025-03-10 10:00:00');
 
-INSERT INTO `plans` VALUES
-(1,1,10,3,3,2,2,1,'2025-06-06 09:17:37'),
-(2,2,8,2,2,2,2,1,'2025-06-06 09:17:37'),
-(3,3,12,4,4,2,2,2,'2025-06-06 09:17:37'),
-(4,4,6,2,2,1,1,3,'2025-06-06 09:17:37'),
-(5,1,10,3,3,2,2,1,'2025-06-06 09:23:49'),
-(6,2,8,2,2,2,2,1,'2025-06-06 09:23:49'),
-(7,3,12,4,4,2,2,2,'2025-06-06 09:23:49'),
-(8,4,6,2,2,1,1,3,'2025-06-06 09:23:49');
+-- 6. Thêm 10 bản ghi vào bảng questions
+INSERT INTO questions (course_id, clo_id, difficulty_level, content, answer_key, answer_f1, answer_f2, answer_f3, explanation, created_by, status, created_at, tags) VALUES
+(1, 1, 'comprehension', 'What is the purpose of a UML diagram?', 'Model software structure', 'Debug code', 'Optimize algorithms', 'Test hardware', 'UML diagrams visualize system design', 1, 'approved', '2025-02-01 09:00:00', 'software engineering, UML'),
+(2, 2, 'Advanced Application', 'Find the order of the group Z_6', '6', '12', '3', '8', 'Z_6 has 6 elements under addition modulo 6', 2, 'approved', '2025-02-02 09:00:00', 'abstract algebra'),
+(3, 3, 'recognition', 'What is Newton’s first law?', 'Object at rest stays at rest', 'F=ma', 'Action-reaction', 'Energy conservation', 'First law describes inertia', 3, 'approved', '2025-02-03 09:00:00', 'mechanics'),
+(4, 4, 'Basic Application', 'What gas is produced in a reaction of HCl with Zn?', 'Hydrogen', 'Oxygen', 'Nitrogen', 'Chlorine', 'Zn + 2HCl → ZnCl2 + H2', 4, 'approved', '2025-02-04 09:00:00', 'inorganic chemistry'),
+(5, 5, 'comprehension', 'What is the role of enzymes in metabolism?', 'Catalyze reactions', 'Store energy', 'Transport nutrients', 'Synthesize DNA', 'Enzymes speed up metabolic reactions', 5, 'approved', '2025-02-05 09:00:00', 'biochemistry'),
+(6, 6, 'Basic Application', 'What is a deadlock in an OS?', 'Processes waiting indefinitely', 'High CPU usage', 'Memory overflow', 'Thread termination', 'Deadlock occurs when processes block each other', 6, 'approved', '2025-02-06 09:00:00', 'operating systems'),
+(7, 7, 'comprehension', 'What is the trapezoidal rule?', 'Approximates definite integrals', 'Solves differential equations', 'Finds matrix eigenvalues', 'Computes derivatives', 'Trapezoidal rule estimates area under curves', 7, 'approved', '2025-02-07 09:00:00', 'numerical analysis'),
+(8, 8, 'Advanced Application', 'Calculate redshift for a galaxy moving at 0.1c', 'z ≈ 0.1', 'z ≈ 0.01', 'z ≈ 1.0', 'z ≈ 0.5', 'Redshift z ≈ v/c for low velocities', 8, 'approved', '2025-02-08 09:00:00', 'astrophysics'),
+(9, 9, 'recognition', 'What is a buffer solution?', 'Resists pH change', 'Increases pH', 'Decreases pH', 'Neutralizes acids only', 'Buffers maintain stable pH', 9, 'approved', '2025-02-09 09:00:00', 'biochemistry lab'),
+(10, 10, 'comprehension', 'What defines a mammal?', 'Warm-blooded, has hair', 'Lays eggs', 'Cold-blooded', 'Has scales', 'Mammals are warm-blooded vertebrates with hair', 10, 'approved', '2025-02-10 09:00:00', 'zoology');
 
-INSERT INTO `plan_assignments` VALUES
-(1,1,4,1,'2025-06-06 09:17:47'),
-(2,2,6,1,'2025-06-06 09:17:47'),
-(3,3,7,2,'2025-06-06 09:17:47'),
-(4,4,4,3,'2025-06-06 09:17:47'),
-(5,1,4,1,'2025-06-06 09:24:06'),
-(6,2,6,1,'2025-06-06 09:24:06'),
-(7,3,7,2,'2025-06-06 09:24:06'),
-(8,4,4,3,'2025-06-06 09:24:06');
+-- 7. Thêm 10 bản ghi vào bảng exams
+INSERT INTO exams (course_id, plan_id, exam_title, exam_code, duration_minutes, total_marks, exam_type, exam_date, semester, academic_year, status, created_by, created_at, hidden) VALUES
+(1, 1, 'CS105 Midterm Exam', 'CS105_MID_2025', 90, 10.00, 'midterm', '2025-04-15 09:00:00', 'Fall 2025', '2025-2026', 'approved', 1, '2025-03-10 10:00:00', FALSE),
+(2, 2, 'MATH205 Final Exam', 'MATH205_FINAL_2025', 120, 10.00, 'final', '2025-06-10 09:00:00', 'Spring 2025', '2025-2026', 'draft', 2, '2025-03-11 10:00:00', TRUE),
+(3, 3, 'PHY105 Quiz 1', 'PHY105_QUIZ1_2025', 30, 5.00, 'quiz', '2025-03-25 10:00:00', 'Fall 2025', '2025-2026', 'approved', 3, '2025-03-12 10:00:00', FALSE),
+(4, 4, 'CHEM104 Midterm Exam', 'CHEM104_MID_2025', 90, 10.00, 'midterm', '2025-04-10 09:00:00', 'Fall 2025', '2025-2026', 'submitted', 4, '2025-03-13 10:00:00', TRUE),
+(5, 5, 'BIO104 Quiz 1', 'BIO104_QUIZ1_2025', 45, 5.00, 'quiz', '2025-03-20 10:00:00', 'Spring 2025', '2025-2026', 'finalized', 5, '2025-03-14 10:00:00', FALSE),
+(6, 6, 'CS106 Final Exam', 'CS106_FINAL_2025', 120, 10.00, 'final', '2025-06-05 09:00:00', 'Fall 2025', '2025-2026', 'draft', 6, '2025-03-15 10:00:00', TRUE),
+(7, 7, 'MATH206 Midterm Exam', 'MATH206_MID_2025', 90, 10.00, 'midterm', '2025-04-15 09:00:00', 'Spring 2025', '2025-2026', 'approved', 7, '2025-03-16 10:00:00', FALSE),
+(8, 8, 'PHY106 Quiz 1', 'PHY106_QUIZ1_2025', 30, 5.00, 'quiz', '2025-03-30 10:00:00', 'Fall 2025', '2025-2026', 'submitted', 8, '2025-03-17 10:00:00', TRUE),
+(9, 9, 'CHEM105 Final Exam', 'CHEM105_FINAL_2025', 120, 10.00, 'final', '2025-06-10 09:00:00', 'Spring 2025', '2025-2026', 'draft', 9, '2025-03-18 10:00:00', TRUE),
+(10, 10, 'BIO105 Midterm Exam', 'BIO105_MID_2025', 90, 10.00, 'midterm', '2025-04-20 09:00:00', 'Fall 2025', '2025-2026', 'approved', 10, '2025-03-19 10:00:00', FALSE);
 
-INSERT INTO `questions` VALUES
-(1,1,1,NULL,'recognition','What is a computer?','An electronic device','A fruit','A car','A book','A computer is an electronic device.',4,'approved','2025-06-06 09:17:33',NULL,'active',0),
-(2,1,2,NULL,'comprehension','Explain the function of the CPU.','To process data','To store data','To display data','To connect to the internet','The CPU processes data.',4,'draft','2025-06-06 09:17:33',NULL,'active',1),
-(3,2,3,NULL,'Basic Application','Translate the word "Database" into Vietnamese.','C s d liu','My tnh','Phn mm','Mng','The correct translation is "C s d liu".',4,'approved','2025-06-06 09:17:33',NULL,'active',0),
-(4,3,4,NULL,'Advanced Application','What is a graph in discrete mathematics?','A set of vertices and edges','A type of equation','A programming language','A database','A graph consists of vertices and edges.',6,'approved','2025-06-06 09:17:33',NULL,'active',0),
-(5,4,5,NULL,'recognition','What is Newton\'s first law?','An object in motion stays in motion','Energy is conserved','Force equals mass times acceleration','Every action has a reaction','Newton\'s first law is about inertia.',7,'approved','2025-06-06 09:17:33',NULL,'active',0),
-(6,1,1,NULL,'recognition','What is RAM?','Random Access Memory','Read Access Memory','Run All Memory','Rapid Access Module','RAM stands for Random Access Memory.',6,'approved','2025-06-06 09:17:33',NULL,'active',0),
-(7,2,3,NULL,'Basic Application','What is the English word for "phn mm"?','Software','Hardware','Database','Network','"Phn mm" means software.',4,'approved','2025-06-06 09:17:33',NULL,'active',0),
-(8,3,4,NULL,'Advanced Application','What is a tree in computer science?','A hierarchical data structure','A type of graph','A sorting algorithm','A programming paradigm','A tree is a hierarchical data structure.',6,'approved','2025-06-06 09:17:33',NULL,'active',0),
-(9,4,5,NULL,'recognition','What is the SI unit of force?','Newton','Joule','Watt','Pascal','The SI unit of force is Newton.',7,'approved','2025-06-06 09:17:33',NULL,'active',0),
-(10,1,1,NULL,'recognition','What is a computer?','An electronic device','A fruit','A car','A book','A computer is an electronic device.',4,'approved','2025-06-06 09:23:45',NULL,'active',0),
-(11,1,2,NULL,'comprehension','Explain the function of the CPU.','To process data','To store data','To display data','To connect to the internet','The CPU processes data.',4,'draft','2025-06-06 09:23:45',NULL,'active',1),
-(12,2,3,NULL,'Basic Application','Translate the word "Database" into Vietnamese.','C s d liu','My tnh','Phn mm','Mng','The correct translation is "C s d liu".',4,'approved','2025-06-06 09:23:45',NULL,'active',0),
-(13,3,4,NULL,'Advanced Application','What is a graph in discrete mathematics?','A set of vertices and edges','A type of equation','A programming language','A database','A graph consists of vertices and edges.',6,'approved','2025-06-06 09:23:45',NULL,'active',0),
-(14,4,5,NULL,'recognition','What is Newton\'s first law?','An object in motion stays in motion','Energy is conserved','Force equals mass times acceleration','Every action has a reaction','Newton\'s first law is about inertia.',7,'approved','2025-06-06 09:23:45',NULL,'active',0),
-(15,1,1,NULL,'recognition','What is RAM?','Random Access Memory','Read Access Memory','Run All Memory','Rapid Access Module','RAM stands for Random Access Memory.',6,'approved','2025-06-06 09:23:45',NULL,'active',0),
-(16,2,3,NULL,'Basic Application','What is the English word for "phn mm"?','Software','Hardware','Database','Network','"Phn mm" means software.',4,'approved','2025-06-06 09:23:45',NULL,'active',0),
-(17,3,4,NULL,'Advanced Application','What is a tree in computer science?','A hierarchical data structure','A type of graph','A sorting algorithm','A programming paradigm','A tree is a hierarchical data structure.',6,'approved','2025-06-06 09:23:45',NULL,'active',0),
-(18,4,5,NULL,'recognition','What is the SI unit of force?','Newton','Joule','Watt','Pascal','The SI unit of force is Newton.',7,'approved','2025-06-06 09:23:45',NULL,'active',0);
+-- 8. Thêm 10 bản ghi vào bảng exam_questions
+INSERT INTO exam_questions (exam_id, question_id, question_order, marks) VALUES
+(1, 1, 1, 1.00),
+(2, 2, 1, 2.00),
+(3, 3, 1, 0.50),
+(4, 4, 1, 1.50),
+(5, 5, 1, 0.75),
+(6, 6, 1, 1.25),
+(7, 7, 1, 1.00),
+(8, 8, 1, 0.50),
+(9, 9, 1, 2.00),
+(10, 10, 1, 1.50);
 
-INSERT INTO `exam_submissions` VALUES
-(1,4,1,'submitted','2025-06-06 09:17:50'),
-(2,6,2,'submitted','2025-06-06 09:17:50'),
-(3,7,3,'reviewed','2025-06-06 09:17:50'),
-(4,4,4,'approved','2025-06-06 09:17:50'),
-(5,4,1,'submitted','2025-06-06 09:24:11'),
-(6,6,2,'submitted','2025-06-06 09:24:11'),
-(7,7,3,'reviewed','2025-06-06 09:24:11'),
-(8,4,4,'approved','2025-06-06 09:24:11');
+-- 9. Thêm 10 bản ghi vào bảng ai_duplicate_checks
+INSERT INTO ai_duplicate_checks (question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, checked_by, status, checked_at) VALUES
+('What is the purpose of a UML diagram?', 1, 0.75, 0.9500, TRUE, 'all-MiniLM-L6-v2', 1, 'completed', '2025-03-01 10:00:00'),
+('Find the order of the group Z_6', 2, 0.75, 0.8200, FALSE, 'all-MiniLM-L6-v2', 2, 'completed', '2025-03-02 10:00:00'),
+('What is Newton’s first law?', 3, 0.75, 0.9100, TRUE, 'all-MiniLM-L6-v2', 3, 'completed', '2025-03-03 10:00:00'),
+('What gas is produced in a reaction of HCl with Zn?', 4, 0.75, 0.7800, FALSE, 'all-MiniLM-L6-v2', 4, 'completed', '2025-03-04 10:00:00'),
+('What is the role of enzymes in metabolism?', 5, 0.75, 0.8900, TRUE, 'all-MiniLM-L6-v2', 5, 'completed', '2025-03-05 10:00:00'),
+('What is a deadlock in an OS?', 6, 0.75, 0.8500, FALSE, 'all-MiniLM-L6-v2', 6, 'completed', '2025-03-06 10:00:00'),
+('What is the trapezoidal rule?', 7, 0.75, 0.9200, TRUE, 'all-MiniLM-L6-v2', 7, 'completed', '2025-03-07 10:00:00'),
+('Calculate redshift for a galaxy moving at 0.1c', 8, 0.75, 0.8000, FALSE, 'all-MiniLM-L6-v2', 8, 'completed', '2025-03-08 10:00:00'),
+('What is a buffer solution?', 9, 0.75, 0.8700, TRUE, 'all-MiniLM-L6-v2', 9, 'completed', '2025-03-09 10:00:00'),
+('What defines a mammal?', 10, 0.75, 0.8300, FALSE, 'all-MiniLM-L6-v2', 10, 'completed', '2025-03-10 10:00:00');
 
-INSERT INTO `exams` VALUES
-(1,1,1,'Midterm Exam CS101','EX101',60,
- '{"recognition": 3, "comprehension": 3, "Basic Application": 2, "Advanced Application": 2}',
- 'draft',1,'2025-06-06 09:17:39',0),
-(2,2,2,'Final Exam EN201','EX201',90,
- '{"recognition": 2, "comprehension": 2, "Basic Application": 2, "Advanced Application": 2}',
- 'approved',1,'2025-06-06 09:17:39',0),
-(3,3,3,'Midterm Exam MATH301','EX301',60,
- '{"recognition": 2, "comprehension": 2, "Basic Application": 4, "Advanced Application": 4}',
- 'submitted',2,'2025-06-06 09:17:39',0),
-(4,4,4,'Final Exam PHY101','EX401',60,
- '{"recognition": 2, "comprehension": 2, "Basic Application": 1, "Advanced Application": 1}',
- 'finalized',3,'2025-06-06 09:17:39',0);
+-- 10. Thêm 10 bản ghi vào bảng ai_similarity_results
+INSERT INTO ai_similarity_results (check_id, existing_question_id, similarity_score, is_duplicate) VALUES
+(1, 1, 0.9500, TRUE),
+(2, 2, 0.8200, FALSE),
+(3, 3, 0.9100, TRUE),
+(4, 4, 0.7800, FALSE),
+(5, 5, 0.8900, TRUE),
+(6, 6, 0.8500, FALSE),
+(7, 7, 0.9200, TRUE),
+(8, 8, 0.8000, FALSE),
+(9, 9, 0.8700, TRUE),
+(10, 10, 0.8300, FALSE);
 
-INSERT INTO `exam_questions` VALUES
-(1,1,1),(2,1,2),(3,1,6),(4,2,3),(5,2,7),(6,3,4),(7,3,8),
-(8,4,5),(9,4,9),(10,1,1),(11,1,2),(12,1,6),(13,2,3),(14,2,7),
-(15,3,4),(16,3,8),(17,4,5),(18,4,9);
+-- 11. Thêm 10 bản ghi vào bảng duplicate_detections
+INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, feedback, detected_by, processed_by, detected_at, processed_at) VALUES
+(1, 1, 0.9500, 1, 'rejected', 'reject', 'Question is too similar to existing', 1, 2, '2025-03-01 11:00:00', '2025-03-02 11:00:00'),
+(2, 2, 0.8200, 2, 'accepted', 'accept', 'Sufficiently unique', 2, 1, '2025-03-02 11:00:00', '2025-03-03 11:00:00'),
+(3, 3, 0.9100, 3, 'sent_back', 'send_back', 'Needs rephrasing', 3, 2, '2025-03-03 11:00:00', '2025-03-04 11:00:00'),
+(4, 4, 0.7800, 4, 'accepted', 'accept', 'No significant overlap', 4, 2, '2025-03-04 11:00:00', '2025-03-05 11:00:00'),
+(5, 5, 0.8900, 5, 'merged', 'merge', 'Merged with existing question', 5, 2, '2025-03-05 11:00:00', '2025-03-06 11:00:00'),
+(6, 6, 0.8500, 6, 'accepted', 'accept', 'Unique content', 6, 2, '2025-03-06 11:00:00', '2025-03-07 11:00:00'),
+(7, 7, 0.9200, 7, 'rejected', 'reject', 'Highly similar to existing', 7, 2, '2025-03-07 11:00:00', '2025-03-08 11:00:00'),
+(8, 8, 0.8000, 8, 'accepted', 'accept', 'Acceptable similarity level', 8, 2, '2025-03-08 11:00:00', '2025-03-09 11:00:00'),
+(9, 9, 0.8700, 9, 'sent_back', 'send_back', 'Rephrase for clarity', 9, 2, '2025-03-09 11:00:00', '2025-03-10 11:00:00'),
+(10, 10, 0.8300, 10, 'accepted', 'accept', 'No significant duplication', 10, 2, '2025-03-10 11:00:00', '2025-03-11 11:00:00');
 
-INSERT INTO `exam_review` VALUES
-(1,1,2,8.50,'Good exam','2025-06-06 09:24:33'),
-(2,2,3,7.00,'Needs improvement','2025-06-06 09:24:33'),
-(3,3,6,9.00,'Excellent','2025-06-06 09:24:33'),
-(4,4,7,6.50,'Needs more advanced questions','2025-06-06 09:24:33');
+-- 12. Thêm 10 bản ghi vào bảng comments
+INSERT INTO comments (entity_type, entity_id, commenter_id, content, created_at) VALUES
+('question', 1, 1, 'Question is clear but needs more context', '2025-03-01 12:00:00'),
+('exam', 2, 2, 'Final exam needs more advanced questions', '2025-03-02 12:00:00'),
+('task', 3, 3, 'Task is on track, good progress', '2025-03-03 12:00:00'),
+('plan', 4, 4, 'Plan is well-structured', '2025-03-04 12:00:00'),
+('submission', 5, 5, 'Submission needs revision for clarity', '2025-03-05 12:00:00'),
+('question', 6, 6, 'Good question, but simplify the wording', '2025-03-06 12:00:00'),
+('exam', 7, 7, 'Midterm exam covers all CLOs', '2025-03-07 12:00:00'),
+('task', 8, 8, 'Quiz questions need faster completion', '2025-03-08 12:00:00'),
+('plan', 9, 9, 'Final plan is ambitious but feasible', '2025-03-09 12:00:00'),
+('submission', 10, 10, 'Submission is complete and clear', '2025-03-10 12:00:00');
 
-INSERT INTO `feedback_exam` VALUES
-(1,1,4,'The exam is reasonable','2025-06-06 09:24:30'),
-(2,2,3,'Please add more difficult questions','2025-06-06 09:24:30'),
-(3,3,6,'Great structure','2025-06-06 09:24:30'),
-(4,4,7,'Too many easy questions','2025-06-06 09:24:30');
+-- 13. Thêm 10 bản ghi vào bảng exam_reviews
+INSERT INTO exam_reviews (exam_id, reviewer_id, review_type, status, comments, created_at) VALUES
+(1, 2, 'subject_leader', 'approved', 'Well-designed midterm', '2025-03-10 13:00:00'),
+(2, 1, 'department_head', 'needs_revision', 'Add more application questions', '2025-03-11 13:00:00'),
+(3, 2, 'examination_department', 'approved', 'Quiz is concise and clear', '2025-03-12 13:00:00'),
+(4, 2, 'subject_leader', 'rejected', 'Too similar to previous exams', '2025-03-13 13:00:00'),
+(5, 2, 'department_head', 'approved', 'Good coverage of topics', '2025-03-14 13:00:00'),
+(6, 2, 'examination_department', 'needs_revision', 'Clarify instructions', '2025-03-15 13:00:00'),
+(7, 2, 'subject_leader', 'approved', 'Balanced difficulty', '2025-03-16 13:00:00'),
+(8, 2, 'department_head', 'rejected', 'Quiz needs more variety', '2025-03-17 13:00:00'),
+(9, 2, 'examination_department', 'needs_revision', 'Include more advanced questions', '2025-03-18 13:00:00'),
+(10, 2, 'subject_leader', 'approved', 'Well-prepared midterm', '2025-03-19 13:00:00');
 
-INSERT INTO `comments` VALUES
-(1,1,3,'Good question','2025-06-06 09:17:59'),
-(2,2,2,'Please revise the answer','2025-06-06 09:17:59'),
-(3,3,1,'Excellent explanation','2025-06-06 09:17:59'),
-(4,4,5,'Needs more details','2025-06-06 09:17:59'),
-(5,1,3,'Good question','2025-06-06 09:24:20'),
-(6,2,2,'Please revise the answer','2025-06-06 09:24:20'),
-(7,3,1,'Excellent explanation','2025-06-06 09:24:20'),
-(8,4,5,'Needs more details','2025-06-06 09:24:20');
+-- 14. Thêm 10 bản ghi vào bảng notifications
+INSERT INTO notifications (user_id, type, title, message, is_read, priority, created_at, action_url) VALUES
+(1, 'task_assigned', 'New Task Assigned', 'You have been assigned to create CS105 midterm questions', FALSE, 'high', '2025-03-01 14:00:00', '/tasks/1'),
+(2, 'exam_created', 'New Exam Created', 'MATH205 final exam has been created', FALSE, 'medium', '2025-03-02 14:00:00', '/exams/2'),
+(3, 'comment_added', 'New Comment', 'A comment was added to PHY105 quiz task', FALSE, 'low', '2025-03-03 14:00:00', '/tasks/3'),
+(4, 'duplicate_found', 'Duplicate Question Detected', 'CHEM104 question may be duplicated', FALSE, 'high', '2025-03-04 14:00:00', '/questions/4'),
+(5, 'approval_request', 'Exam Approval Needed', 'BIO104 quiz needs your approval', FALSE, 'medium', '2025-03-05 14:00:00', '/exams/5'),
+(6, 'task_assigned', 'New Task Assigned', 'Create CS106 final questions', FALSE, 'high', '2025-03-06 14:00:00', '/tasks/6'),
+(7, 'comment_added', 'New Comment', 'Comment added to MATH206 midterm plan', FALSE, 'medium', '2025-03-07 14:00:00', '/plans/7'),
+(8, 'duplicate_found', 'Duplicate Question Detected', 'PHY106 question may be duplicated', FALSE, 'high', '2025-03-08 14:00:00', '/questions/8'),
+(9, 'approval_request', 'Exam Approval Needed', 'CHEM105 final exam needs review', FALSE, 'medium', '2025-03-09 14:00:00', '/exams/9'),
+(10, 'task_assigned', 'New Task Assigned', 'Create BIO105 midterm questions', FALSE, 'high', '2025-03-10 14:00:00', '/tasks/10');
 
-INSERT INTO `notifications` VALUES
-(1,4,'You have been assigned a new task','2025-06-06 09:18:03',0),
-(2,3,'You have a new comment','2025-06-06 09:18:03',0),
-(3,6,'Your submission has been reviewed','2025-06-06 09:18:03',0),
-(4,7,'You have a new assignment','2025-06-06 09:18:03',0),
-(5,4,'You have been assigned a new task','2025-06-06 09:24:24',0),
-(6,3,'You have a new comment','2025-06-06 09:24:24',0),
-(7,6,'Your submission has been reviewed','2025-06-06 09:24:24',0),
-(8,7,'You have a new assignment','2025-06-06 09:24:24',0);
+-- 15. Thêm 10 bản ghi vào bảng ActivityLogs
+INSERT INTO activity_logs (user_id, action, activity, entity_type, entity_id, created_at) VALUES
+(1, 'create', 'Created CS105 midterm question', 'Question', 1, '2025-03-01 15:00:00'),
+(2, 'update', 'Updated MATH205 final exam', 'Exam', 2, '2025-03-02 15:00:00'),
+(3, 'create', 'Created PHY105 quiz task', 'Task', 3, '2025-03-03 15:00:00'),
+(4, 'delete', 'Deleted duplicate CHEM104 question', 'Question', 4, '2025-03-04 15:00:00'),
+(5, 'create', 'Created BIO104 quiz submission', 'Submission', 5, '2025-03-05 15:00:00'),
+(6, 'update', 'Updated CS106 final plan', 'Plan', 6, '2025-03-06 15:00:00'),
+(7, 'create', 'Created MATH206 midterm question', 'Question', 7, '2025-03-07 15:00:00'),
+(8, 'update', 'Updated PHY106 quiz task', 'Task', 8, '2025-03-08 15:00:00'),
+(9, 'create', 'Created CHEM105 final exam', 'Exam', 9, '2025-03-09 15:00:00'),
+(10, 'delete', 'Deleted duplicate BIO105 question', 'Question', 10, '2025-03-10 15:00:00');
 
-INSERT INTO `tasks` VALUES
-(1,1,'Create recognition questions','Prepare 3 recognition questions',3,0,0,0,4,1,'2025-06-06 09:17:56'),
-(2,2,'Create application questions','Prepare 2 application questions',0,0,2,0,6,1,'2025-06-06 09:17:56'),
-(3,3,'Create advanced questions','Prepare 2 advanced questions',0,0,0,2,7,2,'2025-06-06 09:17:56'),
-(4,4,'Create physics questions','Prepare 2 recognition questions',2,0,0,0,4,3,'2025-06-06 09:17:56'),
-(5,1,'Create recognition questions','Prepare 3 recognition questions',3,0,0,0,4,1,'2025-06-06 09:24:17'),
-(6,2,'Create application questions','Prepare 2 application questions',0,0,2,0,6,1,'2025-06-06 09:24:17'),
-(7,3,'Create advanced questions','Prepare 2 advanced questions',0,0,0,2,7,2,'2025-06-06 09:24:17'),
-(8,4,'Create physics questions','Prepare 2 recognition questions',2,0,0,0,4,3,'2025-06-06 09:24:17');
-
-INSERT INTO `activity_logs` VALUES
-(1,1,'Created a new course','2025-06-06 09:24:37'),
-(2,4,'Submitted a question','2025-06-06 09:24:37'),
-(3,6,'Reviewed an exam','2025-06-06 09:24:37'),
-(4,7,'Assigned a task','2025-06-06 09:24:37');
-
-INSERT INTO `duplicate_detections` VALUES
-(1,2,1,80.00,'pending',NULL,'Possible duplicate',1,NULL,'2025-06-06 09:24:40',NULL),
-(2,3,2,60.00,'accepted','accept','Confirmed duplicate',1,2,'2025-06-06 09:24:40',NULL),
-(3,4,8,75.00,'rejected','reject','Not a duplicate',2,3,'2025-06-06 09:24:40',NULL),
-(4,5,9,90.00,'merged','merged','Merged into one question',1,4,'2025-06-06 09:24:40',NULL);
-
-INSERT INTO `submission_questions` VALUES
-(1,1,1,1),
-(2,1,1,2),
-(3,2,2,3),
-(4,2,2,7),
-(5,3,3,4),
-(6,3,3,8),
-(7,4,4,5),
-(8,4,4,9),
-(9,1,1,1),
-(10,1,1,2),
-(11,2,2,3),
-(12,2,2,7),
-(13,3,3,4),
-(14,3,3,8),
-(15,4,4,5),
-(16,4,4,9);
-
-INSERT INTO `question_similarity` VALUES
-(1,1,2,80.00),
-(2,2,3,60.00),
-(3,4,8,75.00),
-(4,5,9,90.00);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-- 16. Thêm 10 bản ghi vào bảng exam_submissions
+INSERT INTO exam_submissions (submitted_by, course_id, status, submitted_at) VALUES
+(1, 1, 'submitted', '2025-03-10 16:00:00'),
+(2, 2, 'reviewed', '2025-03-11 16:00:00'),
+(3, 3, 'approved', '2025-03-12 16:00:00'),
+(4, 4, 'submitted', '2025-03-13 16:00:00'),
+(5, 5, 'reviewed', '2025-03-14 16:00:00'),
+(6, 6, 'approved', '2025-03-15 16:00:00'),
+(7, 7, 'submitted', '2025-03-16 16:00:00'),
+(8, 8, 'reviewed', '2025-03-17 16:00:00'),
+(9, 9, 'approved', '2025-03-18 16:00:00'),
+(10, 10, 'submitted', '2025-03-19 16:00:00');

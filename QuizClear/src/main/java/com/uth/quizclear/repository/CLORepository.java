@@ -8,5 +8,14 @@ import java.util.Optional;
 
 @Repository
 public interface CLORepository extends JpaRepository<CLO, Integer> {
-    Optional<CLO> findByCloName(String cloName);
+    // Sửa từ findByCloName thành một trong những option sau:
+    
+    // Option 1: Tìm theo cloCode (thường dùng nhất)
+    Optional<CLO> findByCloCode(String cloCode);
+    
+    // Option 2: Tìm theo cloNote  
+    // Optional<CLO> findByCloNote(String cloNote);
+    
+    // Option 3: Tìm theo cloDescription
+    // Optional<CLO> findByCloDescription(String cloDescription);
 }

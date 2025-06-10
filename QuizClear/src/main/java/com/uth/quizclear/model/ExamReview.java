@@ -1,24 +1,15 @@
 package com.uth.quizclear.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "ExamReviews")
+@Table(name = "exam_reviews")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,7 +18,7 @@ public class ExamReview {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
-    private Integer reviewId;
+    private Long reviewId;
 
     @ManyToOne
     @JoinColumn(name = "exam_id", nullable = false)
@@ -41,22 +32,47 @@ public class ExamReview {
     @Column(name = "review_type", nullable = false)
     private ReviewType reviewType; 
 
-    // TODO: DEFAULT 'PENDING'
     @Enumerated(EnumType.STRING)
-    private ExamReviewStatus status;
+    @Column(name = "status")
+    private ExamReviewStatus status = ExamReviewStatus.PENDING;
 
-    private Double score;
-
+    @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
 
-    private String suggestions;
-
-    // TODO: DEFAULT CURRENT_TIMESTAMP
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    // TODO: DEFAULT NULL
-    // TODO: ON UPDATE CURRENT_TIMESTAMP
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    // Enum definitions
+    public enum ReviewType {
+        SUBJECT_LEADER("subject_leader"),
+        DEPARTMENT_HEAD("department_head"),
+        EXAMINATION_DEPARTMENT("examination_department");
+
+        private final String value;
+
+        ReviewType(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public enum ExamReviewStatus {
+        PENDING("pending"),
+        APPROVED("approved"),
+        REJECTED("rejected"),
+        NEEDS_REVISION("needs_revision");
+
+        private final String value;
+
+        ExamReviewStatus(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 }

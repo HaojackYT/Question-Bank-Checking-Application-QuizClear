@@ -1,8 +1,18 @@
 package com.uth.quizclear.model;
 
 public enum ExamReviewStatus {
-    PENDING,
-    APPROVED,
-    REJECTED,
-    NEEDS_REVISION 
+    PENDING("pending"),
+    APPROVED("approved"),
+    REJECTED("rejected"),
+    NEEDS_REVISION("needs_revision");
+
+    private final String value;
+
+    ExamReviewStatus(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }
