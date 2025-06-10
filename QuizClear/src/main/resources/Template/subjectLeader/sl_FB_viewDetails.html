@@ -23,72 +23,97 @@
 
         <!-- Main content -->
         <div id="main">
-            <div class="main-context">
-                <a href="#" class="back-link">
-                    <i class="fa-solid fa-arrow-left-long"></i>
-                </a>
-                <h1 class="details-title">Details</h1>
+            <div class="details-container">
+                <div class="page-header">
+                    <a href="sl_feedBack.html">
+                        <button class="back-btn">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </a>
+                    <h1>Details</h1>
+                </div>
 
-                <div id="container">
-                    <h2 class="section-title">Information</h2>
+                <div class="information-section">
+                    <h2>Information</h2>
                     <p class="section-subtitle">Display all related information</p>
 
-                    <div class="info-row">
-                        <div class="info-item info-item--no">
-                            <p class="info-label">No.</p>
-                            <span id="No">DB_S102</span>
-                        </div>
-                        <div class="info-item info-item--giver">
-                            <p class="info-label">Feedback Giver</p>
-                            <span id="Feedback_Giver">Department Head</span>
-                        </div>
-                    </div>
-
-                    <div class="info-row">
-                        <div class="info-item info-item--content">
-                            <p class="info-label">Feedback Content</p>
-                            <span id="Feedback_Content">Feedback on Q25</span>
-                        </div>
-                        <div class="info-item info-item--date">
-                            <p class="info-label">Created Date</p>
-                            <span id="Created_Date">23/4/25</span>
-                        </div>
-                    </div>
-
-                    <div class="status-row">
-                        <p class="status-label">Status</p>
-                        <span id="Status">Received</span>
-                    </div>
-
-                    <div class="notes-section">
-                        <p class="notes-label">Notes</p>
-                        <span id="Notes">Question 25 lacks sufficient differentiation. Please revise the distractors to
-                            increase difficulty</span>
-                    </div>
-
-                    <h2 class="section-title">Related Question</h2>
-                    <p class="section-subtitle">Display the question and all related information</p>
-
-                    <div class="question-section">
-                        <div class="question-content">
-                            <p class="question-title">Question Content</p>
-                            <div>
-                                <span class="question-instructions" id="questionText">Question 25: In a redox reaction,
-                                    which substance is the reducing agent?</span>
-                                <div class="question-options">
-                                    <p>A. <span id="optionA">O2</span></p>
-                                    <p>B. <span id="optionB">H2</span></p>
-                                    <p>C. <span id="optionC">Cl2</span></p>
-                                    <p>D. <span id="optionD">Fe2O3</span></p>
-                                </div>
+                    <div class="info-grid">
+                        <div class="info-row">
+                            <div class="info-field">
+                                <label>No.</label>
+                                <input type="text" value="DB_S102" readonly>
+                            </div>
+                            <div class="info-field">
+                                <label>Feedback Giver</label>
+                                <input type="text" value="Department Head" readonly>
                             </div>
                         </div>
 
-                        <div class="action-buttons">
-                            <button title="Edit" class="btn btn--edit" onclick="openEditModal()">Edit</button>
-                            <button title="Assign" class="btn btn--assign" onclick="openAssignModal()">Assign</button>
-                            <button title="Resubmit" class="btn btn--resubmit">Resubmit</button>
+                        <div class="info-row">
+                            <div class="info-field">
+                                <label>Feedback Content</label>
+                                <input type="text" value="Feedback on Q25" readonly>
+                            </div>
+                            <div class="info-field">
+                                <label>Created Date</label>
+                                <input type="text" value="23/4/25" readonly>
+                            </div>
                         </div>
+
+                        <div class="info-row">
+                            <div class="info-field">
+                                <label>Status</label>
+                                <input type="text" value="Received" readonly>
+                            </div>
+                        </div>
+
+                        <div class="info-row">
+                            <div class="info-field">
+                                <label>Notes</label>
+                                <textarea placeholder="Question 25 lacks sufficient differentiation. Please revise the distractors to increase difficulty"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-list-section">
+                    <h2>Related Question</h2>
+                    <p class="section-subtitle">Display the question and all related information</p>
+
+                    <div class="questions-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Question Content</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <span id="questionText">Question 25: In a redox reaction, which substance is
+                                                the reducing agent?</span>
+                                            <div class="question-options">
+                                                <p>A. <span id="optionA">O2</span></p>
+                                                <p>B. <span id="optionB">H2</span></p>
+                                                <p>C. <span id="optionC">Cl2</span></p>
+                                                <p>D. <span id="optionD">Fe2O3</span></p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button title="Edit" class="btn btn--edit"
+                                                onclick="openEditModal()">Edit</button>
+                                            <button title="Assign" class="btn btn--assign"
+                                                onclick="openAssignModal()">Assign</button>
+                                            <button title="Resubmit" class="btn btn--resubmit">Resubmit</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -150,7 +175,7 @@
                 </div>
 
                 <div class="modal-item" style="display: flex;flex-direction: row;gap:1rem">
-                    <div>
+                    <div class ="answer-contain">
                         <label class="modal-label">Answers</label>
                         <div class="edit-options">
                             <div class="option-row">
@@ -210,6 +235,7 @@
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
+                setActiveMenu(document.title);
             });
 
         // Function to format date to YYYY-MM-DD
@@ -279,6 +305,7 @@
             }
         }
     </script>
+    <script src="../../Static/js/L_activeMenu.js"></script>
 </body>
 
 </html>

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../../Static/web_styles.css">
     <link rel="stylesheet" href="../../Static/css/subjectLeader/sl_feedBack.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>SL Plans</title>
+    <title>Feedback</title>
 </head>
 
 <body>
@@ -29,20 +29,28 @@
             <!-- noi dung duoc nhap trong day -->
             <div class="main-context">
 
-                <p style="font-size: 3rem;font-weight: bold;margin-left: 1rem;">Feedback</p>
-                <p style="font-size: 1.1rem;margin-left: 1rem;opacity: 60%;">Assign and manage question development
-                    tasks by lecturer</p>
+                <h1>Feedback</h1>
+                <p class ="subtitle">Assign and manage question development tasks by lecturer</p>
 
 
-                <div class="fillter-container">
-                    <div id="find">
-                        <input type="text" title="find" placeholder="Enter search content ....">
-                        <i class="fa-solid fa-magnifying-glass"></i>
+               <div class="search-filter-bar">
+                    <div class="search-box">
+                        <input type="text" placeholder="Enter search content ..." class="search-input">
+                        <button class="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
                     </div>
-                    <select name="fillter" id="fillter" title="fillter">
-                        <option value=" All_Feedback">All Feedback</option>
-                    </select>
+                    <div class="filter-dropdown">
+                        <select class="filter-select">
+                            <option>All Status</option>
+                            <option>Pending</option>
+                            <option>Approved</option>
+                            <option>Declined</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
                 </div>
+
 
                 <div>
                     <table class="feedback-table">
@@ -64,7 +72,7 @@
                                 <td>Department Head</td>
                                 <td>22/04/25</td>
                                 <td><span class="status completed">Completed</span></td>
-                                <td><span class="action-icon"><a href="#"><i class="fa-solid fa-pen-to-square"></i></a></span></td>
+                                <td><span class="action-icon"><i class="fa-solid fa-pen-to-square"></i></a></span></td>
                             </tr>
                             <tr>
                                 <td>2</td>
@@ -72,7 +80,7 @@
                                 <td>Department Head</td>
                                 <td>22/04/25</td>
                                 <td><span class="status in-progress">In Prog.</span></td>
-                                <td><span class="action-icon"><a href="#"><i class="fa-solid fa-pen-to-square"></i></a></span></td>
+                                <td><span class="action-icon"><i class="fa-solid fa-pen-to-square"></i></a></span></td>
                             </tr>
                             <tr>
                                 <td>3</td>
@@ -80,7 +88,7 @@
                                 <td>Department Head</td>
                                 <td>22/04/25</td>
                                 <td><span class="status new">New</span></td>
-                                <td><span class="action-icon"><a href="#"><i class="fa-solid fa-pen-to-square"></i></a></span></td>
+                                <td><span class="action-icon"><i class="fa-solid fa-pen-to-square"></i></a></span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -104,9 +112,11 @@
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('menu-HTML').innerHTML = data;
+                    setActiveMenu(document.title);
                 });
 
         </script>
+        <script src="../../Static/js/L_activeMenu.js"></script>
 </body>
 
 </html>

@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="../../Static/css/subjectLeader/sl_duplicationCheck.css">
     <!-- Thêm style riêng -->
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet" />
-    <title>QuizClear - Duplication Check</title>
+    <title>DuplicationCheck</title>
 </head>
 
 <body>
@@ -30,8 +30,8 @@
                 <h1>Duplication Check</h1>
                 <p>Detect duplicate questions automatically</p>
                 <div class="automatic-duplication-detection">
-                    <p style="color: black;font-size: 24px;opacity: 100;font-weight: bold;">Automatic Duplication Detection</p>
-                    <p>Review questions our AI system has flagged as potential duplicates</p>
+                    <h3>Automatic Duplication Detection</h3>
+                     <p style="color:#555; font-size: 13px; margin-top: 4px;" ;>Review questions our AI system has flagged as potential duplicates</p>
                     <table>
                         <thead>
                             <tr>
@@ -95,8 +95,10 @@
             .then((response) => response.text())
             .then((data) => {
                 document.getElementById("menu-HTML").innerHTML = data;
+                setActiveMenu(document.title);
             });
     </script>
+    <script src="../../Static/js/L_activeMenu.js"></script>
 
 </body>
 

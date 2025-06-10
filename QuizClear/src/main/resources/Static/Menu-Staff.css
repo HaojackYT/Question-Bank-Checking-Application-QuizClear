@@ -55,3 +55,8 @@
     background-color: #C6DCFF;
     font-weight: 600;
 }
+
+#Menu-Staff .elements:hover {
+    color: #0088F0;
+    background-color: #C6DCFF;
+}

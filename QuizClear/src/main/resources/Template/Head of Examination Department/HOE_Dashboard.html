@@ -10,7 +10,7 @@
         <link
             href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
             rel="stylesheet">
-        <title>Dashboard</title>
+        <title>Dashboard_HOE</title>
     </head>
 
     <body>
@@ -251,6 +251,7 @@
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('menu-HTML').innerHTML = data;
+                    setActiveMenu(document.title);
                 });
 
             // Chart tooltip functionality
@@ -276,5 +277,6 @@
                 });
             });
         </script>
+        <script src="../../Static/js/L_activeMenu.js"></script>
     </body>
 </html>

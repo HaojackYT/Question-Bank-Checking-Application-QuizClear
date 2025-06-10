@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../../static/css/subjectLeader/slReviewApproval.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>sl - Review & Approval</title>
+    <title>Review&Approval</title>
 </head>
 
 <body>
@@ -68,8 +68,8 @@
                                 <td><span class="status completed">Completed</span></td>
                                 <td><button class="details-btn" onclick="viewDetails(1)"><i class="fa-solid fa-eye"></i></button></td>
                                 <td>
-                                    <button class="action-btn approve"><i class="fas fa-check"></i></button>
-                                    <button class="action-btn decline" onclick="openDeclineModal()"><i class="fas fa-times"></i></button>
+                                    <button class="action-btn approve"><i class="fa-regular fa-circle-check"></i></button>
+                                    <button class="action-btn decline" onclick="openDeclineModal()"><i class="fa-regular fa-circle-xmark"></i></button>
                                 </td>
                             </tr>
                             <tr>
@@ -89,8 +89,8 @@
                                 <td><span class="status in-progress">In Prog.</span></td>
                                 <td><button class="details-btn" onclick="viewDetails(3)"><i class="fa-solid fa-eye"></i></button></td>
                                 <td>
-                                    <button class="action-btn approve"><i class="fas fa-check"></i></button>
-                                    <button class="action-btn decline" onclick="openDeclineModal()"><i class="fas fa-times"></i></button>
+                                    <button class="action-btn approve"> <i class="fa-regular fa-circle-check"></i></button>
+                                    <button class="action-btn decline" onclick="openDeclineModal()"> <i class="fa-regular fa-circle-xmark"></i></button>
                                 </td>
                             </tr>
                         </tbody>
@@ -131,10 +131,11 @@
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
+                setActiveMenu(document.title);
             });
 
         function viewDetails(id) {
-            window.location.href = `details.html?id=${id}`;
+            window.location.href = `slReviewApprovalDetail.html?id=${id}`;
         }
 
         function openDeclineModal() {
@@ -164,6 +165,7 @@
         // Close modal when clicking on overlay
         document.getElementById('modalOverlay').addEventListener('click', closeModal);
     </script>
+    <script src="../../Static/js/L_activeMenu.js"></script>
 </body>
 
 </html>

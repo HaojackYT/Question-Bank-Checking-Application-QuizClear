@@ -1,9 +1,4 @@
 /* Exam Evaluation Styles */
-.exam-evaluation-container {
-    padding: 1.55rem;
-    min-height: 100vh;
-}
-
 .page-title {
     color: #120368;
     font-size: 2.25rem;
@@ -148,49 +143,29 @@
 }
 
 /* Table Container */
-.table-container {
-    background-color: white;
-    border-radius: 0.75rem;
-    overflow: hidden;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-}
-
-.exam-table {
+table {
     width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 0.0625rem solid #D9D9D9;
+    border-radius: 0.3125rem;
+    font-size: 15.2px;
 }
 
-.exam-table thead {
-    background-color: #c8d0e0;
-}
-
-.exam-table th {
-    padding: 1rem;
+th,
+td {
+    padding: 0.75rem 0.9375rem;
     text-align: left;
-    font-weight: 600;
-    color: #2d1b69;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 0.0625rem solid #D9D9D9;
 }
 
-.exam-table th i {
-    margin-left: 0.25rem;
-    color: #6c757d;
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
 }
 
-.exam-table tbody tr {
-    border-bottom: 1px solid #dee2e6;
-    transition: background-color 0.2s ease;
-}
-
-.exam-table tbody tr:hover {
-    background-color: #f8f9fa;
-}
-
-.exam-table td {
-    padding: 1rem;
-    vertical-align: middle;
-    color: #495057;
+tr:hover {
+    background-color: #f9f9f9;
 }
 
 /* Status Badges */
@@ -199,19 +174,20 @@
     border-radius: 1rem;
     font-size: 0.75rem;
     font-weight: 500;
-    text-align: center;
+    text-transform: capitalize;
     display: inline-block;
-    min-width: 5rem;
-    color: black !important;
+    color: white;
 }
 
 .status-badge.draft {
-    background-color: #ffeaa7;
+    background-color: #757575;
 }
+
 .status-badge.Not_received {
     background-color: #FEA2A2;
 }
-.status-badge.Inprocess {
+
+.status-badge.Inprogress {
     background-color: #ffeaa7;
 }
 
@@ -229,105 +205,36 @@
 .action-btn {
     width: 2rem;
     height: 2rem;
-    border: none;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-}
-
-.view-btn {
-    background-color: #e3f2fd;
-    color: #1976d2;
-}
-
-.view-btn:hover {
-    background-color: #bbdefb;
-}
-
-.delete-btn {
-    background-color: #ffebee;
-    color: #d32f2f;
-}
-
-.delete-btn:hover {
-    background-color: #ffcdd2;
 }
 
 .action-btn i {
     font-size: 0.75rem;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .exam-evaluation-container {
-        padding: 1rem;
-    }
-
-    .controls-section {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .search-container {
-        max-width: none;
-    }
-
-    .tab-navigation {
-        flex-wrap: wrap;
-    }
-
-    .exam-table {
-        font-size: 0.75rem;
-    }
-
-    .exam-table th,
-    .exam-table td {
-        padding: 0.75rem 0.5rem;
-    }
-
-    .page-title {
-        font-size: 1.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-
-    .exam-table th:nth-child(3),
-    .exam-table td:nth-child(3),
-    .exam-table th:nth-child(4),
-    .exam-table td:nth-child(4) {
-        display: none;
-    }
-
-    .action-buttons {
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-
-    .status-badge {
-        font-size: 0.625rem;
-        padding: 0.25rem 0.5rem;
-        min-width: 4rem;
-    }
-}
-
 /* ====================test and feedback==================== */
 #container {
-    display: none; /* Ẩn mặc định */
-    position: fixed; /* Đặt vị trí cố định để căn giữa */
+    display: none;
+    /* Ẩn mặc định */
+    position: fixed;
+    /* Đặt vị trí cố định để căn giữa */
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Căn giữa theo chiều dọc và ngang */
-    background-color: rgba(0, 0, 0, 0.5); /* Nền mờ để làm nổi bật infor_container */
-    width: 100%; /* Chiếm toàn bộ chiều rộng */
-    height: 100%; /* Chiếm toàn bộ chiều cao */
-    z-index: 1000; /* Đảm bảo container nằm trên các phần tử khác */
-    display: flex; /* Sử dụng flex để căn giữa infor_container */
-    justify-content: center; /* Căn giữa ngang */
-    align-items: center; /* Căn giữa dọc */
+    transform: translate(-50%, -50%);
+    /* Căn giữa theo chiều dọc và ngang */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Nền mờ để làm nổi bật infor_container */
+    width: 100%;
+    /* Chiếm toàn bộ chiều rộng */
+    height: 100%;
+    /* Chiếm toàn bộ chiều cao */
+    z-index: 1000;
+    /* Đảm bảo container nằm trên các phần tử khác */
+    display: flex;
+    /* Sử dụng flex để căn giữa infor_container */
+    justify-content: center;
+    /* Căn giữa ngang */
+    align-items: center;
+    /* Căn giữa dọc */
 }
 
 #infor_container {
@@ -341,13 +248,16 @@
 }
 
 #close-btn {
-    position: absolute; /* Đặt nút X ở góc trên bên phải */
+    position: absolute;
+    /* Đặt nút X ở góc trên bên phải */
     top: 10px;
     right: 10px;
-    background-color: #ff4d4d; /* Màu đỏ cho nút X */
+    background-color: #ff4d4d;
+    /* Màu đỏ cho nút X */
     color: white;
     border: none;
-    border-radius: 50%; /* Hình tròn */
+    border-radius: 50%;
+    /* Hình tròn */
     width: 30px;
     height: 30px;
     font-size: 16px;
@@ -355,11 +265,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: background-color 0.3s; /* Hiệu ứng chuyển màu mượt */
+    transition: background-color 0.3s;
+    /* Hiệu ứng chuyển màu mượt */
 }
 
 #close-btn:hover {
-    background-color: #cc0000; /* Màu đỏ đậm khi hover */
+    background-color: #cc0000;
+    /* Màu đỏ đậm khi hover */
 }
 
 #infor {
@@ -434,14 +346,145 @@
     float: right;
     border: none;
     cursor: pointer;
-    transition: transform 0.3s ease, opacity 0.3s; /* Hiệu ứng bay lên và làm mờ */
+    transition: transform 0.3s ease, opacity 0.3s;
+    /* Hiệu ứng bay lên và làm mờ */
 }
 
 #infor_container #accept:hover {
-    transform: translateY(-5px); /* Bay lên 5px khi hover */
+    transform: translateY(-5px);
+    /* Bay lên 5px khi hover */
 }
 
 #infor_container #accept.faded {
-    opacity: 0.5; /* Làm mờ nút Accept */
-    pointer-events: none; /* Vô hiệu hóa tương tác */
+    opacity: 0.5;
+    /* Làm mờ nút Accept */
+    pointer-events: none;
+    /* Vô hiệu hóa tương tác */
+}
+
+/*------*/
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 3% auto;
+    padding: 0;
+    border-radius: 0.75rem;
+    width: 80%;
+    max-width: 37.5rem;
+    box-shadow: 0 0.625rem 1.875rem rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease;
+    min-height: 41.125rem;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.25rem;
+    padding-left: 2.8125rem;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #120368;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: -1.875rem;
+}
+
+.close {
+    color: #aaa;
+    font-size: 1.75rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    margin-right: 1.875rem;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.modal-body {
+    padding: 1.875rem;
+}
+
+.form-group {
+    margin: 0rem 0.25rem 0.9375rem 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 0.875rem;
+    width: 6.8125rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background-color: #f8f9fa;
+    color: #6c757d;
+}
+
+.form-row {
+    display: flex;
+    margin-bottom: 1.25rem;
+}
+
+.form-group.half {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.form-group.quarter {
+    flex: 1;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.count-box {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    text-align: center;
+}
+
+.accept-btn {
+    background-color: #120368;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.875rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    float: right;
+    transition: background-color 0.3s ease;
+}
+
+.accept-btn:hover {
+    background-color: #3a4bc8;
 }

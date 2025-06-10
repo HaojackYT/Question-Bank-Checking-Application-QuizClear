@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/css/Lecturer/leturer_ExamEvaluation.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Exam Evaluation</title>
+    <!--Test & Feedback-->
+</head>
+
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
+
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <div class="exam-evaluation-container">
+                <h1 class="page-title">Exam Evaluation</h1>
+
+                <!-- Tab Navigation -->
+                <div class="tab-search-wrapper">
+                    <div class="nav-tabs">
+                        <a href="lecturerEETaskExam.html"><button class="tab-btn">Task Exams</button></a>
+                        <a href="lecturerEETestFeedback.html"><button class="tab-btn active">Test & Feedback</button></a>
+                        <a href="lecturerEETestRepository.html"><button class="tab-btn">Test Repository</button></a>
+                    </div>
+
+                    <div class="search-container">
+                        <input type="text" placeholder="Search questions..." class="search-input">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="table-container">
+                    <table class="exam-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Title</th>
+                                <th>Total question</th>
+                                <th>Deadline</th>
+                                <th>Status</i></th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Database Systems</td>
+                                <td>mid exam</td>
+                                <td>90</td>
+                                <td>20/05/2023</td>
+                                <td><span class="status-badge Not_received">Not Received</span></td>
+                                <td class="action-buttons">
+                                    <button class="action-btn view-btn"onclick="showInfoModal()"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Database Systems</td>
+                                <td>mid exam</td>
+                                <td>20</td>
+                                <td>20/05/2023</td>
+                                <td><span class="status-badge Inprogress">In Progress</span></td>
+                                <td class="action-buttons">
+                                    <button class="action-btn view-btn"onclick="showInfoModal()"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Database Systems</td>
+                                <td>Final exam</td>
+                                <td>90</td>
+                                <td>20/05/2023</td>
+                                <td><span class="status-badge Not_received">Not Received</span></td>
+                                <td class="action-buttons">
+                                    <button class="action-btn view-btn"onclick="showInfoModal()"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Database Systems</td>
+                                <td>Final exam</td>
+                                <td>20</td>
+                                <td>20/05/2023</td>
+                                <td><span class="status-badge submitted">Submitted</span></td>
+                                <td class="action-buttons">
+                                    <button class="action-btn view-btn"onclick="showInfoModal()"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Database Systems</td>
+                                <td>mid exam</td>
+                                <td>90</td>
+                                <td>20/05/2023</td>
+                                <td><span class="status-badge Not_received">Not Received</span></td>
+                                <td class="action-buttons">
+                                    <button class="action-btn view-btn"onclick="showInfoModal()"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Database Systems</td>
+                                <td>mid exam</td>
+                                <td>20</td>
+                                <td>20/05/2023</td>
+                                <td><span class="status-badge Inprogress">In Progress</span></td>
+                                <td class="action-buttons">
+                                    <button class="action-btn view-btn"onclick="showInfoModal()"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Database Systems</td>
+                                <td>Final exam</td>
+                                <td>90</td>
+                                <td>20/05/2023</td>
+                                <td><span class="status-badge Not_received">Not Received</span></td>
+                                <td class="action-buttons">
+                                    <button class="action-btn view-btn"onclick="showInfoModal()"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Database Systems</td>
+                                <td>Final exam</td>
+                                <td>20</td>
+                                <td>20/05/2023</td>
+                                <td><span class="status-badge submitted">Submitted</span></td>
+                                <td class="action-buttons">
+                                    <button class="action-btn view-btn"onclick="showInfoModal()"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Database Systems</td>
+                                <td>mid exam</td>
+                                <td>90</td>
+                                <td>20/05/2023</td>
+                                <td><span class="status-badge Not_received">Not Received</span></td>
+                                <td class="action-buttons">
+                                    <button class="action-btn view-btn"onclick="showInfoModal()"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Database Systems</td>
+                                <td>mid exam</td>
+                                <td>20</td>
+                                <td>20/05/2023</td>
+                                <td><span class="status-badge submitted">Submitted</span></td>
+                                <td class="action-buttons">
+                                    <button class="action-btn view-btn" onclick="showInfoModal()"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Database Systems</td>
+                                <td>Final exam</td>
+                                <td>90</td>
+                                <td>20/05/2023</td>
+                                <td><span class="status-badge Not_received">Not Received</span></td>
+                                <td class="action-buttons">
+                                    <button class="action-btn view-btn" onclick="showInfoModal()"><i
+                                            class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Database Systems</td>
+                                <td>Final exam</td>
+                                <td>20</td>
+                                <td>20/05/2023</td>
+                                <td><span class="status-badge submitted">Submitted</span></td>
+                                <td class="action-buttons">
+                                    <button class="action-btn view-btn" onclick="showInfoModal()"><i
+                                            class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Information Modal -->
+                <div id="infoModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Information</h2>
+                            <span class="close" onclick="closeInfoModal()">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Requester</label>
+                                <input type="text" value="Nguyễn A" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Deadline</label>
+                                <input type="text" value="15/8/2028" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Subject</label>
+                                <input type="text" value="Database System" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <input type="text" value="Middle exam" readonly>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group half">
+                                    <label>Total Question</label>
+                                    <input type="text" value="90" readonly>
+                                </div>
+                                <div class="form-group half">
+                                    <label>Test Duration</label>
+                                    <input type="text" value="90:00" readonly>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group quarter">
+                                    <label>Remember</label>
+                                    <div class="count-box">40</div>
+                                </div>
+                                <div class="form-group quarter">
+                                    <label>Understand</label>
+                                    <div class="count-box">20</div>
+                                </div>
+                                <div class="form-group quarter">
+                                    <label>Apply (basic)</label>
+                                    <div class="count-box">15</div>
+                                </div>
+                                <div class="form-group quarter">
+                                    <label>Apply (advanced)</label>
+                                    <div class="count-box">15</div>
+                                </div>
+                            </div>
+                            <button class="accept-btn">Accept task</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ma nhung header vs menu -->
+            <script>
+                // Load header
+                fetch('../header_user.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('header-placeholder').innerHTML = data;
+                    });
+
+                // Load menu
+                fetch('Menu-Lecturer.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('menu-HTML').innerHTML = data;
+                        setActiveMenu(document.title);
+                    });
+
+            </script>
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const viewButtons = document.querySelectorAll('.view-btn');
+                    const infoModal = document.getElementById('infoModal'); // Sửa từ 'container' thành 'infoModal'
+                    const closeButton = document.querySelector('.close'); // Sửa từ '#close-btn' thành '.close'
+                    const acceptButton = document.querySelector('.accept-btn'); // Sửa từ '#accept' thành '.accept-btn'
+                    const searchInput = document.querySelector('.search-input');
+                    const rows = document.querySelectorAll('.exam-table tbody tr');
+                    let currentRow = null;
+
+                    // Kiểm tra infoModal
+                    if (!infoModal) {
+                        console.error('Element with id "infoModal" not found.');
+                        return;
+                    }
+
+                    // Ẩn modal mặc định
+                    infoModal.style.display = 'none';
+
+                    // Thêm sự kiện click cho nút View
+                    viewButtons.forEach(button => {
+                        button.addEventListener('click', (event) => {
+                            event.stopPropagation();
+                            currentRow = button.closest('tr');
+                            const statusElement = currentRow.querySelector('.status-badge');
+                            const status = statusElement.classList.contains('Not_received') ? 'Not_received' : statusElement.textContent.trim();
+
+                            acceptButton.classList.remove('faded');
+                            if (status !== 'Not_received') {
+                                acceptButton.classList.add('faded');
+                            }
+
+                            infoModal.style.display = 'block';
+                        });
+                    });
+
+                    // Thêm sự kiện click cho nút Close
+                    if (closeButton) {
+                        closeButton.addEventListener('click', () => {
+                            infoModal.style.display = 'none';
+                        });
+                    } else {
+                        console.warn('Element with class "close" not found.');
+                    }
+
+                    // Thêm sự kiện click cho nút Accept
+                    if (acceptButton) {
+                        acceptButton.addEventListener('click', () => {
+                            if (currentRow) {
+                                acceptButton.classList.add('faded');
+                                const statusCell = currentRow.querySelector('td:nth-child(5)');
+                                statusCell.innerHTML = '<span class="status-badge Inprogress">In Progress</span>';
+
+                                // Thêm nút detail
+                                const actionCell = currentRow.querySelector('.action-buttons');
+                                const detailBtn = document.createElement('button');
+                                detailBtn.className = 'action-btn detail-btn';
+                                detailBtn.innerHTML = '<i class="fa-solid fa-file"></i>';
+                                detailBtn.addEventListener('click', () => {
+                                    window.location.href = 'L_testExam.html';
+                                });
+                                actionCell.appendChild(detailBtn);
+
+                                infoModal.style.display = 'none';
+                            }
+                        });
+                    } else {
+                        console.warn('Element with class "accept-btn" not found.');
+                    }
+
+                    // Thêm nút detail cho các hàng Inprogress khi tải trang
+                    rows.forEach(row => {
+                        const statusBadge = row.querySelector('.status-badge');
+                        const actionCell = row.querySelector('.action-buttons');
+
+                        if (statusBadge && statusBadge.textContent.trim().toLowerCase() === 'in progress') {
+                            const detailBtn = document.createElement('button');
+                            detailBtn.className = 'action-btn detail-btn';
+                            detailBtn.innerHTML = '<i class="fa-solid fa-file"></i>';
+                            detailBtn.addEventListener('click', () => {
+                                window.location.href = 'L_testExam.html';
+                            });
+                            actionCell.appendChild(detailBtn);
+                        }
+                    });
+
+                    // Xử lý tìm kiếm
+                    if (searchInput) {
+                        searchInput.addEventListener('input', function () {
+                            const searchText = this.value.trim().toLowerCase();
+
+                            rows.forEach(row => {
+                                const subject = row.querySelector('td:nth-child(1)').textContent.trim().toLowerCase();
+                                const title = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+
+                                if (subject.includes(searchText) || title.includes(searchText)) {
+                                    row.style.display = '';
+                                } else {
+                                    row.style.display = 'none';
+                                }
+                            });
+                        });
+                    } else {
+                        console.warn('Element with class "search-input" not found.');
+                    }
+
+                    // Đóng modal khi click bên ngoài
+                    window.addEventListener('click', (event) => {
+                        if (event.target === infoModal) {
+                            infoModal.style.display = 'none';
+                        }
+                    });
+                });
+
+                // Thêm các functions cho onclick attributes
+                function showInfoModal() {
+                    const infoModal = document.getElementById('infoModal');
+                    if (infoModal) {
+                        infoModal.style.display = 'block';
+                    }
+                }
+
+                function closeInfoModal() {
+                    const infoModal = document.getElementById('infoModal');
+                    if (infoModal) {
+                        infoModal.style.display = 'none';
+                    }
+                }
+            </script>
+
+            <script src="../../Static/js/L_activeMenu.js"></script>
+</body>
+
+</html>
