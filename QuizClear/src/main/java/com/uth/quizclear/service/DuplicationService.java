@@ -2,96 +2,246 @@ package com.uth.quizclear.service;
 
 import com.uth.quizclear.model.entity.*;
 import com.uth.quizclear.model.dto.*;
-import com.uth.quizclear.repository.DuplicateDetectionRepository;
+import com.uth.quizclear.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class DuplicationService {    @Autowired
-    private DuplicateDetectionRepository duplicationRepository;
+public class DuplicationService {
+
+    @Autowired
+    private DuplicateDetectionRepository duplicateDetectionRepository;
+    
+    @Autowired
+    private AiDuplicateCheckRepository aiDuplicateCheckRepository;
+    
+    @Autowired
+    private AiSimilarityResultRepository aiSimilarityResultRepository;
+    
+    @Autowired
+    private QuestionRepository questionRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
+      @Autowired
+    private CourseRepository courseRepository;
+    
+    @Autowired
+    private AiDuplicateService aiDuplicateService;
+    private static final double DEFAULT_SIMILARITY_THRESHOLD = 0.75;
+
+    // =================== DUPLICATE DETECTION METHODS ===================
 
     @Transactional(readOnly = true)
     public List<DuplicateDetectionDTO> getAllDetections() {
-        List<DuplicateDetection> detections = duplicationRepository.findAll();
-        List<DuplicateDetectionDTO> dtos = new ArrayList<>();
-        for (DuplicateDetection detection : detections) {
-            dtos.add(mapToDto(detection));
-        }
-        return dtos;
-    }    @Transactional(readOnly = true)
-    public Map<String, List<String>> getDistinctFilterOptions() {
-        // Simplified filter options since we're using IDs
-        // TODO: Implement proper lookup from QuestionService to get actual course names and user names
-        Set<String> subjects = new HashSet<>();
-        Set<String> submitters = new HashSet<>();
+        List<DuplicateDetection> detections = duplicateDetectionRepository.findAll();
+        return detections.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
 
-        // For now, just add some placeholder values
-        subjects.add("Unknown Subject");
-        submitters.add("Unknown User");
-
-        return Map.of(
-                "subjects", subjects.stream().sorted().toList(),
-                "submitters", submitters.stream().sorted().toList());
-    }@Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public DuplicateDetectionDTO getDuplicationDetailsById(Long id) {
-        Optional<DuplicateDetection> optional = duplicationRepository.findById(id);
+        Optional<DuplicateDetection> optional = duplicateDetectionRepository.findById(id);
         return optional.map(this::mapToDto).orElse(null);
-    }    @Transactional
+    }
+
+    @Transactional(readOnly = true)
+    public List<DuplicateDetectionDTO> getDetectionsByStatus(String status) {
+        try {
+            DuplicateDetection.Status statusEnum = DuplicateDetection.Status.valueOf(status.toUpperCase());
+            List<DuplicateDetection> detections = duplicateDetectionRepository.findByStatus(statusEnum);
+            return detections.stream()
+                    .map(this::mapToDto)
+                    .collect(Collectors.toList());
+        } catch (IllegalArgumentException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<DuplicateDetectionDTO> getPendingDetections() {
+        return getDetectionsByStatus("PENDING");
+    }
+
+    @Transactional(readOnly = true)
+    public List<DuplicateDetectionDTO> getHighSimilarityDetections(double threshold) {
+        BigDecimal thresholdDecimal = BigDecimal.valueOf(threshold);
+        List<DuplicateDetection> detections = duplicateDetectionRepository.findHighSimilarityDetections(thresholdDecimal);
+        return detections.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public long countPendingDetections() {
+        return duplicateDetectionRepository.countByStatus(DuplicateDetection.Status.PENDING);
+    }
+
+    @Transactional
     public void processDetection(Long id, String actionStr, String feedback, Long processorId) {
-        DuplicateDetection detection = duplicationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Detection not found with id: " + id));        detection.setProcessingNotes(feedback);
+        DuplicateDetection detection = duplicateDetectionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Detection not found with id: " + id));
+
+        detection.setProcessingNotes(feedback);
         detection.setProcessedAt(LocalDateTime.now());
-        detection.setProcessedBy(processorId);// Set action và status bằng enum
+        detection.setProcessedBy(processorId);
+
         try {
             DuplicateDetection.Action action = DuplicateDetection.Action.valueOf(actionStr.toUpperCase());
-            detection.setAction(action);            // Cập nhật status theo action
+            detection.setAction(action);
+
+            // Update status based on action
             switch (action) {
-                case KEEP_BOTH -> detection.setStatus(DuplicateDetection.Status.APPROVED);
-                case REMOVE_NEW -> detection.setStatus(DuplicateDetection.Status.APPROVED);
-                case MERGE_QUESTIONS -> detection.setStatus(DuplicateDetection.Status.APPROVED);
-                case MARK_AS_VARIANT -> detection.setStatus(DuplicateDetection.Status.APPROVED);
+                case KEEP_BOTH, REMOVE_NEW, MERGE_QUESTIONS, MARK_AS_VARIANT -> 
+                    detection.setStatus(DuplicateDetection.Status.APPROVED);
             }
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid action: " + actionStr);        }
+            throw new IllegalArgumentException("Invalid action: " + actionStr);
+        }        duplicateDetectionRepository.save(detection);
+    }
 
-        duplicationRepository.save(detection);
-    }private DuplicateDetectionDTO mapToDto(DuplicateDetection d) {
-        // Simplified mapping since we're using IDs instead of entity relationships
+    // =================== AI DUPLICATE CHECK METHODS ===================
+
+    @Transactional
+    public AiDuplicateCheckDTO performAiDuplicateCheck(String questionContent, Long courseId, Long userId) {
+        return aiDuplicateService.performDuplicateCheck(questionContent, courseId, userId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AiDuplicateCheckDTO> getAiChecksByCourse(Long courseId) {
+        return aiDuplicateService.findChecksByCourse(courseId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AiDuplicateCheckDTO> getRecentAiChecks(int days) {
+        return aiDuplicateService.findRecentChecks(days);
+    }
+
+    @Transactional(readOnly = true)
+    public AiDuplicateCheckDTO getAiCheckById(Long checkId) {
+        return aiDuplicateService.findCheckById(checkId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AiDuplicateCheckDTO> getChecksWithDuplicates() {
+        return aiDuplicateService.findChecksWithDuplicates();
+    }
+
+    @Transactional(readOnly = true)
+    public List<AiDuplicateCheckDTO> getPendingAiChecks() {
+        return aiDuplicateService.findPendingChecks();
+    }
+
+    // =================== FILTER AND STATISTICS METHODS ===================
+
+    @Transactional(readOnly = true)
+    public Map<String, List<String>> getDistinctFilterOptions() {
+        // Get actual data from repositories
+        List<Course> courses = courseRepository.findAll();
+        List<User> users = userRepository.findActiveUsers();
+
+        Set<String> subjects = courses.stream()
+                .map(Course::getCourseName)
+                .collect(Collectors.toSet());
+
+        Set<String> submitters = users.stream()
+                .map(User::getFullName)
+                .collect(Collectors.toSet());
+
+        return Map.of(
+                "subjects", subjects.stream().sorted().collect(Collectors.toList()),                "submitters", submitters.stream().sorted().collect(Collectors.toList())
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, Object> getDuplicationStatistics() {
+        Map<String, Object> stats = new HashMap<>();
         
-        // Create basic question DTOs with just IDs for now
-        // TODO: Lookup actual question details from QuestionService/Repository
+        // Basic duplicate detection counts
+        stats.put("totalDetections", duplicateDetectionRepository.count());
+        stats.put("pendingDetections", duplicateDetectionRepository.countByStatus(DuplicateDetection.Status.PENDING));
+        stats.put("approvedDetections", duplicateDetectionRepository.countByStatus(DuplicateDetection.Status.APPROVED));
+        stats.put("rejectedDetections", duplicateDetectionRepository.countByStatus(DuplicateDetection.Status.REJECTED));
+        
+        // AI check statistics from AiDuplicateService
+        Map<String, Object> aiStats = aiDuplicateService.getAiCheckStatistics();
+        stats.putAll(aiStats);
+        
+        // Similarity statistics
+        stats.put("averageSimilarity", aiSimilarityResultRepository.getOverallAverageSimilarity());
+        stats.put("totalComparisons", aiSimilarityResultRepository.getTotalComparisons());
+        stats.put("duplicatesFound", aiSimilarityResultRepository.getTotalDuplicatesFound());
+        
+        return stats;
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, Object> getSystemHealthStatus() {
+        Map<String, Object> health = new HashMap<>();
+        
+        // Database health
+        health.put("databaseStatus", "healthy");
+        health.put("totalRecords", Map.of(
+                "duplicateDetections", duplicateDetectionRepository.count(),
+                "aiChecks", aiDuplicateCheckRepository.count(),
+                "questions", questionRepository.count(),
+                "users", userRepository.count()
+        ));
+        
+        // AI service health
+        Map<String, Object> aiHealth = aiDuplicateService.checkAiServiceHealth();
+        health.put("aiService", aiHealth);
+        
+        health.put("timestamp", LocalDateTime.now().toString());
+        
+        return health;
+    }
+
+    // =================== MAPPING METHODS ===================
+
+    private DuplicateDetectionDTO mapToDto(DuplicateDetection d) {
+        // Create question DTOs with actual data
         QuestionDetailDTO newQuestionDto = null;
         if (d.getNewQuestionId() != null) {
-            newQuestionDto = new QuestionDetailDTO();
-            newQuestionDto.setQuestionId(d.getNewQuestionId());
-            newQuestionDto.setContent("Question ID: " + d.getNewQuestionId()); // Placeholder
+            Optional<Question> question = questionRepository.findById(d.getNewQuestionId());
+            if (question.isPresent()) {
+                newQuestionDto = mapToQuestionDetailDto(question.get());
+            }
         }
 
         QuestionDetailDTO similarQuestionDto = null;
         if (d.getSimilarQuestionId() != null) {
-            similarQuestionDto = new QuestionDetailDTO();
-            similarQuestionDto.setQuestionId(d.getSimilarQuestionId());
-            similarQuestionDto.setContent("Question ID: " + d.getSimilarQuestionId()); // Placeholder
+            Optional<Question> question = questionRepository.findById(d.getSimilarQuestionId());
+            if (question.isPresent()) {
+                similarQuestionDto = mapToQuestionDetailDto(question.get());
+            }
         }
 
-        // Map users với null check - sử dụng ID thay vì entity
+        // Map users with actual data
         UserBasicDTO detectedByDto = null;
         if (d.getDetectedBy() != null) {
-            // TODO: Lookup user by ID from UserService or UserRepository
-            detectedByDto = new UserBasicDTO(d.getDetectedBy(), "Unknown User", "unknown@email.com", "USER", "", "");
+            Optional<User> user = userRepository.findById(d.getDetectedBy());
+            if (user.isPresent()) {
+                detectedByDto = mapToUserBasicDto(user.get());
+            }
         }
 
         UserBasicDTO processedByDto = null;
         if (d.getProcessedBy() != null) {
-            // TODO: Lookup user by ID from UserService or UserRepository  
-            processedByDto = new UserBasicDTO(d.getProcessedBy(), "Unknown User", "unknown@email.com", "USER", "", "");
+            Optional<User> user = userRepository.findById(d.getProcessedBy());
+            if (user.isPresent()) {
+                processedByDto = mapToUserBasicDto(user.get());
+            }
         }
 
-        // Tạo DTO với constructor cơ bản
+        // Create DTO
         Double similarity = d.getSimilarityScore() != null ? d.getSimilarityScore().doubleValue() : 0.0;
         String status = d.getStatus() != null ? d.getStatus().name() : "PENDING";
 
@@ -102,76 +252,77 @@ public class DuplicationService {    @Autowired
                 similarity,
                 status);
 
-        // Set các trường bổ sung
+        // Set additional fields
         if (d.getAiCheckId() != null) {
             dto.setAiCheckId(d.getAiCheckId());
-            // TODO: Lookup AI check details
-            dto.setModelUsed("Unknown Model");
+            Optional<AiDuplicateCheck> aiCheck = aiDuplicateCheckRepository.findById(d.getAiCheckId());
+            if (aiCheck.isPresent()) {
+                dto.setModelUsed(aiCheck.get().getModelUsed());
+            }
         }
 
         dto.setAction(d.getAction() != null ? d.getAction().name() : null);
         dto.setDetectedBy(detectedByDto);
         dto.setProcessedBy(processedByDto);
         dto.setDetectedAt(d.getDetectedAt());
-        dto.setProcessedAt(d.getProcessedAt());        // TODO: Set feedback fields when DuplicateDetectionDTO supports them
-        // dto.setDetectionFeedback(d.getDetectionFeedback());
-        // dto.setProcessingNotes(d.getProcessingNotes());
+        dto.setProcessedAt(d.getProcessedAt());
+        dto.setIsHighSimilarity(similarity >= DEFAULT_SIMILARITY_THRESHOLD);
+        dto.setPriorityLevel(similarity >= 0.9 ? "HIGH" : similarity >= 0.75 ? "MEDIUM" : "LOW");
 
         return dto;
     }
 
-    private String parseFeedback(String fullFeedback, String label) {
-        if (fullFeedback == null || !fullFeedback.contains(label)) {
-            return "N/A";
-        }
+    private AiDuplicateCheckDTO mapToAiCheckDto(AiDuplicateCheck check) {
+        AiDuplicateCheckDTO dto = new AiDuplicateCheckDTO();
+        dto.setCheckId(check.getCheckId());
+        dto.setQuestionContent(check.getQuestionContent());
+        dto.setCourseName(check.getCourse() != null ? check.getCourse().getCourseName() : "Unknown");
+        dto.setCheckedBy(check.getCheckedBy() != null ? mapToUserBasicDto(check.getCheckedBy()) : null);
+        dto.setCheckedAt(check.getCheckedAt());
+        dto.setStatus(check.getStatus().name());
+        dto.setSimilarityThreshold(check.getSimilarityThreshold() != null ? check.getSimilarityThreshold().doubleValue() : DEFAULT_SIMILARITY_THRESHOLD);
+        dto.setMaxSimilarityScore(check.getMaxSimilarityScore() != null ? check.getMaxSimilarityScore().doubleValue() : 0.0);
+        dto.setDuplicateFound(check.getDuplicateFound());
+        dto.setModelUsed(check.getModelUsed());
 
-        int startIndex = fullFeedback.indexOf(label) + label.length();
-        int nextLabelIndex = fullFeedback.indexOf("AI", startIndex);
+        // Load similarity results
+        List<AiSimilarityResult> results = aiSimilarityResultRepository.findByAiCheck_CheckId(check.getCheckId());
+        List<AiSimilarityResultDTO> resultDtos = results.stream()
+                .map(this::mapToSimilarityResultDto)
+                .collect(Collectors.toList());
+        dto.setSimilarityResults(resultDtos);
 
-        String result = fullFeedback.substring(startIndex,
-                nextLabelIndex > startIndex ? nextLabelIndex : fullFeedback.length()).trim();        return result.isEmpty() ? "N/A" : result;
+        return dto;
     }
 
-    // Thêm các phương thức tiện ích với logic filtering trong service
-    @Transactional(readOnly = true)
-    public List<DuplicateDetectionDTO> getDetectionsByStatus(String status) {
-        List<DuplicateDetection> allDetections = duplicationRepository.findAll();        try {
-            DuplicateDetection.Status statusEnum = DuplicateDetection.Status.valueOf(status.toUpperCase());
-            List<DuplicateDetection> filteredDetections = allDetections.stream()
-                    .filter(d -> d.getStatus() == statusEnum)
-                    .toList();
-
-            return filteredDetections.stream()
-                    .map(this::mapToDto)
-                    .toList();
-        } catch (IllegalArgumentException e) {
-            return new ArrayList<>();
-        }
+    private AiSimilarityResultDTO mapToSimilarityResultDto(AiSimilarityResult result) {
+        AiSimilarityResultDTO dto = new AiSimilarityResultDTO();
+        dto.setResultId(result.getResultId());
+        dto.setExistingQuestion(mapToQuestionDetailDto(result.getExistingQuestion()));
+        dto.setSimilarityScore(result.getSimilarityScore().doubleValue());
+        dto.setIsDuplicate(result.getIsDuplicate());        return dto;
     }
 
-    @Transactional(readOnly = true)
-    public List<DuplicateDetectionDTO> getPendingDetections() {
-        return getDetectionsByStatus("pending");
+    private QuestionDetailDTO mapToQuestionDetailDto(Question question) {
+        QuestionDetailDTO dto = new QuestionDetailDTO();
+        dto.setQuestionId(question.getQuestionId());
+        dto.setContent(question.getContent());
+        dto.setCourseName(question.getCourse() != null ? question.getCourse().getCourseName() : "Unknown");
+        dto.setCloCode(question.getClo() != null ? question.getClo().getCloCode() : "Unknown");
+        dto.setDifficultyLevel(question.getDifficultyLevel() != null ? question.getDifficultyLevel().name() : "Unknown");
+        dto.setCreatorName(question.getCreator() != null ? question.getCreator().getFullName() : "Unknown");
+        dto.setCreatedAt(question.getCreatedAt());
+        return dto;
     }
 
-    @Transactional(readOnly = true)
-    public long countPendingDetections() {
-        List<DuplicateDetection> allDetections = duplicationRepository.findAll();        return allDetections.stream()
-                .filter(d -> d.getStatus() == DuplicateDetection.Status.PENDING)
-                .count();
-    }
-
-    @Transactional(readOnly = true)
-    public List<DuplicateDetectionDTO> getHighSimilarityDetections(double threshold) {
-        List<DuplicateDetection> allDetections = duplicationRepository.findAll();
-
-        List<DuplicateDetection> filteredDetections = allDetections.stream()
-                .filter(d -> d.getSimilarityScore() != null &&
-                        d.getSimilarityScore().doubleValue() >= threshold)
-                .toList();
-
-        return filteredDetections.stream()
-                .map(this::mapToDto)
-                .toList();
+    private UserBasicDTO mapToUserBasicDto(User user) {
+        return new UserBasicDTO(
+                user.getUserId(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getRole().name(),
+                user.getDepartment(),
+                user.getAvatarUrl()
+        );
     }
 }

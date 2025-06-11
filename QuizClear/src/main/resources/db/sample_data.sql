@@ -141,6 +141,47 @@ INSERT INTO duplicate_detections (new_question_id, similar_question_id, similari
 (9, 9, 0.8700, 9, 'sent_back', 'send_back', 'Rephrase for clarity', 9, 2, '2025-03-09 11:00:00', '2025-03-10 11:00:00'),
 (10, 10, 0.8300, 10, 'accepted', 'accept', 'No significant duplication', 10, 2, '2025-03-10 11:00:00', '2025-03-11 11:00:00');
 
+-- Additional sample data for testing duplicate detection functionality
+
+-- Insert more duplicate detection records with different scenarios
+INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, feedback, detected_by, processed_by, detected_at, processed_at) VALUES
+(2, 1, 0.92, 1, 'pending', NULL, NULL, 1, NULL, '2025-03-11 10:00:00', NULL),
+(3, 2, 0.85, 2, 'pending', NULL, NULL, 1, NULL, '2025-03-11 11:00:00', NULL),
+(4, 1, 0.78, 3, 'approved', 'REJECT_DUPLICATE', 'Questions are too similar in content and structure', 1, 2, '2025-03-11 12:00:00', '2025-03-11 15:00:00'),
+(5, 3, 0.88, 4, 'pending', NULL, NULL, 1, NULL, '2025-03-11 13:00:00', NULL),
+(6, 2, 0.65, 5, 'rejected', 'APPROVE_DUPLICATE', 'Questions cover different aspects of the topic', 1, 2, '2025-03-11 14:00:00', '2025-03-11 16:00:00'),
+(7, 4, 0.91, 6, 'needs_review', 'NEEDS_REVIEW', 'Requires subject matter expert review', 1, 2, '2025-03-11 15:00:00', '2025-03-11 17:00:00'),
+(8, 5, 0.73, 7, 'pending', NULL, NULL, 1, NULL, '2025-03-11 16:00:00', NULL),
+(9, 6, 0.89, 8, 'pending', NULL, NULL, 1, NULL, '2025-03-11 17:00:00', NULL),
+(10, 7, 0.82, 9, 'approved', 'REJECT_DUPLICATE', 'High similarity detected by AI system', 1, 2, '2025-03-11 18:00:00', '2025-03-11 19:00:00'),
+(1, 8, 0.67, 10, 'rejected', 'APPROVE_DUPLICATE', 'Different difficulty levels, acceptable', 1, 2, '2025-03-11 19:00:00', '2025-03-11 20:00:00');
+
+-- Insert more AI duplicate checks for comprehensive testing
+INSERT INTO ai_duplicate_checks (question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, checked_by, status, checked_at) VALUES
+('Explain the concept of object-oriented programming and its key principles', 1, 0.75, 0.92, TRUE, 'all-MiniLM-L6-v2', 1, 'completed', '2025-03-11 10:00:00'),
+('What are the main differences between procedural and functional programming paradigms?', 1, 0.75, 0.85, TRUE, 'all-MiniLM-L6-v2', 1, 'completed', '2025-03-11 11:00:00'),
+('Describe the process of photosynthesis in plants and its importance to ecosystems', 5, 0.75, 0.78, FALSE, 'all-MiniLM-L6-v2', 1, 'completed', '2025-03-11 12:00:00'),
+('Calculate the derivative of f(x) = x^3 + 2x^2 - 5x + 1', 2, 0.75, 0.88, TRUE, 'all-MiniLM-L6-v2', 1, 'completed', '2025-03-11 13:00:00'),
+('What is the role of DNA in genetic inheritance?', 5, 0.75, 0.65, FALSE, 'all-MiniLM-L6-v2', 1, 'completed', '2025-03-11 14:00:00'),
+('Explain the working principle of a TCP/IP network protocol', 6, 0.75, 0.91, TRUE, 'all-MiniLM-L6-v2', 1, 'completed', '2025-03-11 15:00:00'),
+('What are the fundamental laws of thermodynamics?', 3, 0.75, 0.73, FALSE, 'all-MiniLM-L6-v2', 1, 'completed', '2025-03-11 16:00:00'),
+('Describe the structure and function of cellular mitochondria', 5, 0.75, 0.89, TRUE, 'all-MiniLM-L6-v2', 1, 'completed', '2025-03-11 17:00:00'),
+('How does the binary search algorithm work and what is its time complexity?', 1, 0.75, 0.82, TRUE, 'all-MiniLM-L6-v2', 1, 'completed', '2025-03-11 18:00:00'),
+('What is the difference between ionic and covalent chemical bonds?', 4, 0.75, 0.67, FALSE, 'all-MiniLM-L6-v2', 1, 'completed', '2025-03-11 19:00:00');
+
+-- Insert more AI similarity results
+INSERT INTO ai_similarity_results (check_id, existing_question_id, similarity_score, is_duplicate) VALUES
+(11, 1, 0.92, TRUE),
+(12, 2, 0.85, TRUE),
+(13, 5, 0.78, FALSE),
+(14, 7, 0.88, TRUE),
+(15, 5, 0.65, FALSE),
+(16, 6, 0.91, TRUE),
+(17, 8, 0.73, FALSE),
+(18, 5, 0.89, TRUE),
+(19, 1, 0.82, TRUE),
+(20, 4, 0.67, FALSE);
+
 -- 12. Thêm 10 bản ghi vào bảng comments
 INSERT INTO comments (entity_type, entity_id, commenter_id, content, created_at) VALUES
 ('question', 1, 1, 'Question is clear but needs more context', '2025-03-01 12:00:00'),

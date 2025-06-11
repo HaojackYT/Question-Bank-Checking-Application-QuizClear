@@ -6,10 +6,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class WebPageController {
 
-    // Trang chính
+    // Trang chính - URL chính xác từ browser
+    @GetMapping("/staffQMDupliCheck")
+    public String staffQMDupliCheck() {
+        return "Staff/staffQMDupliCheck";
+    }    // Trang chính - Mapping khác (tương thích với code cũ)
     @GetMapping("/staff/duplication-check")
     public String staffDuplicationCheck() {
-        return "Staff/staffDuplicationCheck";
+        return "Staff/staffQMDupliCheck";
     }
 
     // HTML động load bằng fetch trong JS
@@ -31,15 +35,24 @@ public class WebPageController {
     @GetMapping("/Template/Staff/staffLogs")
     public String staffLogs() {
         return "Staff/staffLogs";
-    }
-
-    @GetMapping("/Static/header_user.html")
+    }    @GetMapping("/Static/header_user.html")
     public String headerUser() {
         return "header_user";
     }
 
     @GetMapping("/Static/Menu-Staff.html")
     public String menuStaff() {
+        return "Menu-Staff";
+    }
+    
+    // Template endpoints
+    @GetMapping("/Template/header_user.html")
+    public String templateHeaderUser() {
+        return "header_user";
+    }
+
+    @GetMapping("/Template/Menu-Staff.html")
+    public String templateMenuStaff() {
         return "Menu-Staff";
     }
 }
