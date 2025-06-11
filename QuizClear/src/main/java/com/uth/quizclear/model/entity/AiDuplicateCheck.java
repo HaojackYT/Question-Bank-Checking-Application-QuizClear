@@ -1,12 +1,25 @@
 package com.uth.quizclear.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * AI Duplicate Check entity for detecting question duplicates using AI
+ * Tracks AI-powered similarity analysis results
+ */
 @Entity
 @Table(name = "ai_duplicate_checks")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(exclude = {"course", "checkedBy", "similarityResults"})
 public class AiDuplicateCheck {
 
     public enum Status {
@@ -16,44 +29,51 @@ public class AiDuplicateCheck {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "check_id")
-    private Long checkId;  // Changed from Integer to Long
+    private Long checkId;
 
+    @NotBlank(message = "Question content is required")
     @Column(name = "question_content", nullable = false, columnDefinition = "TEXT")
     private String questionContent;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
     private Course course;
 
+    @Builder.Default
     @Column(name = "similarity_threshold", precision = 3, scale = 2)
     private BigDecimal similarityThreshold = BigDecimal.valueOf(0.75);
 
     @Column(name = "max_similarity_score", precision = 5, scale = 4)
     private BigDecimal maxSimilarityScore;
 
+    @Builder.Default
     @Column(name = "duplicate_found")
     private Boolean duplicateFound = false;
 
+    @Builder.Default
     @Column(name = "model_used")
     private String modelUsed = "all-MiniLM-L6-v2";
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "checked_by")
     private User checkedBy;
 
     @Column(name = "checked_at")
     private LocalDateTime checkedAt;
 
+    @NotNull(message = "Status is required")
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status = Status.pending;
 
     // Quan hệ one-to-many với ai_similarity_results
     @OneToMany(mappedBy = "aiCheck", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<AiSimilarityResult> similarityResults;
-
-    // Constructors
-    public AiDuplicateCheck() {
+    private List<AiSimilarityResult> similarityResults;    // Custom constructor for creating new AI check
+    public AiDuplicateCheck(String questionContent, Course course, User checkedBy) {
+        this.questionContent = questionContent;
+        this.course = course;
+        this.checkedBy = checkedBy;
         this.checkedAt = LocalDateTime.now();
         this.status = Status.pending;
         this.duplicateFound = false;
@@ -61,104 +81,7 @@ public class AiDuplicateCheck {
         this.modelUsed = "all-MiniLM-L6-v2";
     }
 
-    public AiDuplicateCheck(String questionContent, Course course, User checkedBy) {
-        this();
-        this.questionContent = questionContent;
-        this.course = course;
-        this.checkedBy = checkedBy;
-    }
-
-    // ====== GETTERS ======
-    public Long getCheckId() {  // Changed return type to Long
-        return checkId;
-    }
-
-    public String getQuestionContent() {
-        return questionContent;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public BigDecimal getSimilarityThreshold() {
-        return similarityThreshold;
-    }
-
-    public BigDecimal getMaxSimilarityScore() {
-        return maxSimilarityScore;
-    }
-
-    public Boolean getDuplicateFound() {
-        return duplicateFound;
-    }
-
-    public String getModelUsed() {
-        return modelUsed;
-    }
-
-    public User getCheckedBy() {
-        return checkedBy;
-    }
-
-    public LocalDateTime getCheckedAt() {
-        return checkedAt;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public List<AiSimilarityResult> getSimilarityResults() {
-        return similarityResults;
-    }
-
-    // ====== SETTERS ======
-    public void setCheckId(Long checkId) {  // Changed parameter type to Long
-        this.checkId = checkId;
-    }
-
-    public void setQuestionContent(String questionContent) {
-        this.questionContent = questionContent;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
-    public void setSimilarityThreshold(BigDecimal similarityThreshold) {
-        this.similarityThreshold = similarityThreshold;
-    }
-
-    public void setMaxSimilarityScore(BigDecimal maxSimilarityScore) {
-        this.maxSimilarityScore = maxSimilarityScore;
-    }
-
-    public void setDuplicateFound(Boolean duplicateFound) {
-        this.duplicateFound = duplicateFound;
-    }
-
-    public void setModelUsed(String modelUsed) {
-        this.modelUsed = modelUsed;
-    }
-
-    public void setCheckedBy(User checkedBy) {
-        this.checkedBy = checkedBy;
-    }
-
-    public void setCheckedAt(LocalDateTime checkedAt) {
-        this.checkedAt = checkedAt;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public void setSimilarityResults(List<AiSimilarityResult> similarityResults) {
-        this.similarityResults = similarityResults;
-    }
-
-    // ====== UTILITY METHODS ======
+    // ====== LIFECYCLE CALLBACKS ======
     @PrePersist
     protected void onCreate() {
         if (checkedAt == null) {
@@ -178,6 +101,7 @@ public class AiDuplicateCheck {
         }
     }
 
+    // ====== BUSINESS METHODS ======
     public boolean isCompleted() {
         return Status.completed.equals(this.status);
     }
@@ -188,5 +112,18 @@ public class AiDuplicateCheck {
 
     public boolean isPending() {
         return Status.pending.equals(this.status);
+    }
+
+    public void markCompleted() {
+        this.status = Status.completed;
+    }
+
+    public void markError() {
+        this.status = Status.error;
+    }    public void updateMaxSimilarity(BigDecimal score) {
+        if (this.maxSimilarityScore == null || score.compareTo(this.maxSimilarityScore) > 0) {
+            this.maxSimilarityScore = score;
+            this.duplicateFound = score.compareTo(this.similarityThreshold) >= 0;
+        }
     }
 }

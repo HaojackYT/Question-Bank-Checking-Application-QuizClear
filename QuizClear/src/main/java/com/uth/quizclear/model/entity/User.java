@@ -14,14 +14,20 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {    @Id
+@ToString(exclude = {"passwordHash"})
+public class User {
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long userId;    @NotBlank(message = "Full name is required")
+    private Long userId;
+
+    @NotBlank(message = "Full name is required")
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
@@ -37,22 +43,23 @@ public class User {    @Id
     @NotNull(message = "Role is required")
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private UserRole role;@Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     @Builder.Default
     private Status status = Status.ACTIVE;
 
     @Column(name = "is_locked", nullable = false)
     @Builder.Default
-    private Boolean isLocked = false;
-
-    @Column(name = "login_attempts", nullable = false)
+    private Boolean isLocked = false;    @Column(name = "login_attempts", nullable = false)
     @Builder.Default
     private Integer loginAttempts = 0;
 
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
+    @Builder.Default
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 

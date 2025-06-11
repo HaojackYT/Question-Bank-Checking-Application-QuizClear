@@ -11,15 +11,20 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "clos")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"course"})
 public class CLO {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "clo_id")
-    private Long cloId;    @NotNull(message = "Course is required")
+    private Long cloId;
+
+    @NotNull(message = "Course is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;

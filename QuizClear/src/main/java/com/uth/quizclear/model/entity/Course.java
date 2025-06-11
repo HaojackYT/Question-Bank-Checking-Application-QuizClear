@@ -2,21 +2,26 @@ package com.uth.quizclear.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "courses")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Course {    @Id
+@ToString(exclude = {"createdBy"})
+public class Course {
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
-    private Long courseId;    @NotBlank(message = "Course code is required")
+    private Long courseId;
+
+    @NotBlank(message = "Course code is required")
     @Column(name = "course_code", nullable = false, unique = true)
     private String courseCode;
 
@@ -25,9 +30,7 @@ public class Course {    @Id
     private String courseName;
 
     @Column(name = "credits")
-    private Integer credits;
-
-    @Column(name = "department")
+    private Integer credits;    @Column(name = "department")
     private String department;
 
     @Column(name = "description", columnDefinition = "TEXT")
@@ -37,6 +40,7 @@ public class Course {    @Id
     @JoinColumn(name = "created_by")
     private User createdBy;
 
+    @Builder.Default
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -48,6 +52,7 @@ public class Course {    @Id
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
+    @Builder.Default
     private Status status = Status.active;
 
     @Column(name = "semester")

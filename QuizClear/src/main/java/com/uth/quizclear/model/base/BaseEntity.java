@@ -1,6 +1,7 @@
 package com.uth.quizclear.model.base;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -12,6 +13,12 @@ import java.time.LocalDateTime;
 /**
  * Base entity class providing common audit fields and lifecycle management
  * Following AutoScore pattern for consistent entity structure
+ * 
+ * Features:
+ * - Automatic audit trails (created/updated timestamps and users)
+ * - Soft delete functionality
+ * - Optimistic locking with version control
+ * - Lifecycle callbacks for automatic timestamp management
  */
 @MappedSuperclass
 @Getter
@@ -22,6 +29,7 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity {
 
     @Column(name = "created_at", nullable = false, updatable = false)
+    @NotNull
     private LocalDateTime createdAt;
 
     @Column(name = "created_by")
@@ -39,16 +47,27 @@ public abstract class BaseEntity {
     @Column(name = "deleted_by")
     private Long deletedBy;
 
-    /**
+    // Optimistic locking để tránh concurrent modification
+    @Version
+    @Column(name = "version")
+    private Long version;    /**
      * Abstract method to get entity ID - must be implemented by subclasses
      */
     public abstract Long getId();
 
+    /**
+     * Check if this is a new entity (not persisted yet)
+     */
+    public boolean isNew() {
+        return getId() == null;
+    }
+
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
         if (this.updatedAt == null) {
-            this.updatedAt = LocalDateTime.now();
+            this.updatedAt = now;
         }
     }
 
@@ -59,12 +78,21 @@ public abstract class BaseEntity {
 
     /**
      * Soft delete functionality
+     * @param deletedBy ID of user performing the delete operation
      */
     public void markDeleted(Long deletedBy) {
-        this.deletedAt = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
+        this.deletedAt = now;
         this.deletedBy = deletedBy;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = now;
         this.updatedBy = deletedBy;
+    }
+
+    /**
+     * Soft delete without specifying user (for system operations)
+     */
+    public void markDeleted() {
+        this.markDeleted(null);
     }
 
     /**
@@ -75,11 +103,49 @@ public abstract class BaseEntity {
     }
 
     /**
-     * Restore soft deleted entity
+     * Check if entity is active (not deleted)
      */
-    public void restore() {
+    public boolean isActive() {
+        return !isDeleted();
+    }
+
+    /**
+     * Restore soft deleted entity
+     * @param restoredBy ID of user performing the restore operation
+     */
+    public void restore(Long restoredBy) {
         this.deletedAt = null;
         this.deletedBy = null;
         this.updatedAt = LocalDateTime.now();
+        this.updatedBy = restoredBy;
+    }
+
+    /**
+     * Restore soft deleted entity without specifying user
+     */
+    public void restore() {
+        this.restore(null);
+    }
+
+    /**
+     * Update the updatedBy field manually (useful for service layer)
+     */
+    public void setUpdatedBy(Long userId) {
+        this.updatedBy = userId;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    /**
+     * Get formatted creation timestamp
+     */
+    public String getFormattedCreatedAt() {
+        return createdAt != null ? createdAt.toString() : "N/A";
+    }
+
+    /**
+     * Get formatted update timestamp  
+     */
+    public String getFormattedUpdatedAt() {
+        return updatedAt != null ? updatedAt.toString() : "N/A";
     }
 }

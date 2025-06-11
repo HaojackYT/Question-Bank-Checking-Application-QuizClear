@@ -1,87 +1,49 @@
 package com.uth.quizclear.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "ai_similarity_results")
-public class AiSimilarityResult {
-
-    @Id
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(exclude = {"aiCheck", "existingQuestion"})
+public class AiSimilarityResult {    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "result_id")
-    private Long resultId;  // Changed from Integer to Long
+    private Long resultId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "check_id", nullable = false)
+    @NotNull(message = "AI check is required")
     private AiDuplicateCheck aiCheck;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "existing_question_id", nullable = false)
+    @NotNull(message = "Existing question is required")
     private Question existingQuestion;
 
     @Column(name = "similarity_score", nullable = false, precision = 5, scale = 4)
+    @NotNull(message = "Similarity score is required")
+    @DecimalMin(value = "0.0", message = "Similarity score must be at least 0.0")
+    @DecimalMax(value = "1.0", message = "Similarity score must be at most 1.0")
     private BigDecimal similarityScore;
 
     @Column(name = "is_duplicate")
-    private Boolean isDuplicate = false;
-
-    // Constructors
-    public AiSimilarityResult() {
-        this.isDuplicate = false;
-    }
-
+    @Builder.Default
+    private Boolean isDuplicate = false;    // Custom constructor for common use case
     public AiSimilarityResult(AiDuplicateCheck aiCheck, Question existingQuestion, BigDecimal similarityScore) {
-        this();
         this.aiCheck = aiCheck;
         this.existingQuestion = existingQuestion;
         this.similarityScore = similarityScore;
         this.isDuplicate = similarityScore.compareTo(aiCheck.getSimilarityThreshold()) >= 0;
     }
 
-    // ====== GETTERS ======
-    public Long getResultId() {  // Changed return type to Long
-        return resultId;
-    }
-
-    public AiDuplicateCheck getAiCheck() {
-        return aiCheck;
-    }
-
-    public Question getExistingQuestion() {
-        return existingQuestion;
-    }
-
-    public BigDecimal getSimilarityScore() {
-        return similarityScore;
-    }
-
-    public Boolean getIsDuplicate() {
-        return isDuplicate;
-    }
-
-    // ====== SETTERS ======
-    public void setResultId(Long resultId) {  // Changed parameter type to Long
-        this.resultId = resultId;
-    }
-
-    public void setAiCheck(AiDuplicateCheck aiCheck) {
-        this.aiCheck = aiCheck;
-    }
-
-    public void setExistingQuestion(Question existingQuestion) {
-        this.existingQuestion = existingQuestion;
-    }
-
-    public void setSimilarityScore(BigDecimal similarityScore) {
-        this.similarityScore = similarityScore;
-    }
-
-    public void setIsDuplicate(Boolean isDuplicate) {
-        this.isDuplicate = isDuplicate;
-    }
-
-    // ====== UTILITY METHODS ======
     @PrePersist
     protected void onCreate() {
         if (isDuplicate == null && aiCheck != null && similarityScore != null) {
@@ -92,6 +54,7 @@ public class AiSimilarityResult {
         }
     }
 
+    // Business methods
     public boolean isHighSimilarity() {
         return similarityScore != null && similarityScore.compareTo(BigDecimal.valueOf(0.8)) >= 0;
     }

@@ -2,6 +2,7 @@ package com.uth.quizclear.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -17,6 +18,12 @@ import java.time.LocalDateTime;
            @Index(name = "idx_duplicate_status", columnList = "status"),
            @Index(name = "idx_duplicate_detected_at", columnList = "detected_at")
        })
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(exclude = {"detectionFeedback", "processingNotes"})
 public class DuplicateDetection {
 
     @Id
@@ -40,48 +47,47 @@ public class DuplicateDetection {
     @Column(name = "similarity_score", precision = 5, scale = 4)
     @DecimalMin(value = "0.0", message = "Similarity score must be at least 0.0")
     @DecimalMax(value = "1.0", message = "Similarity score must be at most 1.0")
-    private BigDecimal similarityScore;
-
-    @Enumerated(EnumType.STRING)
+    private BigDecimal similarityScore;    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     @NotNull(message = "Status is required")
+    @Builder.Default
     private Status status = Status.PENDING;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "action", length = 20)
     private Action action;
 
-    // User tracking
-    @Column(name = "detected_by", nullable = false)
-    @NotNull(message = "Detected by user ID is required")
+    // Metadata fields  
+    @Column(name = "detected_by")
     private Long detectedBy;
 
     @Column(name = "processed_by")
     private Long processedBy;
 
-    // Feedback and notes
     @Column(name = "detection_feedback", columnDefinition = "TEXT")
-    @Size(max = 1000, message = "Detection feedback must be at most 1000 characters")
     private String detectionFeedback;
 
-    @Column(name = "processing_notes", columnDefinition = "TEXT")
-    @Size(max = 1000, message = "Processing notes must be at most 1000 characters")  
+    @Column(name = "processing_notes", columnDefinition = "TEXT") 
     private String processingNotes;
 
-    // Timestamps
+    // Timestamp fields
+    @Builder.Default
     @Column(name = "detected_at", nullable = false)
-    @NotNull(message = "Detected at timestamp is required")
     private LocalDateTime detectedAt = LocalDateTime.now();
 
     @Column(name = "processed_at")
     private LocalDateTime processedAt;
 
-    // Basic audit fields
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Builder.Default
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    @Builder.Default
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt = LocalDateTime.now();    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
     // Enums
     public enum Status {
@@ -126,9 +132,7 @@ public class DuplicateDetection {
         }
     }
 
-    // Constructors
-    public DuplicateDetection() {}
-
+    // Custom constructor for common use case
     public DuplicateDetection(Long newQuestionId, Long similarQuestionId, BigDecimal similarityScore, Long detectedBy) {
         this.newQuestionId = newQuestionId;
         this.similarQuestionId = similarQuestionId;
@@ -139,7 +143,7 @@ public class DuplicateDetection {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // ID method required by potential BaseEntity interface
+    // ID method for compatibility
     public Long getId() {
         return detectionId;
     }
@@ -169,61 +173,15 @@ public class DuplicateDetection {
         }
     }
 
-    // Getters and Setters
-    public Long getDetectionId() { return detectionId; }
-    public void setDetectionId(Long detectionId) { this.detectionId = detectionId; }
+    // Custom setter for status to update timestamp
+    public void setStatus(Status status) {
+        this.status = status;
+        this.updatedAt = LocalDateTime.now();
+    }
 
-    public Long getNewQuestionId() { return newQuestionId; }
-    public void setNewQuestionId(Long newQuestionId) { this.newQuestionId = newQuestionId; }
-
-    public Long getSimilarQuestionId() { return similarQuestionId; }
-    public void setSimilarQuestionId(Long similarQuestionId) { this.similarQuestionId = similarQuestionId; }
-
-    public Long getAiCheckId() { return aiCheckId; }
-    public void setAiCheckId(Long aiCheckId) { this.aiCheckId = aiCheckId; }
-
-    public BigDecimal getSimilarityScore() { return similarityScore; }
-    public void setSimilarityScore(BigDecimal similarityScore) { this.similarityScore = similarityScore; }
-
-    public Status getStatus() { return status; }
-    public void setStatus(Status status) { this.status = status; this.updatedAt = LocalDateTime.now(); }
-
-    public Action getAction() { return action; }
-    public void setAction(Action action) { this.action = action; this.updatedAt = LocalDateTime.now(); }
-
-    public Long getDetectedBy() { return detectedBy; }
-    public void setDetectedBy(Long detectedBy) { this.detectedBy = detectedBy; }
-
-    public Long getProcessedBy() { return processedBy; }
-    public void setProcessedBy(Long processedBy) { this.processedBy = processedBy; }
-
-    public String getDetectionFeedback() { return detectionFeedback; }
-    public void setDetectionFeedback(String detectionFeedback) { this.detectionFeedback = detectionFeedback; }
-
-    public String getProcessingNotes() { return processingNotes; }
-    public void setProcessingNotes(String processingNotes) { this.processingNotes = processingNotes; }
-
-    public LocalDateTime getDetectedAt() { return detectedAt; }
-    public void setDetectedAt(LocalDateTime detectedAt) { this.detectedAt = detectedAt; }
-
-    public LocalDateTime getProcessedAt() { return processedAt; }
-    public void setProcessedAt(LocalDateTime processedAt) { this.processedAt = processedAt; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-
-    @Override
-    public String toString() {
-        return "DuplicateDetection{" +
-                "detectionId=" + detectionId +
-                ", newQuestionId=" + newQuestionId +
-                ", similarQuestionId=" + similarQuestionId +
-                ", similarityScore=" + similarityScore +
-                ", status=" + status +
-                ", detectedAt=" + detectedAt +
-                '}';
+    // Custom setter for action to update timestamp
+    public void setAction(Action action) {
+        this.action = action;
+        this.updatedAt = LocalDateTime.now();
     }
 }
