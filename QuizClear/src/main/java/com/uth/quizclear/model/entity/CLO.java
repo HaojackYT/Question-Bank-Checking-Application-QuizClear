@@ -1,7 +1,10 @@
-package com.uth.quizclear.model;
+package com.uth.quizclear.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import com.uth.quizclear.model.enums.DifficultyLevel;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,19 +16,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class CLO {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "clo_id")
-    private Integer cloId;
-
+    private Long cloId;    @NotNull(message = "Course is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
+    @NotBlank(message = "CLO code is required")
     @Column(name = "clo_code", nullable = false)
     private String cloCode;
 
+    @NotNull(message = "Difficulty level is required")
     @Enumerated(EnumType.STRING)
     @Column(name = "difficulty_level", nullable = false)
     private DifficultyLevel difficultyLevel;
@@ -42,8 +45,4 @@ public class CLO {
     @Builder.Default
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    public enum DifficultyLevel {
-        recognition, comprehension, Basic_Application, Advanced_Application
-    }
 }

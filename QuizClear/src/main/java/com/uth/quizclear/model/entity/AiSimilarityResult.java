@@ -1,4 +1,4 @@
-package com.uth.quizclear.model;
+package com.uth.quizclear.model.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -10,7 +10,7 @@ public class AiSimilarityResult {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "result_id")
-    private Integer resultId;
+    private Long resultId;  // Changed from Integer to Long
 
     @ManyToOne
     @JoinColumn(name = "check_id", nullable = false)
@@ -40,7 +40,7 @@ public class AiSimilarityResult {
     }
 
     // ====== GETTERS ======
-    public Integer getResultId() {
+    public Long getResultId() {  // Changed return type to Long
         return resultId;
     }
 
@@ -61,7 +61,7 @@ public class AiSimilarityResult {
     }
 
     // ====== SETTERS ======
-    public void setResultId(Integer resultId) {
+    public void setResultId(Long resultId) {  // Changed parameter type to Long
         this.resultId = resultId;
     }
 

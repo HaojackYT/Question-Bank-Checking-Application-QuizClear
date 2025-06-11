@@ -1,4 +1,4 @@
-package com.uth.quizclear.model;
+package com.uth.quizclear.model.dto;
 
 /**
  * DTO chứa thông tin cơ bản của người dùng
@@ -6,7 +6,7 @@ package com.uth.quizclear.model;
  */
 public class UserBasicDTO {
     
-    private Integer userId;
+    private Long userId;
     private String fullName;
     private String email;
     private String role;
@@ -16,14 +16,14 @@ public class UserBasicDTO {
     // Constructors
     public UserBasicDTO() {}
 
-    public UserBasicDTO(Integer userId, String fullName, String email, String role) {
+    public UserBasicDTO(Long userId, String fullName, String email, String role) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
         this.role = role;
     }
 
-    public UserBasicDTO(Integer userId, String fullName, String email, String role, 
+    public UserBasicDTO(Long userId, String fullName, String email, String role, 
                        String department, String avatarUrl) {
         this.userId = userId;
         this.fullName = fullName;
@@ -34,7 +34,7 @@ public class UserBasicDTO {
     }
 
     // ====== GETTERS ======
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
@@ -56,10 +56,8 @@ public class UserBasicDTO {
 
     public String getAvatarUrl() {
         return avatarUrl;
-    }
-
-    // ====== SETTERS ======
-    public void setUserId(Integer userId) {
+    }    // ====== SETTERS ======
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

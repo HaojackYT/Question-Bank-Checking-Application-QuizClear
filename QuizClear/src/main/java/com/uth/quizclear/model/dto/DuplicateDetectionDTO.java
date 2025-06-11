@@ -1,10 +1,10 @@
-package com.uth.quizclear.model;
+package com.uth.quizclear.model.dto;
 
 import java.time.LocalDateTime;
 
 public class DuplicateDetectionDTO {
     
-    private Integer detectionId;
+    private Long detectionId;
     
     // Thông tin câu hỏi mới và câu hỏi tương tự
     private QuestionDetailDTO newQuestion;
@@ -14,7 +14,7 @@ public class DuplicateDetectionDTO {
     private Double similarityScore;
     
     // Thông tin AI Check (nếu có)
-    private Integer aiCheckId;
+    private Long aiCheckId;
     private String modelUsed;
     
     // Trạng thái và hành động
@@ -37,9 +37,8 @@ public class DuplicateDetectionDTO {
     // Thông tin bổ sung cho UI
     private Boolean isHighSimilarity; // Có phải độ tương đồng cao không
     private String priorityLevel; // Mức độ ưu tiên xử lý
-    
-    // Constructor với các trường cơ bản
-    public DuplicateDetectionDTO(Integer detectionId, 
+      // Constructor với các trường cơ bản
+    public DuplicateDetectionDTO(Long detectionId, 
                                 QuestionDetailDTO newQuestion,
                                 QuestionDetailDTO similarQuestion,
                                 Double similarityScore,
@@ -51,14 +50,12 @@ public class DuplicateDetectionDTO {
         this.status = status;
         this.isHighSimilarity = similarityScore != null && similarityScore >= 0.8;
         this.priorityLevel = determinePriorityLevel(similarityScore);
-    }
-
-    // ====== GETTERS ======
-    public Integer getDetectionId() { return detectionId; }
+    }    // ====== GETTERS ======
+    public Long getDetectionId() { return detectionId; }
     public QuestionDetailDTO getNewQuestion() { return newQuestion; }
     public QuestionDetailDTO getSimilarQuestion() { return similarQuestion; }
     public Double getSimilarityScore() { return similarityScore; }
-    public Integer getAiCheckId() { return aiCheckId; }
+    public Long getAiCheckId() { return aiCheckId; }
     public String getModelUsed() { return modelUsed; }
     public String getStatus() { return status; }
     public String getAction() { return action; }
@@ -70,14 +67,12 @@ public class DuplicateDetectionDTO {
     public String getAiAnalysisText() { return aiAnalysisText; }
     public String getAiRecommendation() { return aiRecommendation; }
     public Boolean getIsHighSimilarity() { return isHighSimilarity; }
-    public String getPriorityLevel() { return priorityLevel; }
-
-    // ====== SETTERS ======
-    public void setDetectionId(Integer detectionId) { this.detectionId = detectionId; }
+    public String getPriorityLevel() { return priorityLevel; }    // ====== SETTERS ======
+    public void setDetectionId(Long detectionId) { this.detectionId = detectionId; }
     public void setNewQuestion(QuestionDetailDTO newQuestion) { this.newQuestion = newQuestion; }
     public void setSimilarQuestion(QuestionDetailDTO similarQuestion) { this.similarQuestion = similarQuestion; }
     public void setSimilarityScore(Double similarityScore) { this.similarityScore = similarityScore; }
-    public void setAiCheckId(Integer aiCheckId) { this.aiCheckId = aiCheckId; }
+    public void setAiCheckId(Long aiCheckId) { this.aiCheckId = aiCheckId; }
     public void setModelUsed(String modelUsed) { this.modelUsed = modelUsed; }
     public void setStatus(String status) { this.status = status; }
     public void setAction(String action) { this.action = action; }
@@ -92,11 +87,9 @@ public class DuplicateDetectionDTO {
     public void setPriorityLevel(String priorityLevel) { this.priorityLevel = priorityLevel; }
 
     // Constructors
-    public DuplicateDetectionDTO() {}
-
-    public DuplicateDetectionDTO(Integer detectionId, QuestionDetailDTO newQuestion, 
+    public DuplicateDetectionDTO() {}    public DuplicateDetectionDTO(Long detectionId, QuestionDetailDTO newQuestion, 
                                 QuestionDetailDTO similarQuestion, Double similarityScore, 
-                                Integer aiCheckId, String modelUsed, String status, String action, 
+                                Long aiCheckId, String modelUsed, String status, String action, 
                                 String feedback, UserBasicDTO detectedBy, UserBasicDTO processedBy, 
                                 LocalDateTime detectedAt, LocalDateTime processedAt, 
                                 String aiAnalysisText, String aiRecommendation, 

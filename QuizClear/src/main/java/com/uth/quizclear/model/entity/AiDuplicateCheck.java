@@ -1,4 +1,4 @@
-package com.uth.quizclear.model;
+package com.uth.quizclear.model.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -16,7 +16,7 @@ public class AiDuplicateCheck {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "check_id")
-    private Integer checkId;
+    private Long checkId;  // Changed from Integer to Long
 
     @Column(name = "question_content", nullable = false, columnDefinition = "TEXT")
     private String questionContent;
@@ -69,7 +69,7 @@ public class AiDuplicateCheck {
     }
 
     // ====== GETTERS ======
-    public Integer getCheckId() {
+    public Long getCheckId() {  // Changed return type to Long
         return checkId;
     }
 
@@ -114,7 +114,7 @@ public class AiDuplicateCheck {
     }
 
     // ====== SETTERS ======
-    public void setCheckId(Integer checkId) {
+    public void setCheckId(Long checkId) {  // Changed parameter type to Long
         this.checkId = checkId;
     }
 

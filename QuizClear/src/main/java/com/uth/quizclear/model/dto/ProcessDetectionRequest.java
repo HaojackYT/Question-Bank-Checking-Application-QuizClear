@@ -1,4 +1,4 @@
-package com.uth.quizclear.model;
+package com.uth.quizclear.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,5 +8,5 @@ import lombok.Setter;
 public class ProcessDetectionRequest {
     private String action;
     private String feedback;
-    private Integer processedBy; // Chỉ cần ID của người xử lý
+    private Long processedBy; // Chỉ cần ID của người xử lý
 }

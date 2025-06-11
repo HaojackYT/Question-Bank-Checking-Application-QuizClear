@@ -1,6 +1,6 @@
 package com.uth.quizclear.controller;
 
-import com.uth.quizclear.model.CLO;
+import com.uth.quizclear.model.entity.CLO;
 import com.uth.quizclear.service.CLOService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,10 +36,8 @@ public class CLOController {
 
         Page<CLO> cloPage = cloService.getCLOs(keyword, department, difficultyLevel, pageable);
         return new ResponseEntity<>(cloPage, HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<CLO> getCLOById(@PathVariable Integer id) {
+    }    @GetMapping("/{id}")
+    public ResponseEntity<CLO> getCLOById(@PathVariable Long id) {
         CLO clo = cloService.getCLOById(id);
         return new ResponseEntity<>(clo, HttpStatus.OK);
     }
@@ -51,20 +49,20 @@ public class CLOController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CLO> updateCLO(@PathVariable Integer id, @RequestBody CLO cloDetails) {
+    public ResponseEntity<CLO> updateCLO(@PathVariable Long id, @RequestBody CLO cloDetails) {
         CLO updatedCLO = cloService.updateCLO(id, cloDetails);
         return new ResponseEntity<>(updatedCLO, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteCLO(@PathVariable Integer id) {
+    public ResponseEntity<HttpStatus> deleteCLO(@PathVariable Long id) {
         cloService.deleteCLO(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}/status")
     public ResponseEntity<CLO> updateCLOStatus(
-            @PathVariable Integer id,
+            @PathVariable Long id,
             @RequestParam String newStatus) {
         CLO updatedCLO = cloService.updateCLOStatus(id, newStatus);
         return new ResponseEntity<>(updatedCLO, HttpStatus.OK);

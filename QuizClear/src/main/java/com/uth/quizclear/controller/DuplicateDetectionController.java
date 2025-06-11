@@ -1,7 +1,7 @@
 package com.uth.quizclear.controller;
 
-import com.uth.quizclear.model.DuplicateDetectionDTO;
-import com.uth.quizclear.model.ProcessDetectionRequest;
+import com.uth.quizclear.model.dto.DuplicateDetectionDTO;
+import com.uth.quizclear.model.dto.ProcessDetectionRequest;
 import com.uth.quizclear.service.DuplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,23 +28,19 @@ public class DuplicateDetectionController {
     public ResponseEntity<Map<String, List<String>>> getFilterOptions() {
         Map<String, List<String>> filterOptions = duplicationService.getDistinctFilterOptions();
         return ResponseEntity.ok(filterOptions);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<DuplicateDetectionDTO> getDetectionDetails(@PathVariable Integer id) {
+    }    @GetMapping("/{id}")
+    public ResponseEntity<DuplicateDetectionDTO> getDetectionDetails(@PathVariable Long id) {
         DuplicateDetectionDTO detectionDetails = duplicationService.getDuplicationDetailsById(id);
         if (detectionDetails == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(detectionDetails);
-    }
-
-    @PostMapping("/{id}/process")
+    }    @PostMapping("/{id}/process")
     public ResponseEntity<Void> processDetection(
-            @PathVariable Integer id,
+            @PathVariable Long id,
             @RequestBody ProcessDetectionRequest request) {
         try {
-            Integer processorId = request.getProcessedBy();
+            Long processorId = request.getProcessedBy();
             if (processorId == null) {
                 return ResponseEntity.badRequest().body(null);
             }

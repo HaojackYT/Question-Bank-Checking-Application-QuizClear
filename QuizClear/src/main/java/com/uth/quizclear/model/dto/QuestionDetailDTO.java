@@ -1,4 +1,4 @@
-package com.uth.quizclear.model;
+package com.uth.quizclear.model.dto;
 
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -10,9 +10,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class QuestionDetailDTO {
-    
-    // Basic info
-    private Integer questionId;
+      // Basic info
+    private Long questionId;
     private String content;
     private String answerKey;
     private String answerF1;
@@ -21,16 +20,16 @@ public class QuestionDetailDTO {
     private String explanation;
     
     // Related entities info
-    private Integer courseId;
+    private Long courseId;
     private String courseName;
     private String courseCode;
     
-    private Integer cloId;
+    private Long cloId;
     private String cloCode;
     private String cloDescription;
     
-    private Integer taskId;
-    private Integer planId;
+    private Long taskId;
+    private Long planId;
     
     // Difficulty and status
     private String difficultyLevel;
@@ -39,14 +38,14 @@ public class QuestionDetailDTO {
     private Boolean hiddenQuestion;
     
     // User info
-    private Integer createdBy;
+    private Long createdBy;
     private String creatorName;
     private String creatorEmail;
     
-    private Integer reviewedBy;
+    private Long reviewedBy;
     private String reviewerName;
     
-    private Integer approvedBy;
+    private Long approvedBy;
     private String approverName;
     
     // Timestamps
@@ -84,20 +83,19 @@ public class QuestionDetailDTO {
     private String lastUsedStr;
     
     // Constructor for basic info only
-    public QuestionDetailDTO(Integer questionId, String content, String courseName, 
+    public QuestionDetailDTO(Long questionId, String content, String courseName, 
                            String cloCode, String difficultyLevel, String creatorName, 
                            LocalDateTime createdAt) {
         this.questionId = questionId;
         this.content = content;
         this.courseName = courseName;
-        this.cloCode = cloCode;
-        this.difficultyLevel = difficultyLevel;
+        this.cloCode = cloCode;        this.difficultyLevel = difficultyLevel;
         this.creatorName = creatorName;
         this.createdAt = createdAt;
     }
     
     // Constructor for detailed info
-    public QuestionDetailDTO(Integer questionId, String content, String answerKey,
+    public QuestionDetailDTO(Long questionId, String content, String answerKey,
                            String courseName, String courseCode, String cloCode, 
                            String difficultyLevel, String status, String creatorName,
                            LocalDateTime createdAt, Integer usageCount) {

@@ -1,6 +1,8 @@
-package com.uth.quizclear.model;
+package com.uth.quizclear.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -11,16 +13,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Course {
-
-    @Id
+public class Course {    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
-    private Integer courseId;
-
+    private Long courseId;    @NotBlank(message = "Course code is required")
     @Column(name = "course_code", nullable = false, unique = true)
     private String courseCode;
 
+    @NotBlank(message = "Course name is required")
     @Column(name = "course_name", nullable = false)
     private String courseName;
 

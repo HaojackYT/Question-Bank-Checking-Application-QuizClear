@@ -1,6 +1,12 @@
-package com.uth.quizclear.model;
+package com.uth.quizclear.model.entity;
 
+import com.uth.quizclear.model.enums.UserRole;
+import com.uth.quizclear.model.enums.Gender;
+import com.uth.quizclear.model.enums.Status;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -12,34 +18,36 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
-
-    @Id
+public class User {    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Integer userId;
-
+    private Long userId;    @NotBlank(message = "Full name is required")
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email should be valid")
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @NotBlank(message = "Password is required")
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    @NotNull(message = "Role is required")
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private UserRole role;
-
-    @Enumerated(EnumType.STRING)
+    private UserRole role;@Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
+    @Builder.Default
     private Status status = Status.ACTIVE;
 
     @Column(name = "is_locked", nullable = false)
+    @Builder.Default
     private Boolean isLocked = false;
 
     @Column(name = "login_attempts", nullable = false)
+    @Builder.Default
     private Integer loginAttempts = 0;
 
     @Column(name = "last_login")

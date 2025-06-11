@@ -1,6 +1,6 @@
 package com.uth.quizclear.service;
 
-import com.uth.quizclear.model.Course;
+import com.uth.quizclear.model.entity.Course;
 import com.uth.quizclear.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

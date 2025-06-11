@@ -1,4 +1,4 @@
-package com.uth.quizclear.model;
+package com.uth.quizclear.model.enums;
 
 public enum Status {
     ACTIVE("active"),

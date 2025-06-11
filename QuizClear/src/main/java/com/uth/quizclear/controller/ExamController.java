@@ -10,11 +10,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import com.uth.quizclear.model.Exam.ExamStatus;
-import com.uth.quizclear.model.ExamReview.ExamReviewStatus;
-
-import com.uth.quizclear.model.ExamReview;
-import com.uth.quizclear.model.Exam;
+import com.uth.quizclear.model.entity.Exam;
+import com.uth.quizclear.model.entity.ExamReview;
+import com.uth.quizclear.model.enums.ExamStatus;
+import com.uth.quizclear.model.enums.ExamReviewStatus;
 
 @Service
 public class ExamController {

@@ -1,7 +1,5 @@
 package com.uth.quizclear.util;
 
-import com.uth.quizclear.model.User;
-import com.uth.quizclear.model.Gender;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;

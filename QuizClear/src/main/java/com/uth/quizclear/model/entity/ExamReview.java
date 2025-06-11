@@ -1,10 +1,12 @@
-package com.uth.quizclear.model;
+package com.uth.quizclear.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import com.uth.quizclear.model.enums.ReviewType;
+import com.uth.quizclear.model.enums.ExamReviewStatus;
 
 import java.time.LocalDateTime;
 
@@ -37,42 +39,6 @@ public class ExamReview {
     private ExamReviewStatus status = ExamReviewStatus.PENDING;
 
     @Column(name = "comments", columnDefinition = "TEXT")
-    private String comments;
-
-    @Column(name = "created_at")
+    private String comments;    @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    // Enum definitions
-    public enum ReviewType {
-        SUBJECT_LEADER("subject_leader"),
-        DEPARTMENT_HEAD("department_head"),
-        EXAMINATION_DEPARTMENT("examination_department");
-
-        private final String value;
-
-        ReviewType(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
-    public enum ExamReviewStatus {
-        PENDING("pending"),
-        APPROVED("approved"),
-        REJECTED("rejected"),
-        NEEDS_REVISION("needs_revision");
-
-        private final String value;
-
-        ExamReviewStatus(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
 }
