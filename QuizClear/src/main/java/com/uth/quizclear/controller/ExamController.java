@@ -14,7 +14,7 @@ import com.uth.quizclear.model.dto.ExamManagementDTO;
 // import com.quizclear.exammanagement.dto.ExamCreateDTO;
 // import com.quizclear.exammanagement.dto.ExamSummaryDTO;
 // import com.quizclear.exammanagement.dto.ExamUpdateStatusDTO;
-
+import com.uth.quizclear.model.dto.ExamSummaryDTO;
 import com.uth.quizclear.service.ExamService;
 
 @RestController
@@ -34,13 +34,13 @@ public class ExamController {
 
     // // API to get All Exams with filtering by status and subject
     // // GET /api/exams?status=APPROVED&subject=Computer%20Science
-    // @GetMapping
-    // public ResponseEntity<List<ExamSummaryDTO>> getAllExams(
-    //         @RequestParam(required = false) String status,
-    //         @RequestParam(required = false) String subject) {
-    //     List<ExamSummaryDTO> exams = examService.getAllExams(status, subject);
-    //     return ResponseEntity.ok(exams);
-    // }
+    @GetMapping
+    public ResponseEntity<List<ExamSummaryDTO>> getAllExams(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String subject) {
+        List<ExamSummaryDTO> exams = examService.getAllExams(status, subject);
+        return ResponseEntity.ok(exams);
+    }
 
     // API to get a single Exam by ID
     // GET /api/exams/{id}

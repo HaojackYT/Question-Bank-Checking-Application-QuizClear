@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import com.uth.quizclear.model.enums.ExamReviewStatus;
+import com.uth.quizclear.model.enums.ExamReviewStatusConverter;
 import com.uth.quizclear.model.enums.ExamStatus;
 import com.uth.quizclear.model.enums.ExamType;
 
@@ -76,7 +77,7 @@ public class Exam {
     @Column(name = "exam_status")
     private ExamStatus examStatus = ExamStatus.DRAFT;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = ExamReviewStatusConverter.class)
     @Column(name = "review_status")
     private ExamReviewStatus reviewStatus;
 

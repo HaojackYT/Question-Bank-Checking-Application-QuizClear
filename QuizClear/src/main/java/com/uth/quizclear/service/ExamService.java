@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.uth.quizclear.model.dto.ExamManagementDTO;
+import com.uth.quizclear.model.dto.ExamSummaryDTO;
 
 import com.uth.quizclear.model.entity.Exam;
 
@@ -50,18 +51,21 @@ public class ExamService {
     }
 
     // API 2: Get All Exams with filters
-    // @Transactional(readOnly = true)
-    // public List<ExamSummaryDTO> getAllExams(String status, String subject) {
-    //     if (status != null && !status.isEmpty() && subject != null && !subject.isEmpty()) {
-    //         return examRepository.findExamSummariesByStatusAndCourseDepartment(ExamReviewStatus.valueOf(status.toUpperCase()), subject);
-    //     } else if (status != null && !status.isEmpty()) {
-    //         return examRepository.findExamSummariesByStatus(ExamReviewStatus.valueOf(status.toUpperCase()));
-    //     } else if (subject != null && !subject.isEmpty()) {
-    //         return examRepository.findExamSummariesByCourseDepartment(subject);
-    //     } else {
-    //         return examRepository.findAllExamSummaries();
-    //     }
-    // }
+    @Transactional(readOnly = true)
+    public List<ExamSummaryDTO> getAllExams(String status, String subject) {
+        if (status != null && !status.isEmpty() && subject != null && !subject.isEmpty()) {
+            // return examRepository.findExamSummariesByStatusAndCourseDepartment(ExamReviewStatus.fromValue(status.toUpperCase()), subject);
+            return null;
+        } else if (status != null && !status.isEmpty()) {
+            // return examRepository.findExamSummariesByStatus(ExamReviewStatus.fromValue(status.toUpperCase()));
+            return null;
+        } else if (subject != null && !subject.isEmpty()) {
+            // return examRepository.findExamSummariesByCourseDepartment(subject);
+            return null;
+        } else {
+            return examRepository.findAllExamSummaries();
+        }
+    }
 
     // API 3: Get Exam by ID
     @Transactional(readOnly = true)
