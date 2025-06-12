@@ -3,11 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <link rel="stylesheet" href="/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="/header.css">
-    <link rel="stylesheet" href="/web_styles.css">
-    <link rel="stylesheet" href="/Menu-Staff.css">
-    <link rel="stylesheet" href="/css/staff/staffQMDupliCheck.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../static/fontawesome/css/all.css">
+    <link rel="stylesheet" href="../../static/header.css">
+    <link rel="stylesheet" href="../../static/web_styles.css">
+    <link rel="stylesheet" href="../../static/Menu-Staff.css">
+    <link rel="stylesheet" href="../../static/css/staff/staffQMDupliCheck.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Duplication Check</title>
 </head>
@@ -47,125 +48,97 @@
                     Reports & Statistics
                 </button>
                 <div class="line"></div>
-            </div>            <div class="main-content">
+            </div>
+            <div class="main-content">
                 <div class="content">
-                    <!-- AI Service Status -->
-                    <div class="ai-status-bar">
-                        <div id="ai-service-status" class="service-status">
-                            <span class="status-indicator status-checking"></span>
-                            Checking AI Service...
-                        </div>
-                        <button id="trigger-ai-check" class="btn btn-primary">
-                            <i class="fas fa-robot"></i> Run AI Check
-                        </button>
-                    </div>
-
-                    <!-- Statistics Dashboard -->
-                    <div class="stats-dashboard">
-                        <div class="stat-card">
-                            <div class="stat-value" id="total-detections">0</div>
-                            <div class="stat-label">Total Detections</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="pending-reviews">0</div>
-                            <div class="stat-label">Pending Reviews</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="high-priority">0</div>
-                            <div class="stat-label">High Priority</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="avg-similarity">0%</div>
-                            <div class="stat-label">Average Similarity</div>
-                        </div>
-                    </div>
-
-                    <!-- Filters Section -->
-                    <div class="filters-section">
-                        <div class="filter-group">
-                            <label for="subject-filter">Subject:</label>
-                            <select id="subject-filter" class="filter-select">
-                                <option value="">All Subjects</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="submitter-filter">Submitter:</label>
-                            <select id="submitter-filter" class="filter-select">
-                                <option value="">All Submitters</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="status-filter">Status:</label>
-                            <select id="status-filter" class="filter-select">
-                                <option value="">All Statuses</option>
-                                <option value="PENDING">Pending</option>
-                                <option value="APPROVED">Approved</option>
-                                <option value="REJECTED">Rejected</option>
-                                <option value="NEEDS_REVIEW">Needs Review</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="priority-filter">Priority:</label>
-                            <select id="priority-filter" class="filter-select">
-                                <option value="">All Priorities</option>
-                                <option value="HIGH">High (80%+)</option>
-                                <option value="MEDIUM">Medium (60-79%)</option>
-                                <option value="LOW">Low (<60%)</option>
-                            </select>
-                        </div>
-                        <div class="filter-actions">
-                            <button id="clear-filters" class="btn btn-secondary">Clear Filters</button>
-                        </div>
-                    </div>
-
-                    <!-- Loading Indicator -->
-                    <div class="loading-indicator" style="display: none;">
-                        <i class="fas fa-spinner fa-spin"></i> Loading...
-                    </div>
-
-                    <!-- Main Content -->
                     <h3>Automatic Duplication Detection</h3>
-                    <p style="color:#555; font-size: 13px; margin-top: 4px;">Review questions that our AI system has flagged as potential duplicates</p>
-                    
-                    <div class="detection-section">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>New Question</th>
-                                    <th>Similar To</th>
-                                    <th>Similarity</th>
-                                    <th>Subject</th>
-                                    <th>Detected By</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="6" class="loading-row">Loading duplicate detections...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <p style="color:#555; font-size: 13px; margin-top: 4px;" ;>Review questions that our AI system has
+                        flagged as potential duplicates</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Question Context</th>
+                                <th>Similar To</th>
+                                <th>Similarity</th>
+                                <th>Submitter</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>S1001</td>
+                                <td>What are the key difference procedural and object-oriented programming paradigms?
+                                </td>
+                                <td>Q1045: Explain the main procedural programming and programming. </td>
+                                <td>
+                                    <div class="check-percent-btn" style="background-color: #FEE2E2; color: #991B1B" ;>
+                                        High (92%)</div>
+                                </td>
+                                <td>Dr. Nguyen</td>
+                                <td>
+                                    <div class="action-btn">
+                                        <i class="fa-solid fa-check" style="color: #16A34A;"></i>
+                                        <i class="fa-solid fa-xmark" style="color: #ff0000;"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>S1008</td>
+                                <td>Describe the process of ph plants and its importance.</td>
+                                <td>Q1078: Explain how photo why it is essential for plant life.</td>
+                                <td>
+                                    <div class="check-percent-btn" style="background-color: #FEE2E2; color: #991B1B" ;>
+                                        High (88%)</div>
+                                </td>
+                                <td>Dr. Pham</td>
+                                <td>
+                                    <div class="action-btn">
+                                        <i class="fa-solid fa-check" style="color: #16A34A;"></i>
+                                        <i class="fa-solid fa-xmark" style="color: #ff0000;"></i>
+                                    </div>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>S1012</td>
+                                <td>What is the role of DNS in computer networks?</td>
+                                <td>Q1034: Explain the function of internet architecture.</td>
+                                <td>
+                                    <div class="check-percent-btn" style="background-color: #FEF9C3; color: #991B1B" ;>
+                                        Medium (60%)</div>
+                                </td>
+                                <td>Dr. Le</td>
+                                <td>
+                                    <div class="action-btn">
+                                        <i class="fa-solid fa-check" style="color: #16A34A;"></i>
+                                        <i class="fa-solid fa-xmark" style="color: #ff0000;"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>    <!-- footer -->
+    </div>
+    <!-- footer -->
     <!-- ma nhung header vs menu -->
     <script>
-        fetch("../../Template/header_user.html")
+        fetch("../header_user.html")
             .then((response) => response.text())
             .then((data) => {
                 document.getElementById("header-placeholder").innerHTML = data;
             });
 
-        fetch("../../Template/Menu-Staff.html")
+        fetch("../Menu-Staff.html")
             .then((response) => response.text())
             .then((data) => {
                 document.getElementById("menu-HTML").innerHTML = data;
             });
-    </script>    
-    <!-- Staff Duplication JavaScript -->
-    <script src="../../Static/js/staffDuplication.js"></script>
+    </script>
+
+
 </body>
 
 </html>

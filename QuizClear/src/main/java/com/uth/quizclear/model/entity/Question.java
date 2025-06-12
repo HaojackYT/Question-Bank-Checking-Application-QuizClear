@@ -103,12 +103,10 @@ public class Question {
     @NotNull(message = "CLO is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "clo_id", nullable = false)
-    private CLO clo;
-
-    @NotNull(message = "Creator is required")
+    private CLO clo;    @NotNull(message = "Creator is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
-    private User creator;
+    private User createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewed_by")
@@ -116,15 +114,13 @@ public class Question {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approved_by")
-    private User approver;
-
-    // Constructors
-    public Question(String content, Course course, CLO clo, DifficultyLevel difficultyLevel, User creator) {
+    private User approver;    // Constructors
+    public Question(String content, Course course, CLO clo, DifficultyLevel difficultyLevel, User createdBy) {
         this.content = content;
         this.course = course;
         this.clo = clo;
         this.difficultyLevel = difficultyLevel;
-        this.creator = creator;
+        this.createdBy = createdBy;
         this.createdAt = LocalDateTime.now();
         this.status = QuestionStatus.DRAFT;
         this.blockQuestion = BlockStatus.ACTIVE;

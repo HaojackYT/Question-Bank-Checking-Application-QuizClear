@@ -15,7 +15,12 @@ public class WebPageController {
     public String staffDuplicationCheck() {
         return "Staff/staffQMDupliCheck";
     }
-
+    
+    @GetMapping("/staff/duplication")
+    public String staffDuplication() {
+        return "Staff/staffDuplicationCheck";
+    }
+    
     // HTML động load bằng fetch trong JS
     @GetMapping("/Template/Staff/staffDupContent")
     public String staffDupContent() {

@@ -1,106 +1,92 @@
 package com.uth.quizclear.controller;
 
-import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import com.uth.quizclear.repository.ExamRepository;
-import com.uth.quizclear.repository.ExamReviewRepository;
-
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
-import com.uth.quizclear.model.entity.Exam;
-import com.uth.quizclear.model.entity.ExamReview;
-import com.uth.quizclear.model.enums.ExamStatus;
-import com.uth.quizclear.model.enums.ExamReviewStatus;
+import com.uth.quizclear.model.dto.ExamManagementDTO;
+// import com.quizclear.exammanagement.dto.ExamCreateDTO;
+// import com.quizclear.exammanagement.dto.ExamSummaryDTO;
+// import com.quizclear.exammanagement.dto.ExamUpdateStatusDTO;
 
-@Service
+import com.uth.quizclear.service.ExamService;
+
+@RestController
+@RequestMapping("/api/exams")
 public class ExamController {
 
     @Autowired
-    private ExamRepository examRepository;
+    private ExamService examService;
 
-    @Autowired
-    private ExamReviewRepository examReviewRepository;
-
-    public long getTotalExams() {
-        return examRepository.count();
+    // API to get Exam Dashboard Stats (Total Exams, Pending, Approved, Rejected)
+    // GET /api/exams/dashboard-stats
+    @GetMapping("/dashboard-stats")
+    public ResponseEntity<Map<String, Long>> getExamDashboardStats() {
+        Map<String, Long> stats = examService.getExamDashboardStats();
+        return ResponseEntity.ok(stats);
     }
 
-    public long getPendingApprovalExams() {
-        // ExamStatus.SUBMITTED là trạng thái chờ duyệt (Pending Approval)
-        return examRepository.findByStatus(ExamStatus.SUBMITTED).size();
-    }
+    // // API to get All Exams with filtering by status and subject
+    // // GET /api/exams?status=APPROVED&subject=Computer%20Science
+    // @GetMapping
+    // public ResponseEntity<List<ExamSummaryDTO>> getAllExams(
+    //         @RequestParam(required = false) String status,
+    //         @RequestParam(required = false) String subject) {
+    //     List<ExamSummaryDTO> exams = examService.getAllExams(status, subject);
+    //     return ResponseEntity.ok(exams);
+    // }
 
-    public long getApprovedExams() {
-        return examRepository.findByStatus(ExamStatus.APPROVED).size();
-    }
-
-    public long getRejectedExams() {
-        return examRepository.findByStatus(ExamStatus.REJECTED).size();
-    }
-
-    public List<Exam> getAllExams() {
-        return examRepository.findAll();
-    }
-
-    public List<Exam> getExamsByStatus(ExamStatus status) {
-        return examRepository.findByStatus(status);
-    }
-
-    public Optional<Exam> getExamById(Long examId) {
-        return examRepository.findById(examId);
-    }
-
-    // TODO: Check 
-    public Exam updateExamStatus(Long examId, ExamStatus newStatus) {
-        Optional<Exam> optionalExam = examRepository.findById(examId);
-        if (optionalExam.isPresent()) {
-            Exam exam = optionalExam.get();
-            exam.setStatus(newStatus);
-            exam.setUpdatedAt(LocalDateTime.now());
-            if (newStatus == ExamStatus.APPROVED) {
-                exam.setApprovedAt(LocalDateTime.now());
-                // TODO: exam.setApprovedBy(currentUser); // Cần thông tin người dùng hiện tại
-            } else if (newStatus == ExamStatus.REJECTED) {
-                // TODO: Xử lý logic khi bị từ chối
-            }
-            return examRepository.save(exam);
+    // API to get a single Exam by ID
+    // GET /api/exams/{id}
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getExamById(@PathVariable Integer id) {
+        try {
+            ExamManagementDTO exam = examService.getExamById(id);
+            return ResponseEntity.ok(exam);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing JSON: " + e.getMessage());
         }
-        return null;
     }
 
-    public ExamReview createExamReview(ExamReview examReview) {
-        examReview.setCreatedAt(LocalDateTime.now()); 
-        return examReviewRepository.save(examReview);
-    }
+    // // API to create a new Exam
+    // // POST /api/exams
+    // @PostMapping
+    // public ResponseEntity<?> createExam(@RequestBody ExamCreateDTO examCreateDTO) {
+    //     // In a real application, you'd get the current user ID from authentication context
+    //     Integer currentUserId = 1; // Placeholder for authenticated user ID
+    //     try {
+    //         ExamDTO createdExam = examService.createExam(examCreateDTO, currentUserId);
+    //         return ResponseEntity.status(HttpStatus.CREATED).body(createdExam);
+    //     } catch (EntityNotFoundException e) {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    //     } catch (JsonProcessingException e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing JSON: " + e.getMessage());
+    //     }
+    // }
 
-    // TODO: Check 
-    public Exam updateExamReviewStatus(Long reviewId, ExamReviewStatus newStatus, String comments, String suggestions) {
-        Optional<ExamReview> optionalExamReview = examReviewRepository.findById(reviewId);
-        if (optionalExamReview.isPresent()) {
-            ExamReview examReview = optionalExamReview.get();
-            examReview.setStatus(newStatus);
-            examReview.setComments(comments);
-            // Note: suggestions parameter is kept for controller compatibility but ExamReview model doesn't have suggestions field
-            examReview.setCreatedAt(LocalDateTime.now()); // Cập nhật thời gian
-            examReviewRepository.save(examReview);
-
-            // Cập nhật trạng thái của Exam dựa trên review cuối cùng (có thể có nhiều review)
-            Exam exam = examReview.getExam();
-            if (newStatus == ExamReviewStatus.APPROVED) {
-                exam.setStatus(ExamStatus.APPROVED);
-                exam.setApprovedAt(LocalDateTime.now()); 
-            } else if (newStatus == ExamReviewStatus.REJECTED) {
-                exam.setStatus(ExamStatus.REJECTED);
-            } else if (newStatus == ExamReviewStatus.NEEDS_REVISION) {
-                exam.setStatus(ExamStatus.REJECTED);
-            }
-            exam.setReviewedAt(LocalDateTime.now()); 
-            // TODO: exam.setReviewedBy(currentUser); // Cần thông tin người dùng hiện tại
-            return examRepository.save(exam);
-        }
-        return null;
-    }
+    // // API to update Exam Status (e.g., Review, Approve, Reject, Needs Revision)
+    // // PUT /api/exams/{id}/status
+    // @PutMapping("/{id}/status")
+    // public ResponseEntity<?> updateExamStatus(@PathVariable Integer id, @RequestBody ExamUpdateStatusDTO updateDTO) {
+    //     // In a real application, you'd get the current user ID from authentication context
+    //     Integer currentUserId = 1; // Placeholder for authenticated user ID (e.g., reviewer/approver)
+    //     try {
+    //         ExamDTO updatedExam = examService.updateExamStatus(id, updateDTO, currentUserId);
+    //         return ResponseEntity.ok(updatedExam);
+    //     } catch (EntityNotFoundException e) {
+    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    //     } catch (IllegalArgumentException e) {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    //     } catch (JsonProcessingException e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing JSON: " + e.getMessage());
+    //     }
+    // }
 }

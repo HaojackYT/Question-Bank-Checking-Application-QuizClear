@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+
+import com.uth.quizclear.model.enums.ExamReviewStatus;
 import com.uth.quizclear.model.enums.ExamStatus;
 import com.uth.quizclear.model.enums.ExamType;
 
@@ -21,10 +23,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Exam {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "exam_id")
-    private Long examId;    @NotNull(message = "Course is required")
+    private Long examId;
+    
+    @NotNull(message = "Course is required")
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
@@ -68,8 +73,12 @@ public class Exam {
     private String academicYear;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private ExamStatus status = ExamStatus.DRAFT;
+    @Column(name = "exam_status")
+    private ExamStatus examStatus = ExamStatus.DRAFT;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "review_status")
+    private ExamReviewStatus reviewStatus;
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
@@ -99,6 +108,9 @@ public class Exam {
     private LocalDateTime approvedAt;
 
     @Column(name = "feedback", columnDefinition = "TEXT")
-    private String feedback;    @Column(name = "hidden")
+    private String feedback;
+    
+    @Column(name = "hidden")
     private Boolean hidden = true;
+    
 }
