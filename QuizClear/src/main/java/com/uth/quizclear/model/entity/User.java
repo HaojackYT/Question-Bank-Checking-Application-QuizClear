@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"passwordHash"})
+@ToString(exclude = { "passwordHash" })
 public class User {
 
     @Id
@@ -52,7 +52,8 @@ public class User {
 
     @Column(name = "is_locked", nullable = false)
     @Builder.Default
-    private Boolean isLocked = false;    @Column(name = "login_attempts", nullable = false)
+    private Boolean isLocked = false;
+    @Column(name = "login_attempts", nullable = false)
     @Builder.Default
     private Integer loginAttempts = 0;
 
@@ -134,7 +135,7 @@ public class User {
     public void incrementLoginAttempts() {
         this.loginAttempts++;
         this.updatedAt = LocalDateTime.now();
-        
+
         // Auto-lock after 5 failed attempts
         if (this.loginAttempts >= 5) {
             lockAccount();

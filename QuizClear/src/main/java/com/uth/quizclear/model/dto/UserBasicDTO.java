@@ -5,7 +5,7 @@ package com.uth.quizclear.model.dto;
  * Được sử dụng khi chỉ cần hiển thị thông tin tóm tắt
  */
 public class UserBasicDTO {
-    
+
     private Long userId;
     private String fullName;
     private String email;
@@ -13,8 +13,10 @@ public class UserBasicDTO {
     private String department;
     private String avatarUrl;
 
-    // Constructors
-    public UserBasicDTO() {}
+    // ========== CONSTRUCTORS CŨ CỦA BẠN - GIỮ NGUYÊN ==========
+
+    public UserBasicDTO() {
+    }
 
     public UserBasicDTO(Long userId, String fullName, String email, String role) {
         this.userId = userId;
@@ -23,8 +25,8 @@ public class UserBasicDTO {
         this.role = role;
     }
 
-    public UserBasicDTO(Long userId, String fullName, String email, String role, 
-                       String department, String avatarUrl) {
+    public UserBasicDTO(Long userId, String fullName, String email, String role,
+            String department, String avatarUrl) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
@@ -33,7 +35,21 @@ public class UserBasicDTO {
         this.avatarUrl = avatarUrl;
     }
 
-    // ====== GETTERS ======
+    // ========== THÊM CONSTRUCTOR MỚI CHO LOGIN SYSTEM ==========
+
+    /**
+     * Constructor tương thích với AuthService (nhận Integer userId)
+     */
+    public UserBasicDTO(Integer userId, String fullName, String email, String role, String department) {
+        this.userId = userId != null ? userId.longValue() : null;
+        this.fullName = fullName;
+        this.email = email;
+        this.role = role;
+        this.department = department;
+    }
+
+    // ========== GETTERS CŨ CỦA BẠN - GIỮ NGUYÊN ==========
+
     public Long getUserId() {
         return userId;
     }
@@ -56,7 +72,10 @@ public class UserBasicDTO {
 
     public String getAvatarUrl() {
         return avatarUrl;
-    }    // ====== SETTERS ======
+    }
+
+    // ========== SETTERS CŨ CỦA BẠN - GIỮ NGUYÊN ==========
+
     public void setUserId(Long userId) {
         this.userId = userId;
     }
@@ -81,8 +100,8 @@ public class UserBasicDTO {
         this.avatarUrl = avatarUrl;
     }
 
-    // ====== UTILITY METHODS ======
-    
+    // ========== UTILITY METHODS CŨ CỦA BẠN - GIỮ NGUYÊN ==========
+
     /**
      * Lấy tên hiển thị ngắn gọn
      */
@@ -94,15 +113,22 @@ public class UserBasicDTO {
      * Lấy tên vai trò đầy đủ
      */
     public String getRoleDisplayName() {
-        if (role == null) return "Unknown";
-        
+        if (role == null)
+            return "Unknown";
+
         switch (role.toUpperCase()) {
-            case "RD": return "Research Director";
-            case "HOD": return "Head of Department";
-            case "SL": return "Subject Leader";
-            case "LEC": return "Lecturer";
-            case "HOED": return "Head of Examination Department";
-            default: return role;
+            case "RD":
+                return "Research Director";
+            case "HOD":
+                return "Head of Department";
+            case "SL":
+                return "Subject Leader";
+            case "LEC":
+                return "Lecturer";
+            case "HOED":
+                return "Head of Examination Department";
+            default:
+                return role;
         }
     }
 
@@ -110,10 +136,10 @@ public class UserBasicDTO {
      * Kiểm tra có phải là người quản lý không
      */
     public boolean isManager() {
-        return role != null && (role.equalsIgnoreCase("RD") || 
-                               role.equalsIgnoreCase("HOD") || 
-                               role.equalsIgnoreCase("SL") ||
-                               role.equalsIgnoreCase("HOED"));
+        return role != null && (role.equalsIgnoreCase("RD") ||
+                role.equalsIgnoreCase("HOD") ||
+                role.equalsIgnoreCase("SL") ||
+                role.equalsIgnoreCase("HOED"));
     }
 
     /**
@@ -136,8 +162,10 @@ public class UserBasicDTO {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
         UserBasicDTO that = (UserBasicDTO) obj;
         return userId != null && userId.equals(that.userId);
     }

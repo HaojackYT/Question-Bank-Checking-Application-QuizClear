@@ -10,11 +10,15 @@ public enum Gender {
 
     @JsonCreator
     public static Gender fromString(String value) {
-        if (value == null) return null;
+        if (value == null)
+            return null;
         switch (value.trim().toLowerCase()) {
-            case "male": return MALE;
-            case "female": return FEMALE;
-            case "other": return OTHER;
+            case "male":
+                return MALE;
+            case "female":
+                return FEMALE;
+            case "other":
+                return OTHER;
             default:
                 throw new IllegalArgumentException("Unknown gender value: " + value);
         }
