@@ -54,12 +54,12 @@ INSERT INTO plans (course_id, plan_title, total_questions, total_recognition, to
 INSERT INTO tasks (course_id, plan_id, title, task_type, total_questions, total_recognition, total_comprehension, total_basic_application, total_advanced_application, assigned_to, assigned_by, status, priority, due_date, created_at) VALUES
 (1, 1, 'Create CS105 Midterm Questions', 'create_questions', 12, 4, 4, 3, 1, 1, 2, 'in_progress', 'high', '2025-04-05 23:59:00', '2025-03-01 10:00:00'),
 (2, 2, 'Review MATH205 Final Questions', 'review_questions', 15, 5, 4, 3, 3, 2, 1, 'pending', 'medium', '2025-06-01 23:59:00', '2025-03-02 10:00:00'),
-(3, 3, 'Create PHY105 Quiz Questions', 'create_questions', 8, 3, 3, 2, 0, 3, 2, 'accepted', 'low', '2025-03-25 23:59:00', '2025-03-03 10:00:00'),
+(3, 3, 'Create PHY105 Quiz Questions', 'create_questions', 8, 3, 3, 2, 0, 3, 2, 'completed', 'low', '2025-03-25 23:59:00', '2025-03-03 10:00:00'),
 (4, 4, 'Create CHEM104 Midterm Questions', 'create_questions', 10, 3, 3, 3, 1, 4, 2, 'in_progress', 'high', '2025-04-10 23:59:00', '2025-03-04 10:00:00'),
 (5, 5, 'Review BIO104 Quiz Questions', 'review_questions', 9, 4, 3, 2, 0, 5, 2, 'completed', 'medium', '2025-03-20 23:59:00', '2025-03-05 10:00:00'),
 (6, 6, 'Create CS106 Final Questions', 'create_questions', 14, 4, 4, 4, 2, 6, 2, 'pending', 'high', '2025-06-05 23:59:00', '2025-03-06 10:00:00'),
 (7, 7, 'Review MATH206 Midterm Questions', 'review_questions', 11, 3, 4, 3, 1, 7, 2, 'in_progress', 'medium', '2025-04-15 23:59:00', '2025-03-07 10:00:00'),
-(8, 8, 'Create PHY106 Quiz Questions', 'create_questions', 7, 3, 2, 2, 0, 8, 2, 'accepted', 'low', '2025-03-30 23:59:00', '2025-03-08 10:00:00'),
+(8, 8, 'Create PHY106 Quiz Questions', 'create_questions', 7, 3, 2, 2, 0, 8, 2, 'completed', 'low', '2025-03-30 23:59:00', '2025-03-08 10:00:00'),
 (9, 9, 'Review CHEM105 Final Questions', 'review_questions', 13, 4, 4, 3, 2, 9, 2, 'pending', 'high', '2025-06-10 23:59:00', '2025-03-09 10:00:00'),
 (10, 10, 'Create BIO105 Midterm Questions', 'create_questions', 10, 3, 3, 3, 1, 10, 2, 'in_progress', 'medium', '2025-04-20 23:59:00', '2025-03-10 10:00:00');
 
@@ -77,17 +77,17 @@ INSERT INTO questions (course_id, clo_id, difficulty_level, content, answer_key,
 (10, 10, 'comprehension', 'What defines a mammal?', 'Warm-blooded, has hair', 'Lays eggs', 'Cold-blooded', 'Has scales', 'Mammals are warm-blooded vertebrates with hair', 10, 'approved', '2025-02-10 09:00:00', 'zoology');
 
 -- 7. Thêm 10 bản ghi vào bảng exams
-INSERT INTO exams (course_id, plan_id, exam_title, exam_code, duration_minutes, total_marks, exam_type, exam_date, semester, academic_year, status, created_by, created_at, hidden) VALUES
-(1, 1, 'CS105 Midterm Exam', 'CS105_MID_2025', 90, 10.00, 'midterm', '2025-04-15 09:00:00', 'Fall 2025', '2025-2026', 'approved', 1, '2025-03-10 10:00:00', FALSE),
-(2, 2, 'MATH205 Final Exam', 'MATH205_FINAL_2025', 120, 10.00, 'final', '2025-06-10 09:00:00', 'Spring 2025', '2025-2026', 'draft', 2, '2025-03-11 10:00:00', TRUE),
-(3, 3, 'PHY105 Quiz 1', 'PHY105_QUIZ1_2025', 30, 5.00, 'quiz', '2025-03-25 10:00:00', 'Fall 2025', '2025-2026', 'approved', 3, '2025-03-12 10:00:00', FALSE),
-(4, 4, 'CHEM104 Midterm Exam', 'CHEM104_MID_2025', 90, 10.00, 'midterm', '2025-04-10 09:00:00', 'Fall 2025', '2025-2026', 'submitted', 4, '2025-03-13 10:00:00', TRUE),
-(5, 5, 'BIO104 Quiz 1', 'BIO104_QUIZ1_2025', 45, 5.00, 'quiz', '2025-03-20 10:00:00', 'Spring 2025', '2025-2026', 'finalized', 5, '2025-03-14 10:00:00', FALSE),
-(6, 6, 'CS106 Final Exam', 'CS106_FINAL_2025', 120, 10.00, 'final', '2025-06-05 09:00:00', 'Fall 2025', '2025-2026', 'draft', 6, '2025-03-15 10:00:00', TRUE),
-(7, 7, 'MATH206 Midterm Exam', 'MATH206_MID_2025', 90, 10.00, 'midterm', '2025-04-15 09:00:00', 'Spring 2025', '2025-2026', 'approved', 7, '2025-03-16 10:00:00', FALSE),
-(8, 8, 'PHY106 Quiz 1', 'PHY106_QUIZ1_2025', 30, 5.00, 'quiz', '2025-03-30 10:00:00', 'Fall 2025', '2025-2026', 'submitted', 8, '2025-03-17 10:00:00', TRUE),
-(9, 9, 'CHEM105 Final Exam', 'CHEM105_FINAL_2025', 120, 10.00, 'final', '2025-06-10 09:00:00', 'Spring 2025', '2025-2026', 'draft', 9, '2025-03-18 10:00:00', TRUE),
-(10, 10, 'BIO105 Midterm Exam', 'BIO105_MID_2025', 90, 10.00, 'midterm', '2025-04-20 09:00:00', 'Fall 2025', '2025-2026', 'approved', 10, '2025-03-19 10:00:00', FALSE);
+INSERT INTO exams (course_id, plan_id, exam_title, exam_code, duration_minutes, total_marks, exam_type, exam_date, semester, academic_year, exam_status, review_status, created_by, created_at, hidden) VALUES
+(1, 1, 'CS105 Midterm Exam', 'CS105_MID_2025', 90, 10.00, 'midterm', '2025-04-15 09:00:00', 'Fall 2025', '2025-2026', 'approved', 'pending', 1, '2025-03-10 10:00:00', FALSE),
+(2, 2, 'MATH205 Final Exam', 'MATH205_FINAL_2025', 120, 10.00, 'final', '2025-06-10 09:00:00', 'Spring 2025', '2025-2026', 'draft', 'pending', 2, '2025-03-11 10:00:00', TRUE),
+(3, 3, 'PHY105 Quiz 1', 'PHY105_QUIZ1_2025', 30, 5.00, 'quiz', '2025-03-25 10:00:00', 'Fall 2025', '2025-2026', 'approved', 'pending', 3, '2025-03-12 10:00:00', FALSE),
+(4, 4, 'CHEM104 Midterm Exam', 'CHEM104_MID_2025', 90, 10.00, 'midterm', '2025-04-10 09:00:00', 'Fall 2025', '2025-2026', 'submitted', 'pending', 4, '2025-03-13 10:00:00', TRUE),
+(5, 5, 'BIO104 Quiz 1', 'BIO104_QUIZ1_2025', 45, 5.00, 'quiz', '2025-03-20 10:00:00', 'Spring 2025', '2025-2026', 'finalized', 'pending', 5, '2025-03-14 10:00:00', FALSE),
+(6, 6, 'CS106 Final Exam', 'CS106_FINAL_2025', 120, 10.00, 'final', '2025-06-05 09:00:00', 'Fall 2025', '2025-2026', 'draft', 'pending', 6, '2025-03-15 10:00:00', TRUE),
+(7, 7, 'MATH206 Midterm Exam', 'MATH206_MID_2025', 90, 10.00, 'midterm', '2025-04-15 09:00:00', 'Spring 2025', '2025-2026', 'approved', 'pending', 7, '2025-03-16 10:00:00', FALSE),
+(8, 8, 'PHY106 Quiz 1', 'PHY106_QUIZ1_2025', 30, 5.00, 'quiz', '2025-03-30 10:00:00', 'Fall 2025', '2025-2026', 'submitted', 'pending', 8, '2025-03-17 10:00:00', TRUE),
+(9, 9, 'CHEM105 Final Exam', 'CHEM105_FINAL_2025', 120, 10.00, 'final', '2025-06-10 09:00:00', 'Spring 2025', '2025-2026', 'draft', 'pending', 9, '2025-03-18 10:00:00', TRUE),
+(10, 10, 'BIO105 Midterm Exam', 'BIO105_MID_2025', 90, 10.00, 'midterm', '2025-04-20 09:00:00', 'Fall 2025', '2025-2026', 'approved', 'pending', 10, '2025-03-19 10:00:00', FALSE);
 
 -- 8. Thêm 10 bản ghi vào bảng exam_questions
 INSERT INTO exam_questions (exam_id, question_id, question_order, marks) VALUES
@@ -147,14 +147,14 @@ INSERT INTO duplicate_detections (new_question_id, similar_question_id, similari
 INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, feedback, detected_by, processed_by, detected_at, processed_at) VALUES
 (2, 1, 0.92, 1, 'pending', NULL, NULL, 1, NULL, '2025-03-11 10:00:00', NULL),
 (3, 2, 0.85, 2, 'pending', NULL, NULL, 1, NULL, '2025-03-11 11:00:00', NULL),
-(4, 1, 0.78, 3, 'approved', 'REJECT_DUPLICATE', 'Questions are too similar in content and structure', 1, 2, '2025-03-11 12:00:00', '2025-03-11 15:00:00'),
+(4, 1, 0.78, 3, 'sent_back', 'reject', 'Questions are too similar in content and structure', 1, 2, '2025-03-11 12:00:00', '2025-03-11 15:00:00'),
 (5, 3, 0.88, 4, 'pending', NULL, NULL, 1, NULL, '2025-03-11 13:00:00', NULL),
-(6, 2, 0.65, 5, 'rejected', 'APPROVE_DUPLICATE', 'Questions cover different aspects of the topic', 1, 2, '2025-03-11 14:00:00', '2025-03-11 16:00:00'),
-(7, 4, 0.91, 6, 'needs_review', 'NEEDS_REVIEW', 'Requires subject matter expert review', 1, 2, '2025-03-11 15:00:00', '2025-03-11 17:00:00'),
+(6, 2, 0.65, 5, 'rejected', 'accept', 'Questions cover different aspects of the topic', 1, 2, '2025-03-11 14:00:00', '2025-03-11 16:00:00'),
+(7, 4, 0.91, 6, 'merged', 'merge', 'Requires subject matter expert review', 1, 2, '2025-03-11 15:00:00', '2025-03-11 17:00:00'),
 (8, 5, 0.73, 7, 'pending', NULL, NULL, 1, NULL, '2025-03-11 16:00:00', NULL),
 (9, 6, 0.89, 8, 'pending', NULL, NULL, 1, NULL, '2025-03-11 17:00:00', NULL),
-(10, 7, 0.82, 9, 'approved', 'REJECT_DUPLICATE', 'High similarity detected by AI system', 1, 2, '2025-03-11 18:00:00', '2025-03-11 19:00:00'),
-(1, 8, 0.67, 10, 'rejected', 'APPROVE_DUPLICATE', 'Different difficulty levels, acceptable', 1, 2, '2025-03-11 19:00:00', '2025-03-11 20:00:00');
+(10, 7, 0.82, 9, 'accepted', 'reject', 'High similarity detected by AI system', 1, 2, '2025-03-11 18:00:00', '2025-03-11 19:00:00'),
+(1, 8, 0.67, 10, 'rejected', 'accept', 'Different difficulty levels, acceptable', 1, 2, '2025-03-11 19:00:00', '2025-03-11 20:00:00');
 
 -- Insert more AI duplicate checks for comprehensive testing
 INSERT INTO ai_duplicate_checks (question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, checked_by, status, checked_at) VALUES
