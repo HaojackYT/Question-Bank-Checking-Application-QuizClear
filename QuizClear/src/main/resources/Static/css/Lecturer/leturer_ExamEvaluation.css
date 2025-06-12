@@ -184,15 +184,15 @@ tr:hover {
 }
 
 .status-badge.Not_received {
-    background-color: #FEA2A2;
+    background-color: #FE6565;
 }
 
 .status-badge.Inprogress {
-    background-color: #ffeaa7;
+    background-color: #49AFE8;
 }
 
 .status-badge.submitted {
-    background-color: #55efc4;
+    background-color: #28A745;
 }
 
 /* Action Buttons */

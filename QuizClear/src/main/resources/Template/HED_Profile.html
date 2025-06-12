@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../Static/fontawesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../Static/header.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../Static/css/HED/HED_profile.css">
+    <link rel="stylesheet" href="../static/css/HED/HED_profile.css">
     <title>Profile</title>
 </head>
 
@@ -21,7 +21,7 @@
     <div id="Container-body">
         <!-- Main content -->
         <div id="main">
-            
+
             <button class="back-button" onclick="history.back();">
                 <i class="fas fa-arrow-left"></i>
             </button>
@@ -149,11 +149,11 @@
     <!-- ma nhung header vs menu -->
     <script>
         // Load header
-        fetch('../header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
+            fetch('../Template/header_user.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                });
 
     </script>
 </body>

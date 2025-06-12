@@ -25,11 +25,9 @@
         <div id="main">
             <!-- noi dung duoc nhap trong day -->
             <div class="page-header">
-                <a href="lectureQuesManagement.html">
-                    <button class="back-btn">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                </a>
+                <button class="back-btn" onclick="history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
                 <div class="page-text">
                     <h1>New Question</h1>
                     <p>Don't forget to confirm your assigned task before starting a question!</p>
@@ -79,7 +77,7 @@
                         <!-- Duplicate Check -->
                         <div class="duplicate-check">
                             <div class="duplicate-header">
-                                <i class="fas fa-exclamation-triangle duplicate-icon"></i>
+                                <i class="fa-solid fa-file-lines"></i>
                                 <span class="duplicate-title">Duplicate Detection Check</span>
                             </div>
                             <p class="duplicate-subtitle">Check for similar questions before proceeding with submission
@@ -143,48 +141,63 @@
             </script>
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
-                    const checkButton = document.querySelector('#duplicate_question_container button');
-                    const numberSpan = document.querySelector('#number');
-                    const numberOfDuplicate = document.querySelector('#numberOfDuplicate');
+                    const checkButton = document.querySelector('.check-button');
+                    const statusText = document.querySelector('.status-text');
+                    const questionTitleInput = document.querySelector('input[placeholder="The title question..."]');
 
-                    if (checkButton && numberSpan && numberOfDuplicate) {
-                        checkButton.addEventListener('click', () => {
-                            const numberValue = numberSpan.textContent.trim();
+                    if (checkButton && statusText && questionTitleInput) {
+                        checkButton.addEventListener('click', async () => {
+                            const title = questionTitleInput.value.trim();
 
-                            // Nếu span rỗng, không làm gì
-                            if (numberValue === '') {
+                            if (!title) {
+                                alert('Please enter the question title first.');
                                 return;
                             }
 
-                            // Chuyển giá trị sang số
-                            const value = parseInt(numberValue, 10);
+                            checkButton.textContent = 'Checking...';
+                            checkButton.disabled = true;
+                            statusText.textContent = 'Checking for duplicates...';
+                            statusText.classList.remove('safety', 'warring', 'error');
 
-                            // Xóa các class hiện có
-                            numberOfDuplicate.classList.remove('safety', 'warring', 'error');
-                            if (value === 0) {
-                                numberOfDuplicate.textContent = 'No duplicates found';
-                                numberOfDuplicate.classList.add('safety');
-                            } else if (value > 0 && value < 50) {
-                                numberOfDuplicate.textContent = `${value}% duplicated`;
-                                numberOfDuplicate.classList.add('warring');
-                            } else if (value >= 50) {
-                                numberOfDuplicate.textContent = `${value}% duplicated`;
-                                numberOfDuplicate.classList.add('error');
+                            try {
+                                // Gửi tiêu đề lên server
+                                const response = await fetch('/api/check-duplicate', { //tạm thời
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ questionTitle: title })
+                                });
+
+                                if (!response.ok) {
+                                    throw new Error('Failed to check duplicates');
+                                }
+
+                                const data = await response.json();
+                                const duplicatePercent = data.duplicatePercent;
+
+                                // Hiển thị kết quả
+                                if (duplicatePercent === 0) {
+                                    statusText.textContent = 'No duplicates found';
+                                    statusText.classList.add('safety');
+                                } else if (duplicatePercent < 50) {
+                                    statusText.textContent = `${duplicatePercent}% duplicated`;
+                                    statusText.classList.add('warring');
+                                } else {
+                                    statusText.textContent = `${duplicatePercent}% duplicated`;
+                                    statusText.classList.add('error');
+                                }
+
+                            } catch (error) {
+                                console.error(error);
+                                statusText.textContent = 'Error checking duplicates.';
+                                statusText.classList.add('error');
+                            } finally {
+                                checkButton.textContent = 'Check Duplicates';
+                                checkButton.disabled = false;
                             }
                         });
                     }
-                });
-
-                // Add interactivity
-                document.querySelector('.check-button').addEventListener('click', function () {
-                    this.textContent = 'Checking...';
-                    this.disabled = true;
-
-                    setTimeout(() => {
-                        this.textContent = 'Check Duplicates';
-                        this.disabled = false;
-                        alert('No duplicates found!');
-                    }, 2000);
                 });
 
                 document.querySelector('.submit-button').addEventListener('click', function (e) {
