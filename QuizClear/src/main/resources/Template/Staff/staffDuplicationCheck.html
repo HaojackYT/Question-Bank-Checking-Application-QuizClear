@@ -1,57 +1,85 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/Menu-Staff.css" />
+    <link rel="stylesheet" href="../../Static/css/staff/staffDup.css" />
+    <link rel="stylesheet" href="../../Static/css/staff/staffLogs.css" />
+    <!-- Thêm style riêng -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
+      rel="stylesheet"
+    />
+    <title>QuizClear - Duplication Check</title>
+  </head>
+  <body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
 
-<head>
-  <link rel="stylesheet" th:href="@{/css/staff/header.css}" />
-  <link rel="stylesheet" th:href="@{/web_styles.css}" />
-  <link rel="stylesheet" th:href="@{/css/staff/staffDup.css}" />
-  <link rel="stylesheet" th:href="@{/css/staff/staffLogsDetails.css}" />
-  <link rel="stylesheet" th:href="@{/Menu-Staff.css}" />
-  <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}" />
+    <!-- Body -->
+    <div id="Container-body">
+      <!-- Sidebar/Menu -->
+      <div id="menu-HTML"></div>
 
+      <!-- Main content -->
+      <div id="main">
+        <!-- Page Header -->
+        <div class="page-header">
+          <h1 class="page-title">Duplication Check</h1>
+          <p class="page-subtitle">
+            Detect and manage duplicate questions using AI-powered analysis
+          </p>
+        </div>
 
-  <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet" />
-  <title>QuizClear - Duplication Check</title>
-</head>
+        <!-- Tabs -->
+        <div class="tabs">
+          <div class="tab active" data-tab="detection">AI Detection</div>
+          <div class="tab" data-tab="stat">Statistics</div>
+          <div class="tab" data-tab="proc_log">Processing Logs</div>
+        </div>
 
-<body>
-  <!-- Gọi fragment header -->
-  <div th:replace="~{header_user :: header}"></div>
+        <div id="tab-content" class="tab-content active">
+          <!-- DATA HERE -->
+        </div>
 
-  <div id="Container-body">
-    <!-- Gọi fragment menu -->
-    <div th:replace="~{Menu-Staff :: menu}"></div>
-
-    <div id="main">
-      <div class="page-header">
-        <h1 class="page-title">Duplication Check</h1>
-        <p class="page-subtitle">Detect and manage duplicate questions using AI-powered analysis</p>
+        <div id="comparison-container" style="display: none">
+          <!-- DATA HERE -->
+        </div>
       </div>
-
-      <div class="tabs">
-        <div class="tab active" data-tab="detection">AI Detection</div>
-        <div class="tab" data-tab="stat">Statistics</div>
-        <div class="tab" data-tab="proc_log">Processing Logs</div>
-      </div>
-
-      <div id="tab-content" class="tab-content active"></div>
-      <div id="comparison-container" style="display: none"></div>
     </div>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal-overlay" id="logDetailModal" style="display: none">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 class="modal-title">Processing Log Details</h3>
-        <button class="close-button" onclick="closeModal()">&times;</button>
+    <!-- Modal Log Detail -->
+    <div class="modal-overlay" id="logDetailModal" style="display: none">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title">Processing Log Details</h3>
+          <button class="close-button" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body" id="modalContent">
+          <!-- Data here -->
+        </div>
       </div>
-      <div class="modal-body" id="modalContent"></div>
     </div>
-  </div>
 
-  <script th:src="@{/js/staffDuplication.js}"></script>
-</body>
+    <!-- Tải header và menu -->
+    <script>
+      fetch("../header_user.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("header-placeholder").innerHTML = data;
+        });
 
+      fetch("../Menu-Staff.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("menu-HTML").innerHTML = data;
+        });
+    </script>
 
+    <!-- Script riêng -->
+    <script src="../../Static/js/staffDuplicationCheck.js"></script>
+  </body>
 </html>

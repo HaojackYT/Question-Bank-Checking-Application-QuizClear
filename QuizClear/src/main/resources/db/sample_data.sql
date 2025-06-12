@@ -54,12 +54,12 @@ INSERT INTO plans (course_id, plan_title, total_questions, total_recognition, to
 INSERT INTO tasks (course_id, plan_id, title, task_type, total_questions, total_recognition, total_comprehension, total_basic_application, total_advanced_application, assigned_to, assigned_by, status, priority, due_date, created_at) VALUES
 (1, 1, 'Create CS105 Midterm Questions', 'create_questions', 12, 4, 4, 3, 1, 1, 2, 'in_progress', 'high', '2025-04-05 23:59:00', '2025-03-01 10:00:00'),
 (2, 2, 'Review MATH205 Final Questions', 'review_questions', 15, 5, 4, 3, 3, 2, 1, 'pending', 'medium', '2025-06-01 23:59:00', '2025-03-02 10:00:00'),
-(3, 3, 'Create PHY105 Quiz Questions', 'create_questions', 8, 3, 3, 2, 0, 3, 2, 'accepted', 'low', '2025-03-25 23:59:00', '2025-03-03 10:00:00'),
+(3, 3, 'Create PHY105 Quiz Questions', 'create_questions', 8, 3, 3, 2, 0, 3, 2, 'completed', 'low', '2025-03-25 23:59:00', '2025-03-03 10:00:00'),
 (4, 4, 'Create CHEM104 Midterm Questions', 'create_questions', 10, 3, 3, 3, 1, 4, 2, 'in_progress', 'high', '2025-04-10 23:59:00', '2025-03-04 10:00:00'),
 (5, 5, 'Review BIO104 Quiz Questions', 'review_questions', 9, 4, 3, 2, 0, 5, 2, 'completed', 'medium', '2025-03-20 23:59:00', '2025-03-05 10:00:00'),
 (6, 6, 'Create CS106 Final Questions', 'create_questions', 14, 4, 4, 4, 2, 6, 2, 'pending', 'high', '2025-06-05 23:59:00', '2025-03-06 10:00:00'),
 (7, 7, 'Review MATH206 Midterm Questions', 'review_questions', 11, 3, 4, 3, 1, 7, 2, 'in_progress', 'medium', '2025-04-15 23:59:00', '2025-03-07 10:00:00'),
-(8, 8, 'Create PHY106 Quiz Questions', 'create_questions', 7, 3, 2, 2, 0, 8, 2, 'accepted', 'low', '2025-03-30 23:59:00', '2025-03-08 10:00:00'),
+(8, 8, 'Create PHY106 Quiz Questions', 'create_questions', 7, 3, 2, 2, 0, 8, 2, 'completed', 'low', '2025-03-30 23:59:00', '2025-03-08 10:00:00'),
 (9, 9, 'Review CHEM105 Final Questions', 'review_questions', 13, 4, 4, 3, 2, 9, 2, 'pending', 'high', '2025-06-10 23:59:00', '2025-03-09 10:00:00'),
 (10, 10, 'Create BIO105 Midterm Questions', 'create_questions', 10, 3, 3, 3, 1, 10, 2, 'in_progress', 'medium', '2025-04-20 23:59:00', '2025-03-10 10:00:00');
 
@@ -147,14 +147,14 @@ INSERT INTO duplicate_detections (new_question_id, similar_question_id, similari
 INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, feedback, detected_by, processed_by, detected_at, processed_at) VALUES
 (2, 1, 0.92, 1, 'pending', NULL, NULL, 1, NULL, '2025-03-11 10:00:00', NULL),
 (3, 2, 0.85, 2, 'pending', NULL, NULL, 1, NULL, '2025-03-11 11:00:00', NULL),
-(4, 1, 0.78, 3, 'approved', 'REJECT_DUPLICATE', 'Questions are too similar in content and structure', 1, 2, '2025-03-11 12:00:00', '2025-03-11 15:00:00'),
+(4, 1, 0.78, 3, 'sent_back', 'reject', 'Questions are too similar in content and structure', 1, 2, '2025-03-11 12:00:00', '2025-03-11 15:00:00'),
 (5, 3, 0.88, 4, 'pending', NULL, NULL, 1, NULL, '2025-03-11 13:00:00', NULL),
-(6, 2, 0.65, 5, 'rejected', 'APPROVE_DUPLICATE', 'Questions cover different aspects of the topic', 1, 2, '2025-03-11 14:00:00', '2025-03-11 16:00:00'),
-(7, 4, 0.91, 6, 'needs_review', 'NEEDS_REVIEW', 'Requires subject matter expert review', 1, 2, '2025-03-11 15:00:00', '2025-03-11 17:00:00'),
+(6, 2, 0.65, 5, 'rejected', 'accept', 'Questions cover different aspects of the topic', 1, 2, '2025-03-11 14:00:00', '2025-03-11 16:00:00'),
+(7, 4, 0.91, 6, 'merged', 'merge', 'Requires subject matter expert review', 1, 2, '2025-03-11 15:00:00', '2025-03-11 17:00:00'),
 (8, 5, 0.73, 7, 'pending', NULL, NULL, 1, NULL, '2025-03-11 16:00:00', NULL),
 (9, 6, 0.89, 8, 'pending', NULL, NULL, 1, NULL, '2025-03-11 17:00:00', NULL),
-(10, 7, 0.82, 9, 'approved', 'REJECT_DUPLICATE', 'High similarity detected by AI system', 1, 2, '2025-03-11 18:00:00', '2025-03-11 19:00:00'),
-(1, 8, 0.67, 10, 'rejected', 'APPROVE_DUPLICATE', 'Different difficulty levels, acceptable', 1, 2, '2025-03-11 19:00:00', '2025-03-11 20:00:00');
+(10, 7, 0.82, 9, 'accepted', 'reject', 'High similarity detected by AI system', 1, 2, '2025-03-11 18:00:00', '2025-03-11 19:00:00'),
+(1, 8, 0.67, 10, 'rejected', 'accept', 'Different difficulty levels, acceptable', 1, 2, '2025-03-11 19:00:00', '2025-03-11 20:00:00');
 
 -- Insert more AI duplicate checks for comprehensive testing
 INSERT INTO ai_duplicate_checks (question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, checked_by, status, checked_at) VALUES
