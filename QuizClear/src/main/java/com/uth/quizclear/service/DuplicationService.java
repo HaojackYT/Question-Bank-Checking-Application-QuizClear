@@ -301,16 +301,14 @@ public class DuplicationService {
         dto.setExistingQuestion(mapToQuestionDetailDto(result.getExistingQuestion()));
         dto.setSimilarityScore(result.getSimilarityScore().doubleValue());
         dto.setIsDuplicate(result.getIsDuplicate());        return dto;
-    }
-
-    private QuestionDetailDTO mapToQuestionDetailDto(Question question) {
+    }    private QuestionDetailDTO mapToQuestionDetailDto(Question question) {
         QuestionDetailDTO dto = new QuestionDetailDTO();
         dto.setQuestionId(question.getQuestionId());
         dto.setContent(question.getContent());
         dto.setCourseName(question.getCourse() != null ? question.getCourse().getCourseName() : "Unknown");
         dto.setCloCode(question.getClo() != null ? question.getClo().getCloCode() : "Unknown");
         dto.setDifficultyLevel(question.getDifficultyLevel() != null ? question.getDifficultyLevel().name() : "Unknown");
-        dto.setCreatorName(question.getCreator() != null ? question.getCreator().getFullName() : "Unknown");
+        dto.setCreatorName(question.getCreatedBy() != null ? question.getCreatedBy().getFullName() : "Unknown");
         dto.setCreatedAt(question.getCreatedAt());
         return dto;
     }

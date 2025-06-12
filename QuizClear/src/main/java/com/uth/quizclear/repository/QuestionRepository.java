@@ -21,9 +21,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     // Find by CLO
     List<Question> findByClo_CloId(Long cloId);
     Integer countByClo_CloId(Long cloId);
-    
-    // Find by creator
-    List<Question> findByCreator_UserId(Long creatorId);
+      // Find by creator
+    List<Question> findByCreatedBy_UserId(Long creatorId);
     
     // Find by course
     List<Question> findByCourse_CourseId(Long courseId);
@@ -40,8 +39,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     // Advanced queries for duplicate detection
     @Query("SELECT q FROM Question q WHERE q.course.courseId = :courseId AND q.status = 'APPROVED' ORDER BY q.createdAt DESC")
     List<Question> findApprovedQuestionsByCourse(@Param("courseId") Long courseId);
-    
-    @Query("SELECT q FROM Question q WHERE q.creator.userId = :userId AND q.status = 'APPROVED' ORDER BY q.createdAt DESC")
+      @Query("SELECT q FROM Question q WHERE q.createdBy.userId = :userId AND q.status = 'APPROVED' ORDER BY q.createdAt DESC")
     List<Question> findApprovedQuestionsByCreator(@Param("userId") Long userId);
     
     // Find questions for duplicate checking (excluding the question being checked)
@@ -51,9 +49,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     // Find similar content questions (for initial text-based filtering)
     @Query("SELECT q FROM Question q WHERE q.questionId != :excludeId AND LOWER(q.content) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Question> findQuestionsWithSimilarContent(@Param("excludeId") Long excludeId, @Param("keyword") String keyword);
-    
-    // Statistics queries
-    @Query("SELECT COUNT(q) FROM Question q WHERE q.creator.userId = :userId")
+      // Statistics queries
+    @Query("SELECT COUNT(q) FROM Question q WHERE q.createdBy.userId = :userId")
     long countQuestionsByCreator(@Param("userId") Long userId);
     
     @Query("SELECT COUNT(q) FROM Question q WHERE q.course.courseId = :courseId")
@@ -72,9 +69,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     // Questions pending approval
     @Query("SELECT q FROM Question q WHERE q.status = 'PENDING' ORDER BY q.createdAt ASC")
     List<Question> findPendingQuestions();
-    
-    // Top creators
-    @Query("SELECT u.fullName as creatorName, COUNT(q) as questionCount FROM Question q JOIN q.creator u GROUP BY u.userId, u.fullName ORDER BY COUNT(q) DESC")
+      // Top creators
+    @Query("SELECT u.fullName as creatorName, COUNT(q) as questionCount FROM Question q JOIN q.createdBy u GROUP BY u.userId, u.fullName ORDER BY COUNT(q) DESC")
     List<Object[]> getTopQuestionCreators();
     
     // Course-wise question distribution
