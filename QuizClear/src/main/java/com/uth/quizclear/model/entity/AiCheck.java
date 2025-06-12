@@ -80,11 +80,9 @@ public class AiCheck extends BaseEntity {
     // Business methods
     public String getQuestionContent() {
         return question != null ? question.getContent() : null;
-    }
-
-    public String getQuestionCreator() {
-        return question != null && question.getCreator() != null ? 
-               question.getCreator().getFullName() : null;
+    }    public String getQuestionCreator() {
+        return question != null && question.getCreatedBy() != null ? 
+               question.getCreatedBy().getFullName() : null;
     }
 
     public boolean isCompleted() {
