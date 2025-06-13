@@ -25,22 +25,22 @@ public interface ExamRepository extends JpaRepository<Exam, Integer> {
 
     @Query("SELECT new com.uth.quizclear.model.dto.ExamSummaryDTO(" +
             "e.examId, e.examTitle, c.courseName, c.department, e.createdAt, e.examDate, e.reviewStatus, u.fullName) " +
+            "FROM Exam e JOIN e.course c JOIN e.createdBy u WHERE e.reviewStatus = :reviewStatus AND c.department = :department")
+    List<ExamSummaryDTO> findExamSummariesByReviewStatusAndCourseDepartment(@Param("reviewStatus") ExamReviewStatus reviewStatus, @Param("department") String department);
+
+    @Query("SELECT new com.uth.quizclear.model.dto.ExamSummaryDTO(" +
+            "e.examId, e.examTitle, c.courseName, c.department, e.createdAt, e.examDate, e.reviewStatus, u.fullName) " +
+            "FROM Exam e JOIN e.course c JOIN e.createdBy u WHERE e.reviewStatus = :reviewStatus")
+    List<ExamSummaryDTO> findExamSummariesByReviewStatus(@Param("reviewStatus") ExamReviewStatus status);
+
+    @Query("SELECT new com.uth.quizclear.model.dto.ExamSummaryDTO(" +
+            "e.examId, e.examTitle, c.courseName, c.department, e.createdAt, e.examDate, e.reviewStatus, u.fullName) " +
+            "FROM Exam e JOIN e.course c JOIN e.createdBy u WHERE c.department = :department")
+    List<ExamSummaryDTO> findExamSummariesByCourseDepartment(@Param("department") String department);
+
+    @Query("SELECT new com.uth.quizclear.model.dto.ExamSummaryDTO(" +
+            "e.examId, e.examTitle, c.courseName, c.department, e.createdAt, e.examDate, e.reviewStatus, u.fullName) " +
             "FROM Exam e JOIN e.course c JOIN e.createdBy u")
     List<ExamSummaryDTO> findAllExamSummaries();
-
-    // @Query("SELECT new com.uth.quizclear.model.dto.ExamSummaryDTO(" +
-    //         "e.examId, e.examTitle, c.courseName, c.department, e.createdAt, e.examDate, e.status.name(), u.fullName) " +
-    //         "FROM Exam e JOIN e.course c JOIN e.createdBy u WHERE e.status = :status")
-    // List<ExamSummaryDTO> findExamSummariesByStatus(@Param("reviewStatus") ExamReviewStatus status);
-
-    // @Query("SELECT new com.uth.quizclear.model.dto.ExamSummaryDTO(" +
-    //         "e.examId, e.examTitle, c.courseName, c.department, e.createdAt, e.examDate, e.status.name(), u.fullName) " +
-    //         "FROM Exam e JOIN e.course c JOIN e.createdBy u WHERE c.department = :department")
-    // List<ExamSummaryDTO> findExamSummariesByCourseDepartment(@Param("department") String department);
-
-    // @Query("SELECT new com.uth.quizclear.model.dto.ExamSummaryDTO(" +
-    //         "e.examId, e.examTitle, c.courseName, c.department, e.createdAt, e.examDate, e.status.name(), u.fullName) " +
-    //         "FROM Exam e JOIN e.course c JOIN e.createdBy u WHERE e.status = :status AND c.department = :department")
-    // List<ExamSummaryDTO> findExamSummariesByStatusAndCourseDepartment(@Param("reviewStatus") ExamReviewStatus reviewStatus, @Param("department") String department);
 
 }

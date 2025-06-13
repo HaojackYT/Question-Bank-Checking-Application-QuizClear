@@ -52,16 +52,13 @@ public class ExamService {
 
     // API 2: Get All Exams with filters
     @Transactional(readOnly = true)
-    public List<ExamSummaryDTO> getAllExams(String status, String subject) {
-        if (status != null && !status.isEmpty() && subject != null && !subject.isEmpty()) {
-            // return examRepository.findExamSummariesByStatusAndCourseDepartment(ExamReviewStatus.fromValue(status.toUpperCase()), subject);
-            return null;
-        } else if (status != null && !status.isEmpty()) {
-            // return examRepository.findExamSummariesByStatus(ExamReviewStatus.fromValue(status.toUpperCase()));
-            return null;
+    public List<ExamSummaryDTO> getAllExams(String reviewStatus, String subject) {
+        if (reviewStatus != null && !reviewStatus.isEmpty() && subject != null && !subject.isEmpty()) {
+            return examRepository.findExamSummariesByReviewStatusAndCourseDepartment(ExamReviewStatus.fromValue(reviewStatus), subject);
+        } else if (reviewStatus != null && !reviewStatus.isEmpty()) {
+            return examRepository.findExamSummariesByReviewStatus(ExamReviewStatus.fromValue(reviewStatus));
         } else if (subject != null && !subject.isEmpty()) {
-            // return examRepository.findExamSummariesByCourseDepartment(subject);
-            return null;
+            return examRepository.findExamSummariesByCourseDepartment(subject);
         } else {
             return examRepository.findAllExamSummaries();
         }

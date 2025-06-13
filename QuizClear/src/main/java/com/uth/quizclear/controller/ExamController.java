@@ -33,12 +33,12 @@ public class ExamController {
     }
 
     // // API to get All Exams with filtering by status and subject
-    // // GET /api/exams?status=APPROVED&subject=Computer%20Science
+    // // GET /api/exams?reviewStatus=pending&subject=Computer%20Science
     @GetMapping
     public ResponseEntity<List<ExamSummaryDTO>> getAllExams(
-            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String reviewStatus,
             @RequestParam(required = false) String subject) {
-        List<ExamSummaryDTO> exams = examService.getAllExams(status, subject);
+        List<ExamSummaryDTO> exams = examService.getAllExams(reviewStatus, subject);
         return ResponseEntity.ok(exams);
     }
 
