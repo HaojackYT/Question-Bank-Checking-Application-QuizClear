@@ -1,5 +1,4 @@
 /* Main content styles */
-
 .page-header {
   display: flex;
   align-items: center;
@@ -38,84 +37,77 @@
 }
 
 .exam-section {
-  background-color: #fff;
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
-  border: 1px solid #e2e8f0;
+  padding: 1.5625rem 2.5rem;
+  border-radius: 0.9375rem;
+  margin-bottom: 1.25rem;
+  box-shadow: none;
+  border: 0.125rem solid #D9D9D9;
 }
 
-.request-info h2 {
-  margin-top: 0;
-  margin-bottom: 2rem;
-  color: #333;
+/* Request Form */
+.request-form {
+  padding: 1.5625rem 2.5rem;
+  border-radius: 0.9375rem;
+  margin-bottom: 1.25rem;
+  box-shadow: none;
+  border: 0.125rem solid #D9D9D9;
+}
+
+.request-form h3 {
+  font-size: 1.5rem;
+  color: #120368;
+  margin-bottom: 1.25rem;
   font-weight: 600;
 }
 
-.info-grid {
+.form-row {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 0.9375rem;
+}
+
+.form-group {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
 }
 
-.info-row {
-  display: flex;
-  gap: 3.5rem;
-}
-
-.info-col {
+.form-group-split {
   flex: 1;
+  display: flex;
+  gap: 0.625rem;
 }
 
-.info-col label {
-  display: block;
-  font-size: 1.2rem;
-  color: #666;
-  margin-bottom: 1rem;
-  font-weight: 500;
+.form-subgroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.info-col input {
-  width: 100%;
-  padding: 1.25rem;
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
+.form-group label,
+.form-subgroup label {
   font-size: 1rem;
+  color: #000;
+  margin-bottom: 0.3125rem;
+  font-weight: 400;
 }
 
-.level-grid {
-  display: flex;
-  gap: 3rem;
-}
-
-.level-item {
-  flex: 1;
-}
-
-.level-item label {
-  display: block;
+.form-group input,
+.form-subgroup input {
+  padding: 0.625rem 0.75rem;
+  border: 0.0625rem solid #ddd;
+  border-radius: 0.25rem;
+  background-color: #f9f9f9;
+  font-size: 0.875rem;
   color: #666;
-  margin-bottom: 1rem;
-  font-weight: 500;
-}
-
-.level-value {
-  background-color: #f0f0f0;
-  padding: 1.25rem;
-  border-radius: 0.5rem;
-  text-align: center;
-  border: 1px solid #ddd;
-  font-weight: 500;
 }
 
 .exam-title-section {
-  background-color: #fff;
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
-  border: 1px solid #e2e8f0;
+  padding: 1.5625rem 2.5rem;
+    border-radius: 0.9375rem;
+    margin-bottom: 1.25rem;
+    box-shadow: none;
+    border: 0.125rem solid #D9D9D9;
 }
 
 .exam-title-section label {
@@ -343,7 +335,7 @@
   gap: 2rem;
 }
 
-.review-btn {
+.review-btn, .preview-btn {
   padding: 1.25rem 2.5rem;
   background-color: #fff;
   border: 1px solid #ddd;
