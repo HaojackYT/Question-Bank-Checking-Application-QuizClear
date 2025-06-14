@@ -45,7 +45,7 @@ public class ExamController {
     // API to get a single Exam by ID
     // GET /api/exams/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<?> getExamById(@PathVariable Integer id) {
+    public ResponseEntity<?> getExamById(@PathVariable Long id) {
         try {
             ExamManagementDTO exam = examService.getExamById(id);
             return ResponseEntity.ok(exam);

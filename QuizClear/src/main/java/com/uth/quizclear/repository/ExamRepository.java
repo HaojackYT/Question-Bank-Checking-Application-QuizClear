@@ -14,7 +14,7 @@ import com.uth.quizclear.model.enums.ExamReviewStatus;
 import com.uth.quizclear.model.dto.ExamSummaryDTO;
 
 @Repository
-public interface ExamRepository extends JpaRepository<Exam, Integer> {
+public interface ExamRepository extends JpaRepository<Exam, Long> {
 
     long countByReviewStatus(ExamReviewStatus reviewStatus);
 

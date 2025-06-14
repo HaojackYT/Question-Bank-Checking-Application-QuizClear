@@ -66,7 +66,7 @@ public class ExamService {
 
     // API 3: Get Exam by ID
     @Transactional(readOnly = true)
-    public ExamManagementDTO getExamById(Integer examId) throws JsonProcessingException {
+    public ExamManagementDTO getExamById(Long examId) throws JsonProcessingException {
         Optional<Exam> examOptional = examRepository.findById(examId);
         if (examOptional.isEmpty()) {
             throw new EntityNotFoundException("Exam not found with ID: " + examId);
