@@ -41,13 +41,13 @@ public class DuplicateDetection {
     private Long similarQuestionId;
 
     @Column(name = "ai_check_id")
-    private Long aiCheckId;
-
-    // Core duplicate detection fields
+    private Long aiCheckId;    // Core duplicate detection fields
     @Column(name = "similarity_score", precision = 5, scale = 4)
     @DecimalMin(value = "0.0", message = "Similarity score must be at least 0.0")
     @DecimalMax(value = "1.0", message = "Similarity score must be at most 1.0")
-    private BigDecimal similarityScore;    @Enumerated(EnumType.STRING)
+    private BigDecimal similarityScore;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     @NotNull(message = "Status is required")
     @Builder.Default

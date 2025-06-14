@@ -129,32 +129,32 @@ INSERT INTO ai_similarity_results (check_id, existing_question_id, similarity_sc
 (10, 10, 0.8300, FALSE);
 
 -- 11. Thêm 10 bản ghi vào bảng duplicate_detections
-INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, feedback, detected_by, processed_by, detected_at, processed_at) VALUES
-(1, 1, 0.9500, 1, 'rejected', 'reject', 'Question is too similar to existing', 1, 2, '2025-03-01 11:00:00', '2025-03-02 11:00:00'),
-(2, 2, 0.8200, 2, 'accepted', 'accept', 'Sufficiently unique', 2, 1, '2025-03-02 11:00:00', '2025-03-03 11:00:00'),
-(3, 3, 0.9100, 3, 'sent_back', 'send_back', 'Needs rephrasing', 3, 2, '2025-03-03 11:00:00', '2025-03-04 11:00:00'),
-(4, 4, 0.7800, 4, 'accepted', 'accept', 'No significant overlap', 4, 2, '2025-03-04 11:00:00', '2025-03-05 11:00:00'),
-(5, 5, 0.8900, 5, 'merged', 'merge', 'Merged with existing question', 5, 2, '2025-03-05 11:00:00', '2025-03-06 11:00:00'),
-(6, 6, 0.8500, 6, 'accepted', 'accept', 'Unique content', 6, 2, '2025-03-06 11:00:00', '2025-03-07 11:00:00'),
-(7, 7, 0.9200, 7, 'rejected', 'reject', 'Highly similar to existing', 7, 2, '2025-03-07 11:00:00', '2025-03-08 11:00:00'),
-(8, 8, 0.8000, 8, 'accepted', 'accept', 'Acceptable similarity level', 8, 2, '2025-03-08 11:00:00', '2025-03-09 11:00:00'),
-(9, 9, 0.8700, 9, 'sent_back', 'send_back', 'Rephrase for clarity', 9, 2, '2025-03-09 11:00:00', '2025-03-10 11:00:00'),
-(10, 10, 0.8300, 10, 'accepted', 'accept', 'No significant duplication', 10, 2, '2025-03-10 11:00:00', '2025-03-11 11:00:00');
+INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, detection_feedback, detected_by, processed_by, detected_at, processed_at, created_at, updated_at) VALUES
+(1, 1, 0.9500, 1, 'rejected', 'remove_new', 'Question is too similar to existing', 1, 2, '2025-03-01 11:00:00', '2025-03-02 11:00:00', '2025-03-01 11:00:00', '2025-03-02 11:00:00'),
+(2, 2, 0.8200, 2, 'approved', 'keep_both', 'Sufficiently unique', 2, 1, '2025-03-02 11:00:00', '2025-03-03 11:00:00', '2025-03-02 11:00:00', '2025-03-03 11:00:00'),
+(3, 3, 0.9100, 3, 'needs_review', 'mark_as_variant', 'Needs rephrasing', 3, 2, '2025-03-03 11:00:00', '2025-03-04 11:00:00', '2025-03-03 11:00:00', '2025-03-04 11:00:00'),
+(4, 4, 0.7800, 4, 'approved', 'keep_both', 'No significant overlap', 4, 2, '2025-03-04 11:00:00', '2025-03-05 11:00:00', '2025-03-04 11:00:00', '2025-03-05 11:00:00'),
+(5, 5, 0.8900, 5, 'approved', 'merge_questions', 'Merged with existing question', 5, 2, '2025-03-05 11:00:00', '2025-03-06 11:00:00', '2025-03-05 11:00:00', '2025-03-06 11:00:00'),
+(6, 6, 0.8500, 6, 'approved', 'keep_both', 'Unique content', 6, 2, '2025-03-06 11:00:00', '2025-03-07 11:00:00', '2025-03-06 11:00:00', '2025-03-07 11:00:00'),
+(7, 7, 0.9200, 7, 'rejected', 'remove_new', 'Highly similar to existing', 7, 2, '2025-03-07 11:00:00', '2025-03-08 11:00:00', '2025-03-07 11:00:00', '2025-03-08 11:00:00'),
+(8, 8, 0.8000, 8, 'approved', 'keep_both', 'Acceptable similarity level', 8, 2, '2025-03-08 11:00:00', '2025-03-09 11:00:00', '2025-03-08 11:00:00', '2025-03-09 11:00:00'),
+(9, 9, 0.8700, 9, 'needs_review', 'mark_as_variant', 'Rephrase for clarity', 9, 2, '2025-03-09 11:00:00', '2025-03-10 11:00:00', '2025-03-09 11:00:00', '2025-03-10 11:00:00'),
+(10, 10, 0.8300, 10, 'approved', 'keep_both', 'No significant duplication', 10, 2, '2025-03-10 11:00:00', '2025-03-11 11:00:00', '2025-03-10 11:00:00', '2025-03-11 11:00:00');
 
 -- Additional sample data for testing duplicate detection functionality
 
 -- Insert more duplicate detection records with different scenarios
-INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, feedback, detected_by, processed_by, detected_at, processed_at) VALUES
-(2, 1, 0.92, 1, 'pending', NULL, NULL, 1, NULL, '2025-03-11 10:00:00', NULL),
-(3, 2, 0.85, 2, 'pending', NULL, NULL, 1, NULL, '2025-03-11 11:00:00', NULL),
-(4, 1, 0.78, 3, 'sent_back', 'reject', 'Questions are too similar in content and structure', 1, 2, '2025-03-11 12:00:00', '2025-03-11 15:00:00'),
-(5, 3, 0.88, 4, 'pending', NULL, NULL, 1, NULL, '2025-03-11 13:00:00', NULL),
-(6, 2, 0.65, 5, 'rejected', 'accept', 'Questions cover different aspects of the topic', 1, 2, '2025-03-11 14:00:00', '2025-03-11 16:00:00'),
-(7, 4, 0.91, 6, 'merged', 'merge', 'Requires subject matter expert review', 1, 2, '2025-03-11 15:00:00', '2025-03-11 17:00:00'),
-(8, 5, 0.73, 7, 'pending', NULL, NULL, 1, NULL, '2025-03-11 16:00:00', NULL),
-(9, 6, 0.89, 8, 'pending', NULL, NULL, 1, NULL, '2025-03-11 17:00:00', NULL),
-(10, 7, 0.82, 9, 'accepted', 'reject', 'High similarity detected by AI system', 1, 2, '2025-03-11 18:00:00', '2025-03-11 19:00:00'),
-(1, 8, 0.67, 10, 'rejected', 'accept', 'Different difficulty levels, acceptable', 1, 2, '2025-03-11 19:00:00', '2025-03-11 20:00:00');
+INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, detection_feedback, detected_by, processed_by, detected_at, processed_at, created_at, updated_at) VALUES
+(2, 1, 0.92, 1, 'pending', NULL, NULL, 1, NULL, '2025-03-11 10:00:00', NULL, '2025-03-11 10:00:00', '2025-03-11 10:00:00'),
+(3, 2, 0.85, 2, 'pending', NULL, NULL, 1, NULL, '2025-03-11 11:00:00', NULL, '2025-03-11 11:00:00', '2025-03-11 11:00:00'),
+(4, 1, 0.78, 3, 'needs_review', 'remove_new', 'Questions are too similar in content and structure', 1, 2, '2025-03-11 12:00:00', '2025-03-11 15:00:00', '2025-03-11 12:00:00', '2025-03-11 15:00:00'),
+(5, 3, 0.88, 4, 'pending', NULL, NULL, 1, NULL, '2025-03-11 13:00:00', NULL, '2025-03-11 13:00:00', '2025-03-11 13:00:00'),
+(6, 2, 0.65, 5, 'rejected', 'keep_both', 'Questions cover different aspects of the topic', 1, 2, '2025-03-11 14:00:00', '2025-03-11 16:00:00', '2025-03-11 14:00:00', '2025-03-11 16:00:00'),
+(7, 4, 0.91, 6, 'approved', 'merge_questions', 'Requires subject matter expert review', 1, 2, '2025-03-11 15:00:00', '2025-03-11 17:00:00', '2025-03-11 15:00:00', '2025-03-11 17:00:00'),
+(8, 5, 0.73, 7, 'pending', NULL, NULL, 1, NULL, '2025-03-11 16:00:00', NULL, '2025-03-11 16:00:00', '2025-03-11 16:00:00'),
+(9, 6, 0.89, 8, 'pending', NULL, NULL, 1, NULL, '2025-03-11 17:00:00', NULL, '2025-03-11 17:00:00', '2025-03-11 17:00:00'),
+(10, 7, 0.82, 9, 'approved', 'remove_new', 'High similarity detected by AI system', 1, 2, '2025-03-11 18:00:00', '2025-03-11 19:00:00', '2025-03-11 18:00:00', '2025-03-11 19:00:00'),
+(1, 8, 0.67, 10, 'rejected', 'keep_both', 'Different difficulty levels, acceptable', 1, 2, '2025-03-11 19:00:00', '2025-03-11 20:00:00', '2025-03-11 19:00:00', '2025-03-11 20:00:00');
 
 -- Insert more AI duplicate checks for comprehensive testing
 INSERT INTO ai_duplicate_checks (question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, checked_by, status, checked_at) VALUES
