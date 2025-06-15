@@ -1,15 +1,16 @@
 -- 1. Thêm 10 bản ghi vào bảng users
 INSERT INTO users (full_name, email, password_hash, role, status, department, gender, date_of_birth, nation, phone_number, created_at, hometown, contact_address) VALUES
-ash_ab001', 'Lec', 'active', 'Computer Science', 'MALE', '1986-03-15', 'USA', '1234567101', '2025-01-01 09:00:00', 'Boston', '101 Elm St, Boston'),('Alexander Brooks', 'alex.brooks@university.edu', 'h
-('Maria Gonzalez', 'maria.gonzalez@university.edu', 'hash_mg002', 'HoD', 'active', 'Mathematics', 'FEMALE', '1978-07-22', 'Spain', '1234567102', '2025-01-02 09:00:00', 'Madrid', '22 Gran Via, Madrid'),
-('Chen Wei', 'chen.wei@university.edu', 'hash_cw003', 'RD', 'inactive', 'Physics', 'MALE', '1990-05-10', 'China', '1234567103', '2025-01-03 09:00:00', 'Shanghai', '33 Nanjing Rd, Shanghai'),
-('Aisha Khan', 'aisha.khan@university.edu', 'hash_ak004', 'SL', 'active', 'Chemistry', 'FEMALE', '1984-11-30', 'Pakistan', '1234567104', '2025-01-04 09:00:00', 'Karachi', '44 Clifton Rd, Karachi'),
-('Hiroshi Tanaka', 'hiroshi.tanaka@university.edu', 'hash_ht005', 'Lec', 'active', 'Biology', 'MALE', '1988-09-12', 'Japan', '1234567105', '2025-01-05 09:00:00', 'Osaka', '55 Umeda St, Osaka'),
-('Elena Petrova', 'elena.petrova@university.edu', 'hash_ep006', 'HoED', 'active', 'Computer Science', 'FEMALE', '1982-04-25', 'Russia', '1234567106', '2025-01-06 09:00:00', 'Moscow', '66 Arbat St, Moscow'),
-('Lucas Silva', 'lucas.silva@university.edu', 'hash_ls007', 'Lec', 'inactive', 'Mathematics', 'MALE', '1992-02-18', 'Brazil', '1234567107', '2025-01-07 09:00:00', 'Sao Paulo', '77 Paulista Ave, Sao Paulo'),
-('Fatima Ali', 'fatima.ali@university.edu', 'hash_fa008', 'RD', 'active', 'Physics', 'FEMALE', '1987-06-05', 'Egypt', '1234567108', '2025-01-08 09:00:00', 'Cairo', '88 Nile St, Cairo'),
-('James Park', 'james.park@university.edu', 'hash_jp009', 'SL', 'active', 'Chemistry', 'MALE', '1989-12-01', 'Korea', '1234567109', '2025-01-09 09:00:00', 'Seoul', '99 Gangnam Ave, Seoul'),
-('Sophie Müller', 'sophie.muller@university.edu', 'hash_sm010', 'Lec', 'active', 'Biology', 'FEMALE', '1991-08-14', 'Germany', '1234567110', '2025-01-10 09:00:00', 'Berlin', '100 Unter den Linden, Berlin');
+('Ash Abrahams', 'ash.abrahams@university.edu', 'hash_ab001', 'Lec', 'active', 'Computer Science', 'male', '1986-03-15', 'USA', '1234567101', '2025-01-01 09:00:00', 'Boston', '101 Elm St, Boston'),
+('Alexander Brooks', 'alex.brooks@university.edu', 'hash_ab002', 'HoD', 'active', 'Mathematics', 'male', '1975-09-20', 'UK', '1234567102', '2025-01-02 09:00:00', 'London', '22 Baker St, London'),
+('Maria Gonzalez', 'maria.gonzalez@university.edu', 'hash_mg002', 'HoD', 'active', 'Mathematics', 'female', '1978-07-22', 'Spain', '1234567103', '2025-01-03 09:00:00', 'Madrid', '22 Gran Via, Madrid'),
+('Chen Wei', 'chen.wei@university.edu', 'hash_cw003', 'RD', 'inactive', 'Physics', 'male', '1990-05-10', 'China', '1234567104', '2025-01-04 09:00:00', 'Shanghai', '33 Nanjing Rd, Shanghai'),
+('Aisha Khan', 'aisha.khan@university.edu', 'hash_ak004', 'SL', 'active', 'Chemistry', 'female', '1984-11-30', 'Pakistan', '1234567105', '2025-01-05 09:00:00', 'Karachi', '44 Clifton Rd, Karachi'),
+('Hiroshi Tanaka', 'hiroshi.tanaka@university.edu', 'hash_ht005', 'Lec', 'active', 'Biology', 'male', '1988-09-12', 'Japan', '1234567106', '2025-01-06 09:00:00', 'Osaka', '55 Umeda St, Osaka'),
+('Elena Petrova', 'elena.petrova@university.edu', 'hash_ep006', 'HoED', 'active', 'Computer Science', 'female', '1982-04-25', 'Russia', '1234567107', '2025-01-07 09:00:00', 'Moscow', '66 Arbat St, Moscow'),
+('Lucas Silva', 'lucas.silva@university.edu', 'hash_ls007', 'Lec', 'inactive', 'Mathematics', 'male', '1992-02-18', 'Brazil', '1234567108', '2025-01-08 09:00:00', 'Sao Paulo', '77 Paulista Ave, Sao Paulo'),
+('Fatima Ali', 'fatima.ali@university.edu', 'hash_fa008', 'RD', 'active', 'Physics', 'female', '1987-06-05', 'Egypt', '1234567109', '2025-01-09 09:00:00', 'Cairo', '88 Nile St, Cairo'),
+('James Park', 'james.park@university.edu', 'hash_jp009', 'SL', 'active', 'Chemistry', 'male', '1989-12-01', 'Korea', '1234567110', '2025-01-10 09:00:00', 'Seoul', '99 Gangnam Ave, Seoul');
+
 
 -- 2. Thêm 10 bản ghi vào bảng courses
 INSERT INTO courses (course_code, course_name, credits, department, description, created_by, created_at, status, semester, academic_year) VALUES

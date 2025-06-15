@@ -190,4 +190,9 @@ public class User {
     public boolean isHeadOfExaminationDepartment() {
         return UserRole.HOED.equals(role);
     }
+
+    public String getFullName() {
+        return this.fullName;
+    }
+
 }

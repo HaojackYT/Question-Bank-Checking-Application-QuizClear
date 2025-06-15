@@ -208,7 +208,8 @@ tr:hover {
     color: white;
 }
 
-.status.in-progress {
+.status.in_progress {
+    font-size: 0.7rem !important;
      background: #1E88E5;
 }
 

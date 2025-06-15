@@ -30,7 +30,9 @@ public class Course {
     private String courseName;
 
     @Column(name = "credits")
-    private Integer credits;    @Column(name = "department")
+    private Integer credits;    
+    
+    @Column(name = "department")
     private String department;
 
     @Column(name = "description", columnDefinition = "TEXT")
@@ -63,5 +65,11 @@ public class Course {
 
     public enum Status {
         active, inactive
+    }
+    
+    // Phương thức này đã được tạo tự động bởi Lombok @Getter
+    // nhưng thêm vào để rõ ràng
+    public String getCourseName() {
+        return this.courseName;
     }
 }

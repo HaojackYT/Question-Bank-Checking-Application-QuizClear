@@ -59,11 +59,6 @@ public class WebPageController {
         return "Menu-Staff";
     }
 
-    // Template endpoints
-    @GetMapping("/Template/header_user.html")
-    public String templateHeaderUser() {
-        return "header_user";
-    }
 
     @GetMapping("/Template/Menu-Staff.html")
     public String templateMenuStaff() {
@@ -152,4 +147,6 @@ public class WebPageController {
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
         return user != null && user.getRole().equals(requiredRole);
     }
+    
+
 }
