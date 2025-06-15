@@ -1,174 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-        <link rel="stylesheet" href="../../Static/header.css">
-        <link rel="stylesheet" href="../../Static/web_styles.css">
-        <link rel="stylesheet"
-            href="../../Static/css/Lecturer/L-EXE_Submittededits closed.css">
-        <link
-            href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
-            rel="stylesheet">
-        <title>Exam Evaluation</title>
-    </head>
 
-    <body>
-        <!--header-->
-        <div id="header-placeholder"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="../../Static/header.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
+    <link rel="stylesheet" href="../../Static/css/Lecturer/L-EXE_Draft.css">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Exam Evaluation</title>
+</head>
 
-        <!-- body -->
-        <div id="Container-body">
-            <!-- Menu -->
-            <div id="menu-HTML"></div>
+<body>
+    <!--header-->
+    <div id="header-placeholder"></div>
 
-            <!-- Main content -->
-            <div id="main">
-                <!-- Exam content -->
-                <div class="exam-container">
-                    <div class="exam-header">
-                        <a href="leturer_ExamEvaluation.html" class="back-button">
-                            <i class="fas fa-arrow-left"></i>
-                        </a>
-                        <h1>Seen Exam</h1>
+    <!-- body -->
+    <div id="Container-body">
+        <!-- Menu -->
+        <div id="menu-HTML"></div>
+
+        <!-- Main content -->
+        <div id="main">
+            <!-- Exam content -->
+            <div class="page-header">
+                <button class="back-btn" onclick="history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div>
+                    <h1 class="page-title">Seen Exam</h1>
+                </div>
+            </div>
+            <!-- Request Form -->
+            <div class="request-form">
+                <h3>Request</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Requester</label>
+                        <input type="text" value="Nguyễn A" readonly>
                     </div>
-
-                    <div class="exam-section">
-                        <div class="request-info">
-                            <h2>Request</h2>
-                            <div class="info-grid">
-                                <div class="info-row">
-                                    <div class="info-col">
-                                        <label>Requester</label>
-                                        <input type="text" value="Nguyen A"
-                                            readonly>
-                                    </div>
-                                    <div class="info-col">
-                                        <label>Time Exam</label>
-                                        <input type="text" value="90 : 00"
-                                            readonly>
-                                    </div>
-                                </div>
-                                <div class="info-row">
-                                    <div class="info-col">
-                                        <label>Subject</label>
-                                        <input type="text"
-                                            value="Database System" readonly>
-                                    </div>
-                                    <div class="info-col">
-                                        <div class="level-grid">
-                                            <div class="level-item">
-                                                <label>Remember</label>
-                                                <div
-                                                    class="level-value">50</div>
-                                            </div>
-                                            <div class="level-item">
-                                                <label>Understand</label>
-                                                <div
-                                                    class="level-value">30</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="info-row">
-                                    <div class="info-col">
-                                        <label>Deadline</label>
-                                        <input type="text" value="23/08/2023"
-                                            readonly>
-                                    </div>
-                                    <div class="info-col">
-                                        <div class="level-grid">
-                                            <div class="level-item">
-                                                <label>Apply (basic)</label>
-                                                <div class="level-value">5</div>
-                                            </div>
-                                            <div class="level-item">
-                                                <label>Apply (advanced)</label>
-                                                <div class="level-value">5</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="form-group">
+                        <label>Time Exam</label>
+                        <input type="text" value="90:00" readonly>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" value="Database System" readonly>
+                    </div>
+                    <div class="form-group-split">
+                        <div class="form-subgroup">
+                            <label>Remember</label>
+                            <input type="text" value="50" readonly>
+                        </div>
+                        <div class="form-subgroup">
+                            <label>Understand</label>
+                            <input type="text" value="30" readonly>
                         </div>
                     </div>
-
-                    <div class="exam-title-section">
-                        <label>Exam Title</label>
-                        <input type="text" placeholder="The content">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Deadline</label>
+                        <input type="text" value="23/08/2028" readonly>
                     </div>
-
-                    <div class="exam-section">
-                        <h2>Build Your Exam</h2>
-
-                        <!-- Question 1 -->
-                        <div class="question-item">
-                            <div class="question-header">
-                                <div class="dropdown-icon">
-                                    <i class="fas fa-chevron-down"></i>
-                                </div>
-                                <div class="question-text">What is a primary key
-                                    in a relational database?</div>
-                            </div>
-                            <div class="question-content">
-                                <div class="question-tags">
-                                    <div class="tag remember-tag">Remember</div>
-                                    <div class="tag clo-tag">CLO1</div>
-                                </div>
-                            </div>
+                    <div class="form-group-split">
+                        <div class="form-subgroup">
+                            <label>Apply (basic)</label>
+                            <input type="text" value="5" readonly>
                         </div>
-
-                        <!-- Question 2 -->
-                        <div class="question-item">
-                            <div class="question-header">
-                                <div class="dropdown-icon">
-                                    <i class="fas fa-chevron-down"></i>
-                                </div>
-                                <div class="question-text">Explain the concept
-                                    of database normalization and its
-                                    benefits.</div>
-                            </div>
-                            <div class="question-content">
-                                <div class="question-tags">
-                                    <div class="tag remember-tag">Remember</div>
-                                    <div class="tag clo-tag">CLO1</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Question 3 -->
-                        <div class="question-item full-question">
-                            <div class="question-text">Write a SQL query to
-                                retrieve all customers who have made purchases
-                                totaling more than $1000.</div>
-                            <div class="question-tags">
-                                <div class="tag apply-tag">Apply (basic)</div>
-                                <div class="tag clo-tag">CLO2</div>
-                            </div>
-
-                            <div class="answer-section">
-                                <h3>Correct Answer</h3>
-                                <div class="answer-box">The correct answer</div>
-
-                                <h3>Incorrect Answers</h3>
-                                <div class="answer-box">Incorrect answer</div>
-                                <div class="answer-box">Incorrect answer</div>
-                                <div class="answer-box">Incorrect answer</div>
-                            </div>
+                        <div class="form-subgroup">
+                            <label>Apply (advanced)</label>
+                            <input type="text" value="5" readonly>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="exam-footer">
-                        <div class="shuffle-option">
-                            <input type="checkbox" id="shuffle">
-                            <label for="shuffle">Shuffle Questions</label>
-                        </div>
-                        <div class="preview-section">
-                            <button class="preview-btn"
-                                id="previewBtn">Preview</button>
+            <div class="exam-title-section">
+                <label>Exam Title</label>
+                <input type="text" placeholder="The content">
+            </div>
+
+            <div class="exam-section">
+                <h2>Build Your Exam</h2>
+
+                <!-- Question 1 -->
+                <div class="question-box">
+                    <div class="question-header" onclick="toggleQuestion(this)">
+                        <i class="fas fa-chevron-up toggle-icon rotated"></i>
+                        <p>Write a SQL query to retrieve all customers who have made purchases totaling more than $1000.
+                        </p>
+                        <div class="question-tags">
+                            <div class="tag remember-tag">Remember</div>
+                            <div class="tag clo-tag">CLO1</div>
                         </div>
                     </div>
+                    <div class="question-content">
+                        <div class="correct-answer">
+                            <h4>Correct Answer</h4>
+                            <div class="answer-text">The correct answer</div>
+                        </div>
+                        <div class="incorrect-answers">
+                            <h4>Incorrect Answers</h4>
+                            <div class="answer-text">Incorrect answer</div>
+                            <div class="answer-text">Incorrect answer</div>
+                            <div class="answer-text">Incorrect answer</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="question-box">
+                    <div class="question-header" onclick="toggleQuestion(this)">
+                        <i class="fas fa-chevron-up toggle-icon rotated"></i>
+                        <p>Write a SQL query to retrieve all customers who have made purchases totaling more than $1000.
+                        </p>
+                        <div class="question-tags">
+                            <div class="tag remember-tag">Remember</div>
+                            <div class="tag clo-tag">CLO1</div>
+                        </div>
+                    </div>
+                    <div class="question-content">
+                        <div class="correct-answer">
+                            <h4>Correct Answer</h4>
+                            <div class="answer-text">The correct answer</div>
+                        </div>
+                        <div class="incorrect-answers">
+                            <h4>Incorrect Answers</h4>
+                            <div class="answer-text">Incorrect answer</div>
+                            <div class="answer-text">Incorrect answer</div>
+                            <div class="answer-text">Incorrect answer</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Question 3 -->
+                <div class="question-box">
+                    <div class="question-header" onclick="toggleQuestion(this)">
+                        <i class="fas fa-chevron-up toggle-icon rotated"></i>
+                        <p>Write a SQL query to retrieve all customers who have made purchases totaling more than $1000.
+                        </p>
+                        <div class="question-tags">
+                            <div class="tag remember-tag">Remember</div>
+                            <div class="tag clo-tag">CLO1</div>
+                        </div>
+                    </div>
+                    <div class="question-content">
+                        <div class="correct-answer">
+                            <h4>Correct Answer</h4>
+                            <div class="answer-text">The correct answer</div>
+                        </div>
+                        <div class="incorrect-answers">
+                            <h4>Incorrect Answers</h4>
+                            <div class="answer-text">Incorrect answer</div>
+                            <div class="answer-text">Incorrect answer</div>
+                            <div class="answer-text">Incorrect answer</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exam-footer">
+                <div class="shuffle-option">
+                    <input type="checkbox" id="shuffle">
+                    <label for="shuffle">Shuffle Questions</label>
+                </div>
+                <div class="preview-section">
+                    <button class="preview-btn" id="previewBtn">Preview</button>
                 </div>
             </div>
         </div>
@@ -177,7 +179,7 @@
         <div id="previewModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>Exam Review</h2>
+                    <h2>Exam Preview</h2>
                     <span class="close-modal">&times;</span>
                 </div>
                 <div class="modal-body">
@@ -188,23 +190,19 @@
                         </div>
                         <div class="answer-options">
                             <div class="answer-option">
-                                <input type="checkbox" id="option1"
-                                    name="answer">
+                                <input type="checkbox" id="option1" name="answer">
                                 <label for="option1">50 000</label>
                             </div>
                             <div class="answer-option">
-                                <input type="checkbox" id="option2"
-                                    name="answer" checked>
+                                <input type="checkbox" id="option2" name="answer" checked>
                                 <label for="option2">50 000</label>
                             </div>
                             <div class="answer-option">
-                                <input type="checkbox" id="option3"
-                                    name="answer">
+                                <input type="checkbox" id="option3" name="answer">
                                 <label for="option3">50 000</label>
                             </div>
                             <div class="answer-option">
-                                <input type="checkbox" id="option4"
-                                    name="answer">
+                                <input type="checkbox" id="option4" name="answer">
                                 <label for="option4">50 000</label>
                             </div>
                         </div>
@@ -229,55 +227,63 @@
                     document.getElementById('header-placeholder').innerHTML = data;
                 });
 
-            // Load menu
+           // Load menu
             fetch('Menu-Lecturer.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('menu-HTML').innerHTML = data;
                     setActiveMenu(document.title);
                 });
+            function toggleQuestion(header) {
+                const questionBox = header.parentElement;
+                const toggleIcon = header.querySelector('.toggle-icon');
+
+                questionBox.classList.toggle('expanded');
+                toggleIcon.classList.toggle('rotated');
+            }
 
             // Modal functionality
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 const modal = document.getElementById('previewModal');
                 const previewBtn = document.getElementById('previewBtn');
                 const closeModal = document.querySelector('.close-modal');
                 const prevBtn = document.querySelector('.prev-btn');
                 const nextBtn = document.querySelector('.next-btn');
-                
+
                 // Open modal when Preview button is clicked
-                previewBtn.addEventListener('click', function() {
+                previewBtn.addEventListener('click', function () {
                     modal.style.display = 'block';
                     document.body.style.overflow = 'hidden'; // Prevent scrolling
                 });
-                
+
                 // Close modal when X is clicked
-                closeModal.addEventListener('click', function() {
+                closeModal.addEventListener('click', function () {
                     modal.style.display = 'none';
                     document.body.style.overflow = 'auto'; // Enable scrolling
                 });
-                
+
                 // Close modal when clicking outside the modal
-                window.addEventListener('click', function(event) {
+                window.addEventListener('click', function (event) {
                     if (event.target === modal) {
                         modal.style.display = 'none';
                         document.body.style.overflow = 'auto'; // Enable scrolling
                     }
                 });
-                
+
                 // Previous button functionality
-                prevBtn.addEventListener('click', function() {
+                prevBtn.addEventListener('click', function () {
                     // Add your previous question logic here
                     console.log('Previous question');
                 });
-                
+
                 // Next button functionality
-                nextBtn.addEventListener('click', function() {
+                nextBtn.addEventListener('click', function () {
                     // Add your next question logic here
                     console.log('Next question');
                 });
             });
         </script>
         <script src="../../Static/js/L_activeMenu.js"></script>
-    </body>
+</body>
+
 </html>

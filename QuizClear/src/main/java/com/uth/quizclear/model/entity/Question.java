@@ -10,6 +10,12 @@ import lombok.Setter;
 import lombok.ToString;
 import java.time.LocalDateTime;
 
+import com.uth.quizclear.model.enums.BlockStatusConverter;
+import com.uth.quizclear.model.enums.DifficultyLevel;
+import com.uth.quizclear.model.enums.DifficultyLevelConverter;
+import com.uth.quizclear.model.enums.QuestionStatus;
+import com.uth.quizclear.model.enums.QuestionStatusConverter;
+
 @Entity
 @Table(name = "questions")
 @AllArgsConstructor
@@ -44,7 +50,7 @@ public class Question {
     private String explanation;
 
     @NotNull(message = "Difficulty level is required")
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = DifficultyLevelConverter.class)
     @Column(name = "difficulty_level", nullable = false)
     private DifficultyLevel difficultyLevel;
 
@@ -55,12 +61,12 @@ public class Question {
     private Long planId;
 
     @NotNull(message = "Status is required")
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = QuestionStatusConverter.class)
     @Column(name = "status", nullable = false)
     private QuestionStatus status = QuestionStatus.DRAFT;
 
     @NotNull(message = "Block status is required")
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = BlockStatusConverter.class)
     @Column(name = "block_question", nullable = false)
     private BlockStatus blockQuestion = BlockStatus.ACTIVE;
 
@@ -185,40 +191,6 @@ public class Question {
     }
 
     // Enums - moved to separate files for better organization
-    public enum DifficultyLevel {
-        RECOGNITION("recognition"),
-        COMPREHENSION("comprehension"),
-        BASIC_APPLICATION("Basic Application"),
-        ADVANCED_APPLICATION("Advanced Application");
-
-        private final String value;
-
-        DifficultyLevel(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
-    public enum QuestionStatus {
-        DRAFT("draft"),
-        SUBMITTED("submitted"),
-        APPROVED("approved"),
-        REJECTED("rejected"),
-        ARCHIVED("archived");
-
-        private final String value;
-
-        QuestionStatus(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
 
     public enum BlockStatus {
         BLOCK("block"),

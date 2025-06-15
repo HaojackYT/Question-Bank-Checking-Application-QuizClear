@@ -13,6 +13,7 @@ import com.uth.quizclear.model.entity.ExamQuestion;
 import com.uth.quizclear.model.entity.Question;
 import com.uth.quizclear.repository.ExamQuestionRepository;
 import com.uth.quizclear.repository.ExamRepository;
+import com.uth.quizclear.model.enums.QuestionStatus;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -32,9 +33,9 @@ public class ExamReviewService {
         for (ExamQuestion eq : examQuestions) {
             Question q = eq.getQuestion();
             // Đếm trạng thái
-            if (q.getStatus() == Question.QuestionStatus.APPROVED) approved++;
-            else if (q.getStatus() == Question.QuestionStatus.REJECTED) rejected++;
-            if (q.getStatus() != Question.QuestionStatus.DRAFT) reviewed++;
+            if (q.getStatus() == QuestionStatus.APPROVED) approved++;
+            else if (q.getStatus() == QuestionStatus.REJECTED) rejected++;
+            if (q.getStatus() != QuestionStatus.DRAFT) reviewed++;
 
             // Lấy đáp án
             List<String> options = new ArrayList<>();

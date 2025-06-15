@@ -1,5 +1,7 @@
 package com.uth.quizclear.model.entity;
 
+import com.uth.quizclear.model.enums.DuplicateDetectionStatus;
+import com.uth.quizclear.model.enums.DuplicateDetectionAction;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -8,7 +10,7 @@ import java.time.LocalDateTime;
 
 /**
  * DuplicateDetection entity for tracking duplicate question detections
- * Simplified version without complex dependencies
+ * Uses separate enums with custom converters to map Java enums (UPPERCASE) to database values (lowercase)
  */
 @Entity
 @Table(name = "duplicate_detections", 
@@ -31,12 +33,12 @@ public class DuplicateDetection {
     @Column(name = "detection_id")
     private Long detectionId;
 
-    // Foreign Keys
+    // Question references
     @Column(name = "new_question_id", nullable = false)
     @NotNull(message = "New question ID is required")
     private Long newQuestionId;
 
-    @Column(name = "similar_question_id", nullable = false) 
+    @Column(name = "similar_question_id", nullable = false)
     @NotNull(message = "Similar question ID is required")
     private Long similarQuestionId;
 
@@ -47,17 +49,15 @@ public class DuplicateDetection {
     @DecimalMax(value = "1.0", message = "Similarity score must be at most 1.0")
     private BigDecimal similarityScore;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     @NotNull(message = "Status is required")
     @Builder.Default
-    private Status status = Status.PENDING;
+    private String statusString = "pending";
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "action", length = 20)
-    private Action action;
+    private String actionString;
 
-    // Metadata fields  
+    // Metadata fields
     @Column(name = "detected_by")
     private Long detectedBy;
 
@@ -67,79 +67,49 @@ public class DuplicateDetection {
     @Column(name = "detection_feedback", columnDefinition = "TEXT")
     private String detectionFeedback;
 
-    @Column(name = "processing_notes", columnDefinition = "TEXT") 
+    @Column(name = "processing_notes", columnDefinition = "TEXT")
     private String processingNotes;
 
-    // Timestamp fields
-    @Builder.Default
+    // Timestamps
     @Column(name = "detected_at", nullable = false)
+    @NotNull(message = "Detection timestamp is required")
+    @Builder.Default
     private LocalDateTime detectedAt = LocalDateTime.now();
 
     @Column(name = "processed_at")
     private LocalDateTime processedAt;
 
-    @Builder.Default
     @Column(name = "created_at", nullable = false)
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Builder.Default
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt = LocalDateTime.now();    @PreUpdate
+    @Builder.Default
+    private LocalDateTime updatedAt = LocalDateTime.now();
+
+    // JPA lifecycle callbacks
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+        if (detectedAt == null) {
+            detectedAt = LocalDateTime.now();
+        }
+    }
+
+    @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
-    }
-
-    // Enums
-    public enum Status {
-        PENDING("pending"),
-        APPROVED("approved"), 
-        REJECTED("rejected"),
-        NEEDS_REVIEW("needs_review");
-
-        private final String value;
-
-        Status(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public boolean isProcessed() {
-            return this == APPROVED || this == REJECTED;
-        }
-
-        public boolean requiresAction() {
-            return this == PENDING || this == NEEDS_REVIEW;
-        }
-    }
-
-    public enum Action {
-        KEEP_BOTH("keep_both"),
-        REMOVE_NEW("remove_new"),
-        MERGE_QUESTIONS("merge_questions"),
-        MARK_AS_VARIANT("mark_as_variant");
-
-        private final String value;
-
-        Action(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
     }
 
     // Custom constructor for common use case
     public DuplicateDetection(Long newQuestionId, Long similarQuestionId, BigDecimal similarityScore, Long detectedBy) {
         this.newQuestionId = newQuestionId;
         this.similarQuestionId = similarQuestionId;
-        this.similarityScore = similarityScore;
-        this.detectedBy = detectedBy;
+        this.similarityScore = similarityScore;        this.detectedBy = detectedBy;
         this.detectedAt = LocalDateTime.now();
         this.createdAt = LocalDateTime.now();
+        this.statusString = "pending";
         this.updatedAt = LocalDateTime.now();
     }
 
@@ -147,41 +117,87 @@ public class DuplicateDetection {
     public Long getId() {
         return detectionId;
     }
-
-    // Business methods
+      // Business methods
     public boolean isPending() {
-        return status == Status.PENDING;
+        DuplicateDetectionStatus currentStatus = getStatus();
+        return currentStatus == DuplicateDetectionStatus.PENDING;
     }
 
     public boolean isProcessed() {
-        return status.isProcessed();
+        DuplicateDetectionStatus currentStatus = getStatus();
+        return currentStatus != null && currentStatus.isProcessed();
     }
 
     public boolean requiresAction() {
-        return status.requiresAction();
+        DuplicateDetectionStatus currentStatus = getStatus();
+        return currentStatus != null && currentStatus.requiresAction();
     }
 
-    public void process(Action action, String feedback, Long processorId) {
-        this.action = action;
+    public void process(DuplicateDetectionAction action, String feedback, Long processorId) {
+        setAction(action);
         this.processingNotes = feedback;
         this.processedBy = processorId;
         this.processedAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-        
-        if (action != null) {
-            this.status = Status.APPROVED;
+        this.updatedAt = LocalDateTime.now();        if (action != null) {
+            switch (action) {
+                case ACCEPT -> setStatus(DuplicateDetectionStatus.ACCEPTED);
+                case REJECT -> setStatus(DuplicateDetectionStatus.REJECTED);
+                case MERGE -> setStatus(DuplicateDetectionStatus.MERGED);
+                case SEND_BACK -> setStatus(DuplicateDetectionStatus.SENT_BACK);
+                case KEEP_BOTH -> setStatus(DuplicateDetectionStatus.ACCEPTED);
+                case REMOVE_NEW -> setStatus(DuplicateDetectionStatus.ACCEPTED);
+            }
         }
     }
 
-    // Custom setter for status to update timestamp
-    public void setStatus(Status status) {
-        this.status = status;
-        this.updatedAt = LocalDateTime.now();
+    // Helper methods for status handling
+    public DuplicateDetectionStatus getStatus() {
+        return convertStringToStatus(statusString);
     }
-
-    // Custom setter for action to update timestamp
-    public void setAction(Action action) {
-        this.action = action;
-        this.updatedAt = LocalDateTime.now();
+    
+    public void setStatus(DuplicateDetectionStatus status) {
+        this.statusString = status != null ? status.getValue() : null;
+    }
+    
+    public DuplicateDetectionAction getAction() {
+        return convertStringToAction(actionString);
+    }
+    
+    public void setAction(DuplicateDetectionAction action) {
+        this.actionString = action != null ? action.getValue() : null;
+    }
+    
+    private DuplicateDetectionStatus convertStringToStatus(String value) {
+        if (value == null) return null;
+        try {
+            return DuplicateDetectionStatus.fromValue(value);
+        } catch (IllegalArgumentException e) {
+            switch (value.toLowerCase()) {
+                case "approved": return DuplicateDetectionStatus.ACCEPTED;
+                case "accepted": return DuplicateDetectionStatus.ACCEPTED;
+                case "rejected": return DuplicateDetectionStatus.REJECTED;
+                case "pending": return DuplicateDetectionStatus.PENDING;
+                case "sent_back": return DuplicateDetectionStatus.SENT_BACK;
+                case "merged": return DuplicateDetectionStatus.MERGED;
+                default: return DuplicateDetectionStatus.PENDING;
+            }
+        }
+    }
+    
+    private DuplicateDetectionAction convertStringToAction(String value) {
+        if (value == null) return null;
+        try {
+            return DuplicateDetectionAction.fromValue(value);
+        } catch (IllegalArgumentException e) {
+            switch (value.toLowerCase()) {
+                case "accept": return DuplicateDetectionAction.ACCEPT;
+                case "reject": return DuplicateDetectionAction.REJECT;
+                case "merge": return DuplicateDetectionAction.MERGE;
+                case "send_back": return DuplicateDetectionAction.SEND_BACK;
+                case "keep_both": return DuplicateDetectionAction.KEEP_BOTH;
+                case "remove_new": return DuplicateDetectionAction.REMOVE_NEW;
+                default: return null;
+            }
+        }
     }
 }

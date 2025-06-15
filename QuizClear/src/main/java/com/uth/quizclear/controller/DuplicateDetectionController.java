@@ -1,4 +1,4 @@
-package com.uth.quizclear.controller;
+/*package com.uth.quizclear.controller;
 
 import com.uth.quizclear.model.dto.*;
 import com.uth.quizclear.service.DuplicationService;
@@ -193,3 +193,4 @@ public class DuplicateDetectionController {
         }
     }
 }
+    */

@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
 
+import com.uth.quizclear.model.enums.PlanStatusConverter;
+import com.uth.quizclear.model.enums.PriorityConverter;
+
 @Entity
 @Table(name = "plans")
 @AllArgsConstructor
@@ -72,12 +75,12 @@ public class Plan {
 
     // Trạng thái & mức độ ưu tiên
     @NotNull(message = "Status is required")
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = PlanStatusConverter.class)
     @Column(name = "status", columnDefinition = "ENUM('new', 'accepted', 'in_progress', 'completed', 'overdue') DEFAULT 'new'")
     private PlanStatus status = PlanStatus.NEW;
 
     @NotNull(message = "Priority is required")
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = PriorityConverter.class)
     @Column(name = "priority", columnDefinition = "ENUM('low', 'medium', 'high') DEFAULT 'medium'")
     private Priority priority = Priority.MEDIUM;
 
