@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class WebPageController {
 
-    // ========== CODE CŨ CỦA BẠN - GIỮ NGUYÊN ==========
+    // ========== CODE CŨ CỦA BẠN - GIỮ NGUYÊN ===========
 
     // Trang chính - URL chính xác từ browser
     @GetMapping("/staffQMDupliCheck")

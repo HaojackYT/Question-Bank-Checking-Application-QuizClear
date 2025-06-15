@@ -1,38 +1,57 @@
-<div id="tab-content"> <!-- Thêm dòng này -->
-  <div class="filters">
-    <select class="filter-select">
-      <option value="">All Subjects</option>
-    </select>
-    <select class="filter-select">
-      <option value="">All Submitters</option>
-    </select>
-    <button class="export-btn">
-      <span>📤</span> Export
-    </button>
-  </div>
-
-  <div class="detection-section">
-    <h2 class="section-title">AI-Powered Duplicate Detection</h2>
-    <p class="section-subtitle">
-      Our AI system has identified these questions as potential duplicates
-      based on lexical and semantic analysis
-    </p>
-    <div class="table-container">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>New Question</th>
-            <th>Similar To</th>
-            <th>Similarity</th>
-            <th>Subjects</th>
-            <th>Submitter</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Will be filled by JS -->
-        </tbody>
-      </table>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/staff/staffDup.css}">
+</head>
+<body>
+    <div class="filters">        <select class="filter-select subject">
+            <option value="">All Subjects</option>
+            <!-- Options will be loaded by JavaScript -->
+        </select>        <select class="filter-select submitter">
+            <option value="">All Submitters</option>
+            <!-- Options will be loaded by JavaScript -->
+        </select>
+        <button class="export-btn" onclick="exportDuplications()">
+            <span>📤</span> Export
+        </button>
     </div>
-  </div>
-</div> <!-- Đóng tab-content -->
+
+    <div class="detection-section">
+        <h2 class="section-title">AI-Powered Duplicate Detection</h2>
+        <p class="section-subtitle">Our AI system has identified these questions as potential duplicates based on lexical and semantic analysis</p>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>New Question</th>
+                        <th>Similar To</th>
+                        <th>Similarity</th>
+                        <th>Subjects</th>
+                        <th>Submitter</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="d : ${duplications}">
+                        <td class="question-cell" th:text="${d.newQuestion?.content} ?: 'N/A'"></td>
+                        <td class="question-cell" th:text="${d.similarQuestion.content}"></td>
+                        <td>
+                            <div th:classappend="${d.similarityScore >= 0.9} ? 'similarity-complete' : 'similarity-high'" class="similarity-badge">
+                                <span th:text="${d.similarityScore >= 0.9} ? 'Complete Duplicate' : 'High Similarity'"></span>
+                                (<span th:text="${#numbers.formatDecimal(d.similarityScore * 100, 1, 1)} + '%'"></span>)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="subject-badge" th:text="${d.newQuestion?.courseName} ?: 'N/A'"></div>
+                        </td>
+                        <td class="submitter-name" th:text="${d.newQuestion?.creatorName} ?: 'N/A'"></td>                        <td class="action-buttons">
+                            <button class="btn-view" th:attr="data-detection-id=${d.detectionId}">View</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

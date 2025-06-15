@@ -2,6 +2,7 @@ package com.uth.quizclear.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller // Đánh dấu đây là một Spring MVC Controller
 public class StaffViewController {
@@ -26,5 +27,22 @@ public class StaffViewController {
     public String getMenuStaffPartial() {
         // Thymeleaf sẽ tìm classpath:/Template/Menu-Staff.html
         return "Menu-Staff";
+    }    // Add missing endpoints for duplication check tab content
+    @GetMapping("/staff/dup-content")
+    public String getDupContent() {
+        return "Staff/staffDupContent";
+    }
+
+    @GetMapping("/staff/stat-content")
+    public String getStatContent() {
+        return "Staff/staffStatContent";
+    }
+
+    @GetMapping("/staff/log-content") 
+    public String getLogContent() {
+        return "Staff/staffLogContent";
+    }    @GetMapping("/staff/dup-details")
+    public String getDupDetails(@RequestParam(required = false) Long detectionId) {
+        return "Staff/staffDupDetails";
     }
 }

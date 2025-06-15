@@ -1,4 +1,4 @@
-package com.uth.quizclear.repository;
+/*package com.uth.quizclear.repository;
 
 import com.uth.quizclear.model.entity.DuplicateDetection;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -61,3 +61,4 @@ public interface DuplicateDetectionRepository extends JpaRepository<DuplicateDet
     @Query("SELECT DATE(d.detectedAt) as date, COUNT(d) as count FROM DuplicateDetection d WHERE d.detectedAt >= :since GROUP BY DATE(d.detectedAt) ORDER BY DATE(d.detectedAt)")
     List<Object[]> getDailyDetectionCounts(@Param("since") LocalDateTime since);
 }
+    */

@@ -1,4 +1,4 @@
-package com.uth.quizclear.service;
+/*?package com.uth.quizclear.service;
 
 import com.uth.quizclear.model.entity.*;
 import com.uth.quizclear.model.dto.*;
@@ -18,10 +18,10 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Service for AI-powered duplicate detection operations
- * Handles communication with AI service and manages AI check records
- */
+
+ // Service for AI-powered duplicate detection operations
+ // Handles communication with AI service and manages AI check records
+ 
 @Service
 public class AiDuplicateService {
 
@@ -375,3 +375,4 @@ public class AiDuplicateService {
         );
     }
 }
+*/
