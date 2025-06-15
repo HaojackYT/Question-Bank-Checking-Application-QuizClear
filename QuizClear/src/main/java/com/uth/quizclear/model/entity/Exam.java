@@ -8,8 +8,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+
+import com.uth.quizclear.model.enums.ExamReviewStatus;
+import com.uth.quizclear.model.enums.ExamReviewStatusConverter;
 import com.uth.quizclear.model.enums.ExamStatus;
+import com.uth.quizclear.model.enums.ExamStatusConverter;
 import com.uth.quizclear.model.enums.ExamType;
+import com.uth.quizclear.model.enums.ExamTypeConverter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -21,10 +26,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Exam {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "exam_id")
-    private Long examId;    @NotNull(message = "Course is required")
+    private Long examId;
+    
+    @NotNull(message = "Course is required")
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
@@ -51,7 +59,7 @@ public class Exam {
     @Column(name = "difficulty_distribution", columnDefinition = "JSON")
     private String difficultyDistribution;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = ExamTypeConverter.class)
     @Column(name = "exam_type")
     private ExamType examType = ExamType.QUIZ;
 
@@ -67,9 +75,13 @@ public class Exam {
     @Column(name = "academic_year", length = 20)
     private String academicYear;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private ExamStatus status = ExamStatus.DRAFT;
+    @Convert(converter = ExamStatusConverter.class)
+    @Column(name = "exam_status")
+    private ExamStatus examStatus = ExamStatus.DRAFT;
+
+    @Convert(converter = ExamReviewStatusConverter.class)
+    @Column(name = "review_status")
+    private ExamReviewStatus reviewStatus;
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
@@ -99,6 +111,9 @@ public class Exam {
     private LocalDateTime approvedAt;
 
     @Column(name = "feedback", columnDefinition = "TEXT")
-    private String feedback;    @Column(name = "hidden")
+    private String feedback;
+    
+    @Column(name = "hidden")
     private Boolean hidden = true;
+    
 }

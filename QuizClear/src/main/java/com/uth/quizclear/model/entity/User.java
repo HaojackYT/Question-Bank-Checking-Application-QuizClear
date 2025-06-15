@@ -1,8 +1,12 @@
 package com.uth.quizclear.model.entity;
 
 import com.uth.quizclear.model.enums.UserRole;
+import com.uth.quizclear.model.enums.UserRoleConverter;
 import com.uth.quizclear.model.enums.Gender;
+import com.uth.quizclear.model.enums.GenderConverter;
 import com.uth.quizclear.model.enums.Status;
+import com.uth.quizclear.model.enums.StatusConverter;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -19,7 +23,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"passwordHash"})
+@ToString(exclude = { "passwordHash" })
 public class User {
 
     @Id
@@ -41,18 +45,19 @@ public class User {
     private String passwordHash;
 
     @NotNull(message = "Role is required")
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = UserRoleConverter.class)
     @Column(name = "role", nullable = false)
     private UserRole role;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = StatusConverter.class)
     @Column(name = "status", nullable = false)
     @Builder.Default
     private Status status = Status.ACTIVE;
 
     @Column(name = "is_locked", nullable = false)
     @Builder.Default
-    private Boolean isLocked = false;    @Column(name = "login_attempts", nullable = false)
+    private Boolean isLocked = false;
+    @Column(name = "login_attempts", nullable = false)
     @Builder.Default
     private Integer loginAttempts = 0;
 
@@ -75,7 +80,7 @@ public class User {
     @Column(name = "end")
     private LocalDateTime end;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = GenderConverter.class)
     @Column(name = "gender")
     private Gender gender;
 
@@ -134,7 +139,7 @@ public class User {
     public void incrementLoginAttempts() {
         this.loginAttempts++;
         this.updatedAt = LocalDateTime.now();
-        
+
         // Auto-lock after 5 failed attempts
         if (this.loginAttempts >= 5) {
             lockAccount();

@@ -7,5 +7,5 @@ import com.uth.quizclear.model.entity.ExamReview;
 
 @Repository
 public interface ExamReviewRepository extends JpaRepository<ExamReview, Long> {
-    // Có thể thêm các method custom nếu cần
+    
 }

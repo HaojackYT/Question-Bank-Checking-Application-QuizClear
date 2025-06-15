@@ -1,11 +1,3 @@
-/* Create Exam Styles */
-.create-exam-container {
-    padding: 1.25rem;
-    width: 100%;
-    margin: 0 auto;
-    min-height: 100vh;
-}
-
 /* Header Section */
 .exam-header {
     display: flex;

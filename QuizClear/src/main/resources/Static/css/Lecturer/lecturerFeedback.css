@@ -1,46 +1,39 @@
-/* General Layout (assuming the main content area has a class like .main-content) */
-.main-content {
-    padding: 1rem;
-    background-color: white;
-    flex-grow: 1;
-}
-
 /* Section Title */
 .section-title {
-    font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 20px;
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #120368;
+    margin: 0 0 1rem 0;
 }
 
 /* Tabs */
 .tabs {
     display: flex;
-    background-color: #e0f2fe;
-    border-radius: 0.5rem;
-    padding: 0.3rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin-bottom: 1rem;
-    width: fit-content;
+    gap: 0;
+    margin-bottom: 1.25rem;
+    flex-shrink: 0;
 }
 
 .tab-button {
-    background-color: transparent;
+    padding: 0.625rem 1.5rem;
     border: none;
-    padding: 10px 15px;
-    font-size: 1rem;
+    background-color: #e9ecef;
+    color: #6c757d;
     cursor: pointer;
-    color: #555;
-    position: relative;
-    top: 1px;
-    white-space: nowrap;
+    border-radius: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
 
 .tab-button.active {
-    font-weight: bold;
-    background-color: white;
-    border-radius: 10px;
+    background-color: #120368;
+    color: white;
 }
 
+.tab-button:not(.active):hover {
+   background-color: #dee2e6;
+}
 /* Tab Content - New styles */
 .tab-content {
     display: none;
@@ -110,7 +103,8 @@
     color: #ffffff;
 }
 
-.tag.approved { /* New tag style */
+.tag.approved {
+    /* New tag style */
     background-color: #e8f5e9;
     color: #2e7d32;
 }

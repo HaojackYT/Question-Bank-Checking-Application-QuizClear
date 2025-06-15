@@ -1,15 +1,15 @@
 -- 1. Thêm 10 bản ghi vào bảng users
 INSERT INTO users (full_name, email, password_hash, role, status, department, gender, date_of_birth, nation, phone_number, created_at, hometown, contact_address) VALUES
-('Alexander Brooks', 'alex.brooks@university.edu', 'hash_ab001', 'Lec', 'active', 'Computer Science', 'male', '1986-03-15', 'USA', '1234567101', '2025-01-01 09:00:00', 'Boston', '101 Elm St, Boston'),
-('Maria Gonzalez', 'maria.gonzalez@university.edu', 'hash_mg002', 'HoD', 'active', 'Mathematics', 'female', '1978-07-22', 'Spain', '1234567102', '2025-01-02 09:00:00', 'Madrid', '22 Gran Via, Madrid'),
-('Chen Wei', 'chen.wei@university.edu', 'hash_cw003', 'RD', 'inactive', 'Physics', 'male', '1990-05-10', 'China', '1234567103', '2025-01-03 09:00:00', 'Shanghai', '33 Nanjing Rd, Shanghai'),
-('Aisha Khan', 'aisha.khan@university.edu', 'hash_ak004', 'SL', 'active', 'Chemistry', 'female', '1984-11-30', 'Pakistan', '1234567104', '2025-01-04 09:00:00', 'Karachi', '44 Clifton Rd, Karachi'),
-('Hiroshi Tanaka', 'hiroshi.tanaka@university.edu', 'hash_ht005', 'Lec', 'active', 'Biology', 'male', '1988-09-12', 'Japan', '1234567105', '2025-01-05 09:00:00', 'Osaka', '55 Umeda St, Osaka'),
-('Elena Petrova', 'elena.petrova@university.edu', 'hash_ep006', 'HoED', 'active', 'Computer Science', 'female', '1982-04-25', 'Russia', '1234567106', '2025-01-06 09:00:00', 'Moscow', '66 Arbat St, Moscow'),
-('Lucas Silva', 'lucas.silva@university.edu', 'hash_ls007', 'Lec', 'inactive', 'Mathematics', 'male', '1992-02-18', 'Brazil', '1234567107', '2025-01-07 09:00:00', 'Sao Paulo', '77 Paulista Ave, Sao Paulo'),
-('Fatima Ali', 'fatima.ali@university.edu', 'hash_fa008', 'RD', 'active', 'Physics', 'female', '1987-06-05', 'Egypt', '1234567108', '2025-01-08 09:00:00', 'Cairo', '88 Nile St, Cairo'),
-('James Park', 'james.park@university.edu', 'hash_jp009', 'SL', 'active', 'Chemistry', 'male', '1989-12-01', 'Korea', '1234567109', '2025-01-09 09:00:00', 'Seoul', '99 Gangnam Ave, Seoul'),
-('Sophie Müller', 'sophie.muller@university.edu', 'hash_sm010', 'Lec', 'active', 'Biology', 'female', '1991-08-14', 'Germany', '1234567110', '2025-01-10 09:00:00', 'Berlin', '100 Unter den Linden, Berlin');
+ash_ab001', 'Lec', 'active', 'Computer Science', 'MALE', '1986-03-15', 'USA', '1234567101', '2025-01-01 09:00:00', 'Boston', '101 Elm St, Boston'),('Alexander Brooks', 'alex.brooks@university.edu', 'h
+('Maria Gonzalez', 'maria.gonzalez@university.edu', 'hash_mg002', 'HoD', 'active', 'Mathematics', 'FEMALE', '1978-07-22', 'Spain', '1234567102', '2025-01-02 09:00:00', 'Madrid', '22 Gran Via, Madrid'),
+('Chen Wei', 'chen.wei@university.edu', 'hash_cw003', 'RD', 'inactive', 'Physics', 'MALE', '1990-05-10', 'China', '1234567103', '2025-01-03 09:00:00', 'Shanghai', '33 Nanjing Rd, Shanghai'),
+('Aisha Khan', 'aisha.khan@university.edu', 'hash_ak004', 'SL', 'active', 'Chemistry', 'FEMALE', '1984-11-30', 'Pakistan', '1234567104', '2025-01-04 09:00:00', 'Karachi', '44 Clifton Rd, Karachi'),
+('Hiroshi Tanaka', 'hiroshi.tanaka@university.edu', 'hash_ht005', 'Lec', 'active', 'Biology', 'MALE', '1988-09-12', 'Japan', '1234567105', '2025-01-05 09:00:00', 'Osaka', '55 Umeda St, Osaka'),
+('Elena Petrova', 'elena.petrova@university.edu', 'hash_ep006', 'HoED', 'active', 'Computer Science', 'FEMALE', '1982-04-25', 'Russia', '1234567106', '2025-01-06 09:00:00', 'Moscow', '66 Arbat St, Moscow'),
+('Lucas Silva', 'lucas.silva@university.edu', 'hash_ls007', 'Lec', 'inactive', 'Mathematics', 'MALE', '1992-02-18', 'Brazil', '1234567107', '2025-01-07 09:00:00', 'Sao Paulo', '77 Paulista Ave, Sao Paulo'),
+('Fatima Ali', 'fatima.ali@university.edu', 'hash_fa008', 'RD', 'active', 'Physics', 'FEMALE', '1987-06-05', 'Egypt', '1234567108', '2025-01-08 09:00:00', 'Cairo', '88 Nile St, Cairo'),
+('James Park', 'james.park@university.edu', 'hash_jp009', 'SL', 'active', 'Chemistry', 'MALE', '1989-12-01', 'Korea', '1234567109', '2025-01-09 09:00:00', 'Seoul', '99 Gangnam Ave, Seoul'),
+('Sophie Müller', 'sophie.muller@university.edu', 'hash_sm010', 'Lec', 'active', 'Biology', 'FEMALE', '1991-08-14', 'Germany', '1234567110', '2025-01-10 09:00:00', 'Berlin', '100 Unter den Linden, Berlin');
 
 -- 2. Thêm 10 bản ghi vào bảng courses
 INSERT INTO courses (course_code, course_name, credits, department, description, created_by, created_at, status, semester, academic_year) VALUES
@@ -77,17 +77,17 @@ INSERT INTO questions (course_id, clo_id, difficulty_level, content, answer_key,
 (10, 10, 'comprehension', 'What defines a mammal?', 'Warm-blooded, has hair', 'Lays eggs', 'Cold-blooded', 'Has scales', 'Mammals are warm-blooded vertebrates with hair', 10, 'approved', '2025-02-10 09:00:00', 'zoology');
 
 -- 7. Thêm 10 bản ghi vào bảng exams
-INSERT INTO exams (course_id, plan_id, exam_title, exam_code, duration_minutes, total_marks, exam_type, exam_date, semester, academic_year, status, created_by, created_at, hidden) VALUES
-(1, 1, 'CS105 Midterm Exam', 'CS105_MID_2025', 90, 10.00, 'midterm', '2025-04-15 09:00:00', 'Fall 2025', '2025-2026', 'approved', 1, '2025-03-10 10:00:00', FALSE),
-(2, 2, 'MATH205 Final Exam', 'MATH205_FINAL_2025', 120, 10.00, 'final', '2025-06-10 09:00:00', 'Spring 2025', '2025-2026', 'draft', 2, '2025-03-11 10:00:00', TRUE),
-(3, 3, 'PHY105 Quiz 1', 'PHY105_QUIZ1_2025', 30, 5.00, 'quiz', '2025-03-25 10:00:00', 'Fall 2025', '2025-2026', 'approved', 3, '2025-03-12 10:00:00', FALSE),
-(4, 4, 'CHEM104 Midterm Exam', 'CHEM104_MID_2025', 90, 10.00, 'midterm', '2025-04-10 09:00:00', 'Fall 2025', '2025-2026', 'submitted', 4, '2025-03-13 10:00:00', TRUE),
-(5, 5, 'BIO104 Quiz 1', 'BIO104_QUIZ1_2025', 45, 5.00, 'quiz', '2025-03-20 10:00:00', 'Spring 2025', '2025-2026', 'finalized', 5, '2025-03-14 10:00:00', FALSE),
-(6, 6, 'CS106 Final Exam', 'CS106_FINAL_2025', 120, 10.00, 'final', '2025-06-05 09:00:00', 'Fall 2025', '2025-2026', 'draft', 6, '2025-03-15 10:00:00', TRUE),
-(7, 7, 'MATH206 Midterm Exam', 'MATH206_MID_2025', 90, 10.00, 'midterm', '2025-04-15 09:00:00', 'Spring 2025', '2025-2026', 'approved', 7, '2025-03-16 10:00:00', FALSE),
-(8, 8, 'PHY106 Quiz 1', 'PHY106_QUIZ1_2025', 30, 5.00, 'quiz', '2025-03-30 10:00:00', 'Fall 2025', '2025-2026', 'submitted', 8, '2025-03-17 10:00:00', TRUE),
-(9, 9, 'CHEM105 Final Exam', 'CHEM105_FINAL_2025', 120, 10.00, 'final', '2025-06-10 09:00:00', 'Spring 2025', '2025-2026', 'draft', 9, '2025-03-18 10:00:00', TRUE),
-(10, 10, 'BIO105 Midterm Exam', 'BIO105_MID_2025', 90, 10.00, 'midterm', '2025-04-20 09:00:00', 'Fall 2025', '2025-2026', 'approved', 10, '2025-03-19 10:00:00', FALSE);
+INSERT INTO exams (course_id, plan_id, exam_title, exam_code, duration_minutes, total_marks, exam_type, exam_date, semester, academic_year, exam_status, review_status, created_by, created_at, hidden) VALUES
+(1, 1, 'CS105 Midterm Exam', 'CS105_MID_2025', 90, 10.00, 'midterm', '2025-04-15 09:00:00', 'Fall 2025', '2025-2026', 'approved', 'pending', 1, '2025-03-10 10:00:00', FALSE),
+(2, 2, 'MATH205 Final Exam', 'MATH205_FINAL_2025', 120, 10.00, 'final', '2025-06-10 09:00:00', 'Spring 2025', '2025-2026', 'draft', 'pending', 2, '2025-03-11 10:00:00', TRUE),
+(3, 3, 'PHY105 Quiz 1', 'PHY105_QUIZ1_2025', 30, 5.00, 'quiz', '2025-03-25 10:00:00', 'Fall 2025', '2025-2026', 'approved', 'pending', 3, '2025-03-12 10:00:00', FALSE),
+(4, 4, 'CHEM104 Midterm Exam', 'CHEM104_MID_2025', 90, 10.00, 'midterm', '2025-04-10 09:00:00', 'Fall 2025', '2025-2026', 'submitted', 'pending', 4, '2025-03-13 10:00:00', TRUE),
+(5, 5, 'BIO104 Quiz 1', 'BIO104_QUIZ1_2025', 45, 5.00, 'quiz', '2025-03-20 10:00:00', 'Spring 2025', '2025-2026', 'finalized', 'pending', 5, '2025-03-14 10:00:00', FALSE),
+(6, 6, 'CS106 Final Exam', 'CS106_FINAL_2025', 120, 10.00, 'final', '2025-06-05 09:00:00', 'Fall 2025', '2025-2026', 'draft', 'pending', 6, '2025-03-15 10:00:00', TRUE),
+(7, 7, 'MATH206 Midterm Exam', 'MATH206_MID_2025', 90, 10.00, 'midterm', '2025-04-15 09:00:00', 'Spring 2025', '2025-2026', 'approved', 'pending', 7, '2025-03-16 10:00:00', FALSE),
+(8, 8, 'PHY106 Quiz 1', 'PHY106_QUIZ1_2025', 30, 5.00, 'quiz', '2025-03-30 10:00:00', 'Fall 2025', '2025-2026', 'submitted', 'pending', 8, '2025-03-17 10:00:00', TRUE),
+(9, 9, 'CHEM105 Final Exam', 'CHEM105_FINAL_2025', 120, 10.00, 'final', '2025-06-10 09:00:00', 'Spring 2025', '2025-2026', 'draft', 'pending', 9, '2025-03-18 10:00:00', TRUE),
+(10, 10, 'BIO105 Midterm Exam', 'BIO105_MID_2025', 90, 10.00, 'midterm', '2025-04-20 09:00:00', 'Fall 2025', '2025-2026', 'approved', 'pending', 10, '2025-03-19 10:00:00', FALSE);
 
 -- 8. Thêm 10 bản ghi vào bảng exam_questions
 INSERT INTO exam_questions (exam_id, question_id, question_order, marks) VALUES
@@ -129,21 +129,22 @@ INSERT INTO ai_similarity_results (check_id, existing_question_id, similarity_sc
 (10, 10, 0.8300, FALSE);
 
 -- 11. Thêm 10 bản ghi vào bảng duplicate_detections
-INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, feedback, detected_by, processed_by, detected_at, processed_at) VALUES
-(1, 1, 0.9500, 1, 'rejected', 'reject', 'Question is too similar to existing', 1, 2, '2025-03-01 11:00:00', '2025-03-02 11:00:00'),
-(2, 2, 0.8200, 2, 'accepted', 'accept', 'Sufficiently unique', 2, 1, '2025-03-02 11:00:00', '2025-03-03 11:00:00'),
-(3, 3, 0.9100, 3, 'sent_back', 'send_back', 'Needs rephrasing', 3, 2, '2025-03-03 11:00:00', '2025-03-04 11:00:00'),
-(4, 4, 0.7800, 4, 'accepted', 'accept', 'No significant overlap', 4, 2, '2025-03-04 11:00:00', '2025-03-05 11:00:00'),
-(5, 5, 0.8900, 5, 'merged', 'merge', 'Merged with existing question', 5, 2, '2025-03-05 11:00:00', '2025-03-06 11:00:00'),
-(6, 6, 0.8500, 6, 'accepted', 'accept', 'Unique content', 6, 2, '2025-03-06 11:00:00', '2025-03-07 11:00:00'),
-(7, 7, 0.9200, 7, 'rejected', 'reject', 'Highly similar to existing', 7, 2, '2025-03-07 11:00:00', '2025-03-08 11:00:00'),
-(8, 8, 0.8000, 8, 'accepted', 'accept', 'Acceptable similarity level', 8, 2, '2025-03-08 11:00:00', '2025-03-09 11:00:00'),
-(9, 9, 0.8700, 9, 'sent_back', 'send_back', 'Rephrase for clarity', 9, 2, '2025-03-09 11:00:00', '2025-03-10 11:00:00'),
-(10, 10, 0.8300, 10, 'accepted', 'accept', 'No significant duplication', 10, 2, '2025-03-10 11:00:00', '2025-03-11 11:00:00');
+INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, detection_feedback, detected_by, processed_by, detected_at, processed_at, created_at, updated_at) VALUES
+(1, 1, 0.9500, 1, 'rejected', 'remove_new', 'Question is too similar to existing', 1, 2, '2025-03-01 11:00:00', '2025-03-02 11:00:00', '2025-03-01 11:00:00', '2025-03-02 11:00:00'),
+(2, 2, 0.8200, 2, 'approved', 'keep_both', 'Sufficiently unique', 2, 1, '2025-03-02 11:00:00', '2025-03-03 11:00:00', '2025-03-02 11:00:00', '2025-03-03 11:00:00'),
+(3, 3, 0.9100, 3, 'needs_review', 'mark_as_variant', 'Needs rephrasing', 3, 2, '2025-03-03 11:00:00', '2025-03-04 11:00:00', '2025-03-03 11:00:00', '2025-03-04 11:00:00'),
+(4, 4, 0.7800, 4, 'approved', 'keep_both', 'No significant overlap', 4, 2, '2025-03-04 11:00:00', '2025-03-05 11:00:00', '2025-03-04 11:00:00', '2025-03-05 11:00:00'),
+(5, 5, 0.8900, 5, 'approved', 'merge_questions', 'Merged with existing question', 5, 2, '2025-03-05 11:00:00', '2025-03-06 11:00:00', '2025-03-05 11:00:00', '2025-03-06 11:00:00'),
+(6, 6, 0.8500, 6, 'approved', 'keep_both', 'Unique content', 6, 2, '2025-03-06 11:00:00', '2025-03-07 11:00:00', '2025-03-06 11:00:00', '2025-03-07 11:00:00'),
+(7, 7, 0.9200, 7, 'rejected', 'remove_new', 'Highly similar to existing', 7, 2, '2025-03-07 11:00:00', '2025-03-08 11:00:00', '2025-03-07 11:00:00', '2025-03-08 11:00:00'),
+(8, 8, 0.8000, 8, 'approved', 'keep_both', 'Acceptable similarity level', 8, 2, '2025-03-08 11:00:00', '2025-03-09 11:00:00', '2025-03-08 11:00:00', '2025-03-09 11:00:00'),
+(9, 9, 0.8700, 9, 'needs_review', 'mark_as_variant', 'Rephrase for clarity', 9, 2, '2025-03-09 11:00:00', '2025-03-10 11:00:00', '2025-03-09 11:00:00', '2025-03-10 11:00:00'),
+(10, 10, 0.8300, 10, 'approved', 'keep_both', 'No significant duplication', 10, 2, '2025-03-10 11:00:00', '2025-03-11 11:00:00', '2025-03-10 11:00:00', '2025-03-11 11:00:00');
 
 -- Additional sample data for testing duplicate detection functionality
 
 -- Insert more duplicate detection records with different scenarios
+<<<<<<< HEAD
 INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, feedback, detected_by, processed_by, detected_at, processed_at) VALUES
 (2, 1, 0.92, 1, 'pending', NULL, NULL, 1, NULL, '2025-03-11 10:00:00', NULL),
 (3, 2, 0.85, 2, 'pending', NULL, NULL, 1, NULL, '2025-03-11 11:00:00', NULL),
@@ -155,6 +156,19 @@ INSERT INTO duplicate_detections (new_question_id, similar_question_id, similari
 (9, 6, 0.89, 8, 'pending', NULL, NULL, 1, NULL, '2025-03-11 17:00:00', NULL),
 (10, 7, 0.82, 9, 'rejected', 'reject', 'High similarity detected by AI system', 1, 2, '2025-03-11 18:00:00', '2025-03-11 19:00:00'),
 (1, 8, 0.67, 10, 'accepted', 'accept', 'Different difficulty levels, acceptable', 1, 2, '2025-03-11 19:00:00', '2025-03-11 20:00:00');
+=======
+INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, detection_feedback, detected_by, processed_by, detected_at, processed_at, created_at, updated_at) VALUES
+(2, 1, 0.92, 1, 'pending', NULL, NULL, 1, NULL, '2025-03-11 10:00:00', NULL, '2025-03-11 10:00:00', '2025-03-11 10:00:00'),
+(3, 2, 0.85, 2, 'pending', NULL, NULL, 1, NULL, '2025-03-11 11:00:00', NULL, '2025-03-11 11:00:00', '2025-03-11 11:00:00'),
+(4, 1, 0.78, 3, 'needs_review', 'remove_new', 'Questions are too similar in content and structure', 1, 2, '2025-03-11 12:00:00', '2025-03-11 15:00:00', '2025-03-11 12:00:00', '2025-03-11 15:00:00'),
+(5, 3, 0.88, 4, 'pending', NULL, NULL, 1, NULL, '2025-03-11 13:00:00', NULL, '2025-03-11 13:00:00', '2025-03-11 13:00:00'),
+(6, 2, 0.65, 5, 'rejected', 'keep_both', 'Questions cover different aspects of the topic', 1, 2, '2025-03-11 14:00:00', '2025-03-11 16:00:00', '2025-03-11 14:00:00', '2025-03-11 16:00:00'),
+(7, 4, 0.91, 6, 'approved', 'merge_questions', 'Requires subject matter expert review', 1, 2, '2025-03-11 15:00:00', '2025-03-11 17:00:00', '2025-03-11 15:00:00', '2025-03-11 17:00:00'),
+(8, 5, 0.73, 7, 'pending', NULL, NULL, 1, NULL, '2025-03-11 16:00:00', NULL, '2025-03-11 16:00:00', '2025-03-11 16:00:00'),
+(9, 6, 0.89, 8, 'pending', NULL, NULL, 1, NULL, '2025-03-11 17:00:00', NULL, '2025-03-11 17:00:00', '2025-03-11 17:00:00'),
+(10, 7, 0.82, 9, 'approved', 'remove_new', 'High similarity detected by AI system', 1, 2, '2025-03-11 18:00:00', '2025-03-11 19:00:00', '2025-03-11 18:00:00', '2025-03-11 19:00:00'),
+(1, 8, 0.67, 10, 'rejected', 'keep_both', 'Different difficulty levels, acceptable', 1, 2, '2025-03-11 19:00:00', '2025-03-11 20:00:00', '2025-03-11 19:00:00', '2025-03-11 20:00:00');
+>>>>>>> 8587d05c50ce44b5fff8a4254838e224662daa16
 
 -- Insert more AI duplicate checks for comprehensive testing
 INSERT INTO ai_duplicate_checks (question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, checked_by, status, checked_at) VALUES

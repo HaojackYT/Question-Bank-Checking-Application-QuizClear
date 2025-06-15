@@ -43,12 +43,22 @@ public class DuplicateDetection {
     private Long similarQuestionId;
 
     @Column(name = "ai_check_id")
+<<<<<<< HEAD
     private String aiCheckId;    // Similarity metrics
     @Column(name = "similarity_score", precision = 3, scale = 2)
     @DecimalMin(value = "0.0", message = "Similarity score must be at least 0.0")
     @DecimalMax(value = "1.0", message = "Similarity score must be at most 1.0")    private BigDecimal similarityScore;
     
     // Temporarily use String to bypass converter issues
+=======
+    private Long aiCheckId;    // Core duplicate detection fields
+    @Column(name = "similarity_score", precision = 5, scale = 4)
+    @DecimalMin(value = "0.0", message = "Similarity score must be at least 0.0")
+    @DecimalMax(value = "1.0", message = "Similarity score must be at most 1.0")
+    private BigDecimal similarityScore;
+
+    @Enumerated(EnumType.STRING)
+>>>>>>> 8587d05c50ce44b5fff8a4254838e224662daa16
     @Column(name = "status", nullable = false, length = 20)
     @NotNull(message = "Status is required")
     @Builder.Default
