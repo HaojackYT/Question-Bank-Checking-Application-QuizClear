@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.uth.quizclear.model.dto.UserBasicDTO;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -24,8 +25,10 @@ public class AuthController {
         LoginResponseDTO response = authService.authenticate(loginRequest);
 
         if (response.isSuccess()) {
-            // Store user info in session
-            session.setAttribute("user", response.getUser());
+            // Store userId and role in session for easy access and authorization
+            UserBasicDTO user = response.getUser();
+            session.setAttribute("userId", user.getUserId());
+            session.setAttribute("role", user.getRole());
             session.setAttribute("isLoggedIn", true);
             session.setMaxInactiveInterval(3600); // 1 hour
         }

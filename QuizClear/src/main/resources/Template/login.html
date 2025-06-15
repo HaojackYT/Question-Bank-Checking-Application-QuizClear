@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>QuizClear - Login</title>
+        <link rel="stylesheet" href="../static/login.css">
         <link rel="stylesheet" th:href="@{/static/login.css}">
     </head>
     <body>
@@ -175,7 +176,16 @@
                         
                         // Redirect to role-specific page after short delay
                         setTimeout(() => {
-                            window.location.href = data.redirectUrl;
+                            // Ánh xạ đường dẫn backend sang file HTML tĩnh FE
+let dashboardMap = {
+    "/staff-dashboard": "/Template/Staff/staffDashboard.html",
+    "/lecturer-dashboard": "/Template/Lecturer/lecturerDashboard.html",
+    "/sl-dashboard": "/Template/subjectLeader/slDashboard.html",
+    "/hed-dashboard": "/Template/HEAD_OF_DEPARTMENT/HED_Dashboard.html",
+    "/hoe-dashboard": "/Template/Head of Examination Department/HOE_Dashboard.html"
+};
+let dashboardUrl = dashboardMap[data.redirectUrl] || "/login.html";
+window.location.href = dashboardUrl;
                         }, 1000);
                     } else {
                         // Show error message
