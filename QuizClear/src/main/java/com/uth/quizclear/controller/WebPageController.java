@@ -9,12 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class WebPageController {
 
-<<<<<<< HEAD
-    @GetMapping("/staffQMDupliCheck")
-    public String staffQMDupliCheck() {
-        return "Staff/staffQMDupliCheck";
-=======
-    // ========== CODE CŨ CỦA BẠN - GIỮ NGUYÊN ==========
+    // ========== CODE CŨ CỦA BẠN - GIỮ NGUYÊN ===========
 
     // Trang chính - URL chính xác từ browser
     @GetMapping("/staffQMDupliCheck")
@@ -26,16 +21,12 @@ public class WebPageController {
     @GetMapping("/staff/duplication-check")
     public String staffDuplicationCheck() {
         return "Staff/staffQMDupliCheck";
->>>>>>> 8587d05c50ce44b5fff8a4254838e224662daa16
     }
 
     @GetMapping("/staff/duplication")
     public String staffDuplication() {
         return "Staff/staffDuplicationCheck";
     }
-<<<<<<< HEAD
-}
-=======
 
     // HTML động load bằng fetch trong JS
     @GetMapping("/Template/Staff/staffDupContent")
@@ -162,4 +153,3 @@ public class WebPageController {
         return user != null && user.getRole().equals(requiredRole);
     }
 }
->>>>>>> 8587d05c50ce44b5fff8a4254838e224662daa16
