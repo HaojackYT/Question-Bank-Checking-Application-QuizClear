@@ -12,7 +12,9 @@ import lombok.AllArgsConstructor;
 import com.uth.quizclear.model.enums.ExamReviewStatus;
 import com.uth.quizclear.model.enums.ExamReviewStatusConverter;
 import com.uth.quizclear.model.enums.ExamStatus;
+import com.uth.quizclear.model.enums.ExamStatusConverter;
 import com.uth.quizclear.model.enums.ExamType;
+import com.uth.quizclear.model.enums.ExamTypeConverter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -57,7 +59,7 @@ public class Exam {
     @Column(name = "difficulty_distribution", columnDefinition = "JSON")
     private String difficultyDistribution;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = ExamTypeConverter.class)
     @Column(name = "exam_type")
     private ExamType examType = ExamType.QUIZ;
 
@@ -73,7 +75,7 @@ public class Exam {
     @Column(name = "academic_year", length = 20)
     private String academicYear;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = ExamStatusConverter.class)
     @Column(name = "exam_status")
     private ExamStatus examStatus = ExamStatus.DRAFT;
 
