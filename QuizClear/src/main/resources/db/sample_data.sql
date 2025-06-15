@@ -147,14 +147,14 @@ INSERT INTO duplicate_detections (new_question_id, similar_question_id, similari
 INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, feedback, detected_by, processed_by, detected_at, processed_at) VALUES
 (2, 1, 0.92, 1, 'pending', NULL, NULL, 1, NULL, '2025-03-11 10:00:00', NULL),
 (3, 2, 0.85, 2, 'pending', NULL, NULL, 1, NULL, '2025-03-11 11:00:00', NULL),
-(4, 1, 0.78, 3, 'sent_back', 'reject', 'Questions are too similar in content and structure', 1, 2, '2025-03-11 12:00:00', '2025-03-11 15:00:00'),
+(4, 1, 0.78, 3, 'sent_back', 'send_back', 'Questions are too similar in content and structure', 1, 2, '2025-03-11 12:00:00', '2025-03-11 15:00:00'),
 (5, 3, 0.88, 4, 'pending', NULL, NULL, 1, NULL, '2025-03-11 13:00:00', NULL),
-(6, 2, 0.65, 5, 'rejected', 'accept', 'Questions cover different aspects of the topic', 1, 2, '2025-03-11 14:00:00', '2025-03-11 16:00:00'),
+(6, 2, 0.65, 5, 'accepted', 'accept', 'Questions cover different aspects of the topic', 1, 2, '2025-03-11 14:00:00', '2025-03-11 16:00:00'),
 (7, 4, 0.91, 6, 'merged', 'merge', 'Requires subject matter expert review', 1, 2, '2025-03-11 15:00:00', '2025-03-11 17:00:00'),
 (8, 5, 0.73, 7, 'pending', NULL, NULL, 1, NULL, '2025-03-11 16:00:00', NULL),
 (9, 6, 0.89, 8, 'pending', NULL, NULL, 1, NULL, '2025-03-11 17:00:00', NULL),
-(10, 7, 0.82, 9, 'accepted', 'reject', 'High similarity detected by AI system', 1, 2, '2025-03-11 18:00:00', '2025-03-11 19:00:00'),
-(1, 8, 0.67, 10, 'rejected', 'accept', 'Different difficulty levels, acceptable', 1, 2, '2025-03-11 19:00:00', '2025-03-11 20:00:00');
+(10, 7, 0.82, 9, 'rejected', 'reject', 'High similarity detected by AI system', 1, 2, '2025-03-11 18:00:00', '2025-03-11 19:00:00'),
+(1, 8, 0.67, 10, 'accepted', 'accept', 'Different difficulty levels, acceptable', 1, 2, '2025-03-11 19:00:00', '2025-03-11 20:00:00');
 
 -- Insert more AI duplicate checks for comprehensive testing
 INSERT INTO ai_duplicate_checks (question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, checked_by, status, checked_at) VALUES

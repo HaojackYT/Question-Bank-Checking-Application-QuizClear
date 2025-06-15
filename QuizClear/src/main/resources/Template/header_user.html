@@ -28,11 +28,27 @@
         <div class="dropdown">
             <i class="fa-solid fa-user icon-user"></i>
             <div class="dropdown-content profile-dropdown">
-                <a href="/HEAD_OF_DEPARTMENT/HED_Profile.html">Profile</a>
+                <a href="../HED_Profile.html">Profile</a>
                 <a href="#">Logout</a>
             </div>
         </div>
     </div>
+    <script>
+            function toggleNotificationDropdown() {
+                document.getElementById('notificationDropdown').classList.toggle('show');
+            }
+            function toggleUserDropdown() {
+                document.getElementById('userDropdown').classList.toggle('show');
+            }
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.notification-icon') && !e.target.closest('.notification-dropdown')) {
+                    document.getElementById('notificationDropdown').classList.remove('show');
+                }
+                if (!e.target.closest('.user-avatar') && !e.target.closest('.user-dropdown')) {
+                    document.getElementById('userDropdown').classList.remove('show');
+                }
+            });
+        </script>
 </div>
 </body>
 </html>

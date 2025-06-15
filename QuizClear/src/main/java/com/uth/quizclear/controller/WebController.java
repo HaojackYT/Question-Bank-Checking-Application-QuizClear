@@ -2,6 +2,8 @@ package com.uth.quizclear.controller; // Đảm bảo đúng package của bạn
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class WebController {
@@ -24,5 +26,17 @@ public class WebController {
     @GetMapping("/")
     public String redirectToStaffDuplicationCheck() {
         return "redirect:/staffDuplicationCheck";
+    }
+
+    // Test database endpoint to bypass routing conflicts
+    @GetMapping("/test-database-connection")
+    @ResponseBody
+    public String testDatabaseConnection() {
+        try {
+            // You'll need to inject the service here
+            return "Test endpoint working - " + java.time.LocalDateTime.now();
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
     }
 }

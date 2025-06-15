@@ -1,4 +1,4 @@
-package com.uth.quizclear.service;
+/*package com.uth.quizclear.service;
 
 import com.uth.quizclear.model.entity.*;
 import com.uth.quizclear.model.dto.*;
@@ -77,9 +77,7 @@ public class DuplicationService {
         return detections.stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
+    }    @Transactional(readOnly = true)
     public long countPendingDetections() {
         return duplicateDetectionRepository.countByStatus(DuplicateDetection.Status.PENDING);
     }
@@ -91,20 +89,18 @@ public class DuplicationService {
 
         detection.setProcessingNotes(feedback);
         detection.setProcessedAt(LocalDateTime.now());
-        detection.setProcessedBy(processorId);
-
-        try {
+        detection.setProcessedBy(processorId);        try {
             DuplicateDetection.Action action = DuplicateDetection.Action.valueOf(actionStr.toUpperCase());
-            detection.setAction(action);
-
-            // Update status based on action
+            detection.setAction(action);            // Update status based on action
             switch (action) {
-                case KEEP_BOTH, REMOVE_NEW, MERGE_QUESTIONS, MARK_AS_VARIANT -> 
-                    detection.setStatus(DuplicateDetection.Status.APPROVED);
+                case ACCEPT -> detection.setStatus(DuplicateDetection.Status.ACCEPTED);
+                case REJECT -> detection.setStatus(DuplicateDetection.Status.REJECTED);
+                case MERGE -> detection.setStatus(DuplicateDetection.Status.MERGED);
+                case SEND_BACK -> detection.setStatus(DuplicateDetection.Status.SENT_BACK);
             }
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid action: " + actionStr);
-        }        duplicateDetectionRepository.save(detection);
+        }duplicateDetectionRepository.save(detection);
     }
 
     // =================== AI DUPLICATE CHECK METHODS ===================
@@ -164,11 +160,13 @@ public class DuplicationService {
     public Map<String, Object> getDuplicationStatistics() {
         Map<String, Object> stats = new HashMap<>();
         
-        // Basic duplicate detection counts
-        stats.put("totalDetections", duplicateDetectionRepository.count());
-        stats.put("pendingDetections", duplicateDetectionRepository.countByStatus(DuplicateDetection.Status.PENDING));
-        stats.put("approvedDetections", duplicateDetectionRepository.countByStatus(DuplicateDetection.Status.APPROVED));
-        stats.put("rejectedDetections", duplicateDetectionRepository.countByStatus(DuplicateDetection.Status.REJECTED));
+    // Basic duplicate detection counts
+    stats.put("totalDetections", duplicateDetectionRepository.count());
+    stats.put("pendingDetections", duplicateDetectionRepository.countByStatus(DuplicateDetection.Status.PENDING));
+    stats.put("acceptedDetections", duplicateDetectionRepository.countByStatus(DuplicateDetection.Status.ACCEPTED));
+    stats.put("rejectedDetections", duplicateDetectionRepository.countByStatus(DuplicateDetection.Status.REJECTED));
+    stats.put("sentBackDetections", duplicateDetectionRepository.countByStatus(DuplicateDetection.Status.SENT_BACK));
+    stats.put("mergedDetections", duplicateDetectionRepository.countByStatus(DuplicateDetection.Status.MERGED));
         
         // AI check statistics from AiDuplicateService
         Map<String, Object> aiStats = aiDuplicateService.getAiCheckStatistics();
@@ -326,3 +324,4 @@ public class DuplicationService {
         );
     }
 }
+    */

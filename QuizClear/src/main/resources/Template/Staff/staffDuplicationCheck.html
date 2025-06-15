@@ -1,85 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/Menu-Staff.css" />
-    <link rel="stylesheet" href="../../Static/css/staff/staffDup.css" />
-    <link rel="stylesheet" href="../../Static/css/staff/staffLogs.css" />
-    <!-- Thêm style riêng -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
-      rel="stylesheet"
-    />
-    <title>QuizClear - Duplication Check</title>
-  </head>
-  <body>
-    <!-- Header -->
-    <div id="header-placeholder"></div>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-    <!-- Body -->
-    <div id="Container-body">
-      <!-- Sidebar/Menu -->
-      <div id="menu-HTML"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplication Check</title>
+    <link rel="stylesheet" th:href="@{/header.css}"> <!-- CSS riêng cho header -->
+    <link rel="stylesheet" th:href="@{/Menu-Staff.css}"> <!-- CSS riêng cho menu, nếu có -->
+    <link rel="stylesheet" th:href="@{/web_styles.css}"> <!-- CSS bổ sung -->
+    <link rel="stylesheet" th:href="@{/css/staff/staffDup.css}">
+</head>
 
-      <!-- Main content -->
-      <div id="main">
-        <!-- Page Header -->
-        <div class="page-header">
-          <h1 class="page-title">Duplication Check</h1>
-          <p class="page-subtitle">
-            Detect and manage duplicate questions using AI-powered analysis
-          </p>
-        </div>
+<body>
+    <header class="header" th:insert="~{header_user :: header}"></header>
+    <div class="container">
 
-        <!-- Tabs -->
-        <div class="tabs">
-          <div class="tab active" data-tab="detection">AI Detection</div>
-          <div class="tab" data-tab="stat">Statistics</div>
-          <div class="tab" data-tab="proc_log">Processing Logs</div>
-        </div>
+        <div id="Container-body">
 
-        <div id="tab-content" class="tab-content active">
-          <!-- DATA HERE -->
-        </div>
+            <div class="sidebar" th:insert="~{Menu-Staff :: menu}"></div>
+            <div id="main">
+                <header class="page-header">
+                    <h1 class="page-title">Duplication Check</h1>
+                    <p class="page-subtitle">Detect and manage duplicate questions using AI-powered analysis</p>
+                </header>
 
-        <div id="comparison-container" style="display: none">
-          <!-- DATA HERE -->
+                <div class="tabs">
+                    <div class="tab active" data-tab="detection">AI Detection</div>
+                    <div class="tab" data-tab="stat">Statistics</div>
+                    <div class="tab" data-tab="proc_log">Processing Logs</div>
+                </div>
+
+                <div id="tab-content"></div>
+                <div id="comparison-container" style="display: none;"></div>
+
+                <div id="logDetailModal" style="display: none;">
+                    <div class="modal-overlay">
+                        <div class="modal">
+                            <div class="modal-header">
+                                <h2 class="modal-title">Processing Log Details</h2>
+                                <button class="close-button" onclick="closeModal()">×</button>
+                            </div>
+                            <div class="modal-body" id="logDetailContent"></div>
+                        </div>                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <!-- Modal Log Detail -->
-    <div class="modal-overlay" id="logDetailModal" style="display: none">
-      <div class="modal">
-        <div class="modal-header">
-          <h3 class="modal-title">Processing Log Details</h3>
-          <button class="close-button" onclick="closeModal()">×</button>
-        </div>
-        <div class="modal-body" id="modalContent">
-          <!-- Data here -->
-        </div>
-      </div>
+        <script th:src="@{/js/staffDuplicationCheck.js}" defer></script>
     </div>
 
-    <!-- Tải header và menu -->
-    <script>
-      fetch("../header_user.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("header-placeholder").innerHTML = data;
-        });
+</body>
 
-      fetch("../Menu-Staff.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("menu-HTML").innerHTML = data;
-        });
-    </script>
-
-    <!-- Script riêng -->
-    <script src="../../Static/js/staffDuplicationCheck.js"></script>
-  </body>
 </html>
