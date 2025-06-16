@@ -90,157 +90,164 @@
 
         <!-- Main content -->
         <div id="main">
+            <div class="create-question-container">
+                <button class="new-course-btn" onclick="openCreateModal()"><i class="fas fa-plus"></i> New
+                    Course</button>
+            </div>
 
-            <div class="main-context">
-                <button class="new-course-btn" onclick="openCreateModal()">+ New Course</button>
-                <div class="tab-switch">
-                    <button class="tab-button active" onclick="selectTab('course')">Course</button>
-                    <button class="tab-button" onclick="selectTab('clo')">CLO</button>
+            <div class="tab-switch">
+                <a href="staffSMCourseList.html" class="tab-button active">Course</a>
+                <a href="staffCLOList.html" class="tab-button">CLO</a>
+            </div>
+
+            <div class="title">Course List</div>
+            <div class="subtitle">Manage courses, learning outcomes (CLOs), and difficulty levels.</div>
+
+            <div class="search-filter-bar">
+                <div class="search-box">
+                    <input type="text" placeholder="Enter search content ..." class="search-input">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
-                <div class="title">Course List</div>
-                <div class="subtitle">Manage courses, learning outcomes (CLOs), and difficulty levels.</div>
-                <div class="filter-select">
-                    <div class="search-container">
-                        <input type="text" id="search" placeholder="Search...">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </div>
-                    <label for="department"></label>
-                    <select id="department" name="departments">
-                        <option value="AllDepartment">All Departments</option>
-                        <option value="IT">Information Technology</option>
-                        <option value="DB">Database</option>
+                <div class="filter-dropdown">
+                    <select class="filter-select">
+                    <option value="AllDepartment">All Departments</option>
+                    <option value="IT">Information Technology</option>
+                    <option value="DB">Database</option>
                     </select>
+                    <i class="fas fa-chevron-down"></i>
                 </div>
-                <table class="course-table">
-                    <thead>
-                        <tr>
-                            <th>Course ID</th>
-                            <th>Course Name</th>
-                            <th>Credits</th>
-                            <th>Department</th>
-                            <th>CLOs</th>
-                            <th>Questions</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>CS101</td>
-                            <td>Introduction to Computer Science</td>
-                            <td>3</td>
-                            <td>Computer Science</td>
-                            <td>5</td>
-                            <td>256</td>
-                            <td>
-                                <i class="fa-solid fa-pen-to-square" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
-                                <i class="fa-solid fa-trash"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>CS102</td>
-                            <td>Data Structures and Algorithms</td>
-                            <td>4</td>
-                            <td>Computer Science</td>
-                            <td>6</td>
-                            <td>300</td>
-                            <td>
-                                <i class="fa-solid fa-pen-to-square" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
-                                <i class="fa-solid fa-trash"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>CS103</td>
-                            <td>Database Management Systems</td>
-                            <td>3</td>
-                            <td>Computer Science</td>
-                            <td>4</td>
-                            <td>150</td>
-                            <td>
-                                <i class="fa-solid fa-pen-to-square" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
-                                <i class="fa-solid fa-trash"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>CS104</td>
-                            <td>Web Development</td>
-                            <td>3</td>
-                            <td>Computer Science</td>
-                            <td>5</td>
-                            <td>200</td>
-                            <td>
-                                <i class="fa-solid fa-pen-to-square" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
-                                <i class="fa-solid fa-trash"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>CS105</td>
-                            <td>Software Engineering</td>
-                            <td>4</td>
-                            <td>Computer Science</td>
-                            <td>7</td>
-                            <td>350</td>
-                            <td>
-                                <i class="fa-solid fa-pen-to-square" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
-                                <i class="fa-solid fa-trash"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>CS106</td>
-                            <td>Operating Systems</td>
-                            <td>3</td>
-                            <td>Computer Science</td>
-                            <td>5</td>
-                            <td>220</td>
-                            <td>
-                                <i class="fa-solid fa-pen-to-square" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
-                                <i class="fa-solid fa-trash"></i>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <!-- More rows can be added here -->
-                </table>
-                <div class="pagination">
-                    <i class="fa-solid fa-bullhorn" style="padding: 20px;"></i>
-                    <p class="page-info" style="padding: 10px;">Total Pages:</p>
-                    <p class="page-info">9</p>
-                    <div class="page-controls">
-                        <button class="prev-btn"><i class="fa-solid fa-square-caret-left" style="padding: 0px 5px;"></i>
-                            Previous</button>
-                        <input type="number" id="pageInput" value="1" min="1" style="width: 50px; text-align: center;">
-                        <button class="next-btn">Next <i class="fa-solid fa-square-caret-right"
-                                style="padding: 0px 5px;"></i></button>
-                    </div>
+            </div>
+            <table class="course-table">
+                <thead>
+                    <tr>
+                        <th>Course ID</th>
+                        <th>Course Name</th>
+                        <th>Credits</th>
+                        <th>Department</th>
+                        <th>CLOs</th>
+                        <th>Questions</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CS101</td>
+                        <td>Introduction to Computer Science</td>
+                        <td>3</td>
+                        <td>Computer Science</td>
+                        <td>5</td>
+                        <td>256</td>
+                        <td>
+                            <i class="fa-solid fa-pen-to-square" style="margin-right: 20px; cursor: pointer;"
+                                onclick="openModal();"></i>
+                            <i class="fa-solid fa-trash"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>CS102</td>
+                        <td>Data Structures and Algorithms</td>
+                        <td>4</td>
+                        <td>Computer Science</td>
+                        <td>6</td>
+                        <td>300</td>
+                        <td>
+                            <i class="fa-solid fa-pen-to-square" style="margin-right: 20px; cursor: pointer;"
+                                onclick="openModal();"></i>
+                            <i class="fa-solid fa-trash"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>CS103</td>
+                        <td>Database Management Systems</td>
+                        <td>3</td>
+                        <td>Computer Science</td>
+                        <td>4</td>
+                        <td>150</td>
+                        <td>
+                            <i class="fa-solid fa-pen-to-square" style="margin-right: 20px; cursor: pointer;"
+                                onclick="openModal();"></i>
+                            <i class="fa-solid fa-trash"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>CS104</td>
+                        <td>Web Development</td>
+                        <td>3</td>
+                        <td>Computer Science</td>
+                        <td>5</td>
+                        <td>200</td>
+                        <td>
+                            <i class="fa-solid fa-pen-to-square" style="margin-right: 20px; cursor: pointer;"
+                                onclick="openModal();"></i>
+                            <i class="fa-solid fa-trash"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>CS105</td>
+                        <td>Software Engineering</td>
+                        <td>4</td>
+                        <td>Computer Science</td>
+                        <td>7</td>
+                        <td>350</td>
+                        <td>
+                            <i class="fa-solid fa-pen-to-square" style="margin-right: 20px; cursor: pointer;"
+                                onclick="openModal();"></i>
+                            <i class="fa-solid fa-trash"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>CS106</td>
+                        <td>Operating Systems</td>
+                        <td>3</td>
+                        <td>Computer Science</td>
+                        <td>5</td>
+                        <td>220</td>
+                        <td>
+                            <i class="fa-solid fa-pen-to-square" style="margin-right: 20px; cursor: pointer;"
+                                onclick="openModal();"></i>
+                            <i class="fa-solid fa-trash"></i>
+                        </td>
+                    </tr>
+                </tbody>
+                <!-- More rows can be added here -->
+            </table>
+            <div class="pagination">
+                <i class="fa-solid fa-bullhorn" style="padding: 20px;"></i>
+                <p class="page-info" style="padding: 10px;">Total Pages:</p>
+                <p class="page-info">9</p>
+                <div class="page-controls">
+                    <button class="prev-btn"><i class="fa-solid fa-square-caret-left" style="padding: 0px 5px;"></i>
+                        Previous</button>
+                    <input type="number" id="pageInput" value="1" min="1" style="width: 50px; text-align: center;">
+                    <button class="next-btn">Next <i class="fa-solid fa-square-caret-right"
+                            style="padding: 0px 5px;"></i></button>
                 </div>
-                <div class="activity">
-                    <h2>Recent Activities</h2>
-                    <p class="activities-subtitle">Activities related to the course in the last 30 days</p>
-                    <div class="activity-item">
-                        <div class="activity-info">
-                            <p class="activity-text"><strong>New course: Java Program</strong></p>
-                            <p class="activity-caption">The course has been created by Nguyen Van A</p>
-                        </div>
-                        <div class="check-btn">Check</div>
+            </div>
+            <div class="activity">
+                <h2>Recent Activities</h2>
+                <p class="activities-subtitle">Activities related to the course in the last 30 days</p>
+                <div class="activity-item">
+                    <div class="activity-info">
+                        <p class="activity-text"><strong>New course: Java Program</strong></p>
+                        <p class="activity-caption">The course has been created by Nguyen Van A</p>
                     </div>
-                    <div class="activity-item">
-                        <div class="activity-info">
-                            <p class="activity-text"><strong>New course: Database Management</strong></p>
-                            <p class="activity-caption">The course has been created by Tran Thi B</p>
-                        </div>
-                        <div class="check-btn">Check</div>
+                    <div class="check-btn">Check</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-info">
+                        <p class="activity-text"><strong>New course: Database Management</strong></p>
+                        <p class="activity-caption">The course has been created by Tran Thi B</p>
                     </div>
-                    <div class="activity-item">
-                        <div class="activity-info">
-                            <p class="activity-text"><strong>New course: Java Program</strong></p>
-                            <p class="activity-caption">The course has been created by Nguyen Van A</p>
-                        </div>
-                        <div class="check-btn">Check</div>
+                    <div class="check-btn">Check</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-info">
+                        <p class="activity-text"><strong>New course: Java Program</strong></p>
+                        <p class="activity-caption">The course has been created by Nguyen Van A</p>
                     </div>
+                    <div class="check-btn">Check</div>
                 </div>
             </div>
         </div>
