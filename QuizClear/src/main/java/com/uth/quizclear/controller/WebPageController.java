@@ -34,11 +34,6 @@ public class WebPageController {
         return "Staff/staffDupContent";
     }
 
-    @GetMapping("/Template/Staff/staffDupDetails")
-    public String staffDupDetails() {
-        return "Staff/staffDupDetails";
-    }
-
     @GetMapping("/Template/Staff/staffStats")
     public String staffStats() {
         return "Staff/staffStats";
@@ -58,7 +53,6 @@ public class WebPageController {
     public String menuStaff() {
         return "Menu-Staff";
     }
-
 
     @GetMapping("/Template/Menu-Staff.html")
     public String templateMenuStaff() {
