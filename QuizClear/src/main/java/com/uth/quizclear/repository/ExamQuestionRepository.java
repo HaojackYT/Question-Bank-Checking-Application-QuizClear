@@ -10,4 +10,5 @@ import com.uth.quizclear.model.entity.ExamQuestion;
 @Repository
 public interface ExamQuestionRepository extends JpaRepository<ExamQuestion, Long> {
     List<ExamQuestion> findByExam_ExamIdOrderByQuestionOrder(Long examId);
+    List<ExamQuestion> findByExamExamId(Long examId);
 }

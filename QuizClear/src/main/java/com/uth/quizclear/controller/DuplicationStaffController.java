@@ -263,4 +263,10 @@ public class DuplicationStaffController {
             return ResponseEntity.status(500).body(errorResponse);
         }
     }
+
+    // Get detection details by id (for view button)
+    @GetMapping("/{detectionId}")
+    public ResponseEntity<DuplicateDetectionDTO> getDetectionById(@PathVariable Long detectionId) {
+        return ResponseEntity.ok(service.getDetectionById(detectionId));
+    }
 }

@@ -27,7 +27,10 @@ CREATE TABLE IF NOT EXISTS users (
   phone_number VARCHAR(20) DEFAULT NULL,
   hometown VARCHAR(255) DEFAULT NULL,
   contact_address VARCHAR(255) DEFAULT NULL,
-  avatar_url VARCHAR(500) DEFAULT NULL
+  avatar_url VARCHAR(500) DEFAULT NULL,
+  -- Thêm trường workplace, qualification cho trang profile
+  work_place VARCHAR(500) DEFAULT NULL,
+  qualification VARCHAR(500) DEFAULT NULL
 ) ENGINE=InnoDB;
 
 -- 2. Courses (Khóa học)

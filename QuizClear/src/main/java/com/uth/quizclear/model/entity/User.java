@@ -102,6 +102,12 @@ public class User {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
+    @Column(name = "work_place")   // Bổ sung trường workPlace cho Profile
+    private String workPlace;
+
+    @Column(name = "qualification")   // Bổ sung trường qualification cho Profile
+    private String qualification;
+
     // JPA lifecycle callbacks
     @PrePersist
     protected void onCreate() {

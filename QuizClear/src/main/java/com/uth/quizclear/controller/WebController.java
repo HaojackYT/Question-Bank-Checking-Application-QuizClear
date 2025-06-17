@@ -4,11 +4,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
-<<<<<<< HEAD
 import org.springframework.web.bind.annotation.PathVariable;
-=======
-import org.springframework.web.bind.annotation.ResponseBody;
->>>>>>> a281b6f9e724051472ab8f4c0c6fde82891525f2
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -22,34 +18,24 @@ public class WebController {
         return "Staff/staffDuplicationCheck.html";
     }
 
-    // Nếu bạn muốn staffDupDetails.html có thể được truy cập trực tiếp (không bắt buộc nếu dùng AJAX load)
-    @GetMapping("/staffDupDetails.html")
-    public String staffDupDetails() {
-        return "Staff/staffDupDetails.html";
-    }
-
-    // Bạn có thể thêm một mapping cho đường dẫn gốc "/" để chuyển hướng đến trang chính của bạn
+    // Bạn có thể thêm một mapping cho đường dẫn gốc "/" để chuyển hướng đến trang
+    // chính của bạn
     @GetMapping("/")
     public String redirectToStaffDuplicationCheck() {
         return "redirect:/staffDuplicationCheck";
     }
-<<<<<<< HEAD
+
     @GetMapping("/menu-hed")
     @ResponseBody
     public Resource getMenuHED() {
         return new ClassPathResource("/Template/HEAD_OF_DEPARTMENT/Menu-HED.html");
     }
 
-@GetMapping("/template/{filename:.+}")
-@ResponseBody
-public Resource getTemplateFile(@PathVariable String filename) {
-    return new ClassPathResource("Template/" + filename);
-}
-
-
-
-
-=======
+    @GetMapping("/template/{filename:.+}")
+    @ResponseBody
+    public Resource getTemplateFile(@PathVariable String filename) {
+        return new ClassPathResource("Template/" + filename);
+    }
 
     // Test database endpoint to bypass routing conflicts
     @GetMapping("/test-database-connection")
@@ -62,5 +48,5 @@ public Resource getTemplateFile(@PathVariable String filename) {
             return "Error: " + e.getMessage();
         }
     }
->>>>>>> a281b6f9e724051472ab8f4c0c6fde82891525f2
+
 }

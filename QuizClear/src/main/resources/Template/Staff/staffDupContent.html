@@ -3,8 +3,7 @@
 <head>
     <link rel="stylesheet" th:href="@{/css/staff/staffDup.css}">
 </head>
-<body>
-    <div class="filters">        <select class="filter-select subject">
+<body>    <div class="filters">        <select class="filter-select subject">
             <option value="">All Subjects</option>
             <!-- Options will be loaded by JavaScript -->
         </select>        <select class="filter-select submitter">
@@ -16,10 +15,14 @@
         </button>
     </div>
 
-    <div class="detection-section">
+    <!-- AI-Powered Duplicate Detection Header Card -->
+    <div class="ai-detection-header-card">
         <h2 class="section-title">AI-Powered Duplicate Detection</h2>
         <p class="section-subtitle">Our AI system has identified these questions as potential duplicates based on lexical and semantic analysis</p>
+    </div>
 
+    <!-- Duplicate Detection Table Card -->
+    <div class="detection-table-card">
         <div class="table-container">
             <table class="table">
                 <thead>
@@ -46,10 +49,29 @@
                             <div class="subject-badge" th:text="${d.newQuestion?.courseName} ?: 'N/A'"></div>
                         </td>
                         <td class="submitter-name" th:text="${d.newQuestion?.creatorName} ?: 'N/A'"></td>                        <td class="action-buttons">
-                            <button class="btn-view" th:attr="data-detection-id=${d.detectionId}">View</button>
+                            <button class="action-icon view-icon" 
+                                    th:attr="data-detection-id=${d.detectionId}"
+                                    th:disabled="${d.status == 'INVALID'}"
+                                    th:title="${d.status == 'INVALID'} ? 'Detection lỗi, không thể xem chi tiết' : 'View Details'"
+                                    onclick="viewDuplication(this)">
+                                🔍
+                            </button>
+                            <button class="action-icon accept-icon" 
+                                    th:attr="data-detection-id=${d.detectionId}"
+                                    th:disabled="${d.status == 'INVALID'}"
+                                    title="Accept Question"
+                                    onclick="acceptDuplication(this)">
+                                ✅
+                            </button>
+                            <button class="action-icon reject-icon" 
+                                    th:attr="data-detection-id=${d.detectionId}"
+                                    th:disabled="${d.status == 'INVALID'}"
+                                    title="Reject Question"
+                                    onclick="rejectDuplication(this)">
+                                ❌
+                            </button>
                         </td>
-                    </tr>
-                </tbody>
+                    </tr>                </tbody>
             </table>
         </div>
     </div>

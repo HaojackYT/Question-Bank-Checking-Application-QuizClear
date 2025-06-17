@@ -1,78 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/Menu-Staff.css" />
-    <link rel="stylesheet" href="../../Static/css/staff/staffEMOverview.css">\
-    <link rel="stylesheet" href="../../Static/css/staff/staffEMOverviewFeedback.css">
+    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/header.css}">
+    <link rel="stylesheet" th:href="@{/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Menu-Staff.css}" />
+    <link rel="stylesheet" th:href="@{/css/staff/staffEMOverview.css}">
+    <link rel="stylesheet" th:href="@{/css/staff/staffEMOverviewFeedback.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Data Structures Final Exam - Feedback & Comments</title>
+    <title th:text="${overview.examTitle} + ' - Feedback & Comments'">Feedback & Comments</title>
 </head>
-
 <body>
-    <!--header-->
-    <div id="header-placeholder"></div>
-
-    <!-- body -->
+    <header class="header" th:insert="~{header_user :: header}"></header>
     <div id="Container-body">
-        <!-- Menu -->
-        <div id="menu-HTML"></div>
-
-        <!-- Main content -->
+        <div id="menu-HTML" th:insert="~{Menu-Staff :: menu}"></div>
         <div id="main">
             <!-- Exam Header -->
             <div class="exam-header">
-                <div class="back-arrow">
+                <a th:href="@{/staff/exams/{examId}/overview(examId=${overview.examId})}" class="back-arrow">
                     <i class="fas fa-arrow-left"></i>
-                </div>
+                </a>
                 <div class="exam-title">
-                    <h1>Data Structures Final Exam</h1>
+                    <h1 th:text="${overview.examTitle}"></h1>
                     <div class="exam-meta">
-                        <span class="course-code">CS301-FINAL-2023</span>
+                        <span class="course-code" th:text="${overview.examCode}"></span>
                         <span class="separator">•</span>
-                        <span class="subject">Computer Science</span>
+                        <span class="subject" th:text="${overview.courseName}"></span>
                         <span class="separator">•</span>
-                        <span class="term">Fall 2023</span>
+                        <span class="term" th:text="${overview.semester} + ' ' + ${overview.academicYear}"></span>
                     </div>
                 </div>
             </div>
-
             <!-- Exam Statistics -->
             <div class="exam-stats">
                 <div class="stat-item">
                     <div class="stat-label">Questions</div>
-                    <div class="stat-value">50</div>
-                    <div class="stat-subtext">2 versions</div>
+                    <div class="stat-value" th:text="${overview.totalQuestions}"></div>
+                    <div class="stat-subtext" th:text="${overview.versionCount} + ' versions'"></div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-label">Deadline</div>
-                    <div class="stat-value">2023-06-20</div>
-                    <div class="stat-subtext">Created on 2023-06-01</div>
+                    <div class="stat-value" th:text="${overview.deadline}"></div>
+                    <div class="stat-subtext" th:text="'Created on ' + ${overview.createdDate}"></div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-label">Assigned To</div>
-                    <div class="stat-value">3</div>
-                    <div class="stat-subtext">Dr. Smith, Prof. Davis, Dr. Brown</div>
+                    <div class="stat-value" th:text="${#lists.size(overview.assignedTeam)}"></div>
+                    <div class="stat-subtext">
+                        <span th:each="member, stat : ${overview.assignedTeam}">
+                            <span th:text="${member.fullName}"></span>
+                            <span th:if="${!stat.last}">, </span>
+                        </span>
+                    </div>
                 </div>
             </div>
-
             <!-- Tab Navigation -->
             <div class="exam-tabs">
-                <button class="tab-btn" data-tab="overview">Overview</button>
-                <button class="tab-btn" data-tab="questions">Questions</button>
+                <button class="tab-btn" data-tab="overview"
+                        th:onclick="'window.location.href=\'/staff/exams/' + ${overview.examId} + '/overview-questions\''">
+                    Overview
+                </button>
+                <button class="tab-btn" data-tab="questions"
+                        th:onclick="'window.location.href=\'/staff/exams/' + ${overview.examId} + '/preview-questions\''">
+                    Questions
+                </button>
                 <button class="tab-btn active" data-tab="feedback">Feedback</button>
             </div>
-
             <!-- Feedback Content -->
             <div class="feedback-content">
-
-
-                <div class="no-feedback">
+                <div class="no-feedback" th:if="${#lists.isEmpty(feedbackList)}">
                     <div class="feedback-header">
                         <h3>Feedback & Comments</h3>
                     </div>
@@ -83,87 +81,24 @@
                     <p>This exam hasn't received any feedback yet.</p>
                     <button class="add-feedback-btn">Add Feedback</button>
                 </div>
-
-                <!-- Example of feedback when available (hidden by default) -->
-                <div class="feedback-list" style="display: none;">
-                    <div class="feedback-item">
+                <div class="feedback-list" th:if="${!#lists.isEmpty(feedbackList)}">
+                    <div class="feedback-item" th:each="fb : ${feedbackList}">
                         <div class="feedback-author">
-                            <div class="author-avatar">P</div>
+                            <div class="author-avatar" th:text="${fb.avatarLetter}"></div>
                             <div class="author-info">
-                                <div class="author-name">Prof. Davis</div>
-                                <div class="feedback-date">2 days ago</div>
+                                <div class="author-name" th:text="${fb.authorName}"></div>
+                                <div class="feedback-date" th:text="${fb.dateAgo}"></div>
                             </div>
                         </div>
-                        <div class="feedback-text">
-                            The exam structure looks good overall. I would suggest adding one more expert-level question
-                            about graph algorithms to better assess advanced understanding.
-                        </div>
+                        <div class="feedback-text" th:text="${fb.text}"></div>
                         <div class="feedback-actions">
                             <button class="reply-btn">Reply</button>
-                            <button class="like-btn">👍 2</button>
-                        </div>
-                    </div>
-
-                    <div class="feedback-item">
-                        <div class="feedback-author">
-                            <div class="author-avatar">D</div>
-                            <div class="author-info">
-                                <div class="author-name">Dr. Brown</div>
-                                <div class="feedback-date">1 day ago</div>
-                            </div>
-                        </div>
-                        <div class="feedback-text">
-                            Question 3 might be too difficult for the intermediate level. Consider moving it to advanced
-                            or providing more context.
-                        </div>
-                        <div class="feedback-actions">
-                            <button class="reply-btn">Reply</button>
-                            <button class="like-btn">👍 1</button>
+                            <button class="like-btn" th:text="'👍 ' + ${fb.likes}"></button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Load header and menu -->
-    <script>
-        // Load header
-        fetch('../../Template/header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-
-        // Load menu
-        fetch('../../Template/Menu-Staff.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-            });
-
-        // Tab navigation functionality
-        document.querySelectorAll('.tab-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const tabName = button.getAttribute('data-tab');
-                if (tabName === 'overview') {
-                    window.location.href = 'exam_overview.html';
-                } else if (tabName === 'questions') {
-                    window.location.href = 'question_preview.html';
-                }
-            });
-        });
-
-        // Add feedback functionality
-        document.querySelector('.add-feedback-btn').addEventListener('click', () => {
-            // Hide no-feedback section and show feedback list
-            document.querySelector('.no-feedback').style.display = 'none';
-            document.querySelector('.feedback-list').style.display = 'block';
-
-            // In real application, this would open a modal or form
-            alert('Add Feedback functionality would be implemented here');
-        });
-    </script>
 </body>
-
 </html>

@@ -1,15 +1,19 @@
 -- 1. Thêm 10 bản ghi vào bảng users
-INSERT INTO users (full_name, email, password_hash, role, status, department, gender, date_of_birth, nation, phone_number, created_at, hometown, contact_address) VALUES
-('Ash Abrahams', 'ash.abrahams@university.edu', 'hash_ab001', 'Lec', 'active', 'Computer Science', 'male', '1986-03-15', 'USA', '1234567101', '2025-01-01 09:00:00', 'Boston', '101 Elm St, Boston'),
-('Alexander Brooks', 'alex.brooks@university.edu', 'hash_ab002', 'HoD', 'active', 'Mathematics', 'male', '1975-09-20', 'UK', '1234567102', '2025-01-02 09:00:00', 'London', '22 Baker St, London'),
-('Maria Gonzalez', 'maria.gonzalez@university.edu', 'hash_mg002', 'HoD', 'active', 'Mathematics', 'female', '1978-07-22', 'Spain', '1234567103', '2025-01-03 09:00:00', 'Madrid', '22 Gran Via, Madrid'),
-('Chen Wei', 'chen.wei@university.edu', 'hash_cw003', 'RD', 'inactive', 'Physics', 'male', '1990-05-10', 'China', '1234567104', '2025-01-04 09:00:00', 'Shanghai', '33 Nanjing Rd, Shanghai'),
-('Aisha Khan', 'aisha.khan@university.edu', 'hash_ak004', 'SL', 'active', 'Chemistry', 'female', '1984-11-30', 'Pakistan', '1234567105', '2025-01-05 09:00:00', 'Karachi', '44 Clifton Rd, Karachi'),
-('Hiroshi Tanaka', 'hiroshi.tanaka@university.edu', 'hash_ht005', 'Lec', 'active', 'Biology', 'male', '1988-09-12', 'Japan', '1234567106', '2025-01-06 09:00:00', 'Osaka', '55 Umeda St, Osaka'),
-('Elena Petrova', 'elena.petrova@university.edu', 'hash_ep006', 'HoED', 'active', 'Computer Science', 'female', '1982-04-25', 'Russia', '1234567107', '2025-01-07 09:00:00', 'Moscow', '66 Arbat St, Moscow'),
-('Lucas Silva', 'lucas.silva@university.edu', 'hash_ls007', 'Lec', 'inactive', 'Mathematics', 'male', '1992-02-18', 'Brazil', '1234567108', '2025-01-08 09:00:00', 'Sao Paulo', '77 Paulista Ave, Sao Paulo'),
-('Fatima Ali', 'fatima.ali@university.edu', 'hash_fa008', 'RD', 'active', 'Physics', 'female', '1987-06-05', 'Egypt', '1234567109', '2025-01-09 09:00:00', 'Cairo', '88 Nile St, Cairo'),
-('James Park', 'james.park@university.edu', 'hash_jp009', 'SL', 'active', 'Chemistry', 'male', '1989-12-01', 'Korea', '1234567110', '2025-01-10 09:00:00', 'Seoul', '99 Gangnam Ave, Seoul');
+INSERT INTO users (
+    full_name, email, password_hash, role, status, department,
+    gender, date_of_birth, nation, phone_number, created_at,
+    hometown, contact_address, start, end, work_place, qualification
+) VALUES
+('Ash Abrahams', 'ash.abrahams@university.edu', 'hash_ab001', 'Lec', 'active', 'Computer Science', 'male', '1986-03-15', 'USA', '1234567101', '2025-01-01 09:00:00', 'Boston', '101 Elm St, Boston', '2020-01-01', '2030-01-01', 'University of Transport and Communications, Campus 3', 'MS in Information Technology - University of Transport and Communications, Vietnam - 2012'),
+('Alexander Brooks', 'alex.brooks@university.edu', 'hash_ab002', 'HoD', 'active', 'Mathematics', 'male', '1975-09-20', 'UK', '1234567102', '2025-01-02 09:00:00', 'London', '22 Baker St, London', '2020-02-01', '2030-02-01', 'UTC - Faculty of Science, Campus 1', 'MSc in Computer Science - University of Transport and Communications - 2013'),
+('Maria Gonzalez', 'maria.gonzalez@university.edu', 'hash_mg002', 'HoD', 'active', 'Mathematics', 'female', '1978-07-22', 'Spain', '1234567103', '2025-01-03 09:00:00', 'Madrid', '22 Gran Via, Madrid', '2021-03-01', '2031-03-01', 'University of Transport and Communications, Main Campus', 'Master of Information Technology - UTC - 2011'),
+('Chen Wei', 'chen.wei@university.edu', 'hash_cw003', 'RD', 'inactive', 'Physics', 'male', '1990-05-10', 'China', '1234567104', '2025-01-04 09:00:00', 'Shanghai', '33 Nanjing Rd, Shanghai', '2020-05-01', '2030-05-01', 'UTC, Campus 2 - Transport University', 'MS in Software Engineering - University of Transport and Communications, Vietnam - 2014'),
+('Aisha Khan', 'aisha.khan@university.edu', 'hash_ak004', 'SL', 'active', 'Chemistry', 'female', '1984-11-30', 'Pakistan', '1234567105', '2025-01-05 09:00:00', 'Karachi', '44 Clifton Rd, Karachi', '2022-06-01', '2032-06-01', 'Transport University - Faculty of Engineering, Campus 3', 'MSc in Information Systems - UTC - 2012'),
+('Hiroshi Tanaka', 'hiroshi.tanaka@university.edu', 'hash_ht005', 'Lec', 'active', 'Biology', 'male', '1988-09-12', 'Japan', '1234567106', '2025-01-06 09:00:00', 'Osaka', '55 Umeda St, Osaka', '2021-09-01', '2031-09-01', 'University of Transport and Communications, Campus 1', 'Master of IT - University of Transport and Communications - 2015'),
+('Elena Petrova', 'elena.petrova@university.edu', 'hash_ep006', 'HoED', 'active', 'Computer Science', 'female', '1982-04-25', 'Russia', '1234567107', '2025-01-07 09:00:00', 'Moscow', '66 Arbat St, Moscow', '2019-01-01', '2029-01-01', 'UTC - Campus 3, Faculty of Technology', 'MS in Computer Engineering - University of Transport and Communications, Vietnam - 2010'),
+('Lucas Silva', 'lucas.silva@university.edu', 'hash_ls007', 'Lec', 'inactive', 'Mathematics', 'male', '1992-02-18', 'Brazil', '1234567108', '2025-01-08 09:00:00', 'Sao Paulo', '77 Paulista Ave, Sao Paulo', '2023-04-01', '2025-04-01', 'University of Transport and Communications, Campus 2', 'Master of Science in IT - UTC - 2013'),
+('Fatima Ali', 'fatima.ali@university.edu', 'hash_fa008', 'RD', 'active', 'Physics', 'female', '1987-06-05', 'Egypt', '1234567109', '2025-01-09 09:00:00', 'Cairo', '88 Nile St, Cairo', '2021-07-01', '2031-07-01', 'Transport University, Campus 3', 'MSc in Information Technology - University of Transport and Communications - 2012'),
+('James Park', 'james.park@university.edu', 'hash_jp009', 'SL', 'active', 'Chemistry', 'male', '1989-12-01', 'Korea', '1234567110', '2025-01-10 09:00:00', 'Seoul', '99 Gangnam Ave, Seoul', '2020-10-01', '2030-10-01', 'University of Transport and Communications, Faculty of IT, Campus 1', 'MS in Information Technology - UTC - Vietnam - 2011');
 
 
 -- 2. Thêm 10 bản ghi vào bảng courses
@@ -104,17 +108,17 @@ INSERT INTO exam_questions (exam_id, question_id, question_order, marks) VALUES
 (10, 10, 1, 1.50);
 
 -- 9. Thêm 10 bản ghi vào bảng ai_duplicate_checks
-INSERT INTO ai_duplicate_checks (question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, checked_by, status, checked_at) VALUES
-('What is the purpose of a UML diagram?', 1, 0.75, 0.9500, TRUE, 'all-MiniLM-L6-v2', 1, 'completed', '2025-03-01 10:00:00'),
-('Find the order of the group Z_6', 2, 0.75, 0.8200, FALSE, 'all-MiniLM-L6-v2', 2, 'completed', '2025-03-02 10:00:00'),
-('What is Newton’s first law?', 3, 0.75, 0.9100, TRUE, 'all-MiniLM-L6-v2', 3, 'completed', '2025-03-03 10:00:00'),
-('What gas is produced in a reaction of HCl with Zn?', 4, 0.75, 0.7800, FALSE, 'all-MiniLM-L6-v2', 4, 'completed', '2025-03-04 10:00:00'),
-('What is the role of enzymes in metabolism?', 5, 0.75, 0.8900, TRUE, 'all-MiniLM-L6-v2', 5, 'completed', '2025-03-05 10:00:00'),
-('What is a deadlock in an OS?', 6, 0.75, 0.8500, FALSE, 'all-MiniLM-L6-v2', 6, 'completed', '2025-03-06 10:00:00'),
-('What is the trapezoidal rule?', 7, 0.75, 0.9200, TRUE, 'all-MiniLM-L6-v2', 7, 'completed', '2025-03-07 10:00:00'),
-('Calculate redshift for a galaxy moving at 0.1c', 8, 0.75, 0.8000, FALSE, 'all-MiniLM-L6-v2', 8, 'completed', '2025-03-08 10:00:00'),
-('What is a buffer solution?', 9, 0.75, 0.8700, TRUE, 'all-MiniLM-L6-v2', 9, 'completed', '2025-03-09 10:00:00'),
-('What defines a mammal?', 10, 0.75, 0.8300, FALSE, 'all-MiniLM-L6-v2', 10, 'completed', '2025-03-10 10:00:00');
+INSERT INTO ai_duplicate_checks (check_id, question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, checked_by, status, checked_at) VALUES
+(1, 'What is the purpose of a UML diagram?', 1, 0.75, 0.9500, TRUE, 'all-MiniLM-L6-v2', 1, 'completed', '2025-03-01 10:00:00'),
+(2, 'Find the order of the group Z_6', 2, 0.75, 0.8200, FALSE, 'all-MiniLM-L6-v2', 2, 'completed', '2025-03-02 10:00:00'),
+(3, 'What is Newton’s first law?', 3, 0.75, 0.9100, TRUE, 'all-MiniLM-L6-v2', 3, 'completed', '2025-03-03 10:00:00'),
+(4, 'What gas is produced in a reaction of HCl with Zn?', 4, 0.75, 0.7800, FALSE, 'all-MiniLM-L6-v2', 4, 'completed', '2025-03-04 10:00:00'),
+(5, 'What is the role of enzymes in metabolism?', 5, 0.75, 0.8900, TRUE, 'all-MiniLM-L6-v2', 5, 'completed', '2025-03-05 10:00:00'),
+(6, 'What is a deadlock in an OS?', 6, 0.75, 0.8500, FALSE, 'all-MiniLM-L6-v2', 6, 'completed', '2025-03-06 10:00:00'),
+(7, 'What is the trapezoidal rule?', 7, 0.75, 0.9200, TRUE, 'all-MiniLM-L6-v2', 7, 'completed', '2025-03-07 10:00:00'),
+(8, 'Calculate redshift for a galaxy moving at 0.1c', 8, 0.75, 0.8000, FALSE, 'all-MiniLM-L6-v2', 8, 'completed', '2025-03-08 10:00:00'),
+(9, 'What is a buffer solution?', 9, 0.75, 0.8700, TRUE, 'all-MiniLM-L6-v2', 9, 'completed', '2025-03-09 10:00:00'),
+(10, 'What defines a mammal?', 10, 0.75, 0.8300, FALSE, 'all-MiniLM-L6-v2', 10, 'completed', '2025-03-10 10:00:00', 'zoology');
 
 -- 10. Thêm 10 bản ghi vào bảng ai_similarity_results
 INSERT INTO ai_similarity_results (check_id, existing_question_id, similarity_score, is_duplicate) VALUES
@@ -131,16 +135,44 @@ INSERT INTO ai_similarity_results (check_id, existing_question_id, similarity_sc
 
 -- 11. Thêm 10 bản ghi vào bảng duplicate_detections
 INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, detection_feedback, detected_by, processed_by, detected_at, processed_at, created_at, updated_at) VALUES
-(1, 1, 0.9500, 1, 'rejected', 'remove_new', 'Question is too similar to existing', 1, 2, '2025-03-01 11:00:00', '2025-03-02 11:00:00', '2025-03-01 11:00:00', '2025-03-02 11:00:00'),
-(2, 2, 0.8200, 2, 'approved', 'keep_both', 'Sufficiently unique', 2, 1, '2025-03-02 11:00:00', '2025-03-03 11:00:00', '2025-03-02 11:00:00', '2025-03-03 11:00:00'),
-(3, 3, 0.9100, 3, 'needs_review', 'mark_as_variant', 'Needs rephrasing', 3, 2, '2025-03-03 11:00:00', '2025-03-04 11:00:00', '2025-03-03 11:00:00', '2025-03-04 11:00:00'),
-(4, 4, 0.7800, 4, 'approved', 'keep_both', 'No significant overlap', 4, 2, '2025-03-04 11:00:00', '2025-03-05 11:00:00', '2025-03-04 11:00:00', '2025-03-05 11:00:00'),
-(5, 5, 0.8900, 5, 'approved', 'merge_questions', 'Merged with existing question', 5, 2, '2025-03-05 11:00:00', '2025-03-06 11:00:00', '2025-03-05 11:00:00', '2025-03-06 11:00:00'),
-(6, 6, 0.8500, 6, 'approved', 'keep_both', 'Unique content', 6, 2, '2025-03-06 11:00:00', '2025-03-07 11:00:00', '2025-03-06 11:00:00', '2025-03-07 11:00:00'),
-(7, 7, 0.9200, 7, 'rejected', 'remove_new', 'Highly similar to existing', 7, 2, '2025-03-07 11:00:00', '2025-03-08 11:00:00', '2025-03-07 11:00:00', '2025-03-08 11:00:00'),
-(8, 8, 0.8000, 8, 'approved', 'keep_both', 'Acceptable similarity level', 8, 2, '2025-03-08 11:00:00', '2025-03-09 11:00:00', '2025-03-08 11:00:00', '2025-03-09 11:00:00'),
-(9, 9, 0.8700, 9, 'needs_review', 'mark_as_variant', 'Rephrase for clarity', 9, 2, '2025-03-09 11:00:00', '2025-03-10 11:00:00', '2025-03-09 11:00:00', '2025-03-10 11:00:00'),
-(10, 10, 0.8300, 10, 'approved', 'keep_both', 'No significant duplication', 10, 2, '2025-03-10 11:00:00', '2025-03-11 11:00:00', '2025-03-10 11:00:00', '2025-03-11 11:00:00');
+(1, 2, 0.9500, 1, 'rejected', 'remove_new', 'Question is too similar to existing', 1, 2, '2025-03-01 11:00:00', '2025-03-02 11:00:00', '2025-03-01 11:00:00', '2025-03-02 11:00:00'),
+(2, 3, 0.8200, 2, 'approved', 'keep_both', 'Sufficiently unique', 2, 1, '2025-03-02 11:00:00', '2025-03-03 11:00:00', '2025-03-02 11:00:00', '2025-03-03 11:00:00'),
+(3, 4, 0.9100, 3, 'needs_review', 'mark_as_variant', 'Needs rephrasing', 3, 2, '2025-03-03 11:00:00', '2025-03-04 11:00:00', '2025-03-03 11:00:00', '2025-03-04 11:00:00'),
+(4, 5, 0.7800, 4, 'approved', 'keep_both', 'No significant overlap', 4, 2, '2025-03-04 11:00:00', '2025-03-05 11:00:00', '2025-03-04 11:00:00', '2025-03-05 11:00:00'),
+(5, 6, 0.8900, 5, 'approved', 'merge_questions', 'Merged with existing question', 5, 2, '2025-03-05 11:00:00', '2025-03-06 11:00:00', '2025-03-05 11:00:00', '2025-03-06 11:00:00'),
+(6, 7, 0.8500, 6, 'approved', 'keep_both', 'Unique content', 6, 2, '2025-03-06 11:00:00', '2025-03-07 11:00:00', '2025-03-06 11:00:00', '2025-03-07 11:00:00'),
+(7, 8, 0.9200, 7, 'rejected', 'remove_new', 'Highly similar to existing', 7, 2, '2025-03-07 11:00:00', '2025-03-08 11:00:00', '2025-03-07 11:00:00', '2025-03-08 11:00:00'),
+(8, 9, 0.8000, 8, 'approved', 'keep_both', 'Acceptable similarity level', 8, 2, '2025-03-08 11:00:00', '2025-03-09 11:00:00', '2025-03-08 11:00:00', '2025-03-09 11:00:00'),
+(9, 10, 0.8700, 9, 'needs_review', 'mark_as_variant', 'Rephrase for clarity', 9, 2, '2025-03-09 11:00:00', '2025-03-10 11:00:00', '2025-03-09 11:00:00', '2025-03-10 11:00:00'),
+(10, 1, 0.8300, 10, 'approved', 'keep_both', 'No significant duplication', 10, 2, '2025-03-10 11:00:00', '2025-03-11 11:00:00', '2025-03-10 11:00:00', '2025-03-11 11:00:00');
+
+-- Thêm một số bản ghi duplicate_detection với trạng thái pending để test
+INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, detection_feedback, detected_by, processed_by, detected_at, processed_at) VALUES
+(11, 12, 0.95, 1, 'pending', NULL, NULL, 1, NULL, '2025-06-17 10:00:00', NULL),
+(13, 14, 0.88, 2, 'pending', NULL, NULL, 2, NULL, '2025-06-17 11:00:00', NULL),
+(15, 16, 0.92, 3, 'pending', NULL, NULL, 1, NULL, '2025-06-17 12:00:00', NULL),
+(17, 18, 0.85, 4, 'pending', NULL, NULL, 3, NULL, '2025-06-17 13:00:00', NULL),
+(19, 20, 0.91, 5, 'pending', NULL, NULL, 2, NULL, '2025-06-17 14:00:00', NULL);
+
+-- Thêm thêm câu hỏi để có đủ dữ liệu cho các bản ghi duplicate_detection ở trên
+INSERT INTO questions (course_id, clo_id, task_id, plan_id, difficulty_level, content, answer_key, answer_f1, answer_f2, answer_f3, explanation, created_by, reviewed_by, approved_by, submitted_at, reviewed_at, approved_at, status, block_question, hidden_question, usage_count, last_used, feedback, tags) VALUES
+(1, 1, 1, 1, 'comprehension', 'What is the purpose of a UML diagram?', 'A', 'To visualize system design', 'To compile code', 'To test software', 'To document requirements', 'UML diagrams are used to visualize the design of a system.', 1, 2, 2, '2025-06-17 08:00:00', '2025-06-17 08:30:00', '2025-06-17 09:00:00', 'approved', 'active', 0, 0, NULL, 'Good question', 'software-engineering,uml'),
+(1, 1, 1, 1, 'comprehension', 'Find the order of the group Z_6', 'A', '6', '3', '2', '12', 'The order of Z_6 is 6 since it contains 6 elements.', 3, 2, 2, '2025-06-17 08:15:00', '2025-06-17 08:45:00', '2025-06-17 09:15:00', 'approved', 'active', 0, 0, NULL, 'Good question', 'abstract-algebra,group-theory'),
+(2, 2, 2, 1, 'Basic Application', 'Explain the role of UML diagrams in system design?', 'A', 'They provide visual representation', 'They generate code automatically', 'They replace documentation', 'They are only for testing', 'UML diagrams help visualize and communicate system design.', 1, 2, 2, '2025-06-17 08:30:00', '2025-06-17 09:00:00', '2025-06-17 09:30:00', 'approved', 'active', 0, 0, NULL, 'Clear explanation', 'software-engineering,uml'),
+(2, 2, 2, 1, 'Basic Application', 'What is the order of the cyclic group Z_6?', 'A', '6', '3', '2', '12', 'Z_6 has order 6 as it contains exactly 6 elements.', 3, 2, 2, '2025-06-17 08:45:00', '2025-06-17 09:15:00', '2025-06-17 09:45:00', 'approved', 'active', 0, 0, NULL, 'Good question', 'abstract-algebra,group-theory'),
+(1, 1, 1, 1, 'recognition', 'What does UML stand for?', 'A', 'Unified Modeling Language', 'Universal Markup Language', 'Uniform Management Language', 'User Manual Language', 'UML stands for Unified Modeling Language.', 1, 2, 2, '2025-06-17 09:00:00', '2025-06-17 09:30:00', '2025-06-17 10:00:00', 'approved', 'active', 0, 0, NULL, 'Basic question', 'software-engineering,uml'),
+(2, 2, 2, 1, 'recognition', 'Define the order of a finite group', 'A', 'Number of elements in the group', 'Maximum element value', 'Number of operations', 'Sum of all elements', 'The order of a finite group is the number of elements it contains.', 3, 2, 2, '2025-06-17 09:15:00', '2025-06-17 09:45:00', '2025-06-17 10:15:00', 'approved', 'active', 0, 0, NULL, 'Fundamental concept', 'abstract-algebra,group-theory'),
+(1, 1, 1, 1, 'Advanced Application', 'How do UML diagrams facilitate software maintenance?', 'A', 'By providing clear visual documentation', 'By automatically updating code', 'By reducing system complexity', 'By eliminating bugs', 'UML diagrams serve as documentation that helps in understanding and maintaining software systems.', 1, 2, 2, '2025-06-17 09:30:00', '2025-06-17 10:00:00', '2025-06-17 10:30:00', 'approved', 'active', 0, 0, NULL, 'Advanced concept', 'software-engineering,uml,maintenance'),
+(2, 2, 2, 1, 'Advanced Application', 'Prove that the order of Z_6 is 6', 'A', 'By listing all elements: {0,1,2,3,4,5}', 'By counting operations', 'By using Lagrange theorem', 'By induction', 'Z_6 = {0,1,2,3,4,5} under addition modulo 6, so it has 6 elements.', 3, 2, 2, '2025-06-17 09:45:00', '2025-06-17 10:15:00', '2025-06-17 10:45:00', 'approved', 'active', 0, 0, NULL, 'Proof-based question', 'abstract-algebra,group-theory,proof'),
+(1, 1, 1, 1, 'comprehension', 'Compare UML class diagrams with sequence diagrams', 'A', 'Class diagrams show structure, sequence diagrams show behavior', 'Both show the same information', 'Class diagrams are dynamic, sequence diagrams are static', 'No significant difference', 'Class diagrams show static structure while sequence diagrams show dynamic behavior.', 1, 2, 2, '2025-06-17 10:00:00', '2025-06-17 10:30:00', '2025-06-17 11:00:00', 'approved', 'active', 0, 0, NULL, 'Comparison question', 'software-engineering,uml,diagrams'),
+(2, 2, 2, 1, 'comprehension', 'What is the relationship between Z_6 and its subgroups?', 'A', 'Subgroups divide the order by Lagrange theorem', 'No relationship exists', 'All subgroups have order 6', 'Subgroups are always cyclic', 'By Lagrange theorem, subgroup orders must divide the group order.', 3, 2, 2, '2025-06-17 10:15:00', '2025-06-17 10:45:00', '2025-06-17 11:15:00', 'approved', 'active', 0, 0, NULL, 'Theory application', 'abstract-algebra,group-theory,subgroups');
+
+-- Cập nhật lại bảng duplicate_detections để tham chiếu đến các câu hỏi mới
+UPDATE duplicate_detections SET new_question_id = 11, similar_question_id = 13 WHERE detection_id = 11;
+UPDATE duplicate_detections SET new_question_id = 12, similar_question_id = 14 WHERE detection_id = 12;
+UPDATE duplicate_detections SET new_question_id = 15, similar_question_id = 17 WHERE detection_id = 13;
+UPDATE duplicate_detections SET new_question_id = 16, similar_question_id = 18 WHERE detection_id = 14;
+UPDATE duplicate_detections SET new_question_id = 19, similar_question_id = 20 WHERE detection_id = 15;
 
 -- Additional sample data for testing duplicate detection functionality
 

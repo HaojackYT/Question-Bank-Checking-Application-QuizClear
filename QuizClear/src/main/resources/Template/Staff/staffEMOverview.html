@@ -1,140 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/Menu-Staff.css" />
-    <link rel="stylesheet" href="../../Static/css/staff/staffEMOverview.css">
+    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/header.css}">
+    <link rel="stylesheet" th:href="@{/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Menu-Staff.css}" />
+    <link rel="stylesheet" th:href="@{/css/staff/staffEMOverview.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Data Structures Final Exam - Overview</title>
+    <title th:text="${overview.examTitle} + ' - Overview'">Exam Overview</title>
 </head>
 <body>
-    <!-- Header -->
-    <div id="header-placeholder"></div>
-
-    <!-- Body -->
+    <header class="header" th:insert="~{header_user :: header}"></header>
     <div id="Container-body">
-        <!-- Menu -->
-        <div id="menu-HTML"></div>
-
-        <!-- Main content -->
+        <div id="menu-HTML" th:insert="~{Menu-Staff :: menu}"></div>
         <div id="main">
-            <!-- Exam Header -->
             <div class="exam-header">
-                <div class="back-arrow">
+                <a th:href="@{/staff/exams}" class="back-arrow">
                     <i class="fas fa-arrow-left"></i>
-                </div>
+                </a>
                 <div class="exam-title">
-                    <h1>Data Structures Final Exam</h1>
+                    <h1 th:text="${overview.examTitle}"></h1>
                     <div class="exam-meta">
-                        <span class="course-code">CS301-FINAL-2023</span>
+                        <span class="course-code" th:text="${overview.examCode}"></span>
                         <span class="separator">•</span>
-                        <span class="subject">Computer Science</span>
+                        <span class="subject" th:text="${overview.courseName}"></span>
                         <span class="separator">•</span>
-                        <span class="term">Fall 2023</span>
+                        <span class="term" th:text="${overview.semester} + ' ' + ${overview.academicYear}"></span>
                     </div>
                 </div>
             </div>
-
-            <!-- Exam Statistics -->
             <div class="exam-stats">
                 <div class="stat-item">
                     <div class="stat-label">Questions</div>
-                    <div class="stat-value">50</div>
-                    <div class="stat-subtext">2 versions</div>
+                    <div class="stat-value" th:text="${overview.totalQuestions}"></div>
+                    <div class="stat-subtext" th:text="${overview.versionCount} + ' versions'"></div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-label">Deadline</div>
-                    <div class="stat-value">2023-06-20</div>
-                    <div class="stat-subtext">Created on 2023-06-01</div>
+                    <div class="stat-value" th:text="${overview.deadline}"></div>
+                    <div class="stat-subtext" th:text="'Created on ' + ${overview.createdDate}"></div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-label">Assigned To</div>
-                    <div class="stat-value">3</div>
-                    <div class="stat-subtext">Dr. Smith, Prof. Davis, Dr. Brown</div>
+                    <div class="stat-value" th:text="${#lists.size(overview.assignedTeam)}"></div>
+                    <div class="stat-subtext">
+                        <span th:each="member, stat : ${overview.assignedTeam}">
+                            <span th:text="${member.fullName}"></span>
+                            <span th:if="${!stat.last}">, </span>
+                        </span>
+                    </div>
                 </div>
             </div>
-
-            <!-- Tab Navigation -->
             <div class="exam-tabs">
                 <button class="tab-btn active" data-tab="overview">Overview</button>
-                <button class="tab-btn" data-tab="questions">Questions</button>
-                <button class="tab-btn" data-tab="feedback">Feedback</button>
+                <button class="tab-btn" data-tab="questions"
+                        th:onclick="'window.location.href=\'/staff/exams/' + ${overview.examId} + '/preview-questions\''">
+                    Questions
+                </button>
+                <button class="tab-btn" data-tab="feedback"
+                        th:onclick="'window.location.href=\'/staff/exams/' + ${overview.examId} + '/feedback\''">
+                    Feedback
+                </button>
             </div>
-
-            <!-- Overview Content -->
             <div class="overview-content row-flex">
                 <div class="overview-box exam-structure">
                     <h3>Exam Structure</h3>
                     <p class="structure-subtitle">Question distribution by difficulty</p>
                     <div class="difficulty-bars">
-                        <div class="difficulty-item">
+                        <div class="difficulty-item" th:each="stat : ${overview.difficultyStats.values()}">
                             <div class="difficulty-info">
-                                <span class="difficulty-label">Basic (Recognition)</span>
-                                <span class="difficulty-percentage">25% (13 questions)</span>
+                                <span class="difficulty-label" th:text="${stat.label}"></span>
+                                <span class="difficulty-percentage"
+                                      th:text="${stat.percent} + '% (' + stat.count + ' questions)'"></span>
                             </div>
                             <div class="progress-bar">
-                                <div class="progress-fill basic" style="width: 25%"></div>
-                            </div>
-                        </div>
-                        <div class="difficulty-item">
-                            <div class="difficulty-info">
-                                <span class="difficulty-label">Intermediate (Understanding)</span>
-                                <span class="difficulty-percentage">40% (20 questions)</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill intermediate" style="width: 40%"></div>
-                            </div>
-                        </div>
-                        <div class="difficulty-item">
-                            <div class="difficulty-info">
-                                <span class="difficulty-label">Advanced (Application)</span>
-                                <span class="difficulty-percentage">25% (13 questions)</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill advanced" style="width: 25%"></div>
-                            </div>
-                        </div>
-                        <div class="difficulty-item">
-                            <div class="difficulty-info">
-                                <span class="difficulty-label">Expert (High Application)</span>
-                                <span class="difficulty-percentage">10% (5 questions)</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill expert" style="width: 10%"></div>
+                                <div class="progress-fill"
+                                     th:classappend="${stat.label.toLowerCase()}"
+                                     th:style="'width: ' + ${stat.percent} + '%'"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="overview-box assigned-team">
                     <h3>Assigned Team</h3>
                     <p class="team-subtitle">People responsible for this exam</p>
                     <div class="team-members">
-                        <div class="team-member">
-                            <div class="member-avatar">D</div>
+                        <div class="team-member" th:each="member : ${overview.assignedTeam}">
+                            <div class="member-avatar" th:text="${member.avatarLetter}"></div>
                             <div class="member-info">
-                                <div class="member-name">Dr. Smith</div>
-                                <div class="member-role">Department Head</div>
-                            </div>
-                            <button class="contact-btn">Contact</button>
-                        </div>
-                        <div class="team-member">
-                            <div class="member-avatar">P</div>
-                            <div class="member-info">
-                                <div class="member-name">Prof. Davis</div>
-                                <div class="member-role">Subject Expert</div>
-                            </div>
-                            <button class="contact-btn">Contact</button>
-                        </div>
-                        <div class="team-member">
-                            <div class="member-avatar">D</div>
-                            <div class="member-info">
-                                <div class="member-name">Dr. Brown</div>
-                                <div class="member-role">Reviewer</div>
+                                <div class="member-name" th:text="${member.fullName}"></div>
+                                <div class="member-role" th:text="${member.role}"></div>
                             </div>
                             <button class="contact-btn">Contact</button>
                         </div>
@@ -143,31 +100,5 @@
             </div>
         </div>
     </div>
-
-    <!-- Load header and menu -->
-    <script>
-        fetch('../../Template/header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-
-        fetch('../../Template/Menu-Staff.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-            });
-
-        document.querySelectorAll('.tab-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const tabName = button.getAttribute('data-tab');
-                if (tabName === 'questions') {
-                    window.location.href = 'question_preview.html';
-                } else if (tabName === 'feedback') {
-                    window.location.href = 'feedback_comments.html';
-                }
-            });
-        });
-    </script>
 </body>
 </html>

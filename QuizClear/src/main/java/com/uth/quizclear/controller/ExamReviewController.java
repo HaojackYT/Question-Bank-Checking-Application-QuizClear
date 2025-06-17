@@ -19,6 +19,13 @@ public class ExamReviewController {
     public String reviewExam(@PathVariable Long examId, Model model) {
         ExamReviewDTO reviewDTO = examReviewService.getExamReview(examId);
         model.addAttribute("exam", reviewDTO);
-        return "Staff/staffREReviewQuestion"; // trỏ tới file Thymeleaf
+        return "Staff/staffREReviewQuestion";
+    }
+
+    @GetMapping("/{examId}/questions")
+    public String questionList(@PathVariable Long examId, Model model) {
+        ExamReviewDTO reviewDTO = examReviewService.getExamReview(examId);
+        model.addAttribute("exam", reviewDTO);
+        return "Staff/staffREQuestionList";
     }
 }

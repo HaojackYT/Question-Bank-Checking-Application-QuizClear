@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
-    <link rel="stylesheet" href="../../Static/css/staff/staffREReviewQuestion.css">
+    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/header.css}">
+    <link rel="stylesheet" th:href="@{/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/css/staff/staffREReviewQuestion.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Review Exam</title>
 </head>
 <body>
+    <header class="header" th:insert="~{header_user :: header}"></header>
     <div id="header-placeholder"></div>
 
     <div id="Container-body">
         <div id="menu-HTML"></div>
 
+        <div class="sidebar" th:insert="~{Menu-Staff :: menu}"></div>
         <div id="main">
             <div class="review-exam-container">
                 <div class="review-exam-header">
@@ -32,29 +35,29 @@
                     <div class="stat-box">
                         <div class="label">Total Questions</div>
                         <div class="value" th:text="${exam.totalQuestions}"></div>
-                        <div class="percentage" 
-                             th:text="${exam.reviewedCount} + ' Reviewed (' + (exam.totalQuestions > 0 ? (exam.reviewedCount * 100 / exam.totalQuestions) : 0) + '%)'">
+                        <div class="percentage"
+                             th:text="|${exam.reviewedCount} Reviewed (${exam.totalQuestions > 0 ? (exam.reviewedCount * 100 / exam.totalQuestions) : 0}% )|">
                         </div>
                     </div>
                     <div class="stat-box">
                         <div class="label">Approved</div>
                         <div class="value" th:text="${exam.approvedCount}"></div>
-                        <div class="percentage" 
-                             th:text="(exam.totalQuestions > 0 ? (exam.approvedCount * 100 / exam.totalQuestions) : 0) + '% of total'">
+                        <div class="percentage"
+                             th:text="|${exam.totalQuestions > 0 ? (exam.approvedCount * 100 / exam.totalQuestions) : 0}% of total|">
                         </div>
                     </div>
                     <div class="stat-box">
                         <div class="label">Rejected</div>
                         <div class="value" th:text="${exam.rejectedCount}"></div>
-                        <div class="percentage" 
-                             th:text="(exam.totalQuestions > 0 ? (exam.rejectedCount * 100 / exam.totalQuestions) : 0) + '% of total'">
+                        <div class="percentage"
+                             th:text="|${exam.totalQuestions > 0 ? (exam.rejectedCount * 100 / exam.totalQuestions) : 0}% of total|">
                         </div>
                     </div>
                     <div class="stat-box">
                         <div class="label">Remaining</div>
                         <div class="value" th:text="${exam.remainingCount}"></div>
-                        <div class="percentage" 
-                             th:text="(exam.totalQuestions > 0 ? (exam.remainingCount * 100 / exam.totalQuestions) : 0) + '% of total'">
+                        <div class="percentage"
+                             th:text="|${exam.totalQuestions > 0 ? (exam.remainingCount * 100 / exam.totalQuestions) : 0}% of total|">
                         </div>
                     </div>
                 </div>
@@ -64,60 +67,64 @@
                     <button class="tab-button">Question List</button>
                 </div>
 
-                <!-- Hiển thị câu hỏi đầu tiên (hoặc theo index truyền vào) -->
-                <div class="question-review-section">
-                    <div class="question-header">
-                        <div class="question-number">
-                            Question <span th:text="${idx + 1}"></span> of <span th:text="${exam.totalQuestions}"></span>
+                <!-- Nếu có câu hỏi -->
+                <div class="question-review-section" th:if="${exam.questions != null and exam.questions.size() > 0}">
+                    <div th:with="q=${exam.questions[0]}">
+                        <div class="question-header">
+                            <div class="question-number">
+                                Question <span>1</span> of <span th:text="${exam.totalQuestions}"></span>
+                            </div>
+                            <div class="question-difficulty" th:text="${q.difficulty}"></div>
                         </div>
-                        <div class="question-difficulty" th:text="${q.difficulty}"></div>
-                    </div>
-                    <div class="question-instruction">
-                        Review and approve or reject this question
-                    </div>
+                        <div class="question-instruction">
+                            Review and approve or reject this question
+                        </div>
 
-                    <div class="question-content">
-                        <div class="question-text" th:text="'Question ' + (${idx + 1}) + ': ' + ${q.content}"></div>
-                        <div class="question-options">
-                            <div class="option-box"
-                                th:each="opt, optStat : ${q.options}" 
-                                th:classappend="${optStat.index == q.correctIndex} ? 'correct'">
-                                <span class="option-label" th:text="${'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.substring(optStat.index, optStat.index+1) + '.'}"></span>
-                                <span class="option-text">
-                                    <span th:text="${opt}"></span>
-                                    <span class="correct-label" th:if="${optStat.index == q.correctIndex}">(Correct)</span>
-                                </span>
+                        <div class="question-content">
+                            <div class="question-text" th:text="|Question 1: ${q.content}|"></div>
+                            <div class="question-options">
+                                <div class="option-box"
+                                    th:each="opt, optStat : ${q.options}"
+                                    th:classappend="${optStat.index == q.correctIndex} ? 'correct'">
+                                    <span class="option-label"
+                                          th:text="${'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.substring(optStat.index, optStat.index+1) + '.'}"></span>
+                                    <span class="option-text">
+                                        <span th:text="${opt}"></span>
+                                        <span class="correct-label" th:if="${optStat.index == q.correctIndex}">(Correct)</span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="feedback-section">
-                        <div class="feedback-label">Feedback (Optional)</div>
-                        <textarea placeholder="Enter feedback for this question if needed" th:text="${q.feedback}"></textarea>
-                    </div>
+                        <div class="feedback-section">
+                            <div class="feedback-label">Feedback (Optional)</div>
+                            <textarea placeholder="Enter feedback for this question if needed"
+                                      th:text="${q.feedback}"></textarea>
+                        </div>
 
-                    <div class="navigation-buttons">
-                        <button class="nav-button previous">
-                            <i class="fas fa-chevron-left"></i> Previous
-                        </button>
-                        <div class="nav-container">
-                            <button class="nav-button reject">
-                                <i class="fas fa-times"></i> Reject
+                        <div class="navigation-buttons">
+                            <button class="nav-button previous">
+                                <i class="fas fa-chevron-left"></i> Previous
                             </button>
-                            <button class="nav-button approve">
-                                <i class="fas fa-check"></i> Approve
+                            <div class="nav-container">
+                                <button class="nav-button reject">
+                                    <i class="fas fa-times"></i> Reject
+                                </button>
+                                <button class="nav-button approve">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                            </div>
+                            <button class="nav-button next">
+                                Next <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
-                        <button class="nav-button next">
-                            Next <i class="fas fa-chevron-right"></i>
-                        </button>
                     </div>
                 </div>
-            </div>
-            <!-- Nếu không có câu hỏi -->
-            <div class="question-review-section" th:if="${exam.questions == null or exam.questions.size() == 0}">
-                <div class="question-header">
-                    <div class="question-number">No questions available for this exam.</div>
+                <!-- Nếu không có câu hỏi -->
+                <div class="question-review-section" th:if="${exam.questions == null or exam.questions.size() == 0}">
+                    <div class="question-header">
+                        <div class="question-number">No questions available for this exam.</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -125,18 +132,26 @@
 
     <script>
         // Load header
-        fetch('../header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
+        // fetch('../Template/header_user.html')
+        //     .then(response => response.text())
+        //     .then(data => {
+        //         document.getElementById('header-placeholder').innerHTML = data;
+        //     });
 
         // Load menu
-        fetch('../Menu-Staff.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-            });
+        // fetch('../Template/Menu-Staff.html')
+        //     .then(response => response.text())
+        //     .then(data => {
+        //         document.getElementById('menu-HTML').innerHTML = data;
+        //     });
+        
     </script>
 </body>
 </html>
+
+<header class="header" th:insert="~{header_user :: header}"></header>
+    <div class="container">
+
+        <div id="Container-body">
+
+            <div class="sidebar" th:insert="~{Menu-Staff :: menu}"></div>
