@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 import com.uth.quizclear.model.enums.PlanStatusConverter;
+import com.uth.quizclear.model.enums.Priority;
 import com.uth.quizclear.model.enums.PriorityConverter;
 
 @Entity
@@ -180,21 +181,4 @@ public class Plan {
         public String getValue() {
             return value;
         }
-    }
-
-    public enum Priority {
-        LOW("low"),
-        MEDIUM("medium"),
-        HIGH("high");
-
-        private final String value;
-
-        Priority(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-}
+    }}

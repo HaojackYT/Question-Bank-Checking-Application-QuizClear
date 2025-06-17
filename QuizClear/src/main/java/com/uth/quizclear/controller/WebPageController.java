@@ -1,13 +1,20 @@
 package com.uth.quizclear.controller;
 
 import com.uth.quizclear.model.dto.UserBasicDTO;
+import com.uth.quizclear.model.entity.User;
+import com.uth.quizclear.model.enums.UserRole;
+import com.uth.quizclear.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class WebPageController {
+
+    @Autowired
+    private UserRepository userRepository;
 
     // ========== CODE CŨ CỦA BẠN - GIỮ NGUYÊN ===========
 
@@ -34,11 +41,6 @@ public class WebPageController {
         return "Staff/staffDupContent";
     }
 
-    @GetMapping("/Template/Staff/staffDupDetails")
-    public String staffDupDetails() {
-        return "Staff/staffDupDetails";
-    }
-
     @GetMapping("/Template/Staff/staffStats")
     public String staffStats() {
         return "Staff/staffStats";
@@ -58,7 +60,6 @@ public class WebPageController {
     public String menuStaff() {
         return "Menu-Staff";
     }
-
 
     @GetMapping("/Template/Menu-Staff.html")
     public String templateMenuStaff() {
@@ -99,16 +100,31 @@ public class WebPageController {
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
         model.addAttribute("user", user);
         return "staffDashboard"; // This will look for templates/staffDashboard.html
-    }
-
-    @GetMapping("/hed-dashboard")
+    }    @GetMapping("/hed-dashboard")
     public String hedDashboard(HttpSession session, Model model) {
-        if (!isAuthorized(session, "HoD")) {
-            return "redirect:/login";
-        }
-        UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
+        // Simple mock user for now
+        UserBasicDTO user = new UserBasicDTO();
+        user.setUserId(1L);
+        user.setFullName("HED User");
+        user.setEmail("hed@test.com");
+        user.setRole("HoD");
+        user.setDepartment("Computer Science");
         model.addAttribute("user", user);
-        return "HED_Dashboard"; // This will look for templates/HED_Dashboard.html
+        return "HEAD_OF_DEPARTMENT/HED_Dashboard";
+    }@GetMapping("/hed-approve-questions")
+    public String hedApproveQuestions(HttpSession session, Model model) {
+        // TODO: Implement proper authentication when ready
+        // For now, use first HoD user from database
+        UserBasicDTO user = getUserFromDatabase("HoD");
+        model.addAttribute("user", user);
+        return "HEAD_OF_DEPARTMENT/HED_ApproveQuestion";
+    }    @GetMapping("/hed-join-task")
+    public String hedJoinTask(HttpSession session, Model model) {
+        // TODO: Implement proper authentication when ready
+        // For now, use first HoD user from database
+        UserBasicDTO user = getUserFromDatabase("HoD");
+        model.addAttribute("user", user);
+        return "HEAD_OF_DEPARTMENT/HED_JoinTask";
     }
 
     @GetMapping("/sl-dashboard")
@@ -141,11 +157,52 @@ public class WebPageController {
         return "HOE_Dashboard"; // This will look for templates/HOE_Dashboard.html
     }
 
-    // ========== HELPER METHODS CHO LOGIN ==========
+    // ========== HED MENU ENDPOINT ==========
+    @GetMapping("/Template/HEAD_OF_DEPARTMENT/Menu-HED.html")
+    public String hedMenu() {
+        return "HEAD_OF_DEPARTMENT/Menu-HED";
+    }    // ========== HELPER METHODS CHO LOGIN ==========
 
     private boolean isAuthorized(HttpSession session, String requiredRole) {
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
         return user != null && user.getRole().equals(requiredRole);
+    }
+    
+    // Helper method to get user from database instead of mock data
+    private UserBasicDTO getUserFromDatabase(String role) {
+        try {
+            UserRole userRole = UserRole.valueOf(role);
+            User user = userRepository.findByRole(userRole).stream()
+                .findFirst()
+                .orElse(null);
+                
+            if (user != null) {
+                UserBasicDTO dto = new UserBasicDTO();
+                dto.setUserId(user.getUserId());
+                dto.setFullName(user.getFullName());
+                dto.setEmail(user.getEmail());
+                dto.setRole(user.getRole().name());
+                dto.setDepartment(user.getDepartment());
+                return dto;
+            }
+        } catch (Exception e) {
+            // Log error and return fallback
+            System.err.println("Error getting user from database: " + e.getMessage());
+        }
+        
+        // Fallback - return first user from database
+        return userRepository.findAll().stream()
+            .findFirst()
+            .map(user -> {
+                UserBasicDTO dto = new UserBasicDTO();
+                dto.setUserId(user.getUserId());
+                dto.setFullName(user.getFullName());
+                dto.setEmail(user.getEmail());
+                dto.setRole(user.getRole().name());
+                dto.setDepartment(user.getDepartment());
+                return dto;
+            })
+            .orElse(null);
     }
     
 

@@ -22,10 +22,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
 
 @Service
 public class DuplicationStaffService {
@@ -125,7 +121,14 @@ public class DuplicationStaffService {
         DuplicateDetection detection = repository.findById(detectionId)
                 .orElseThrow(() -> new RuntimeException("Detection not found with ID: " + detectionId));
         if (detection.getNewQuestionId() != null && detection.getNewQuestionId().equals(detection.getSimilarQuestionId())) {
-            throw new IllegalStateException("New and similar question IDs cannot be the same");
+            // Không throw lỗi, trả về null hoặc một DTO đặc biệt để giao diện không bị crash
+            // return null;
+            // Hoặc trả về một DTO với thông báo lỗi
+            DuplicateDetectionDTO dto = new DuplicateDetectionDTO();
+            dto.setDetectionId(detectionId);
+            dto.setStatus("INVALID");
+            dto.setFeedback("Dữ liệu detection không hợp lệ: Câu hỏi mới và câu hỏi trùng là một!");
+            return dto;
         }
         return convertToDTO(detection);
     }
@@ -187,28 +190,45 @@ public class DuplicationStaffService {
                 ))
                 .collect(Collectors.toList());        */
     }
-    
-    private DuplicateDetectionDTO convertToDTO(DuplicateDetection detection) {
+      private DuplicateDetectionDTO convertToDTO(DuplicateDetection detection) {
         Long newQuestionId = detection.getNewQuestionId();
         Long similarQuestionId = detection.getSimilarQuestionId();
 
         QuestionDetailDTO newQuestion = null;
-        QuestionDetailDTO similarQuestion = null;        UserBasicDTO detectedBy = null;
-        UserBasicDTO processedBy = null;        try {
+        QuestionDetailDTO similarQuestion = null;
+        UserBasicDTO detectedBy = null;
+        UserBasicDTO processedBy = null;
+        
+        // AI Analysis data
+        String aiAnalysisText = null;
+        String aiRecommendation = null;
+        String modelUsed = null;
+        Long aiCheckId = detection.getAiCheckId();
+
+        try {
             System.out.println("DEBUG [" + java.time.LocalDateTime.now() + "]: Converting detection " + detection.getDetectionId() + " - newQ: " + newQuestionId + ", similarQ: " + similarQuestionId);
-            
-            // TEMPORARY BYPASS - Create simple real-like data without mock
+              // Get full question details with JOIN
             if (newQuestionId != null) {
-                newQuestion = createRealQuestion(newQuestionId);
+                newQuestion = getFullQuestionDetails(newQuestionId);
             }
             if (similarQuestionId != null) {
-                similarQuestion = createRealQuestion(similarQuestionId);
+                similarQuestion = getFullQuestionDetails(similarQuestionId);
             }
+            
+            // Get user details
             if (detection.getDetectedBy() != null) {
-                detectedBy = createMockUser(detection.getDetectedBy(), "User " + detection.getDetectedBy());
+                detectedBy = getUserDetails(detection.getDetectedBy());
             }
             if (detection.getProcessedBy() != null) {
-                processedBy = createMockUser(detection.getProcessedBy(), "Processor " + detection.getProcessedBy());
+                processedBy = getUserDetails(detection.getProcessedBy());
+            }
+            
+            // Get AI analysis data
+            if (aiCheckId != null) {
+                Map<String, Object> aiData = getAIAnalysisData(aiCheckId);
+                aiAnalysisText = (String) aiData.get("analysisText");
+                aiRecommendation = (String) aiData.get("recommendation");
+                modelUsed = (String) aiData.get("modelUsed");
             }
             
             System.out.println("DEBUG [" + java.time.LocalDateTime.now() + "]: Detection " + detection.getDetectionId() + " - newQ result: " + (newQuestion != null ? newQuestion.getContent() : "NULL") + 
@@ -222,16 +242,18 @@ public class DuplicationStaffService {
         // Log warnings but don't skip - create DTO with available data
         if (newQuestion == null) {
             System.err.println("New question not found for detection ID: " + detection.getDetectionId() + ", questionId: " + newQuestionId);
-        }        if (similarQuestion == null) {
+        }
+        if (similarQuestion == null) {
             System.err.println("Similar question not found for detection ID: " + detection.getDetectionId() + ", questionId: " + similarQuestionId);
         }
-          return new DuplicateDetectionDTO(
+          
+        return new DuplicateDetectionDTO(
                 detection.getDetectionId(),
                 newQuestion,
                 similarQuestion,
                 detection.getSimilarityScore() != null ? detection.getSimilarityScore().doubleValue() : null,
-                null, // aiCheckId as Long (parse from String if needed)
-                null, // modelUsed
+                aiCheckId,
+                modelUsed,
                 detection.getStatus() != null ? detection.getStatus().getValue() : null,
                 detection.getAction() != null ? detection.getAction().getValue() : null,
                 detection.getDetectionFeedback(),
@@ -239,8 +261,8 @@ public class DuplicationStaffService {
                 processedBy,
                 detection.getDetectedAt(),
                 detection.getProcessedAt(),
-                null, // aiAnalysisText
-                null, // aiRecommendation
+                aiAnalysisText,
+                aiRecommendation,
                 detection.getSimilarityScore() != null && detection.getSimilarityScore().doubleValue() >= 0.8,
                 determinePriorityLevel(detection.getSimilarityScore())
         );
@@ -269,79 +291,7 @@ public class DuplicationStaffService {
     }
       public List<DuplicateDetection> testRawRepository() {
         return repository.findAll();
-    }
-    
-    private QuestionDetailDTO createRealQuestion(Long questionId) {
-        try {
-            System.out.println("DEBUG: Attempting to load REAL question with ID: " + questionId);
-            
-            // Try to get real question from database using native query
-            @SuppressWarnings("unchecked")
-            List<Object[]> results = entityManager.createNativeQuery(
-                "SELECT q.question_id, q.content, q.answer_key, q.answer_f1, q.answer_f2, q.answer_f3, " +
-                "       q.difficulty_level, q.course_id, c.course_name, q.created_by " +
-                "FROM questions q LEFT JOIN courses c ON q.course_id = c.course_id " +
-                "WHERE q.question_id = ?1"
-            ).setParameter(1, questionId).getResultList();
-            
-            if (!results.isEmpty()) {
-                Object[] result = results.get(0);
-                
-                QuestionDetailDTO question = new QuestionDetailDTO();
-                question.setQuestionId(questionId);
-                question.setContent((String) result[1]);
-                question.setAnswerKey((String) result[2]);
-                question.setAnswerF1((String) result[3]);
-                question.setAnswerF2((String) result[4]);
-                question.setAnswerF3((String) result[5]);
-                question.setDifficultyLevel((String) result[6]);
-                question.setCourseId(result[7] != null ? ((Number) result[7]).longValue() : null);
-                question.setCourseName((String) result[8]);
-                question.setCreatedBy(result[9] != null ? ((Number) result[9]).longValue() : null);
-                question.setCreatorName("User " + question.getCreatedBy()); // Placeholder until we have user service
-                
-                System.out.println("DEBUG: SUCCESS - Loaded REAL question " + questionId + ": " + question.getContent());
-                return question;
-            } else {
-                System.out.println("DEBUG: WARNING - No question found in database with ID: " + questionId);
-            }
-            
-        } catch (Exception e) {
-            System.out.println("DEBUG: ERROR - Failed to load real question " + questionId + ": " + e.getMessage());
-            e.printStackTrace();
-        }
-        
-        // If we reach here, database query failed or returned no results
-        // Return a clear indication that this is fallback data
-        QuestionDetailDTO question = new QuestionDetailDTO();
-        question.setQuestionId(questionId);
-        question.setContent("FALLBACK: Question " + questionId + " (Database query failed)");
-        question.setAnswerKey("A");
-        question.setAnswerF1("Fallback Answer A");
-        question.setAnswerF2("Fallback Answer B");
-        question.setAnswerF3("Fallback Answer C");
-        question.setDifficultyLevel("recognition");
-        question.setCourseId(1L);
-        question.setCourseName("Fallback Course");
-        question.setCreatedBy(1L);
-        question.setCreatorName("Fallback Creator");
-        
-        System.out.println("DEBUG: FALLBACK - Returning fallback data for question " + questionId);
-        return question;
-    }
-
-    private UserBasicDTO createMockUser(Long userId, String name) {
-        UserBasicDTO mockUser = new UserBasicDTO();
-        mockUser.setUserId(userId);
-        mockUser.setFullName(name);
-        mockUser.setEmail(name.toLowerCase().replace(" ", ".") + "@mock.com");
-        mockUser.setRole("Staff");
-        mockUser.setDepartment("Mock Department");
-        mockUser.setAvatarUrl(null);
-        return mockUser;
-    }
-
-    @Transactional(readOnly = true)
+    }    @Transactional(readOnly = true)
     public Map<String, Object> getFilterOptions() {
         try {
             List<DuplicateDetection> allDetections = repository.findAll();
@@ -350,11 +300,10 @@ public class DuplicationStaffService {
             Set<String> subjects = new HashSet<>();
             Set<String> submitters = new HashSet<>();
             
-            for (DuplicateDetection detection : allDetections) {
-                // Get subject from question
+            for (DuplicateDetection detection : allDetections) {                // Get subject from question
                 if (detection.getNewQuestionId() != null) {
                     try {
-                        QuestionDetailDTO question = createRealQuestion(detection.getNewQuestionId());
+                        QuestionDetailDTO question = getFullQuestionDetails(detection.getNewQuestionId());
                         if (question != null && question.getCourseName() != null) {
                             subjects.add(question.getCourseName());
                         }
@@ -440,5 +389,137 @@ public class DuplicationStaffService {
             e.printStackTrace();
             return new ArrayList<>();
         }
+    }
+    
+    /**
+     * Get full question details with JOIN queries to courses, CLOs, and users
+     */
+    private QuestionDetailDTO getFullQuestionDetails(Long questionId) {
+        try {
+            System.out.println("DEBUG: Loading full question details for ID: " + questionId);
+            
+            // Full JOIN query to get all question details including course, CLO, and user info
+            @SuppressWarnings("unchecked")
+            List<Object[]> results = entityManager.createNativeQuery(
+                "SELECT " +
+                "  q.question_id, q.content, q.answer_key, q.answer_f1, q.answer_f2, q.answer_f3, " +
+                "  q.explanation, q.difficulty_level, q.status, q.created_at, " +
+                "  q.course_id, c.course_name, c.course_code, " +
+                "  q.clo_id, clo.clo_code, clo.clo_description, " +
+                "  q.created_by, u.full_name, u.email " +
+                "FROM questions q " +
+                "LEFT JOIN courses c ON q.course_id = c.course_id " +
+                "LEFT JOIN clos clo ON q.clo_id = clo.clo_id " +
+                "LEFT JOIN users u ON q.created_by = u.user_id " +
+                "WHERE q.question_id = ?1"
+            ).setParameter(1, questionId).getResultList();
+            
+            if (!results.isEmpty()) {
+                Object[] result = results.get(0);
+                
+                QuestionDetailDTO question = new QuestionDetailDTO();
+                
+                // Basic question info
+                question.setQuestionId(questionId);
+                question.setContent((String) result[1]);
+                question.setAnswerKey((String) result[2]);
+                question.setAnswerF1((String) result[3]);
+                question.setAnswerF2((String) result[4]);
+                question.setAnswerF3((String) result[5]);
+                question.setExplanation((String) result[6]);
+                question.setDifficultyLevel((String) result[7]);
+                question.setStatus((String) result[8]);
+                question.setCreatedAt(result[9] != null ? ((java.sql.Timestamp) result[9]).toLocalDateTime() : null);
+                
+                // Course info
+                question.setCourseId(result[10] != null ? ((Number) result[10]).longValue() : null);
+                question.setCourseName((String) result[11]);
+                question.setCourseCode((String) result[12]);
+                
+                // CLO info
+                question.setCloId(result[13] != null ? ((Number) result[13]).longValue() : null);
+                question.setCloCode((String) result[14]);
+                question.setCloDescription((String) result[15]);
+                
+                // Creator info
+                question.setCreatedBy(result[16] != null ? ((Number) result[16]).longValue() : null);
+                question.setCreatorName((String) result[17]);
+                question.setCreatorEmail((String) result[18]);
+                
+                System.out.println("DEBUG: Successfully loaded full question details for ID " + questionId);
+                return question;
+            } else {
+                System.out.println("DEBUG: No question found with ID: " + questionId);
+                return null;
+            }
+            
+        } catch (Exception e) {
+            System.err.println("DEBUG: Error loading question details for ID " + questionId + ": " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    /**
+     * Get user details by user ID
+     */
+    private UserBasicDTO getUserDetails(Long userId) {
+        try {
+            if (userId == null) return null;
+            
+            @SuppressWarnings("unchecked")
+            List<Object[]> results = entityManager.createNativeQuery(
+                "SELECT user_id, full_name, email, role, department, avatar_url " +
+                "FROM users WHERE user_id = ?1"
+            ).setParameter(1, userId).getResultList();
+            
+            if (!results.isEmpty()) {
+                Object[] result = results.get(0);
+                
+                UserBasicDTO user = new UserBasicDTO();
+                user.setUserId(userId);
+                user.setFullName((String) result[1]);
+                user.setEmail((String) result[2]);
+                user.setRole((String) result[3]);
+                user.setDepartment((String) result[4]);
+                user.setAvatarUrl((String) result[5]);
+                
+                return user;
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Error loading user details for ID " + userId + ": " + e.getMessage());
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Get AI analysis data from ai_duplicate_checks table
+     */
+    private Map<String, Object> getAIAnalysisData(Long aiCheckId) {
+        Map<String, Object> result = new HashMap<>();
+        
+        try {
+            if (aiCheckId == null) return result;
+            
+            @SuppressWarnings("unchecked")
+            List<Object[]> results = entityManager.createNativeQuery(
+                "SELECT model_used, analysis_text, recommendation_text " +
+                "FROM ai_duplicate_checks WHERE check_id = ?1"
+            ).setParameter(1, aiCheckId).getResultList();
+            
+            if (!results.isEmpty()) {
+                Object[] row = results.get(0);
+                result.put("modelUsed", (String) row[0]);
+                result.put("analysisText", (String) row[1]);
+                result.put("recommendation", (String) row[2]);
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Error loading AI analysis data for check ID " + aiCheckId + ": " + e.getMessage());
+        }
+        
+        return result;
     }
 }

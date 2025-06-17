@@ -13,6 +13,7 @@ public class ExamSummaryDTO {
     private LocalDateTime dueDate;
     private ExamReviewStatus reviewStatus;
     private String createdBy;
+    private Integer totalQuestions;
     
     public ExamSummaryDTO(Long examId, String examTitle, String courseName, String courseDepartment,
             LocalDateTime createdAt, LocalDateTime dueDate, ExamReviewStatus reviewStatus, String createdBy) {
@@ -24,6 +25,21 @@ public class ExamSummaryDTO {
         this.dueDate = dueDate;
         this.reviewStatus = reviewStatus;
         this.createdBy = createdBy;
+        this.totalQuestions = 0; // Default value
+    }
+    
+    // Constructor with totalQuestions
+    public ExamSummaryDTO(Long examId, String examTitle, String courseName, String courseDepartment,
+            LocalDateTime createdAt, LocalDateTime dueDate, ExamReviewStatus reviewStatus, String createdBy, Integer totalQuestions) {
+        this.examId = examId;
+        this.examTitle = examTitle;
+        this.courseName = courseName;
+        this.courseDepartment = courseDepartment;
+        this.createdAt = createdAt;
+        this.dueDate = dueDate;
+        this.reviewStatus = reviewStatus;
+        this.createdBy = createdBy;
+        this.totalQuestions = totalQuestions;
     }
 
     public Long getExamId() { return examId; }
@@ -46,7 +62,9 @@ public class ExamSummaryDTO {
     
     public ExamReviewStatus getReviewStatus() { return reviewStatus; }
     public void setReviewStatus(ExamReviewStatus reviewStatus) { this.reviewStatus = reviewStatus; }
-    
-    public String getCreatedBy() { return createdBy; }
+      public String getCreatedBy() { return createdBy; }
     public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
+    
+    public Integer getTotalQuestions() { return totalQuestions; }
+    public void setTotalQuestions(Integer totalQuestions) { this.totalQuestions = totalQuestions; }
 }

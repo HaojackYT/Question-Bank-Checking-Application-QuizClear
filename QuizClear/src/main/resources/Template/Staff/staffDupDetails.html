@@ -1,80 +1,108 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <link rel="stylesheet" th:href="@{/css/staff/staffDupDetails.css}">
-    <link rel="stylesheet" th:href="@{/css/staff/staffDup.css}">
-</head>
-<body>
-    <div class="comparison-section">
-        <div class="comparison-header">
-            <div>
-                <h2 class="comparison-title">Question Comparison</h2>
-                <p class="comparison-subtitle">Detailed comparison between the new question and potential duplicate</p>
+<div class="dup-details-root dup-details-content" th:fragment="root">
+    <div th:if="${detection == null}" style="color:red; font-weight:bold; margin:2em;">
+        <p>Error: Detection data not found!</p>
+        <a href="javascript:history.back()">Back to List</a>
+    </div>
+    <div th:if="${detection != null and detection.status == 'INVALID'}" style="color:red; font-weight:bold; margin:2em;">
+        <p th:text="${detection.feedback}">Dữ liệu detection không hợp lệ!</p>
+        <a href="javascript:history.back()">Quay lại</a>
+    </div>
+    <div th:if="${detection != null and detection.status != 'INVALID'}">
+        <div class="comparison-section">
+            <div class="comparison-header">                <div>
+                    <h2 class="comparison-title">Question Comparison</h2>
+                    <p class="comparison-subtitle">Detailed comparison between the new question and potential duplicate</p>
+                </div>
+                <a class="back-link" href="#" onclick="return false;">← Back to List</a>
             </div>
-            <a class="back-link" href="#" onclick="history.back()">← Back to List</a>
+            <div class="question-cards">
+                <div class="question-card">
+                    <div class="question-label">New Question</div>
+                    <div class="question-text" th:text="${detection.newQuestion?.content} ?: 'N/A'"></div>
+                    <div class="question-meta">
+                        <div class="meta-item"><span class="meta-label">Subject:</span><span class="meta-value" th:text="${detection.newQuestion?.courseName} ?: 'N/A'"></span></div>
+                        <div class="meta-item"><span class="meta-label">CLO Code:</span><span class="meta-value" th:text="${detection.newQuestion?.cloCode} ?: 'N/A'"></span></div>
+                        <div class="meta-item"><span class="meta-label">CLO Desc:</span><span class="meta-value" th:text="${detection.newQuestion?.cloDescription} ?: 'N/A'"></span></div>
+                        <div class="meta-item"><span class="meta-label">Difficulty:</span><span class="meta-value" th:text="${detection.newQuestion?.difficultyLevel} ?: 'N/A'"></span></div>
+                        <div class="meta-item"><span class="meta-label">Creator:</span><span class="meta-value" th:text="${detection.newQuestion?.creatorName} ?: 'N/A'"></span></div>
+                        <div class="meta-item"><span class="meta-label">Created At:</span><span class="meta-value" th:text="${#temporals.format(detection.newQuestion?.createdAt, 'yyyy-MM-dd HH:mm')} ?: 'N/A'"></span></div>
+                    </div>
+                </div>
+                <div class="question-card">
+                    <div class="question-label">Similar Question</div>
+                    <div class="question-text" th:text="${detection.similarQuestion?.content} ?: 'N/A'"></div>
+                    <div class="question-meta">
+                        <div class="meta-item"><span class="meta-label">Subject:</span><span class="meta-value" th:text="${detection.similarQuestion?.courseName} ?: 'N/A'"></span></div>
+                        <div class="meta-item"><span class="meta-label">CLO Code:</span><span class="meta-value" th:text="${detection.similarQuestion?.cloCode} ?: 'N/A'"></span></div>
+                        <div class="meta-item"><span class="meta-label">CLO Desc:</span><span class="meta-value" th:text="${detection.similarQuestion?.cloDescription} ?: 'N/A'"></span></div>
+                        <div class="meta-item"><span class="meta-label">Difficulty:</span><span class="meta-value" th:text="${detection.similarQuestion?.difficultyLevel} ?: 'N/A'"></span></div>
+                        <div class="meta-item"><span class="meta-label">Creator:</span><span class="meta-value" th:text="${detection.similarQuestion?.creatorName} ?: 'N/A'"></span></div>
+                        <div class="meta-item"><span class="meta-label">Created At:</span><span class="meta-value" th:text="${#temporals.format(detection.similarQuestion?.createdAt, 'yyyy-MM-dd HH:mm')} ?: 'N/A'"></span></div>
+                    </div>
+                </div>            </div>
         </div>
-
-        <div class="question-cards">
-            <div class="question-card">
-                <div class="question-label">New Question</div>
-                <div class="question-text" th:text="${detection.newQuestion?.content} ?: 'N/A'"></div>
-                <div class="question-meta">
-                    <div class="meta-item"><span class="meta-label">Subject:</span><span class="meta-value" th:text="${detection.newQuestion?.courseName} ?: 'N/A'"></span></div>
-                    <div class="meta-item"><span class="meta-label">CLO:</span><span class="meta-value" th:text="${detection.newQuestion?.clo} ?: 'N/A'"></span></div>
-                    <div class="meta-item"><span class="meta-label">Difficulty:</span><span class="meta-value" th:text="${detection.newQuestion?.difficulty} ?: 'N/A'"></span></div>
-                    <div class="meta-item"><span class="meta-label">Creator:</span><span class="meta-value" th:text="${detection.newQuestion?.creatorName} ?: 'N/A'"></span></div>
-                    <div class="meta-item"><span class="meta-label">Created At:</span><span class="meta-value" th:text="${#temporals.format(detection.newQuestion?.createdAt, 'yyyy-MM-dd HH:mm')} ?: 'N/A'"></span></div>
+          <!-- AI Analysis Section -->
+        <div class="ai-analysis">
+            <div class="ai-analysis-header">
+                <div class="ai-icon">AI</div>
+                <h3 class="ai-title">AI Analysis</h3>
+            </div>
+            <div class="similarity-score">
+                <span class="similarity-label">Similarity Score:</span>
+                <div class="similarity-badge-large" th:classappend="${detection.similarityScore >= 0.9} ? 'similarity-complete' : 'similarity-high'">
+                    <span th:text="${detection.similarityScore >= 0.9} ? 'Complete Duplicate' : 'High Similarity'">High Similarity</span>
+                    (<span th:text="${#numbers.formatDecimal(detection.similarityScore * 100, 1, 1)}">85.0</span>%)
                 </div>
             </div>
-
-            <div class="question-card">
-                <div class="question-label">Similar Question</div>
-                <div class="question-text" th:text="${detection.similarQuestion.content}"></div>
-                <div class="question-meta">
-                    <div class="meta-item"><span class="meta-label">Subject:</span><span class="meta-value" th:text="${detection.similarQuestion.courseName}"></span></div>
-                    <div class="meta-item"><span class="meta-label">CLO:</span><span class="meta-value" th:text="${detection.similarQuestion.clo} ?: 'N/A'"></span></div>
-                    <div class="meta-item"><span class="meta-label">Difficulty:</span><span class="meta-value" th:text="${detection.similarQuestion.difficulty} ?: 'N/A'"></span></div>
-                    <div class="meta-item"><span class="meta-label">Creator:</span><span class="meta-value" th:text="${detection.similarQuestion.creatorName}"></span></div>
-                    <div class="meta-item"><span class="meta-label">Created At:</span><span class="meta-value" th:text="${#temporals.format(detection.similarQuestion.createdAt, 'yyyy-MM-dd HH:mm')}"></span></div>
+            <div class="ai-recommendation">
+                <h4 class="recommendation-title">🎯 AI Recommendation</h4>
+                <div class="recommendation-content" th:if="${detection.similarityScore >= 0.95}">
+                    <div class="recommendation-badge reject">❌ Reject Question</div>
+                    <p class="recommendation-text">The questions show very high similarity (>95%). This appears to be a duplicate of an existing question.</p>
+                </div>
+                <div class="recommendation-content" th:if="${detection.similarityScore >= 0.8 and detection.similarityScore < 0.95}">
+                    <div class="recommendation-badge review">⚠️ Requires Review</div>
+                    <p class="recommendation-text">The questions show significant similarity. Manual review is recommended to determine if modifications are needed.</p>
+                </div>
+                <div class="recommendation-content" th:if="${detection.similarityScore < 0.8}">
+                    <div class="recommendation-badge accept">✅ Accept Question</div>
+                    <p class="recommendation-text">The similarity score is within acceptable range. The question appears to be sufficiently different.</p>
                 </div>
             </div>
+        </div>
+        
+        <div class="processing-actions">
+            <h2 class="actions-title">Review and Action</h2>
+            <form id="action-form" th:action="@{'/api/staff/duplications/' + ${detection.detectionId} + '/process'}" method="post">
+                <div class="action-option">
+                    <input type="radio" name="action" value="ACCEPT" id="accept">
+                    <div class="action-content">
+                        <label for="accept" class="action-label">Accept Question - Unique or sufficiently different</label>
+                        <p class="action-description">The question will be added to the question bank and marked as accepted.</p>
+                    </div>
+                </div>
+                <div class="action-option">
+                    <input type="radio" name="action" value="REJECT" id="reject">
+                    <div class="action-content">
+                        <label for="reject" class="action-label">Reject Question - Clear duplicate of existing question</label>
+                        <p class="action-description">The question will be rejected and the creator will be notified with feedback.</p>
+                    </div>
+                </div>
+                <div class="action-option">
+                    <input type="radio" name="action" value="SEND_BACK" id="send-back">
+                    <div class="action-content">
+                        <label for="send-back" class="action-label">Send Back for Revision - Similar but could be modified</label>
+                        <p class="action-description">The question will be sent back to the creator with specific feedback for improvement.</p>
+                    </div>
+                </div>
+                <div class="feedback-section">
+                    <label class="feedback-label" for="feedback">Feedback/Reason</label>
+                    <textarea class="feedback-textarea" id="feedback" name="feedback" placeholder="Provide feedback or reason for your action"></textarea>
+                </div>                <div class="action-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="goBackToDetectionList()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Action</button>
+                </div>
+            </form>
         </div>
     </div>
-
-    <div class="processing-actions">
-        <h2 class="actions-title">Review and Action</h2>
-        <form id="action-form" th:action="@{/api/staff/duplications/{id}/process(id=${detection.id})}" method="post">
-            <div class="action-option">
-                <input type="radio" name="action" value="ACCEPT" id="accept">
-                <div class="action-content">
-                    <label for="accept" class="action-label">Accept Question - Unique or sufficiently different</label>
-                    <p class="action-description">The question will be added to the question bank and marked as accepted.</p>
-                </div>
-            </div>
-            <div class="action-option">
-                <input type="radio" name="action" value="REJECT" id="reject">
-                <div class="action-content">
-                    <label for="reject" class="action-label">Reject Question - Clear duplicate of existing question</label>
-                    <p class="action-description">The question will be rejected and the creator will be notified with feedback.</p>
-                </div>
-            </div>
-            <div class="action-option">
-                <input type="radio" name="action" value="SEND_BACK" id="send-back">
-                <div class="action-content">
-                    <label for="send-back" class="action-label">Send Back for Revision - Similar but could be modified</label>
-                    <p class="action-description">The question will be sent back to the creator with specific feedback for improvement.</p>
-                </div>
-            </div>
-            <div class="feedback-section">
-                <label class="feedback-label" for="feedback">Feedback/Reason</label>
-                <textarea class="feedback-textarea" id="feedback" name="feedback" placeholder="Provide feedback or reason for your action"></textarea>
-            </div>
-            <input type="hidden" name="processorId" th:value="${#authentication.principal.userId}">
-            <div class="action-buttons">
-                <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
-                <button type="submit" class="btn btn-primary">Submit Action</button>
-            </div>
-        </form>
-    </div>
-</body>
-</html>
+</div>

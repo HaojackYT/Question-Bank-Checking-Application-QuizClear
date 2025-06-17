@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/css/HED/HED_Dashboard.css">
+    <link rel="stylesheet" href="/FontAwesome/css/all.css">
+    <link rel="stylesheet" href="/header.css">
+    <link rel="stylesheet" href="/web_styles.css">
+    <link rel="stylesheet" href="/css/HED/HED_Dashboard.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Dashboard_HED</title>
 </head>
@@ -264,21 +264,103 @@
 
     <!-- ma nhung header vs menu -->
     <script>
-        // Load header
-        fetch('../header_user.html')
-            .then(response => response.text())
+        // RÓT DỮ LIỆU THỐNG KÊ TỔNG QUÁT (Lecturer, Pending, Approved, Rejected)
+        fetch("/api/dashboard/hod/stats")
+            .then(res => res.json())
+            .then(data => {
+                document.querySelector(".stat-card.lecturer .stat-number").innerText = data.lecturerCount;
+                document.querySelector(".stat-card.pending .stat-number").innerText = data.pendingCount;
+                document.querySelector(".stat-card.approved .stat-number").innerText = data.approvedCount;
+                document.querySelector(".stat-card.reject .stat-number").innerText = data.rejectedCount;
+            });
+
+        // RÓT DỮ LIỆU BIỂU ĐỒ Created vs Target
+        fetch("/api/dashboard/hod/subject-progress")
+            .then(res => res.json())
+            .then(data => {
+                const container = document.querySelector(".chart-bars");
+                container.innerHTML = "";
+                const max = Math.max(...data.map(d => Math.max(d.created, d.target)));
+                const scale = 100 / max;
+
+                data.forEach(item => {
+                    const createdHeight = item.created * scale;
+                    const targetHeight = item.target * scale;
+
+                    const bar = `
+        <div class="bar-group" data-subject="${item.subject}">
+          <div class="bar created" style="height: ${createdHeight}px;"></div>
+          <div class="bar target" style="height: ${targetHeight}px;"></div>
+        </div>`;
+
+                    container.innerHTML += bar;
+                });
+            });
+
+        // RÓT DỮ LIỆU VÒNG TRÒN PROGRESS
+        fetch("/api/dashboard/hod/progress-percent")
+            .then(res => res.json())
+            .then(percent => {
+                document.querySelector(".progress-percentage-text").innerText = `${Math.round(percent)}% Completed`;
+                const circle = document.querySelector("circle[stroke='#10b981']");
+                const totalLength = 471;
+                const offset = totalLength - (percent / 100) * totalLength;
+                circle.setAttribute("stroke-dashoffset", offset);
+            });
+
+        // RÓT DEADLINE TASKS
+        fetch("/api/dashboard/hod/deadlines")
+            .then(res => res.json())
+            .then(data => {
+                const list = document.querySelector(".deadline-list");
+                list.innerHTML = "";
+                data.forEach(task => {
+                    const html = `
+        <div class="deadline-item">
+          <div class="deadline-content">
+            <h3>Deadline: ${task.title} - ${task.course}</h3>
+            <p>${task.note}</p>
+          </div>
+          <button class="check-btn">Check</button>
+        </div>`;
+                    list.innerHTML += html;
+                });
+            });
+
+        // RÓT RECENT ACTIVITIES
+        fetch("/api/dashboard/hod/activities")
+            .then(res => res.json())
+            .then(data => {
+                const list = document.querySelector(".activities-list");
+                list.innerHTML = "";
+                data.forEach(activity => {
+                    const html = `
+        <div class="activity-item">
+          <div class="activity-content">
+            <h3>${activity.title}</h3>
+            <p>${activity.description}</p>
+          </div>
+          <button class="check-btn">Check</button>
+        </div>`;
+                    list.innerHTML += html;
+                });
+            });
+    </script>
+    <script>
+       fetch('/template/header_user.html')
+            .then(res => res.text())
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
             });
 
+
         // Load menu
-        fetch('Menu-HED.html')
+        fetch('/menu-hed')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
                 setActiveMenu(document.title);
             });
-
         // Chart tooltip functionality
         document.addEventListener('DOMContentLoaded', function () {
             const barGroups = document.querySelectorAll('.bar-group');

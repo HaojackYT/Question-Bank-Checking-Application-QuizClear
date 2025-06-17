@@ -16,12 +16,23 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Các phương thức HTTP được phép
                 .allowedHeaders("*") // Cho phép tất cả các header
                 .allowCredentials(true); // Quan trọng nếu bạn dùng cookie/session hoặc thông tin xác thực khác
-    }
-
-    @Override
+    }    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // Static resources mapping (case sensitive) - exclude API paths
+        registry.addResourceHandler("/Static/**")
+                .addResourceLocations("classpath:/Static/")
+                .setCachePeriod(3600);
+                
+        registry.addResourceHandler("/Template/**")
+                .addResourceLocations("classpath:/Template/")
+                .setCachePeriod(3600);
+        
+        // Legacy static mapping for compatibility - exclude API paths
         registry.addResourceHandler("/static/**")
-                .addResourceLocations("classpath:/static/");
+                .addResourceLocations("classpath:/Static/");
+        
+        // Ensure API paths are NOT handled as static resources
+        // API requests should go to controllers, not static resources
     }
 
     @Override

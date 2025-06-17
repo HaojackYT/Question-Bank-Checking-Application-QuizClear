@@ -1,6 +1,7 @@
 package com.uth.quizclear.model.entity;
 
 import com.uth.quizclear.model.enums.TaskStatus;
+import com.uth.quizclear.model.enums.TaskStatusConverter;
 import com.uth.quizclear.model.enums.TaskType;
 
 import jakarta.persistence.*;

@@ -22,28 +22,25 @@ public class WebController {
         return "Staff/staffDuplicationCheck.html";
     }
 
-    // Nếu bạn muốn staffDupDetails.html có thể được truy cập trực tiếp (không bắt buộc nếu dùng AJAX load)
-    @GetMapping("/staffDupDetails.html")
-    public String staffDupDetails() {
-        return "Staff/staffDupDetails.html";
-    }
-
-    // Bạn có thể thêm một mapping cho đường dẫn gốc "/" để chuyển hướng đến trang chính của bạn
+    // Bạn có thể thêm một mapping cho đường dẫn gốc "/" để chuyển hướng đến trang
+    // chính của bạn
     @GetMapping("/")
     public String redirectToStaffDuplicationCheck() {
         return "redirect:/staffDuplicationCheck";
     }
+
     @GetMapping("/menu-hed")
     @ResponseBody
     public Resource getMenuHED() {
         return new ClassPathResource("/Template/HEAD_OF_DEPARTMENT/Menu-HED.html");
     }
 
-@GetMapping("/template/{filename:.+}")
-@ResponseBody
-public Resource getTemplateFile(@PathVariable String filename) {
-    return new ClassPathResource("Template/" + filename);
-}
+    @GetMapping("/template/{filename:.+}")
+    @ResponseBody
+    public Resource getTemplateFile(@PathVariable String filename) {
+        return new ClassPathResource("Template/" + filename);
+    }
+
 
 
 
@@ -60,4 +57,5 @@ public Resource getTemplateFile(@PathVariable String filename) {
             return "Error: " + e.getMessage();
         }
     }
+
 }
