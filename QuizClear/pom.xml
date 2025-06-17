@@ -103,12 +103,12 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-            
-            <plugin>
+              <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>3.4.5</version>
                 <configuration>
+                    <mainClass>com.uth.quizclear.QuizClearApplication</mainClass>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

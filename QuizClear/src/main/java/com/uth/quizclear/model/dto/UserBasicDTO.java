@@ -63,6 +63,29 @@ public class UserBasicDTO {
         this.email = email;
         this.role = role;
         this.department = department;
+    }    /**
+     * Constructor đầy đủ cho query findUserBasicDTOByUserId
+     */
+    public UserBasicDTO(Long userId, String fullName, String email, com.uth.quizclear.model.enums.UserRole role, String department,
+                       Gender gender, LocalDate dateOfBirth, String nation, String phoneNumber,
+                       String hometown, String contactAddress, LocalDateTime start, LocalDateTime end,
+                       Status status, String workPlace, String qualification) {
+        this.userId = userId;
+        this.fullName = fullName;
+        this.email = email;
+        this.role = role != null ? role.name() : null;
+        this.department = department;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+        this.nation = nation;
+        this.phoneNumber = phoneNumber;
+        this.hometown = hometown;
+        this.contactAddress = contactAddress;
+        this.start = start;
+        this.end = end;
+        this.status = status;
+        this.workPlace = workPlace;
+        this.qualification = qualification;
     }
 
     // ========== GETTERS CŨ CỦA BẠN - GIỮ NGUYÊN ==========
@@ -279,29 +302,6 @@ public class UserBasicDTO {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    // ========== THÊM CONSTRUCTOR MỚI CHO CÁC TRƯỜNG MỚI (Profile) ==========
-    public UserBasicDTO(Long userId, String fullName, String email, String role, String department,
-            Gender gender, LocalDate dateOfBirth, String nation, String phoneNumber,
-            String hometown, String contactAddress, LocalDateTime start, LocalDateTime end,
-            Status status, String workPlace, String qualification) {
-        this.userId = userId;
-        this.fullName = fullName;
-        this.email = email;
-        this.role = role;
-        this.department = department;
-        this.gender = gender;
-        this.dateOfBirth = dateOfBirth;
-        this.nation = nation;
-        this.phoneNumber = phoneNumber;
-        this.hometown = hometown;
-        this.contactAddress = contactAddress;
-        this.start = start;
-        this.end = end;
-        this.status = status;
-        this.workPlace = workPlace;
-        this.qualification = qualification;
     }
 
 }
