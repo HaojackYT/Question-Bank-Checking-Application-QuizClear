@@ -97,16 +97,15 @@ public class User {
     private String hometown;
 
     @Column(name = "contact_address")
-    private String contactAddress;
-
-    @Column(name = "avatar_url")
+    private String contactAddress;    @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @Column(name = "work_place")   // Bổ sung trường workPlace cho Profile
-    private String workPlace;
+    // Tạm thời comment out các field này vì database chưa có
+    // @Column(name = "work_place")   // Bổ sung trường workPlace cho Profile
+    // private String workPlace;
 
-    @Column(name = "qualification")   // Bổ sung trường qualification cho Profile
-    private String qualification;
+    // @Column(name = "qualification")   // Bổ sung trường qualification cho Profile
+    // private String qualification;
 
     // JPA lifecycle callbacks
     @PrePersist

@@ -94,18 +94,61 @@ INSERT INTO exams (course_id, plan_id, exam_title, exam_code, duration_minutes, 
 (9, 9, 'CHEM105 Final Exam', 'CHEM105_FINAL_2025', 120, 10.00, 'final', '2025-06-10 09:00:00', 'Spring 2025', '2025-2026', 'draft', 'pending', 9, '2025-03-18 10:00:00', TRUE),
 (10, 10, 'BIO105 Midterm Exam', 'BIO105_MID_2025', 90, 10.00, 'midterm', '2025-04-20 09:00:00', 'Fall 2025', '2025-2026', 'approved', 'pending', 10, '2025-03-19 10:00:00', FALSE);
 
--- 8. Thêm 10 bản ghi vào bảng exam_questions
+-- 8. Thêm nhiều bản ghi vào bảng exam_questions để mỗi exam có nhiều câu hỏi
 INSERT INTO exam_questions (exam_id, question_id, question_order, marks) VALUES
+-- Exam 1: CS105 Midterm - 5 questions
 (1, 1, 1, 1.00),
+(1, 6, 2, 1.25),
+(1, 2, 3, 2.00),
+(1, 7, 4, 1.00),
+(1, 3, 5, 0.50),
+-- Exam 2: MATH205 Final - 4 questions
 (2, 2, 1, 2.00),
+(2, 7, 2, 1.00),
+(2, 8, 3, 0.50),
+(2, 4, 4, 1.50),
+-- Exam 3: PHY105 Quiz - 3 questions
 (3, 3, 1, 0.50),
+(3, 8, 2, 0.50),
+(3, 1, 3, 1.00),
+-- Exam 4: CHEM104 Midterm - 6 questions
 (4, 4, 1, 1.50),
+(4, 9, 2, 2.00),
+(4, 5, 3, 0.75),
+(4, 10, 4, 1.50),
+(4, 1, 5, 1.00),
+(4, 6, 6, 1.25),
+-- Exam 5: BIO104 Quiz - 3 questions
 (5, 5, 1, 0.75),
+(5, 10, 2, 1.50),
+(5, 2, 3, 2.00),
+-- Exam 6: CS106 Final - 7 questions
 (6, 6, 1, 1.25),
+(6, 1, 2, 1.00),
+(6, 3, 3, 0.50),
+(6, 7, 4, 1.00),
+(6, 4, 5, 1.50),
+(6, 8, 6, 0.50),
+(6, 9, 7, 2.00),
+-- Exam 7: MATH206 Midterm - 4 questions
 (7, 7, 1, 1.00),
+(7, 2, 2, 2.00),
+(7, 8, 3, 0.50),
+(7, 10, 4, 1.50),
+-- Exam 8: PHY106 Quiz - 2 questions
 (8, 8, 1, 0.50),
+(8, 3, 2, 0.50),
+-- Exam 9: CHEM105 Final - 5 questions
 (9, 9, 1, 2.00),
-(10, 10, 1, 1.50);
+(9, 4, 2, 1.50),
+(9, 5, 3, 0.75),
+(9, 1, 4, 1.00),
+(9, 6, 5, 1.25),
+-- Exam 10: BIO105 Midterm - 4 questions
+(10, 10, 1, 1.50),
+(10, 5, 2, 0.75),
+(10, 9, 3, 2.00),
+(10, 2, 4, 2.00);
 
 -- 9. Thêm 10 bản ghi vào bảng ai_duplicate_checks
 INSERT INTO ai_duplicate_checks (check_id, question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, checked_by, status, checked_at) VALUES

@@ -2,6 +2,7 @@ package com.uth.quizclear.model.entity;
 
 import com.uth.quizclear.model.enums.NotificationType;
 import com.uth.quizclear.model.enums.Priority;
+import com.uth.quizclear.model.enums.PriorityConverter;
 
 
 import jakarta.persistence.*;
@@ -43,9 +44,8 @@ public class Notification {
     
     @Column(name = "action_url")
     private String actionUrl;
-    
-    @Column(name = "priority")
-    @Enumerated(EnumType.STRING)
+      @Column(name = "priority")
+    @Convert(converter = PriorityConverter.class)
     private Priority priority;
     
     @Column(name = "created_at")

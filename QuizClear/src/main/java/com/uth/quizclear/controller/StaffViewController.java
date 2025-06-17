@@ -5,11 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.uth.quizclear.model.dto.DuplicateDetectionDTO;
-import com.uth.quizclear.model.dto.QuestionDetailDTO;
-import com.uth.quizclear.model.dto.UserBasicDTO;
 import com.uth.quizclear.service.DuplicationStaffService;
 
 @Controller
@@ -58,23 +55,24 @@ public class StaffViewController {
             System.out.println("Loading detection details for ID: " + detectionId);
             DuplicateDetectionDTO detection = duplicationStaffService.getDetectionById(detectionId);
             System.out.println("Detection found: " + (detection != null));
-            
-            if (detection == null) {
-                System.out.println("Detection not found, creating mock data");
-                detection = createMockDetection(detectionId);
+              if (detection == null) {
+                System.out.println("Detection not found - no mock data fallback");
+                // Mock data removed as requested
+                model.addAttribute("error", "Detection not found");
+                return "Staff/staffDupDetails :: root";
             }
             
             model.addAttribute("detection", detection);
             System.out.println("Returning fragment: Staff/staffDupDetails :: root");
-            return "Staff/staffDupDetails :: root";
-        } catch (Exception e) {
+            return "Staff/staffDupDetails :: root";        } catch (Exception e) {
             System.err.println("Error loading detection details: " + e.getMessage());
             e.printStackTrace();
-            // Return mock data on error
-            model.addAttribute("detection", createMockDetection(detectionId));
+            // Mock data removed as requested
+            model.addAttribute("error", "Error loading detection details");
             return "Staff/staffDupDetails :: root";
         }
-    }
+    }      /* 
+      // MOCK DATA METHOD - REMOVED AS REQUESTED
       private DuplicateDetectionDTO createMockDetection(Long detectionId) {
         // Create a comprehensive mock detection with full question details
         DuplicateDetectionDTO mock = new DuplicateDetectionDTO();
@@ -123,6 +121,7 @@ public class StaffViewController {
         
         return mock;
     }
+    */
 
     // Test endpoint to verify that the service is working with real data
     @GetMapping("/staff/test-details/{detectionId}")
@@ -150,20 +149,18 @@ public class StaffViewController {
                 System.out.println("Similarity Score: " + detection.getSimilarityScore());
                 
                 model.addAttribute("detection", detection);
-                model.addAttribute("testMessage", "SUCCESS: Real data loaded");
-            } else {
+                model.addAttribute("testMessage", "SUCCESS: Real data loaded");            } else {
                 System.out.println("WARNING: No detection found for ID: " + detectionId);
-                model.addAttribute("detection", createMockDetection(detectionId));
-                model.addAttribute("testMessage", "WARNING: Using mock data");
+                model.addAttribute("error", "Detection not found");
+                model.addAttribute("testMessage", "ERROR: Mock data removed");
             }
             
             return "Staff/staffDupDetails :: root";
-            
-        } catch (Exception e) {
+              } catch (Exception e) {
             System.err.println("ERROR in test endpoint: " + e.getMessage());
             e.printStackTrace();
             
-            model.addAttribute("detection", createMockDetection(detectionId));
+            model.addAttribute("error", "Error loading detection");
             model.addAttribute("testMessage", "ERROR: " + e.getMessage());
             return "Staff/staffDupDetails :: root";
         }
