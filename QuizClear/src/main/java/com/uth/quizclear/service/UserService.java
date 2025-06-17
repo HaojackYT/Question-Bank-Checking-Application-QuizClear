@@ -12,11 +12,9 @@ import com.uth.quizclear.repository.UserRepository;
 public class UserService {
     
     @Autowired
-    private UserRepository userRepository;
-
-    // Get user profile by userId
+    private UserRepository userRepository;    // Get user profile by userId
     public Optional<UserBasicDTO> getProfileByUserId(Long userId) {
-        return userRepository.findUserBasicDTOByUserId(userId);
+        return userRepository.findUserBasicDTOById(userId);
     }
 }
 //Chứa logic nghiệp vụ, xử lý dữ liệu, gọi repository để thao tác DB

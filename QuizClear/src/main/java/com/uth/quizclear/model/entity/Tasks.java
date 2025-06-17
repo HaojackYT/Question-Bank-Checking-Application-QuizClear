@@ -1,7 +1,9 @@
 package com.uth.quizclear.model.entity;
 
 import com.uth.quizclear.model.enums.Priority;
+import com.uth.quizclear.model.enums.PriorityConverter;
 import com.uth.quizclear.model.enums.TaskStatus;
+import com.uth.quizclear.model.enums.TaskStatusConverter;
 import com.uth.quizclear.model.enums.TaskType;
 
 import jakarta.persistence.*;
@@ -66,13 +68,11 @@ public class Tasks {
     @ManyToOne
     @JoinColumn(name = "assigned_by", nullable = false)
     private User assignedBy;
-    
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
+      @Column(name = "status")
+    @Convert(converter = TaskStatusConverter.class)
     private TaskStatus status;
-    
-    @Column(name = "priority")
-    @Enumerated(EnumType.STRING)
+      @Column(name = "priority")
+    @Convert(converter = PriorityConverter.class)
     private Priority priority;
     
     @Column(name = "due_date")

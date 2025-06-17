@@ -93,13 +93,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findLecturers();
     
     @Query("SELECT u FROM User u WHERE u.role = 'SUBJECT_LEADER' AND u.status = 'ACTIVE' AND u.isLocked = false")
-    List<User> findSubjectLeaders();
-      // Find user basic info for DTOs (optimized for performance)
+    List<User> findSubjectLeaders();    // Find user basic info for DTOs (optimized for performance)
     @Query("SELECT new com.uth.quizclear.model.dto.UserBasicDTO(u.userId, u.fullName, u.email, CAST(u.role AS string), u.department, u.avatarUrl) FROM User u WHERE u.userId = :userId")
     Optional<com.uth.quizclear.model.dto.UserBasicDTO> findUserBasicDTOById(@Param("userId") Long userId);
     
     @Query("SELECT new com.uth.quizclear.model.dto.UserBasicDTO(u.userId, u.fullName, u.email, CAST(u.role AS string), u.department, u.avatarUrl) FROM User u WHERE u.userId IN :userIds")
     List<com.uth.quizclear.model.dto.UserBasicDTO> findUserBasicDTOsByIds(@Param("userIds") List<Long> userIds);
+    
     @Query("SELECT new com.uth.quizclear.model.dto.UserBasicDTO("
             + "u.userId, u.fullName, u.email, u.role, u.department, "
             + "u.gender, u.dateOfBirth, u.nation, u.phoneNumber, "

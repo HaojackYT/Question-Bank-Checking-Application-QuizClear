@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.uth.quizclear.model.enums.Gender;
-import com.uth.quizclear.model.enums.Status;
+// import com.uth.quizclear.model.enums.Status;
 
 /**
  * DTO chứa thông tin cơ bản của người dùng
@@ -25,10 +25,10 @@ public class UserBasicDTO {
     private String hometown;        // Bổ sung
     private String contactAddress;      // Bổ sung
     private LocalDateTime start;        // Bổ sung
-    private LocalDateTime end;      // Bổ sung
-    private Status status;      // Bổ sung
-    private String workPlace;   // Bổ sung trường workPlace cho Profile
-    private String qualification;   // Bổ sung trường qualification cho Profile
+    private LocalDateTime end;      // Bổ sung    // private Status status;      // Bổ sung - tạm thời comment out vì database chưa có
+    // Tạm thời comment out vì database chưa có
+    // private String workPlace;   // Bổ sung trường workPlace cho Profile
+    // private String qualification;   // Bổ sung trường qualification cho Profile
 
     // ========== CONSTRUCTORS CŨ CỦA BẠN - GIỮ NGUYÊN ==========
 
@@ -63,29 +63,6 @@ public class UserBasicDTO {
         this.email = email;
         this.role = role;
         this.department = department;
-    }    /**
-     * Constructor đầy đủ cho query findUserBasicDTOByUserId
-     */
-    public UserBasicDTO(Long userId, String fullName, String email, com.uth.quizclear.model.enums.UserRole role, String department,
-                       Gender gender, LocalDate dateOfBirth, String nation, String phoneNumber,
-                       String hometown, String contactAddress, LocalDateTime start, LocalDateTime end,
-                       Status status, String workPlace, String qualification) {
-        this.userId = userId;
-        this.fullName = fullName;
-        this.email = email;
-        this.role = role != null ? role.name() : null;
-        this.department = department;
-        this.gender = gender;
-        this.dateOfBirth = dateOfBirth;
-        this.nation = nation;
-        this.phoneNumber = phoneNumber;
-        this.hometown = hometown;
-        this.contactAddress = contactAddress;
-        this.start = start;
-        this.end = end;
-        this.status = status;
-        this.workPlace = workPlace;
-        this.qualification = qualification;
     }
 
     // ========== GETTERS CŨ CỦA BẠN - GIỮ NGUYÊN ==========
@@ -213,24 +190,23 @@ public class UserBasicDTO {
     @Override
     public int hashCode() {
         return userId != null ? userId.hashCode() : 0;
-    }
+    }    // ========== THÊM GETTERS VÀ SETTERS CHO CÁC TRƯỜNG MỚI ==========
+    // Tạm thời comment out vì database chưa có
+    // public String getWorkPlace() {
+    //     return workPlace;
+    // }
 
-    // ========== THÊM GETTERS VÀ SETTERS CHO CÁC TRƯỜNG MỚI ==========
-    public String getWorkPlace() {
-        return workPlace;
-    }
+    // public void setWorkPlace(String workPlace) {
+    //     this.workPlace = workPlace;
+    // }
 
-    public void setWorkPlace(String workPlace) {
-        this.workPlace = workPlace;
-    }
+    // public String getQualification() {
+    //     return qualification;
+    // }
 
-    public String getQualification() {
-        return qualification;
-    }
-
-    public void setQualification(String qualification) {
-        this.qualification = qualification;
-    }
+    // public void setQualification(String qualification) {
+    //     this.qualification = qualification;
+    // }
 
     public Gender getGender() {
         return gender;
@@ -294,14 +270,35 @@ public class UserBasicDTO {
 
     public void setEnd(LocalDateTime end) {
         this.end = end;
-    }
+    }    // Tạm thời comment out vì database chưa có
+    // public Status getStatus() {
+    //     return status;
+    // }
 
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
+    // public void setStatus(Status status) {
+    //     this.status = status;
+    // }    // ========== THÊM CONSTRUCTOR MỚI CHO CÁC TRƯỜNG MỚI (Profile) ==========
+    // Tạm thời comment out vì database chưa có status, workPlace, qualification
+    // public UserBasicDTO(Long userId, String fullName, String email, String role, String department,
+    //         Gender gender, LocalDate dateOfBirth, String nation, String phoneNumber,
+    //         String hometown, String contactAddress, LocalDateTime start, LocalDateTime end,
+    //         Status status, String workPlace, String qualification) {
+    //     this.userId = userId;
+    //     this.fullName = fullName;
+    //     this.email = email;
+    //     this.role = role;
+    //     this.department = department;
+    //     this.gender = gender;
+    //     this.dateOfBirth = dateOfBirth;
+    //     this.nation = nation;
+    //     this.phoneNumber = phoneNumber;
+    //     this.hometown = hometown;
+    //     this.contactAddress = contactAddress;
+    //     this.start = start;
+    //     this.end = end;
+    //     this.status = status;
+    //     this.workPlace = workPlace;
+    //     this.qualification = qualification;
+    // }
 
 }

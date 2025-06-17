@@ -13,9 +13,8 @@ import java.util.stream.Collectors;
 public class TaskAssignmentService {
 
     @Autowired
-    private TasksRepository tasksRepository;
-    
-    public List<TaskAssignmentDTO> getAllTaskAssignments() {
+    private TasksRepository tasksRepository;    public List<TaskAssignmentDTO> getAllTaskAssignments() {
+        // Chỉ dùng database, không có mock data backup
         List<Tasks> tasks = tasksRepository.findAll();
         
         return tasks.stream()
@@ -51,8 +50,7 @@ public class TaskAssignmentService {
         // For now, returning a placeholder value
         return task.getTotalQuestions() / 2; // Placeholder
     }
-    
-    public TaskAssignmentDTO getTaskAssignmentById(Long taskId) {
+      public TaskAssignmentDTO getTaskAssignmentById(Long taskId) {
         Tasks task = tasksRepository.findById(taskId.intValue())
             .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
             
@@ -66,4 +64,10 @@ public class TaskAssignmentService {
             task.getStatus() != null ? task.getStatus().name() : "N/A"
         );
     }
+
+    public List<TaskAssignmentDTO> getTasksForHED() {
+        // Get tasks that are relevant for HED approval/review
+        return getAllTaskAssignments();
+    }
+  
 }
