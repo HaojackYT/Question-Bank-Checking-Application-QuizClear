@@ -76,4 +76,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     // Course-wise question distribution
     @Query("SELECT c.courseName as courseName, COUNT(q) as questionCount FROM Question q JOIN q.course c GROUP BY c.courseId, c.courseName ORDER BY COUNT(q) DESC")
     List<Object[]> getQuestionDistributionByCourse();
+
+    List<Question> findByTaskId(Long taskId);
 }

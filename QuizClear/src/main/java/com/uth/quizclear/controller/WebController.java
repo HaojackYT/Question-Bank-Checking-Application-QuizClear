@@ -4,11 +4,11 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
-<<<<<<< HEAD
+
 import org.springframework.web.bind.annotation.PathVariable;
-=======
+
 import org.springframework.web.bind.annotation.ResponseBody;
->>>>>>> a281b6f9e724051472ab8f4c0c6fde82891525f2
+
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -33,7 +33,6 @@ public class WebController {
     public String redirectToStaffDuplicationCheck() {
         return "redirect:/staffDuplicationCheck";
     }
-<<<<<<< HEAD
     @GetMapping("/menu-hed")
     @ResponseBody
     public Resource getMenuHED() {
@@ -49,7 +48,6 @@ public Resource getTemplateFile(@PathVariable String filename) {
 
 
 
-=======
 
     // Test database endpoint to bypass routing conflicts
     @GetMapping("/test-database-connection")
@@ -62,5 +60,4 @@ public Resource getTemplateFile(@PathVariable String filename) {
             return "Error: " + e.getMessage();
         }
     }
->>>>>>> a281b6f9e724051472ab8f4c0c6fde82891525f2
 }
