@@ -32,20 +32,31 @@
                 <a href="#">Logout</a>
             </div>
         </div>
-    </div>
-    <script>
+    </div>    <script>
             function toggleNotificationDropdown() {
-                document.getElementById('notificationDropdown').classList.toggle('show');
+                const dropdown = document.getElementById('notificationDropdown');
+                if (dropdown) {
+                    dropdown.classList.toggle('show');
+                }
             }
             function toggleUserDropdown() {
-                document.getElementById('userDropdown').classList.toggle('show');
+                const dropdown = document.getElementById('userDropdown');
+                if (dropdown) {
+                    dropdown.classList.toggle('show');
+                }
             }
             document.addEventListener('click', function (e) {
                 if (!e.target.closest('.notification-icon') && !e.target.closest('.notification-dropdown')) {
-                    document.getElementById('notificationDropdown').classList.remove('show');
+                    const dropdown = document.getElementById('notificationDropdown');
+                    if (dropdown) {
+                        dropdown.classList.remove('show');
+                    }
                 }
                 if (!e.target.closest('.user-avatar') && !e.target.closest('.user-dropdown')) {
-                    document.getElementById('userDropdown').classList.remove('show');
+                    const dropdown = document.getElementById('userDropdown');
+                    if (dropdown) {
+                        dropdown.classList.remove('show');
+                    }
                 }
             });
         </script>

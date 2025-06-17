@@ -10,15 +10,37 @@ const API_URLS = {
 };
 
 function loadCSS(href) {
-    let link = document.querySelector("link[data-tab-css]");
-    if (link) {
-        link.href = href;
-    } else {
-        link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = href;
-        link.setAttribute("data-tab-css", "");
-        document.head.appendChild(link);
+    try {
+        if (!href) {
+            console.warn('loadCSS: href is empty');
+            return;
+        }
+        
+        console.log('Loading CSS:', href);
+        let link = document.querySelector("link[data-tab-css]");
+        if (link) {
+            link.href = href;
+            console.log('Updated existing CSS link');
+        } else {
+            link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = href;
+            link.setAttribute("data-tab-css", "");
+            
+            // Add error handling for CSS loading
+            link.onerror = function() {
+                console.warn('Failed to load CSS:', href);
+            };
+            
+            link.onload = function() {
+                console.log('Successfully loaded CSS:', href);
+            };
+            
+            document.head.appendChild(link);
+            console.log('Added new CSS link');
+        }
+    } catch (error) {
+        console.error('Error in loadCSS:', error);
     }
 }
 
@@ -174,21 +196,40 @@ async function applyFilters() {
         const subjectSelect = document.querySelector('.filter-select.subject');
         const submitterSelect = document.querySelector('.filter-select.submitter');
         
-        const selectedSubject = subjectSelect ? subjectSelect.value : '';
-        const selectedSubmitter = submitterSelect ? submitterSelect.value : '';
+        if (!subjectSelect || !submitterSelect) {
+            console.error('Filter select elements not found');
+            return;
+        }
+        
+        const selectedSubject = subjectSelect.value;
+        const selectedSubmitter = submitterSelect.value;
         
         console.log("Applying filters:", { subject: selectedSubject, submitter: selectedSubmitter });
         
         // Build query parameters
         const params = new URLSearchParams();
-        if (selectedSubject) params.append('subject', selectedSubject);
-        if (selectedSubmitter) params.append('submitter', selectedSubmitter);
+        if (selectedSubject && selectedSubject.trim() !== '') {
+            params.append('subject', selectedSubject.trim());
+        }
+        if (selectedSubmitter && selectedSubmitter.trim() !== '') {
+            params.append('submitter', selectedSubmitter.trim());
+        }
         
         const url = `${API_URLS.filteredDuplications}?${params.toString()}`;
         console.log("Fetching filtered data from:", url);
         
+        // Show loading indicator
+        const tbody = document.querySelector('.table tbody');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Loading...</td></tr>';
+        }
+        
         const response = await fetch(url);
+        console.log("Filter response status:", response.status);
+        
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Filter error response:", errorText);
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
@@ -200,7 +241,17 @@ async function applyFilters() {
         
     } catch (error) {
         console.error('Error applying filters:', error);
-        alert('Error applying filters. Please try again.');
+        
+        // Show error in table
+        const tbody = document.querySelector('.table tbody');
+        if (tbody) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: red;">
+                Error loading filtered data: ${error.message}
+                <br><small>Check console for details</small>
+            </td></tr>`;
+        }
+        
+        alert('Error applying filters: ' + error.message);
     }
 }
 
@@ -257,10 +308,15 @@ async function loadDuplications() {
             }
             console.log('========================');
         }
-        
-        // Check if data is valid before displaying
-        if (data && Array.isArray(data) && data.length > 0) {
-            displayDuplications(data);
+          // Check if data is valid before displaying
+        if (data && Array.isArray(data)) {
+            if (data.length > 0) {
+                displayDuplications(data);
+            } else {
+                // Empty array is valid - no pending detections
+                console.log('No pending detections found');
+                displayDuplications([]); // Display empty list
+            }
         } else {
             console.warn('Invalid data received from API:', data);
             throw new Error('Invalid data structure');
@@ -445,31 +501,49 @@ function bindInnerEvents() {
 function bindGlobalEvents() {
     document.addEventListener("click", function (e) {
         const target = e.target;
-        if (target && target.classList) {
-            if (target.classList.contains("btn-view-duplication")) {
-                e.preventDefault();
-                const detectionId = target.getAttribute('data-detection-id');
-                loadDuplicationDetails(detectionId);
-            } else if (target.classList.contains("back-link")) {
-                e.preventDefault();
-                goBackToDetectionList();
-            } else if (target.classList.contains("modal-overlay")) {
-                // Close modal when clicking on overlay (outside modal content)
-                if (target.id === "logDetailModal") {
-                    closeModal();
+        
+        try {
+            if (target && target.classList) {
+                if (target.classList.contains("btn-view-duplication")) {
+                    e.preventDefault();
+                    const detectionId = target.getAttribute('data-detection-id');
+                    if (detectionId) {
+                        loadDuplicationDetails(detectionId);
+                    } else {
+                        console.error('No detection ID found on view button');
+                    }
+                } else if (target.classList.contains("back-link")) {
+                    e.preventDefault();
+                    goBackToDetectionList();
+                } else if (target.classList.contains("modal-overlay")) {
+                    // Close modal when clicking on overlay (outside modal content)
+                    if (target.id === "logDetailModal") {
+                        closeModal();
+                    }
+                }
+            } else {
+                // Only log if the target is an interactive element (button, link, etc)
+                if (target && (target.tagName === 'BUTTON' || target.tagName === 'A' || target.onclick)) {
+                    console.warn('Interactive element missing classList:', target);
                 }
             }
+        } catch (error) {
+            console.error('Error in global click handler:', error);
         }
     });
     
     // Handle Escape key to close modals
     document.addEventListener("keydown", function(e) {
-        if (e.key === "Escape") {
-            const logModal = document.getElementById("logDetailModal");
-            
-            if (logModal && logModal.style.display === "flex") {
-                closeModal();
+        try {
+            if (e.key === "Escape") {
+                const logModal = document.getElementById("logDetailModal");
+                
+                if (logModal && logModal.style.display === "flex") {
+                    closeModal();
+                }
             }
+        } catch (error) {
+            console.error('Error in keydown handler:', error);
         }
     });
 }
@@ -547,48 +621,164 @@ function bindViewButtons() {
     });
 }
 
-// Action button handlers
+// Action button handlers with better error handling
 function viewDuplication(button) {
-    const detectionId = button.getAttribute('data-detection-id');
-    console.log("View duplication:", detectionId);
-    loadDuplicationDetails(detectionId);
-}
-
-function acceptDuplication(button) {
-    const detectionId = button.getAttribute('data-detection-id');
-    if (confirm('Are you sure you want to accept this question?')) {
-        processDuplicationAction(detectionId, 'ACCEPT');
-    }
-}
-
-function rejectDuplication(button) {
-    const detectionId = button.getAttribute('data-detection-id');
-    if (confirm('Are you sure you want to reject this question?')) {
-        processDuplicationAction(detectionId, 'REJECT');
-    }
-}
-
-async function processDuplicationAction(detectionId, action) {
     try {
+        if (!button) {
+            console.error('viewDuplication: button is null');
+            return;
+        }
+        
+        const detectionId = button.getAttribute('data-detection-id');
+        if (!detectionId) {
+            console.error('viewDuplication: detection ID not found');
+            return;
+        }
+        
+        console.log("View duplication:", detectionId);
+        loadDuplicationDetails(detectionId);
+    } catch (error) {
+        console.error('Error in viewDuplication:', error);
+    }
+}
+
+// Hàm xử lý Accept trực tiếp từ bảng danh sách
+async function acceptDuplication(button) {
+    const detectionId = button.getAttribute('data-detection-id');
+    
+    if (!detectionId) {
+        alert('Detection ID not found');
+        return;
+    }
+    
+    // Xác nhận action
+    if (!confirm('Are you sure you want to ACCEPT this duplicate detection?')) {
+        return;
+    }
+    
+    try {
+        // Disable button và show loading
+        button.disabled = true;
+        button.innerHTML = '⏳';
+        
         const response = await fetch(`/api/staff/duplications/${detectionId}/process`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
-            body: `action=${action}&feedback=${action === 'ACCEPT' ? 'Question accepted' : 'Question rejected'}`
+            body: JSON.stringify({
+                action: 'ACCEPT',
+                feedback: '',
+                processorId: 1 // Hoặc lấy từ session
+            })
         });
         
-        if (response.ok) {
-            alert(`Question ${action.toLowerCase()}ed successfully!`);
-            // Reload the duplications list
-            loadDuplications();
-        } else {
-            throw new Error(`Failed to ${action.toLowerCase()} question`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
+        const result = await response.json();
+        console.log('Accept successful:', result);
+        
+        // Show success message
+        showSuccessMessage('Detection accepted successfully!');
+        
+        // Reload danh sách để cập nhật
+        await loadDuplications();
+        
     } catch (error) {
-        console.error('Error processing action:', error);
-        alert(`Error ${action.toLowerCase()}ing question. Please try again.`);
+        console.error('Error accepting duplicate:', error);
+        alert('Failed to accept duplicate: ' + error.message);
+        
+        // Restore button
+        button.disabled = false;
+        button.innerHTML = '✅';
     }
+}
+
+// Hàm xử lý Reject trực tiếp từ bảng danh sách
+async function rejectDuplication(button) {
+    const detectionId = button.getAttribute('data-detection-id');
+    
+    if (!detectionId) {
+        alert('Detection ID not found');
+        return;
+    }
+    
+    // Xác nhận action
+    if (!confirm('Are you sure you want to REJECT this duplicate detection?')) {
+        return;
+    }
+    
+    try {
+        // Disable button và show loading
+        button.disabled = true;
+        button.innerHTML = '⏳';
+        
+        const response = await fetch(`/api/staff/duplications/${detectionId}/process`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                action: 'REJECT',
+                feedback: '',
+                processorId: 1 // Hoặc lấy từ session
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('Reject successful:', result);
+        
+        // Show success message
+        showSuccessMessage('Detection rejected successfully!');
+        
+        // Reload danh sách để cập nhật
+        await loadDuplications();
+        
+    } catch (error) {
+        console.error('Error rejecting duplicate:', error);
+        alert('Failed to reject duplicate: ' + error.message);
+        
+        // Restore button
+        button.disabled = false;
+        button.innerHTML = '❌';
+    }
+}
+
+// Hàm hiển thị thông báo thành công
+function showSuccessMessage(message) {
+    // Tạo toast notification
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #4CAF50;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 10000;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+    `;
+    toast.textContent = message;
+    
+    document.body.appendChild(toast);
+    
+    // Tự động xóa sau 3 giây
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+    }, 3000);
 }
 
 function closeModal() {
@@ -597,32 +787,138 @@ function closeModal() {
 
 // Bind form events for details content (not modal)
 function bindDetailsFormEvents() {
+    console.log("bindDetailsFormEvents called");
+    
     const form = document.querySelector('#tab-content form');
     if (form) {
-        form.addEventListener('submit', async function(e) {
+        console.log("Found form in tab-content, binding events");
+          form.addEventListener('submit', async function(e) {
             e.preventDefault();
+              const formData = new FormData(form);
+            const action = formData.get('action');
+            const feedback = formData.get('feedback');
+            const processorId = formData.get('processorId');
+            const actionUrl = form.getAttribute('action'); // Sửa: dùng getAttribute thay vì .action
             
-            const formData = new FormData(form);
-            const actionUrl = form.action;
+            console.log("Form submission:", { action, feedback, processorId, actionUrl });
+            console.log("Form data entries:");
+            for (let [key, value] of formData.entries()) {
+                console.log(`  ${key}: ${value}`);
+            }
+              if (!action) {
+                alert('Please select an action before submitting.');
+                return;
+            }
             
-            try {
-                const response = await fetch(actionUrl, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                if (response.ok) {
-                    alert('Action processed successfully!');
-                    // Go back to the detection tab content
-                    goBackToDetectionList();
-                } else {
-                    alert('Error processing action. Please try again.');
+            // Validate action values
+            const validActions = ['ACCEPT', 'REJECT', 'SEND_BACK'];
+            if (!validActions.includes(action)) {
+                alert('Invalid action selected: ' + action);
+                return;
+            }
+            
+            // Validate processorId
+            if (!processorId || isNaN(parseInt(processorId))) {
+                alert('Invalid processor ID: ' + processorId);
+                return;
+            }
+              if (confirm(`Are you sure you want to ${getActionDisplayName(action)} this detection?`)) {
+                let originalText = 'Submit Action'; // Declare in outer scope
+                  try {
+                    // Show loading state
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        originalText = submitButton.textContent;
+                        submitButton.textContent = 'Processing...';
+                        submitButton.disabled = true;
+                    }                    // Convert FormData to JSON
+                    const jsonData = {
+                        action: action,
+                        feedback: feedback,
+                        processorId: processorId ? parseInt(processorId) : null
+                    };
+                      console.log("Sending JSON data:", jsonData);
+                    console.log("Target URL:", actionUrl);
+                    console.log("Request headers:", {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    });
+                    
+                    const response = await fetch(actionUrl, {
+                        method: 'POST',
+                        body: JSON.stringify(jsonData),
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    
+                    console.log("Form response status:", response.status);
+                    console.log("Form response headers:", response.headers);
+                    
+                    if (response.ok) {
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            const result = await response.json();
+                            console.log("Form response data:", result);
+                            
+                            if (result.success !== false) {
+                                alert('Detection processed successfully!');
+                                goBackToDetectionList();
+                            } else {
+                                throw new Error(result.error || 'Unknown error occurred');
+                            }
+                        } else {
+                            // Handle non-JSON response
+                            const textResponse = await response.text();
+                            console.log("Non-JSON response:", textResponse);
+                            if (textResponse.includes('success') || response.status === 200) {
+                                alert('Detection processed successfully!');
+                                goBackToDetectionList();
+                            } else {
+                                throw new Error('Unexpected response format');
+                            }
+                        }
+                    } else {
+                        const errorText = await response.text();
+                        console.error("Form response error:", errorText);
+                        
+                        // Try to parse as JSON first
+                        try {
+                            const errorJson = JSON.parse(errorText);
+                            throw new Error(errorJson.error || `Server error: ${response.status}`);
+                        } catch (parseError) {
+                            throw new Error(`Server error: ${response.status} - ${errorText.substring(0, 200)}`);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error submitting form:', error);
+                    alert('Error processing detection: ' + error.message);                } finally {
+                    // Reset button state
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.textContent = originalText;
+                        submitButton.disabled = false;
+                    }
                 }
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                alert('Error submitting form. Please try again.');
             }
         });
+        
+        console.log("Form events bound successfully");
+    } else {
+        console.warn("Form not found in tab-content");
+    }
+}
+
+// Helper function to get action display name
+function getActionDisplayName(action) {
+    switch(action) {
+        case 'ACCEPT': return 'accept';
+        case 'REJECT': return 'reject';
+        case 'SEND_BACK': return 'send back for revision';
+        default: return action.toLowerCase();
     }
 }
 
@@ -665,14 +961,72 @@ function goBackToDetectionList() {
     }
 }
 
+// Test function để debug
+async function testEndpoint() {
+    try {
+        const testData = {
+            action: "ACCEPT",
+            feedback: "test feedback",
+            processorId: 1
+        };
+        
+        console.log("Testing endpoint with data:", testData);
+        
+        const response = await fetch('/api/staff/duplications/test-endpoint', {
+            method: 'POST',
+            body: JSON.stringify(testData),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        console.log("Test response status:", response.status);
+        
+        if (response.ok) {
+            const result = await response.json();
+            console.log("Test response data:", result);
+            alert("Test endpoint SUCCESS: " + JSON.stringify(result));
+        } else {
+            const errorText = await response.text();
+            console.error("Test response error:", errorText);
+            alert("Test endpoint FAILED: " + response.status + " - " + errorText.substring(0, 200));
+        }
+    } catch (error) {
+        console.error('Test endpoint error:', error);
+        alert('Test endpoint ERROR: ' + error.message);
+    }
+}
+
+// Thêm nút test vào window object để có thể gọi từ console
+window.testEndpoint = testEndpoint;
+
 document.addEventListener("DOMContentLoaded", () => {
-    bindTabEvents();
-    bindGlobalEvents(); // ĐẢM BẢO SỰ KIỆN CLICK VIEW ĐƯỢC GẮN
+    console.log("DOM Content Loaded - initializing...");
     
-    // Make goBackToDetectionList globally available
-    window.goBackToDetectionList = goBackToDetectionList;
-    
-    // Optionally, load the first tab by default
-    const firstTab = document.querySelector('.tab');
-    if (firstTab) handleTabClick(firstTab);
+    // Add error handling for missing elements
+    try {
+        bindTabEvents();
+        bindGlobalEvents(); // ĐẢM BẢO SỰ KIỆN CLICK VIEW ĐƯỢC GẮN
+        
+        // Make goBackToDetectionList globally available
+        window.goBackToDetectionList = goBackToDetectionList;
+        
+        // Optionally, load the first tab by default
+        const firstTab = document.querySelector('.tab');
+        if (firstTab) {
+            console.log("Loading first tab:", firstTab.dataset?.tab);
+            handleTabClick(firstTab);
+        } else {
+            console.warn("No tabs found on page load");
+        }
+    } catch (error) {
+        console.error("Error during DOMContentLoaded:", error);
+    }
 });
+
+// Export functions to global scope để có thể gọi từ HTML
+window.acceptDuplication = acceptDuplication;
+window.rejectDuplication = rejectDuplication;
+window.viewDuplication = viewDuplication;
