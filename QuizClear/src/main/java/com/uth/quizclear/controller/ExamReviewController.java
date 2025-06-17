@@ -21,4 +21,11 @@ public class ExamReviewController {
         model.addAttribute("exam", reviewDTO);
         return "Staff/staffREReviewQuestion";
     }
+
+    @GetMapping("/{examId}/questions")
+    public String questionList(@PathVariable Long examId, Model model) {
+        ExamReviewDTO reviewDTO = examReviewService.getExamReview(examId);
+        model.addAttribute("exam", reviewDTO);
+        return "Staff/staffREQuestionList";
+    }
 }

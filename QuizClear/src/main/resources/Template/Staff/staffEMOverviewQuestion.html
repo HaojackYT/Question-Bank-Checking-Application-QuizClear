@@ -1,203 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
-        <link rel="stylesheet" href="../../Static/header.css">
-        <link rel="stylesheet" href="../../Static/web_styles.css">
-        <link rel="stylesheet" href="../../Static/Menu-Staff.css">
-        <link rel="stylesheet" href="../../Static/css/staff/staffEMOverviewQuestion.css">
-         <link rel="stylesheet" href="../../Static/css/staff/staffEMOverview.css">
-        <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-        <title>Data Structures Final Exam - Questions Preview</title>
-    </head>
-
-    <body>
-        <!--header-->
-        <div id="header-placeholder"></div>
-
-        <!-- body -->
-        <div id="Container-body">
-            <!-- Menu -->
-            <div id="menu-HTML"></div>
-
-            <!-- Main content -->
-            <div id="main">
-                <!-- Exam Header -->
-                <div class="exam-header">
-                    <div class="back-arrow">
-                        <i class="fas fa-arrow-left"></i>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/header.css}">
+    <link rel="stylesheet" th:href="@{/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Menu-Staff.css}" />
+    <link rel="stylesheet" th:href="@{/css/staff/staffEMOverviewQuestion.css}">
+    <link rel="stylesheet" th:href="@{/css/staff/staffEMOverview.css}">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title th:text="${overview.examTitle} + ' - Questions Preview'">Questions Preview</title>
+</head>
+<body>
+    <header class="header" th:insert="~{header_user :: header}"></header>
+    <div id="Container-body">
+        <div id="menu-HTML" th:insert="~{Menu-Staff :: menu}"></div>
+        <div id="main">
+            <!-- Exam Header -->
+            <div class="exam-header">
+                <a th:href="@{/staff/exams/{examId}/overview(examId=${overview.examId})}" class="back-arrow">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div class="exam-title">
+                    <h1 th:text="${overview.examTitle}"></h1>
+                    <div class="exam-meta">
+                        <span class="course-code" th:text="${overview.examCode}"></span>
+                        <span class="separator">•</span>
+                        <span class="subject" th:text="${overview.courseName}"></span>
+                        <span class="separator">•</span>
+                        <span class="term" th:text="${overview.semester} + ' ' + ${overview.academicYear}"></span>
                     </div>
-                    <div class="exam-title">
-                        <h1>Data Structures Final Exam</h1>
-                        <div class="exam-meta">
-                            <span class="course-code">CS301-FINAL-2023</span>
-                            <span class="separator">•</span>
-                            <span class="subject">Computer Science</span>
-                            <span class="separator">•</span>
-                            <span class="term">Fall 2023</span>
+                </div>
+            </div>
+            <!-- Exam Statistics -->
+            <div class="exam-stats">
+                <div class="stat-item">
+                    <div class="stat-label">Questions</div>
+                    <div class="stat-value" th:text="${overview.totalQuestions}"></div>
+                    <div class="stat-subtext" th:text="${overview.versionCount} + ' versions'"></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Deadline</div>
+                    <div class="stat-value" th:text="${overview.deadline}"></div>
+                    <div class="stat-subtext" th:text="'Created on ' + ${overview.createdDate}"></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Assigned To</div>
+                    <div class="stat-value" th:text="${#lists.size(overview.assignedTeam)}"></div>
+                    <div class="stat-subtext">
+                        <span th:each="member, stat : ${overview.assignedTeam}">
+                            <span th:text="${member.fullName}"></span>
+                            <span th:if="${!stat.last}">, </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <!-- Tab Navigation -->
+            <div class="exam-tabs">
+                <button class="tab-btn" data-tab="overview"
+                        th:onclick="'window.location.href=\'/staff/exams/' + ${overview.examId} + '/overview-questions\''">
+                    Overview
+                </button>
+                <button class="tab-btn active" data-tab="questions">Questions</button>
+                <button class="tab-btn" data-tab="feedback"
+                        th:onclick="'window.location.href=\'/staff/exams/' + ${overview.examId} + '/feedback\''">
+                    Feedback
+                </button>
+            </div>
+            <!-- Questions Content -->
+            <div class="questions-content">
+                <div class="question-preview-header">
+                    <h3>Question Preview</h3>
+                    <p>Preview and manage exam questions</p>
+                </div>
+                <div class="questions-list">
+                    <div th:if="${#lists.isEmpty(questions)}">
+                        <p>No questions available for this exam.</p>
+                    </div>
+                    <div class="question-item" th:each="q, idxStat : ${questions}">
+                        <div class="question-header">
+                            <span class="question-number" th:text="'Question ' + (${idxStat.index + 1})"></span>
+                            <span class="difficulty-badge" th:text="${q.difficulty}" th:classappend=" ' ' + ${q.difficulty?.toLowerCase()}"></span>
+                            <button class="edit-btn" th:onclick="'window.location.href=\'/staff/questions/edit/' + ${q.examQuestionId} + '\';'">Edit</button>
+                        </div>
+                        <div class="question-text" th:text="${q.content}"></div>
+                        <div class="question-options">
+                            <div class="option" th:each="opt, optStat : ${q.options}" th:text="${'Option ' + (optStat.index + 1) + ': ' + opt}"></div>
+                        </div>
+                        <div class="correct-answer"
+                            th:if="${q.options != null and q.options.size() > q.correctIndex}"
+                            th:text="'Correct Answer: ' + ${answerLabels[q.correctIndex]} + '. ' + ${q.options[q.correctIndex]}">
                         </div>
                     </div>
                 </div>
-
-                <!-- Exam Statistics -->
-                <div class="exam-stats">
-                    <div class="stat-item">
-                        <div class="stat-label">Questions</div>
-                        <div class="stat-value">50</div>
-                        <div class="stat-subtext">2 versions</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Deadline</div>
-                        <div class="stat-value">2023-06-20</div>
-                        <div class="stat-subtext">Created on 2023-06-01</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Assigned To</div>
-                        <div class="stat-value">3</div>
-                        <div class="stat-subtext">Dr. Smith, Prof. Davis, Dr. Brown</div>
-                    </div>
-                </div>
-
-                <!-- Tab Navigation -->
-                <div class="exam-tabs">
-                    <button class="tab-btn" data-tab="overview">Overview</button>
-                    <button class="tab-btn active" data-tab="questions">Questions</button>
-                    <button class="tab-btn" data-tab="feedback">Feedback</button>
-                </div>
-
-                <!-- Questions Content -->
-                <div class="questions-content">
-                    <div class="question-preview-header">
-                        <h3>Question Preview</h3>
-                        <p>Preview and manage exam questions</p>
-                    </div>
-
-                    <div class="questions-list">
-                        <div class="question-item">
-                            <div class="question-header">
-                                <span class="question-number">Question 1</span>
-                                <span class="difficulty-badge basic">Basic</span>
-                                <button class="edit-btn">Edit</button>
-                            </div>
-                            <div class="question-text">What is the time complexity of binary search?</div>
-                            <div class="question-options">
-                                <div class="option">A. O(1)</div>
-                                <div class="option">B. O(log n)</div>
-                                <div class="option">C. O(n)</div>
-                                <div class="option">D. O(n log n)</div>
-                            </div>
-                            <div class="correct-answer">Correct Answer: B</div>
-                        </div>
-
-                        <div class="question-item">
-                            <div class="question-header">
-                                <span class="question-number">Question 2</span>
-                                <span class="difficulty-badge intermediate">Intermediate</span>
-                                <button class="edit-btn">Edit</button>
-                            </div>
-                            <div class="question-text">Explain the difference between a stack and a queue data structure.</div>
-                            <div class="question-options">
-                                <div class="option">A. Option A</div>
-                                <div class="option">B. Option B</div>
-                                <div class="option">C. Option C</div>
-                                <div class="option">D. Option D</div>
-                            </div>
-                            <div class="correct-answer">Correct Answer: Varies</div>
-                        </div>
-
-                        <div class="question-item">
-                            <div class="question-header">
-                                <span class="question-number">Question 3</span>
-                                <span class="difficulty-badge advanced">Advanced</span>
-                                <button class="edit-btn">Edit</button>
-                            </div>
-                            <div class="question-text">Implement a function to check if a binary tree is balanced.</div>
-                            <div class="question-options">
-                                <div class="option">A. Option A</div>
-                                <div class="option">B. Option B</div>
-                                <div class="option">C. Option C</div>
-                                <div class="option">D. Option D</div>
-                            </div>
-                            <div class="correct-answer">Correct Answer: Varies</div>
-                        </div>
-
-                        <div class="question-item">
-                            <div class="question-header">
-                                <span class="question-number">Question 4</span>
-                                <span class="difficulty-badge expert">Expert</span>
-                                <button class="edit-btn">Edit</button>
-                            </div>
-                            <div class="question-text">Design an algorithm to find the kth largest element in a binary search tree.</div>
-                            <div class="question-options">
-                                <div class="option">A. Option A</div>
-                                <div class="option">B. Option B</div>
-                                <div class="option">C. Option C</div>
-                                <div class="option">D. Option D</div>
-                            </div>
-                            <div class="correct-answer">Correct Answer: Varies</div>
-                        </div>
-
-                        <div class="question-item">
-                            <div class="question-header">
-                                <span class="question-number">Question 5</span>
-                                <span class="difficulty-badge expert">Expert</span>
-                                <button class="edit-btn">Edit</button>
-                            </div>
-                            <div class="question-text">Analyze the time and space complexity of the quicksort algorithm in the worst case scenario.</div>
-                            <div class="question-options">
-                                <div class="option">A. Option A</div>
-                                <div class="option">B. Option B</div>
-                                <div class="option">C. Option C</div>
-                                <div class="option">D. Option D</div>
-                            </div>
-                            <div class="correct-answer">Correct Answer: Varies</div>
-                        </div>
-                    </div>
-                    <div class="pagination">
+                <!-- Pagination (giả lập) -->
+                <div class="pagination">
                     <div class="pagination-left">
                         <i class="fa-solid fa-bullhorn"></i>
-                        <p class="page-info">Total Pages: 9</p>
+                        <p class="page-info" th:text="'Total Pages: ' + ${totalPages}"></p>
                     </div>
                     <div class="page-controls">
-                        <button class="prev-btn">< Previous</button>
-                        <input type="number" id="pageInput" value="1" min="1">
-                        <button class="next-btn">Next ></button>
+                        <button class="prev-btn" th:disabled="${currentPage == 1}">&lt; Previous</button>
+                        <input type="number" id="pageInput" th:value="${currentPage}" min="1" th:max="${totalPages}">
+                        <button class="next-btn" th:disabled="${currentPage == totalPages}">Next &gt;</button>
                     </div>
-                </div>
-                </div>
                 </div>
             </div>
         </div>
-
-        <!-- Load header and menu -->
-        <script>
-            // Load header
-            fetch('../../Template/header_user.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('header-placeholder').innerHTML = data;
-                });
-
-            // Load menu
-            fetch('../../Template/Menu-Staff.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('menu-HTML').innerHTML = data;
-                });
-
-            // Tab navigation functionality
-            document.querySelectorAll('.tab-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    const tabName = button.getAttribute('data-tab');
-                    if (tabName === 'overview') {
-                        window.location.href = 'exam_overview.html';
-                    } else if (tabName === 'feedback') {
-                        window.location.href = 'feedback_comments.html';
-                    }
-                });
-            });
-        </script>
-    </body>
-</html>
+    </div>
+</body>
+</html> 
