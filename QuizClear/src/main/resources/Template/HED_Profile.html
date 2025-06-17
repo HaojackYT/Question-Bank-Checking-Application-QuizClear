@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -32,35 +32,35 @@
                         <h2>Personal Information</h2>
                         <div class="info-item">
                             <label>Full Name</label>
-                            <span>Nguyen Van A</span>
+                            <span th:text="${user.fullName}">Nguyen Van A</span>
                         </div>
                         <div style="display: flex;flex-direction: row;">
                             <div class="info-item" style="width: 48%;margin-right: 4%;">
                                 <label>Gender</label>
-                                <span>Male</span>
+                                <span th:text="${user.gender}">Male</span>
                             </div>
                             <div class="info-item" style="width: 48%;">
                                 <label>Date of Birth</label>
-                                <span>20/01/1999</span>
+                                <span th:text="${dates.format(user.dateOfBirth, 'dd/MM/yyyy')}">20/01/1999</span>
                             </div>
                         </div>
                         <div style="display: flex;flex-direction: row;">
                             <div class="info-item" style="width: 52%;margin-right: 4%;">
                                 <label>Nation</label>
-                                <span>Viet Nam</span>
+                                <span th:text="${user.nation}">Viet Nam</span>
                             </div>
                             <div class="info-item" style="width: 44%">
                                 <label>Phone Number</label>
-                                <span>0972051234</span>
+                                <span th:text="${user.phoneNumber}">0972051234</span>
                             </div>
                         </div>
                         <div class="info-item">
                             <label>Hometown</label>
-                            <span>No 70 To Ky Street, Tan Chanh Hiep Ward, District 12, Ho Chi Minh City</span>
+                            <span th:text="${user.hometown}">No 70 To Ky Street, Tan Chanh Hiep Ward, District 12, Ho Chi Minh City</span>
                         </div>
                         <div class="info-item">
                             <label>Contact Address</label>
-                            <span>No 70 To Ky Street, Tan Chanh Hiep Ward, District 12, Ho Chi Minh City</span>
+                            <span th:text="${user.contactAddress}">No 70 To Ky Street, Tan Chanh Hiep Ward, District 12, Ho Chi Minh City</span>
                         </div>
                     </div>
 
@@ -103,41 +103,41 @@
                         </div>
                         <div class="info-item" style="width: 48%;">
                             <label>Gmail</label>
-                            <span>nva1001@utd.vn</span>
+                            <span th:text="${user.email}">nva1001@utd.vn</span>
                         </div>
                     </div>
                     <div style="display: flex;flex-direction: row;justify-content: space-between;">
                         <div class="info-item" style="width: 52%;">
                             <label>Position</label>
-                            <span>Head of Department</span>
+                            <span th:text="${user.roleDisplayName}">Head of Department</span>
                         </div>
                         <div class="info-item" style="width: 44%;">
                             <label>Department</label>
-                            <span>Information Technology</span>
+                            <span th:text="${user.department}">Information Technology</span>
                         </div>
                     </div>
                     <div style="display: flex;flex-direction: row;justify-content: space-between;">
                         <div class="info-item" style="width: 28%;">
                             <label>Start Year</label>
-                            <span>20/4/2025</span>
+                            <span th:text="${dates.format(user.start, 'dd/MM/yyyy')}">20/4/2025</span>
                         </div>
                         <div class="info-item" style="width: 28%;">
                             <label>End Year</label>
-                            <span>---</span>
+                            <span th:text="${user.end == null ? '---' : #dates.format(user.end, 'dd/MM/yyyy')}">---</span>
                         </div>
                         <div class="info-item" style="width: 28%;">
                             <label>Status</label>
-                            <span>Ongoing</span>
+                            <span th:text="${user.status}">Ongoing</span>
                         </div>
                     </div>
                     <div class="info-item">
                         <label>Qualification</label>
-                        <span>MS in Information Technology - University of Transport and Communications, Vietnam -
+                        <span th:text="${user.qualification}">MS in Information Technology - University of Transport and Communications, Vietnam -
                             2012</span>
                     </div>
                     <div class="info-item">
                         <label>Workplace</label>
-                        <span>University of Transport and Communications, Campus 3</span>
+                        <span th:text="${user.workPlace}">University of Transport and Communications, Campus 3</span>
                     </div>
                 </div>
             </div>
