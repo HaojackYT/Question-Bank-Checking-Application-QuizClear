@@ -100,7 +100,7 @@ public class User {
     private String contactAddress;    @Column(name = "avatar_url")
     private String avatarUrl;
 
-    // Tạm thời comment out các field này vì database chưa có
+    // Temporarily comment out until database is updated
     // @Column(name = "work_place")   // Bổ sung trường workPlace cho Profile
     // private String workPlace;
 
@@ -201,7 +201,25 @@ public class User {
     }
 
     public String getFullName() {
-        return this.fullName;
-    }
+        return this.fullName;    }
+
+    // Temporarily comment out until database is updated
+    // Getter và setter cho workPlace
+    // public String getWorkPlace() {
+    //     return workPlace;
+    // }
+
+    // public void setWorkPlace(String workPlace) {
+    //     this.workPlace = workPlace;
+    // }
+
+    // Getter và setter cho qualification
+    // public String getQualification() {
+    //     return qualification;
+    // }
+
+    // public void setQualification(String qualification) {
+    //     this.qualification = qualification;
+    // }
 
 }

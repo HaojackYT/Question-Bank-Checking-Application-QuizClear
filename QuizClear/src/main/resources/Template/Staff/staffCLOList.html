@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
     <link rel="stylesheet" href="../../Static/header.css">
     <link rel="stylesheet" href="../../Static/Menu-Staff.css">
-    <link rel="stylesheet" href="../../Static/css/staff/staffCLOList.css">
+    <link rel="stylesheet" href="../../Static/css/staff/staffSMCourseList.css">
+    <link rel="stylesheet" href="../../Static/web_styles.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
@@ -122,152 +123,119 @@
 
         <!-- Main content -->
         <div id="main">
-            <div class="main-context">
-                <div class="header-section">
-                    <div class="tab-navigation">
-                        <button class="tab-btn">Course</button>
-                        <button class="tab-btn active">CLO</button>
-                    </div>
-                    <button class="new-course-btn" onclick="openCreateModal()">+ New CLOs</button>
-                </div>
+            <div class="create-question-container">
+                <button class="new-course-btn" onclick="openCreateModal()"><i class="fas fa-plus"></i> New CLO</button>
+            </div>
 
-                <div class="title">CLOs List</div>
-                <div class="subtitle">Manage Course Learning Outcomes (CLOs) by course</div>
-                
-                <div class="filter-select">
-                    <div class="search-container">
-                        <input type="text" id="search" placeholder="Search...">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </div>
-                    <select id="department" name="departments">
-                        <option value="AllDepartment">All departments</option>
+            <div class="tab-switch">
+                <a href="staffSMCourseList.html" class="tab-button">Course</a>
+                <a href="staffCLOList.html" class="tab-button active">CLO</a>
+            </div>
+
+            <div class="title">CLOs List</div>
+            <div class="subtitle">Manage Course Learning Outcomes (CLOs) by course</div>
+
+            <div class="search-filter-bar">
+                <div class="search-box">
+                    <input type="text" placeholder="Enter search content ..." class="search-input">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="filter-dropdown">
+                    <select class="filter-select">
+                        <option value="AllDepartment">All Departments</option>
                         <option value="IT">Information Technology</option>
                         <option value="DB">Database</option>
                     </select>
-                    <select id="difficulty" name="difficulty">
-                        <option value="AllDifficulty">All Difficulty Level</option>
-                        <option value="Recognition">Recognition</option>
-                        <option value="Comprehension">Comprehension</option>
-                        <option value="Basic Application">Basic Application</option>
-                        <option value="Advanced Application">Advanced Application</option>
-                    </select>
+                    <i class="fas fa-chevron-down"></i>
                 </div>
+            </div>
 
-                <table class="course-table">
-                    <thead>
-                        <tr>
-                            <th>CLO code</th>
-                            <th>Description</th>
-                            <th>Course</th>
-                            <th>Difficulty Level</th>
-                            <th>Questions</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>CLO1</td>
-                            <td>Understand web fundamentals and core concepts</td>
-                            <td>Web Programming</td>
-                            <td><span class="difficulty-badge recognition">Recognition</span></td>
-                            <td>256</td>
-                            <td><span class="status-badge approved">Approved</span></td>
-                            <td>
-                                <i class="fa-solid fa-pen-to-square action-icon" onclick="openModal();"></i>
-                                <i class="fa-solid fa-trash action-icon"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>CLO1</td>
-                            <td>Understand web fundamentals and core concepts</td>
-                            <td>Web Programming</td>
-                            <td><span class="difficulty-badge comprehension">Comprehension</span></td>
-                            <td>256</td>
-                            <td><span class="status-badge approved">Approved</span></td>
-                            <td>
-                                <i class="fa-solid fa-pen-to-square action-icon" onclick="openModal();"></i>
-                                <i class="fa-solid fa-trash action-icon"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>CLO1</td>
-                            <td>Understand web fundamentals and core concepts</td>
-                            <td>Web Programming</td>
-                            <td><span class="difficulty-badge basic-application">Basic Application</span></td>
-                            <td>256</td>
-                            <td><span class="status-badge approved">Approved</span></td>
-                            <td>
-                                <i class="fa-solid fa-pen-to-square action-icon" onclick="openModal();"></i>
-                                <i class="fa-solid fa-trash action-icon"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>CLO1</td>
-                            <td>Understand web fundamentals and core concepts</td>
-                            <td>Web Programming</td>
-                            <td><span class="difficulty-badge advanced-application">Advanced Application</span></td>
-                            <td>256</td>
-                            <td><span class="status-badge draft">Draft</span></td>
-                            <td>
-                                <i class="fa-solid fa-pen-to-square action-icon" onclick="openModal();"></i>
-                                <i class="fa-solid fa-trash action-icon"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>CLO1</td>
-                            <td>Understand web fundamentals and core concepts</td>
-                            <td>Web Programming</td>
-                            <td><span class="difficulty-badge basic-application">Basic Application</span></td>
-                            <td>256</td>
-                            <td><span class="status-badge approved">Approved</span></td>
-                            <td>
-                                <i class="fa-solid fa-pen-to-square action-icon" onclick="openModal();"></i>
-                                <i class="fa-solid fa-trash action-icon"></i>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <table class="course-table">
+                <thead>
+                    <tr>
+                        <th>CLO ID</th>
+                        <th>Description</th>
+                        <th>Course</th>
+                        <th>Difficulty Level</th>
+                        <th>Questions</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CLO1</td>
+                        <td>Understand web fundamentals and core concepts</td>
+                        <td>Web Programming</td>
+                        <td><span class="difficulty-badge recognition">Recognition</span></td>
+                        <td>256</td>
+                        <td><span class="status-badge approved">Approved</span></td>
+                        <td>
+                            <i class="fa-solid fa-pen-to-square action-icon" onclick="openModal();"></i>
+                            <i class="fa-solid fa-trash action-icon"></i>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>CLO1</td>
+                        <td>Understand web fundamentals and core concepts</td>
+                        <td>Web Programming</td>
+                        <td><span class="difficulty-badge recognition">Recognition</span></td>
+                        <td>256</td>
+                        <td><span class="status-badge approved">Approved</span></td>
+                        <td>
+                            <i class="fa-solid fa-pen-to-square action-icon" onclick="openModal();"></i>
+                            <i class="fa-solid fa-trash action-icon"></i>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>CLO1</td>
+                        <td>Understand web fundamentals and core concepts</td>
+                        <td>Web Programming</td>
+                        <td><span class="difficulty-badge recognition">Recognition</span></td>
+                        <td>256</td>
+                        <td><span class="status-badge approved">Approved</span></td>
+                        <td>
+                            <i class="fa-solid fa-pen-to-square action-icon" onclick="openModal();"></i>
+                            <i class="fa-solid fa-trash action-icon"></i>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>CLO1</td>
+                        <td>Understand web fundamentals and core concepts</td>
+                        <td>Web Programming</td>
+                        <td><span class="difficulty-badge recognition">Recognition</span></td>
+                        <td>256</td>
+                        <td><span class="status-badge approved">Approved</span></td>
+                        <td>
+                            <i class="fa-solid fa-pen-to-square action-icon" onclick="openModal();"></i>
+                            <i class="fa-solid fa-trash action-icon"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-                <div class="pagination">
-                    <div class="pagination-left">
-                        <i class="fa-solid fa-bullhorn"></i>
-                        <p class="page-info">Total Pages: 9</p>
-                    </div>
-                    <div class="page-controls">
-                        <button class="prev-btn">< Previous</button>
-                        <input type="number" id="pageInput" value="1" min="1">
-                        <button class="next-btn">Next ></button>
-                    </div>
+            <div class="pagination">
+                <i class="fa-solid fa-bullhorn" style="padding: 20px;"></i>
+                <p class="page-info" style="padding: 10px;">Total Pages:</p>
+                <p class="page-info">9</p>
+                <div class="page-controls">
+                    <button class="prev-btn"><i class="fa-solid fa-square-caret-left" style="padding: 0px 5px;"></i> Previous</button>
+                    <input type="number" id="pageInput" value="1" min="1" style="width: 50px; text-align: center;">
+                    <button class="next-btn">Next <i class="fa-solid fa-square-caret-right" style="padding: 0px 5px;"></i></button>
                 </div>
+            </div>
 
-                <div class="activity">
-                    <h2>Recent Activities</h2>
-                    <p class="activities-subtitle">Activities related to CLOs in the last 30 days</p>
-                    <div class="activity-item">
-                        <div class="activity-info">
-                            <p class="activity-text"><strong>New CLO: CLO1 – Apply OOP principles</strong></p>
-                            <p class="activity-caption">The CLO has been created by Nguyễn Văn A</p>
-                        </div>
-                        <div class="check-btn">Check</div>
+            <div class="activity">
+                <h2>Recent Activities</h2>
+                <p class="activities-subtitle">Activities related to CLOs in the last 30 days</p>
+                <div class="activity-item">
+                    <div class="activity-info">
+                        <p class="activity-text"><strong>New CLO: CLO1 – Apply OOP principles</strong></p>
+                        <p class="activity-caption">The CLO has been created by Nguyễn Văn A</p>
                     </div>
-                    <div class="activity-item">
-                        <div class="activity-info">
-                            <p class="activity-text"><strong>New CLO: CLO1 – Apply OOP principles</strong></p>
-                            <p class="activity-caption">The CLO has been created by Nguyễn Văn A</p>
-                        </div>
-                        <div class="check-btn">Check</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-info">
-                            <p class="activity-text"><strong>New CLO: CLO1 – Apply OOP principles</strong></p>
-                            <p class="activity-caption">The CLO has been created by Nguyễn Văn A</p>
-                        </div>
-                        <div class="check-btn">Check</div>
-                    </div>
-                    <div class="see-more">
-                        <a href="#">See more...</a>
-                    </div>
+                    <div class="check-btn">Check</div>
                 </div>
             </div>
         </div>
