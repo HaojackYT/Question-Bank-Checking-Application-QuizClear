@@ -30,8 +30,8 @@ public class Course {
     private String courseName;
 
     @Column(name = "credits")
-    private Integer credits;    
-    
+    private Integer credits;
+
     @Column(name = "department")
     private String department;
 
@@ -39,11 +39,11 @@ public class Course {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by")
+    @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
     @Builder.Default
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
@@ -66,20 +66,27 @@ public class Course {
     public enum Status {
         active, inactive
     }
-    
-    // Phương thức này đã được tạo tự động bởi Lombok @Getter
-    // nhưng thêm vào để rõ ràng
-    public String getCourseName() {
-        return this.courseName;
-    }
-        public long getCourseId() {
+
+
+    public Long getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(long courseId) {
+    public void setCourseId(Long courseId) {
         this.courseId = courseId;
     }
 
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
