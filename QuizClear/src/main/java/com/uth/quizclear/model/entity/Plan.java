@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 import com.uth.quizclear.model.enums.PlanStatusConverter;
+import com.uth.quizclear.model.enums.Priority;
 import com.uth.quizclear.model.enums.PriorityConverter;
 
 @Entity
@@ -77,12 +78,10 @@ public class Plan {
     @NotNull(message = "Status is required")
     @Convert(converter = PlanStatusConverter.class)
     @Column(name = "status", columnDefinition = "ENUM('new', 'accepted', 'in_progress', 'completed', 'overdue') DEFAULT 'new'")
-    private PlanStatus status = PlanStatus.NEW;
-
-    @NotNull(message = "Priority is required")
+    private PlanStatus status = PlanStatus.NEW;    @NotNull(message = "Priority is required")
     @Convert(converter = PriorityConverter.class)
     @Column(name = "priority", columnDefinition = "ENUM('low', 'medium', 'high') DEFAULT 'medium'")
-    private Priority priority = Priority.MEDIUM;
+    private Priority priority = Priority.medium;
 
     @Column(name = "created_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
@@ -92,10 +91,9 @@ public class Plan {
         this.course = course;
         this.planTitle = planTitle;
         this.assignedByUser = assignedBy;
-        this.createdAt = LocalDateTime.now();
-        this.assignedAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();        this.assignedAt = LocalDateTime.now();
         this.status = PlanStatus.NEW;
-        this.priority = Priority.MEDIUM;
+        this.priority = Priority.medium;
         this.totalQuestions = 0;
         this.totalRecognition = 0;
         this.totalComprehension = 0;
@@ -114,9 +112,8 @@ public class Plan {
         }
         if (status == null) {
             status = PlanStatus.NEW;
-        }
-        if (priority == null) {
-            priority = Priority.MEDIUM;
+        }        if (priority == null) {
+            priority = Priority.medium;
         }
         if (totalQuestions == null) {
             totalQuestions = 0;
@@ -180,21 +177,4 @@ public class Plan {
         public String getValue() {
             return value;
         }
-    }
-
-    public enum Priority {
-        LOW("low"),
-        MEDIUM("medium"),
-        HIGH("high");
-
-        private final String value;
-
-        Priority(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-}
+    }}

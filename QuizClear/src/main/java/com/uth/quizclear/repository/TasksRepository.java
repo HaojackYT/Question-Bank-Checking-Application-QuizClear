@@ -1,17 +1,13 @@
 package com.uth.quizclear.repository;
 
 import com.uth.quizclear.model.entity.Tasks;
-import com.uth.quizclear.model.enums.TaskStatus;
-
+import com.uth.quizclear.model.enums.TaskType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-/**
- * Repository interface for Tasks entity
- */
+import java.util.List;
+
 @Repository
 public interface TasksRepository extends JpaRepository<Tasks, Integer> {
-    long countByStatus(TaskStatus status);
-    // Kế thừa các phương thức cơ bản từ JpaRepository:
-    // findAll(), findById(), save(), deleteById(), etc.
+    List<Tasks> findByTaskType(TaskType taskType);
 }

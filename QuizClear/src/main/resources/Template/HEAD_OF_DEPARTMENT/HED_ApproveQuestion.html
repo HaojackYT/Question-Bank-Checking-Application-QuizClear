@@ -3,11 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/css/HED/HED_ExamManagement.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <link rel="stylesheet" href="/Static/fontawesome/css/all.css">
+    <link rel="stylesheet" href="/Static/header.css">
+    <link rel="stylesheet" href="/Static/web_styles.css">
+    <link rel="stylesheet" href="/Static/css/HED/HED_ExamManagement.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Approve_Question</title>
 </head>
@@ -374,28 +373,39 @@
                     <button class="next-btn">Next <i class="fa-solid fa-chevron-right"
                             style="padding: 0px 5px;"></i></button>
                 </div>
-            </div>
-
-            <!-- Load header and menu -->
+            </div>            <!-- Load header and menu -->
             <script>
                 // Load header
-                fetch('../header_user.html')
+                fetch('../../Template/header_user.html')
                     .then(response => response.text())
                     .then(data => {
                         document.getElementById('header-placeholder').innerHTML = data;
-                    });
-
-                // Load menu
-                fetch('Menu-HED.html')
+                    })
+                    .catch(error => console.error('Error loading header:', error));                // Load menu
+                fetch('/Template/HEAD_OF_DEPARTMENT/Menu-HED.html')
                     .then(response => response.text())
                     .then(data => {
                         document.getElementById('menu-HTML').innerHTML = data;
+                        // Set active menu item
                         setActiveMenu(document.title);
-                    });
-            </script>
+                    })
+                    .catch(error => console.error('Error loading menu:', error));
 
-            <script src="../../Static/js/HED_ExamManagement.js"></script>
+                // Set active menu function
+                function setActiveMenu(pageTitle) {
+                    const menuItems = document.querySelectorAll('#Menu-Staff .elements');
+                    menuItems.forEach(item => {
+                        const link = item.querySelector('a');
+                        if (link && link.textContent.includes('Approve Questions')) {
+                            item.classList.add('active');
+                        } else {
+                            item.classList.remove('active');
+                        }
+                    });
+                }
+            </script>            <script src="../../Static/js/HED_ExamManagement.js"></script>
             <script src="../../Static/js/L_activeMenu.js"></script>
+            <script src="../../Static/js/HED_ApproveQuestion.js"></script>
 </body>
 
 </html>

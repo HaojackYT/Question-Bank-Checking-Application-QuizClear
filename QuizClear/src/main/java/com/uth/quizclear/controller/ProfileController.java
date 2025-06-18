@@ -1,19 +1,17 @@
 package com.uth.quizclear.controller;
 
-import com.uth.quizclear.model.dto.UserBasicDTO;
-import com.uth.quizclear.repository.UserRepository;
-import com.uth.quizclear.service.UserService;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import jakarta.servlet.http.HttpSession;
 
-import java.util.Optional;
+import com.uth.quizclear.model.dto.UserBasicDTO;
+import com.uth.quizclear.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 // @RequestMapping("/api/profile")
@@ -40,10 +38,11 @@ public class ProfileController {
     @GetMapping("/HED_Profile")
     public String profilePage(HttpSession session, Model model) {
         Long userId = (Long) session.getAttribute("userId");
+        Long userId2 = 2L;   // DEBUG TEST - Thay thế bằng userId từ session hoặc tham số
         if (userId == null) {
             return "redirect:/login";
         }
-        Optional<UserBasicDTO> userOpt = userService.getProfileByUserId(userId);
+        Optional<UserBasicDTO> userOpt = userService.getProfileByUserId(userId2);
         if (userOpt.isEmpty()) {
             return "error/404";
         }

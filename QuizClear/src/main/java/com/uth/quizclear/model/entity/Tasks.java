@@ -1,98 +1,67 @@
 package com.uth.quizclear.model.entity;
 
-import com.uth.quizclear.model.enums.Priority;
 import com.uth.quizclear.model.enums.TaskStatus;
+import com.uth.quizclear.model.enums.TaskStatusConverter;
 import com.uth.quizclear.model.enums.TaskType;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import java.time.LocalDateTime;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tasks")
-@NoArgsConstructor
-@Getter
-@Setter
-@ToString
 public class Tasks {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id")
     private Integer taskId;
-    
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "description")
+    private String description;
+
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
-    
+
     @ManyToOne
-    @JoinColumn(name = "plan_id")
-    private Plan plan;
-    
-    @Column(name = "title", nullable = false)
-    private String title;
-    
-    @Column(name = "description")
-    private String description;
-    
-    @Column(name = "task_type", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private TaskType taskType;
-    
+    @JoinColumn(name = "assigned_to")
+    private User assignedTo;
+
+    @ManyToOne
+    @JoinColumn(name = "assigned_by")
+    private User assignedBy;
+
     @Column(name = "total_questions")
     private Integer totalQuestions;
-    
-    @Column(name = "total_recognition")
-    private Integer totalRecognition;
-    
-    @Column(name = "total_comprehension")
-    private Integer totalComprehension;
-    
-    @Column(name = "total_basic_application")
-    private Integer totalBasicApplication;
-    
-    @Column(name = "total_advanced_application")
-    private Integer totalAdvancedApplication;
-    
-    @ManyToOne
-    @JoinColumn(name = "assigned_to", nullable = false)
-    private User assignedTo;
-    
-    @ManyToOne
-    @JoinColumn(name = "assigned_by", nullable = false)
-    private User assignedBy;
-    
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    private TaskStatus status;
-    
-    @Column(name = "priority")
-    @Enumerated(EnumType.STRING)
-    private Priority priority;
-    
+
     @Column(name = "due_date")
     private LocalDateTime dueDate;
-    
-    @Column(name = "assigned_at")
-    private LocalDateTime assignedAt;
-    
-    @Column(name = "accepted_at")
-    private LocalDateTime acceptedAt;
-    
-    @Column(name = "completed_at")
-    private LocalDateTime completedAt;
-    
-    @Column(name = "notes")
-    private String notes;
-    
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "task_type")
+    private TaskType taskType;
+
+    @Column(name = "status")
+    private TaskStatus status;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
+
+    @Column(name = "completed_at")
+    private LocalDateTime completedAt;
+
     // Getters and Setters
     public Integer getTaskId() {
         return taskId;
@@ -100,22 +69,6 @@ public class Tasks {
 
     public void setTaskId(Integer taskId) {
         this.taskId = taskId;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
-    public Plan getPlan() {
-        return plan;
-    }
-
-    public void setPlan(Plan plan) {
-        this.plan = plan;
     }
 
     public String getTitle() {
@@ -134,52 +87,12 @@ public class Tasks {
         this.description = description;
     }
 
-    public TaskType getTaskType() {
-        return taskType;
+    public Course getCourse() {
+        return course;
     }
 
-    public void setTaskType(TaskType taskType) {
-        this.taskType = taskType;
-    }
-
-    public Integer getTotalQuestions() {
-        return totalQuestions;
-    }
-
-    public void setTotalQuestions(Integer totalQuestions) {
-        this.totalQuestions = totalQuestions;
-    }
-
-    public Integer getTotalRecognition() {
-        return totalRecognition;
-    }
-
-    public void setTotalRecognition(Integer totalRecognition) {
-        this.totalRecognition = totalRecognition;
-    }
-
-    public Integer getTotalComprehension() {
-        return totalComprehension;
-    }
-
-    public void setTotalComprehension(Integer totalComprehension) {
-        this.totalComprehension = totalComprehension;
-    }
-
-    public Integer getTotalBasicApplication() {
-        return totalBasicApplication;
-    }
-
-    public void setTotalBasicApplication(Integer totalBasicApplication) {
-        this.totalBasicApplication = totalBasicApplication;
-    }
-
-    public Integer getTotalAdvancedApplication() {
-        return totalAdvancedApplication;
-    }
-
-    public void setTotalAdvancedApplication(Integer totalAdvancedApplication) {
-        this.totalAdvancedApplication = totalAdvancedApplication;
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     public User getAssignedTo() {
@@ -198,20 +111,12 @@ public class Tasks {
         this.assignedBy = assignedBy;
     }
 
-    public TaskStatus getStatus() {
-        return status;
+    public Integer getTotalQuestions() {
+        return totalQuestions;
     }
 
-    public void setStatus(TaskStatus status) {
-        this.status = status;
-    }
-
-    public Priority getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Priority priority) {
-        this.priority = priority;
+    public void setTotalQuestions(Integer totalQuestions) {
+        this.totalQuestions = totalQuestions;
     }
 
     public LocalDateTime getDueDate() {
@@ -222,36 +127,20 @@ public class Tasks {
         this.dueDate = dueDate;
     }
 
-    public LocalDateTime getAssignedAt() {
-        return assignedAt;
+    public TaskType getTaskType() {
+        return taskType;
     }
 
-    public void setAssignedAt(LocalDateTime assignedAt) {
-        this.assignedAt = assignedAt;
+    public void setTaskType(TaskType taskType) {
+        this.taskType = taskType;
     }
 
-    public LocalDateTime getAcceptedAt() {
-        return acceptedAt;
+    public TaskStatus getStatus() {
+        return status;
     }
 
-    public void setAcceptedAt(LocalDateTime acceptedAt) {
-        this.acceptedAt = acceptedAt;
-    }
-
-    public LocalDateTime getCompletedAt() {
-        return completedAt;
-    }
-
-    public void setCompletedAt(LocalDateTime completedAt) {
-        this.completedAt = completedAt;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setStatus(TaskStatus status) {
+        this.status = status;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -260,5 +149,13 @@ public class Tasks {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(LocalDateTime completedAt) {
+        this.completedAt = completedAt;
     }
 }

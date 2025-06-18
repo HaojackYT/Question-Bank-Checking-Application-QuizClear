@@ -10,11 +10,13 @@ import lombok.Setter;
 import lombok.ToString;
 import java.time.LocalDateTime;
 
+import com.uth.quizclear.model.enums.BlockStatus;
 import com.uth.quizclear.model.enums.BlockStatusConverter;
 import com.uth.quizclear.model.enums.DifficultyLevel;
 import com.uth.quizclear.model.enums.DifficultyLevelConverter;
 import com.uth.quizclear.model.enums.QuestionStatus;
 import com.uth.quizclear.model.enums.QuestionStatusConverter;
+import com.uth.quizclear.model.enums.QuestionType;
 
 @Entity
 @Table(name = "questions")
@@ -100,7 +102,6 @@ public class Question {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Relationships - Clean JPA design without dual approach
     @NotNull(message = "Course is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
@@ -109,7 +110,9 @@ public class Question {
     @NotNull(message = "CLO is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "clo_id", nullable = false)
-    private CLO clo;    @NotNull(message = "Creator is required")
+    private CLO clo;
+
+    @NotNull(message = "Creator is required")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
@@ -120,7 +123,8 @@ public class Question {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approved_by")
-    private User approver;    // Constructors
+    private User approver;
+
     public Question(String content, Course course, CLO clo, DifficultyLevel difficultyLevel, User createdBy) {
         this.content = content;
         this.course = course;
@@ -134,7 +138,6 @@ public class Question {
         this.usageCount = 0;
     }
 
-    // Lifecycle callbacks
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
@@ -159,7 +162,6 @@ public class Question {
         updatedAt = LocalDateTime.now();
     }
 
-    // Business methods
     public void incrementUsageCount() {
         this.usageCount++;
         this.lastUsed = LocalDateTime.now();
@@ -181,46 +183,11 @@ public class Question {
         return answerF1 != null && answerF2 != null && answerF3 != null;
     }
 
-    // Method to get question type based on answer structure
     public QuestionType getQuestionType() {
         if (answerF1 != null && answerF2 != null && answerF3 != null) {
             return QuestionType.MULTIPLE_CHOICE;
         } else {
             return QuestionType.ESSAY;
-        }
-    }
-
-    // Enums - moved to separate files for better organization
-
-    public enum BlockStatus {
-        BLOCK("block"),
-        ACTIVE("active");
-
-        private final String value;
-
-        BlockStatus(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
-
-    public enum QuestionType {
-        MULTIPLE_CHOICE("multiple_choice"),
-        ESSAY("essay"),
-        TRUE_FALSE("true_false"),
-        FILL_IN_BLANK("fill_in_blank");
-
-        private final String value;
-
-        QuestionType(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
         }
     }
 }

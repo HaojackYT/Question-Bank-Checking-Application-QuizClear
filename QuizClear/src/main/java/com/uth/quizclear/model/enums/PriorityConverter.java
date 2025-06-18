@@ -1,25 +1,30 @@
 package com.uth.quizclear.model.enums;
 
-import com.uth.quizclear.model.entity.Plan.Priority;
-
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
 public class PriorityConverter implements AttributeConverter<Priority, String> {
+    
     @Override
-    public String convertToDatabaseColumn(Priority attribute) {
-        return attribute != null ? attribute.getValue() : null;
+    public String convertToDatabaseColumn(Priority priority) {
+        if (priority == null) {
+            return null;
+        }
+        return priority.name().toLowerCase();
     }
 
     @Override
     public Priority convertToEntityAttribute(String dbData) {
-        if (dbData == null) return null;
-        for (Priority p : Priority.values()) {
-            if (p.getValue().equalsIgnoreCase(dbData)) {
-                return p;
-            }
+        if (dbData == null || dbData.trim().isEmpty()) {
+            return null;
         }
-        throw new IllegalArgumentException("Unknown Priority: " + dbData);
+          try {
+            // Convert to lowercase to match enum constants
+            return Priority.valueOf(dbData.toLowerCase().trim());
+        } catch (IllegalArgumentException e) {
+            // If conversion fails, return default value
+            return Priority.medium;
+        }
     }
 }

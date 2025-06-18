@@ -97,16 +97,15 @@ public class User {
     private String hometown;
 
     @Column(name = "contact_address")
-    private String contactAddress;
-
-    @Column(name = "avatar_url")
+    private String contactAddress;    @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @Column(name = "work_place")   // Bổ sung trường workPlace cho Profile
-    private String workPlace;
+    // Temporarily comment out until database is updated
+    // @Column(name = "work_place")   // Bổ sung trường workPlace cho Profile
+    // private String workPlace;
 
-    @Column(name = "qualification")   // Bổ sung trường qualification cho Profile
-    private String qualification;
+    // @Column(name = "qualification")   // Bổ sung trường qualification cho Profile
+    // private String qualification;
 
     // JPA lifecycle callbacks
     @PrePersist
@@ -202,7 +201,60 @@ public class User {
     }
 
     public String getFullName() {
-        return this.fullName;
+        return this.fullName;    }
+
+    // Temporarily comment out until database is updated
+    // Getter và setter cho workPlace
+    // public String getWorkPlace() {
+    //     return workPlace;
+    // }
+
+    // public void setWorkPlace(String workPlace) {
+    //     this.workPlace = workPlace;
+    // }
+
+    // Getter và setter cho qualification
+    // public String getQualification() {
+    //     return qualification;
+    // }
+
+    // public void setQualification(String qualification) {
+    //     this.qualification = qualification;
+    // }
+
+    
+    public Integer getUserId() {
+        return userId.intValue();
     }
 
+
+
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return passwordHash;
+    }
+
+    public void setPassword(String password) {
+        this.passwordHash = password;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
 }

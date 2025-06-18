@@ -2,7 +2,7 @@ package com.uth.quizclear.model.enums;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import com.uth.quizclear.model.entity.Question.BlockStatus;
+import com.uth.quizclear.model.enums.BlockStatus;
 
 @Converter(autoApply = true)
 public class BlockStatusConverter implements AttributeConverter<BlockStatus, String> {

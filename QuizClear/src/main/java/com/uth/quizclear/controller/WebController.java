@@ -4,7 +4,11 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.PathVariable;
+
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -36,6 +40,11 @@ public class WebController {
     public Resource getTemplateFile(@PathVariable String filename) {
         return new ClassPathResource("Template/" + filename);
     }
+
+
+
+
+
 
     // Test database endpoint to bypass routing conflicts
     @GetMapping("/test-database-connection")

@@ -1,11 +1,9 @@
 package com.uth.quizclear.model.enums;
 
 public enum TaskStatus {
-    PENDING,
-    IN_PROGRESS,
-    COMPLETED,
-    CANCELLED,
-    APPROVED,
-    REJECTED
+    pending,
+    in_progress,
+    completed,
+    cancelled
 }
 

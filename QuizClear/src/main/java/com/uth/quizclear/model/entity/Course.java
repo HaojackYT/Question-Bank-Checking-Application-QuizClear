@@ -72,4 +72,16 @@ public class Course {
     public String getCourseName() {
         return this.courseName;
     }
+        public long getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(long courseId) {
+        this.courseId = courseId;
+    }
+
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
 }

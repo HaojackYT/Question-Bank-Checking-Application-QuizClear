@@ -325,34 +325,20 @@ async function loadDuplications() {
             throw new Error('Invalid data structure');
         }
           } catch (err) {
-        console.error('Error loading duplications:', err);
-        
-        // Fallback to mock data if API fails
-        console.warn('USING MOCK DATA - API call failed!');
-        const mockData = [
-            {
-                detectionId: 1,
-                newQuestion: {
-                    questionId: 1,
-                    content: "What is the purpose of a UML diagram in software engineering?",
-                    courseName: "Software Engineering"
-                },
-                similarQuestion: {
-                    questionId: 2,
-                    content: "Explain the role of UML diagrams in system design?",
-                    courseName: "Software Engineering"
-                },
-                similarityScore: 0.95,
-                status: "PENDING",
-                detectedBy: {
-                    userId: 1,
-                    fullName: "Alexander Brooks"
-                },
-                detectedAt: "2025-06-14T10:30:00"
-            }
-        ];
-        displayDuplications(mockData);
+        console.error('Error loading duplications:', err);        
+        // Show error message instead of mock data
+        console.error('Failed to load duplication data from API');
+        showDuplicationError('Failed to load data from server. Please try again.');
     }
+}
+
+// Show error message when duplication data loading fails
+function showDuplicationError(message) {
+    const container = document.querySelector('.duplications-container') || document.querySelector('#duplications-list') || document.body;
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'alert alert-danger text-center';
+    errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+    container.appendChild(errorDiv);
 }
 
 function displayDuplications(duplications) {
