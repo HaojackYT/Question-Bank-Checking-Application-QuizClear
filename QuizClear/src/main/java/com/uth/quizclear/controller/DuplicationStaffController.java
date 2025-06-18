@@ -460,4 +460,18 @@ public class DuplicationStaffController {
         response.put("received", request);
         return ResponseEntity.ok(response);
     }
+
+    // Get duplication statistics
+    @GetMapping("/statistics")
+    public ResponseEntity<?> getDuplicationStatistics() {
+        try {
+            Map<String, Object> statistics = service.getDuplicationStatistics();
+            return ResponseEntity.ok(statistics);        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            errorResponse.put("type", e.getClass().getSimpleName());
+            errorResponse.put("timestamp", java.time.LocalDateTime.now().toString());
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
 }

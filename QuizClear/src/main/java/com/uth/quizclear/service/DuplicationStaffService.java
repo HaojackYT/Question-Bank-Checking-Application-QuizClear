@@ -8,13 +8,10 @@ import com.uth.quizclear.model.entity.Course;
 import com.uth.quizclear.model.entity.DuplicateDetection;
 import com.uth.quizclear.model.enums.DuplicateDetectionAction;
 import com.uth.quizclear.repository.DuplicationStaffRepository;
-import com.uth.quizclear.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
-
-import java.util.stream.Collectors;
 import jakarta.persistence.PersistenceContext;
 
 import java.math.BigDecimal;
@@ -27,13 +24,12 @@ import java.util.Set;
 import java.util.HashSet;
 
 @Service
-public class DuplicationStaffService {      @Autowired
+public class DuplicationStaffService {      
+    @Autowired
     private DuplicationStaffRepository repository;
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Autowired    private NotificationService notificationService;
 
     // @Autowired
     // private QuestionService questionService;
@@ -259,9 +255,8 @@ public class DuplicationStaffService {      @Autowired
      * Gửi thông báo cho người tạo câu hỏi
      */
     private void sendNotificationToCreator(Long creatorId, String action, String questionContent, String feedback) {
-        try {
-            // Sử dụng NotificationService để gửi thông báo
-            notificationService.notifyQuestionCreator(creatorId, action, questionContent, feedback);
+        try {            // Sử dụng NotificationService để gửi thông báo
+            // notificationService.notifyQuestionCreator(creatorId, action, questionContent, feedback);
             System.out.println("Notification sent to creator " + creatorId + " for action: " + action);
         } catch (Exception e) {
             System.err.println("Failed to send notification: " + e.getMessage());
@@ -711,6 +706,175 @@ public class DuplicationStaffService {      @Autowired
             
         } catch (Exception e) {
             System.err.println("Error loading AI analysis data for check ID " + aiCheckId + ": " + e.getMessage());
+        }
+        
+        return result;
+    }    // Get duplication statistics
+    public Map<String, Object> getDuplicationStatistics() {
+        Map<String, Object> statistics = new HashMap<>();
+        
+        try {            System.out.println("=== GETTING DUPLICATION STATISTICS ===");
+            
+            // Total questions checked - dùng native SQL trước
+            Long totalQuestions = ((Number) entityManager
+                .createNativeQuery("SELECT COUNT(*) FROM questions")
+                .getSingleResult()).longValue();
+            System.out.println("Total questions (native): " + totalQuestions);
+            
+            // Total duplicates detected - dùng native SQL với action = 'reject'
+            Long totalDuplicates = ((Number) entityManager
+                .createNativeQuery("SELECT COUNT(DISTINCT new_question_id) FROM duplicate_detections WHERE action = 'reject'")
+                .getSingleResult()).longValue();
+            System.out.println("Total duplicates (native, action=reject): " + totalDuplicates);
+              // Duplication rate - tỷ lệ giữa số câu hỏi trùng lặp và tổng số câu hỏi
+            double duplicationRate = totalQuestions > 0 ? (totalDuplicates.doubleValue() / totalQuestions.doubleValue()) * 100 : 0;
+            System.out.println("Duplication rate: " + duplicationRate + "%");
+            
+            // Thử với native SQL cho subject stats
+            @SuppressWarnings("unchecked")
+            List<Object[]> subjectStats = entityManager
+                .createNativeQuery("SELECT c.course_name, " +
+                                 "COALESCE(SUM(CASE WHEN dd.action = 'reject' THEN 1 ELSE 0 END), 0) as duplicate_count, " +
+                                 "COUNT(q.question_id) as total_count " +
+                                 "FROM courses c " +
+                                 "INNER JOIN questions q ON q.course_id = c.course_id " +
+                                 "LEFT JOIN duplicate_detections dd ON dd.new_question_id = q.question_id " +
+                                 "GROUP BY c.course_id, c.course_name " +
+                                 "ORDER BY duplicate_count DESC")
+                .getResultList();
+            System.out.println("Subject stats (native) count: " + subjectStats.size());
+            
+            // Thử với native SQL cho creator stats
+            @SuppressWarnings("unchecked")
+            List<Object[]> creatorStats = entityManager
+                .createNativeQuery("SELECT u.full_name, " +
+                                 "COALESCE(SUM(CASE WHEN dd.action = 'reject' THEN 1 ELSE 0 END), 0) as duplicate_count, " +
+                                 "COUNT(q.question_id) as total_count " +
+                                 "FROM users u " +
+                                 "INNER JOIN questions q ON q.created_by = u.user_id " +
+                                 "LEFT JOIN duplicate_detections dd ON dd.new_question_id = q.question_id " +
+                                 "GROUP BY u.user_id, u.full_name " +                                 "ORDER BY duplicate_count DESC")
+                .getResultList();
+            System.out.println("Creator stats (native) count: " + creatorStats.size());
+            
+              // Format subject statistics
+            List<Map<String, Object>> subjectChartData = new ArrayList<>();
+            for (Object[] row : subjectStats) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("subject", row[0]);
+                
+                // Handle different numeric types from query
+                Number dupCountNum = (Number) row[1];
+                Number totCountNum = (Number) row[2];
+                long dupCount = dupCountNum != null ? dupCountNum.longValue() : 0L;
+                long totCount = totCountNum != null ? totCountNum.longValue() : 0L;
+                
+                item.put("duplicateCount", dupCount);
+                item.put("totalCount", totCount);
+                
+                double percentage = totCount > 0 ? (dupCount * 100.0 / totCount) : 0.0;
+                item.put("percentage", Math.round(percentage * 10.0) / 10.0);
+                
+                System.out.println("Subject: " + row[0] + ", Duplicates: " + dupCount + ", Total: " + totCount + ", Percentage: " + percentage);
+                subjectChartData.add(item);
+            }
+            
+            // Format creator statistics
+            List<Map<String, Object>> creatorChartData = new ArrayList<>();
+            for (Object[] row : creatorStats) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("creator", row[0]);
+                
+                // Handle different numeric types from query
+                Number dupCountNum = (Number) row[1];
+                Number totCountNum = (Number) row[2];
+                long dupCount = dupCountNum != null ? dupCountNum.longValue() : 0L;
+                long totCount = totCountNum != null ? totCountNum.longValue() : 0L;
+                
+                item.put("duplicateCount", dupCount);
+                item.put("totalCount", totCount);
+                
+                double percentage = totCount > 0 ? (dupCount * 100.0 / totCount) : 0.0;
+                item.put("percentage", Math.round(percentage * 10.0) / 10.0);
+                
+                System.out.println("Creator: " + row[0] + ", Duplicates: " + dupCount + ", Total: " + totCount + ", Percentage: " + percentage);
+                creatorChartData.add(item);
+            }
+            
+            statistics.put("totalQuestions", totalQuestions);
+            statistics.put("totalDuplicates", totalDuplicates);
+            statistics.put("duplicationRate", Math.round(duplicationRate * 10.0) / 10.0);
+            statistics.put("subjectStats", subjectChartData);
+            statistics.put("creatorStats", creatorChartData);
+            
+            return statistics;
+            
+        } catch (Exception e) {
+            System.err.println("Error getting duplication statistics: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Return default values on error
+            statistics.put("totalQuestions", 0L);
+            statistics.put("totalDuplicates", 0L);
+            statistics.put("duplicationRate", 0.0);
+            statistics.put("subjectStats", new ArrayList<>());
+            statistics.put("creatorStats", new ArrayList<>());
+            
+            return statistics;
+        }
+    }
+    
+    // DEBUG: Test database connection and query
+    public Map<String, Object> debugDatabase() {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            // Test basic queries
+            Long questionCount = entityManager
+                .createQuery("SELECT COUNT(q) FROM Question q", Long.class)
+                .getSingleResult();
+            
+            Long duplicateCount = entityManager
+                .createQuery("SELECT COUNT(dd) FROM DuplicateDetection dd", Long.class)  
+                .getSingleResult();
+                
+            Long userCount = entityManager
+                .createQuery("SELECT COUNT(u) FROM User u", Long.class)
+                .getSingleResult();
+                
+            Long courseCount = entityManager
+                .createQuery("SELECT COUNT(c) FROM Course c", Long.class)
+                .getSingleResult();
+            
+            // Get some sample data
+            List<Object[]> sampleQuestions = entityManager
+                .createQuery("SELECT q.questionId, q.content, q.course.courseName, q.createdBy.fullName FROM Question q ORDER BY q.questionId ASC", Object[].class)
+                .setMaxResults(3)
+                .getResultList();
+                
+            List<Object[]> sampleDuplicates = entityManager
+                .createQuery("SELECT dd.detectionId, dd.newQuestionId, dd.similarQuestionId, dd.status, dd.action FROM DuplicateDetection dd ORDER BY dd.detectionId ASC", Object[].class)
+                .setMaxResults(3)
+                .getResultList();
+            
+            result.put("success", true);
+            result.put("questionCount", questionCount);
+            result.put("duplicateCount", duplicateCount);
+            result.put("userCount", userCount);
+            result.put("courseCount", courseCount);
+            result.put("sampleQuestions", sampleQuestions);
+            result.put("sampleDuplicates", sampleDuplicates);
+            
+            System.out.println("DEBUG DATABASE - Question count: " + questionCount);
+            System.out.println("DEBUG DATABASE - Duplicate count: " + duplicateCount);
+            System.out.println("DEBUG DATABASE - User count: " + userCount);
+            System.out.println("DEBUG DATABASE - Course count: " + courseCount);
+            
+        } catch (Exception e) {
+            System.err.println("DEBUG DATABASE ERROR: " + e.getMessage());
+            e.printStackTrace();
+            result.put("success", false);
+            result.put("error", e.getMessage());
+            result.put("stackTrace", java.util.Arrays.toString(e.getStackTrace()));
         }
         
         return result;

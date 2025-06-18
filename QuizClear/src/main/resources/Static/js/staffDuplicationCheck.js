@@ -1,5 +1,6 @@
 const API_URLS = {
     duplications: '/api/staff/duplications',
+    statistics: '/api/staff/duplications/statistics',
     filterOptions: '/api/staff/duplications/filters',
     filteredDuplications: '/api/staff/duplications/filtered',
     dupContent: '/staff/dup-content', // Match StaffViewController
@@ -129,6 +130,8 @@ function handleTabClick(tab) {
                         loadDuplications();
                         window._detectionTabLoaded = true;
                     }
+                } else if (tabName === 'stat') {
+                    loadStatistics();
                 }
             })
             .catch((err) => {
@@ -1001,6 +1004,170 @@ async function testEndpoint() {
 
 // Thêm nút test vào window object để có thể gọi từ console
 window.testEndpoint = testEndpoint;
+
+// Load statistics data
+async function loadStatistics() {
+    try {
+        console.log("=== LOADING STATISTICS ===");
+        console.log("API URL:", API_URLS.statistics);
+        
+        // Show loading state
+        updateOverviewStats({
+            totalQuestions: 'Loading...',
+            totalDuplicates: 'Loading...',
+            duplicationRate: 'Loading...'
+        });
+        
+        const response = await fetch(API_URLS.statistics);
+        console.log("API Response status:", response.status);
+        console.log("API Response ok:", response.ok);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("API Error details:", errorText);
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+        
+        const data = await response.json();
+        console.log("=== STATISTICS DATA RECEIVED ===");
+        console.log("Full response:", JSON.stringify(data, null, 2));
+        console.log("Total Questions:", data.totalQuestions);
+        console.log("Total Duplicates:", data.totalDuplicates);
+        console.log("Duplication Rate:", data.duplicationRate);
+        console.log("Subject Stats:", data.subjectStats);
+        console.log("Creator Stats:", data.creatorStats);
+        
+        // Update overview statistics
+        updateOverviewStats(data);
+        
+        // Update subject chart
+        updateSubjectChart(data.subjectStats || []);
+        
+        // Update creator chart
+        updateCreatorChart(data.creatorStats || []);
+        
+        console.log("=== STATISTICS LOADING COMPLETE ===");
+        
+    } catch (error) {
+        console.error('=== STATISTICS LOADING ERROR ===');
+        console.error('Error details:', error);
+        
+        // Show error message in stats cards
+        updateOverviewStats({
+            totalQuestions: 'Error',
+            totalDuplicates: 'Error', 
+            duplicationRate: 'Error'
+        });
+        
+        // Show error in charts
+        const subjectContainer = document.getElementById('subject-chart-container');
+        const creatorContainer = document.getElementById('creator-chart-container');
+        
+        if (subjectContainer) {
+            subjectContainer.innerHTML = `<div class="no-data" style="color: red;">Error loading data: ${error.message}</div>`;
+        }
+        if (creatorContainer) {
+            creatorContainer.innerHTML = `<div class="no-data" style="color: red;">Error loading data: ${error.message}</div>`;
+        }
+    }
+}
+
+// Update overview statistics cards
+function updateOverviewStats(data) {
+    const totalQuestionsEl = document.getElementById('total-questions');
+    const totalDuplicatesEl = document.getElementById('total-duplicates');
+    const duplicationRateEl = document.getElementById('duplication-rate');
+    
+    if (totalQuestionsEl) {
+        totalQuestionsEl.textContent = data.totalQuestions || '0';
+    }
+    
+    if (totalDuplicatesEl) {
+        totalDuplicatesEl.textContent = data.totalDuplicates || '0';
+    }
+    
+    if (duplicationRateEl) {
+        duplicationRateEl.textContent = (data.duplicationRate || 0) + '%';
+    }
+}
+
+// Update subject chart
+function updateSubjectChart(subjectStats) {
+    const container = document.getElementById('subject-chart-container');
+    if (!container) return;
+    
+    if (!subjectStats || subjectStats.length === 0) {
+        container.innerHTML = '<div class="no-data">No data available</div>';
+        return;
+    }
+    
+    let chartHTML = '';
+    subjectStats.forEach(item => {
+        const percentage = item.percentage || 0;
+        const duplicateCount = item.duplicateCount || 0;
+        const totalCount = item.totalCount || 0;
+        
+        // Calculate width for progress bar (max 100%)
+        const progressWidth = Math.min(percentage, 100);
+        
+        chartHTML += `
+            <div class="chart-bar">
+                <div class="chart-label">
+                    <span class="subject-name">${item.subject}</span>
+                    <span class="percentage">${percentage}%</span>
+                </div>
+                <div class="chart-progress">
+                    <div class="progress-bar" style="width: ${progressWidth}%"></div>
+                </div>
+                <div class="chart-details">
+                    <span class="duplicate-count">${duplicateCount} duplicates</span>
+                    <span class="total-count">${totalCount} total</span>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = chartHTML;
+}
+
+// Update creator chart
+function updateCreatorChart(creatorStats) {
+    const container = document.getElementById('creator-chart-container');
+    if (!container) return;
+    
+    if (!creatorStats || creatorStats.length === 0) {
+        container.innerHTML = '<div class="no-data">No data available</div>';
+        return;
+    }
+    
+    let chartHTML = '';
+    creatorStats.forEach(item => {
+        const percentage = item.percentage || 0;
+        const duplicateCount = item.duplicateCount || 0;
+        const totalCount = item.totalCount || 0;
+        
+        // Calculate width for progress bar (max 100%)
+        const progressWidth = Math.min(percentage, 100);
+        
+        chartHTML += `
+            <div class="chart-bar">
+                <div class="chart-label">
+                    <span class="creator-name">${item.creator}</span>
+                    <span class="percentage">${percentage}%</span>
+                </div>
+                <div class="chart-progress">
+                    <div class="progress-bar" style="width: ${progressWidth}%"></div>
+                </div>
+                <div class="chart-details">
+                    <span class="duplicate-count">${duplicateCount} duplicates</span>
+                    <span class="total-count">${totalCount} total</span>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = chartHTML;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM Content Loaded - initializing...");
