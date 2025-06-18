@@ -13,7 +13,7 @@
                     <h2 class="comparison-title">Question Comparison</h2>
                     <p class="comparison-subtitle">Detailed comparison between the new question and potential duplicate</p>
                 </div>
-                <a class="back-link" href="#" onclick="return false;">← Back to List</a>
+                <a class="back-link" href="#" onclick="goBackToDetectionList(); return false;">← Back to List</a>
             </div>
             <div class="question-cards">
                 <div class="question-card">
@@ -72,8 +72,8 @@
         </div>
         
         <div class="processing-actions">
-            <h2 class="actions-title">Review and Action</h2>
-            <form id="action-form" th:action="@{'/api/staff/duplications/' + ${detection.detectionId} + '/process'}" method="post">
+            <h2 class="actions-title">Review and Action</h2>            <form id="action-form" th:action="@{'/api/staff/duplications/' + ${detection.detectionId} + '/process'}" method="post">
+                <input type="hidden" name="processorId" th:value="${session.user?.id ?: 1}">
                 <div class="action-option">
                     <input type="radio" name="action" value="ACCEPT" id="accept">
                     <div class="action-content">

@@ -107,17 +107,17 @@ INSERT INTO exam_questions (exam_id, question_id, question_order, marks) VALUES
 (10, 10, 1, 1.50);
 
 -- 9. Thêm 10 bản ghi vào bảng ai_duplicate_checks
-INSERT INTO ai_duplicate_checks (question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, checked_by, status, checked_at) VALUES
-('What is the purpose of a UML diagram?', 1, 0.75, 0.9500, TRUE, 'all-MiniLM-L6-v2', 1, 'completed', '2025-03-01 10:00:00'),
-('Find the order of the group Z_6', 2, 0.75, 0.8200, FALSE, 'all-MiniLM-L6-v2', 2, 'completed', '2025-03-02 10:00:00'),
-('What is Newton\'s first law?', 3, 0.75, 0.9100, TRUE, 'all-MiniLM-L6-v2', 3, 'completed', '2025-03-03 10:00:00'),
-('What gas is produced in a reaction of HCl with Zn?', 4, 0.75, 0.7800, FALSE, 'all-MiniLM-L6-v2', 4, 'completed', '2025-03-04 10:00:00'),
-('What is the role of enzymes in metabolism?', 5, 0.75, 0.8900, TRUE, 'all-MiniLM-L6-v2', 5, 'completed', '2025-03-05 10:00:00'),
-('What is a deadlock in an OS?', 6, 0.75, 0.8500, FALSE, 'all-MiniLM-L6-v2', 6, 'completed', '2025-03-06 10:00:00'),
-('What is the trapezoidal rule?', 7, 0.75, 0.9200, TRUE, 'all-MiniLM-L6-v2', 7, 'completed', '2025-03-07 10:00:00'),
-('Calculate redshift for a galaxy moving at 0.1c', 8, 0.75, 0.8000, FALSE, 'all-MiniLM-L6-v2', 8, 'completed', '2025-03-08 10:00:00'),
-('What is a buffer solution?', 9, 0.75, 0.8700, TRUE, 'all-MiniLM-L6-v2', 9, 'completed', '2025-03-09 10:00:00'),
-('What defines a mammal?', 10, 0.75, 0.8300, FALSE, 'all-MiniLM-L6-v2', 10, 'completed', '2025-03-10 10:00:00');
+INSERT INTO ai_duplicate_checks (question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, analysis_text, recommendation_text, checked_by, status, checked_at) VALUES
+('What is the purpose of a UML diagram?', 1, 0.75, 0.9500, TRUE, 'all-MiniLM-L6-v2', 'High similarity detected with existing question about UML diagrams.', 'Recommend rejecting as duplicate.', 1, 'completed', '2025-03-01 10:00:00'),
+('Find the order of the group Z_6', 2, 0.75, 0.8200, FALSE, 'all-MiniLM-L6-v2', 'Moderate similarity found but question has unique mathematical focus.', 'Recommend accepting with minor modifications.', 2, 'completed', '2025-03-02 10:00:00'),
+('What is Newton\'s first law?', 3, 0.75, 0.9100, TRUE, 'all-MiniLM-L6-v2', 'Very high similarity with existing physics question.', 'Recommend rejecting as clear duplicate.', 3, 'completed', '2025-03-03 10:00:00'),
+('What gas is produced in a reaction of HCl with Zn?', 4, 0.75, 0.7800, FALSE, 'all-MiniLM-L6-v2', 'Low similarity with existing chemistry questions.', 'Recommend accepting as unique question.', 4, 'completed', '2025-03-04 10:00:00'),
+('What is the role of enzymes in metabolism?', 5, 0.75, 0.8900, TRUE, 'all-MiniLM-L6-v2', 'High similarity detected with biology enzyme question.', 'Recommend manual review for potential merge.', 5, 'completed', '2025-03-05 10:00:00'),
+('What is a deadlock in an OS?', 6, 0.75, 0.8500, FALSE, 'all-MiniLM-L6-v2', 'Moderate similarity but specific OS context is unique.', 'Recommend accepting with category adjustment.', 6, 'completed', '2025-03-06 10:00:00'),
+('What is the trapezoidal rule?', 7, 0.75, 0.9200, TRUE, 'all-MiniLM-L6-v2', 'Very high similarity with existing numerical analysis question.', 'Recommend rejecting as duplicate.', 7, 'completed', '2025-03-07 10:00:00'),
+('Calculate redshift for a galaxy moving at 0.1c', 8, 0.75, 0.8000, FALSE, 'all-MiniLM-L6-v2', 'Low to moderate similarity with physics questions.', 'Recommend accepting as specialized astrophysics question.', 8, 'completed', '2025-03-08 10:00:00'),
+('What is a buffer solution?', 9, 0.75, 0.8700, TRUE, 'all-MiniLM-L6-v2', 'High similarity with existing chemistry acid-base questions.', 'Recommend review for potential question refinement.', 9, 'completed', '2025-03-09 10:00:00'),
+('What defines a mammal?', 10, 0.75, 0.8300, FALSE, 'all-MiniLM-L6-v2', 'Moderate similarity but taxonomy focus is sufficiently distinct.', 'Recommend accepting with biology category.', 10, 'completed', '2025-03-10 10:00:00');
 
 -- 10. Thêm 10 bản ghi vào bảng ai_similarity_results
 INSERT INTO ai_similarity_results (check_id, existing_question_id, similarity_score, is_duplicate) VALUES
@@ -133,17 +133,17 @@ INSERT INTO ai_similarity_results (check_id, existing_question_id, similarity_sc
 (10, 10, 0.8300, FALSE);
 
 -- 11. Thêm 10 bản ghi vào bảng duplicate_detections
-INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, detected_by, detected_at) VALUES
-(1, 2, 0.8500, 1, 'approved', 1, '2025-03-01 11:00:00'),
-(2, 3, 0.7800, 2, 'rejected', 2, '2025-03-02 11:00:00'),
-(3, 4, 0.9200, 3, 'pending', 3, '2025-03-03 11:00:00'),
-(4, 5, 0.8100, 4, 'approved', 4, '2025-03-04 11:00:00'),
-(5, 6, 0.8900, 5, 'needs_review', 5, '2025-03-05 11:00:00'),
-(6, 7, 0.7600, 6, 'rejected', 1, '2025-03-06 11:00:00'),
-(7, 8, 0.9100, 7, 'approved', 2, '2025-03-07 11:00:00'),
-(8, 9, 0.8300, 8, 'pending', 3, '2025-03-08 11:00:00'),
-(9, 10, 0.8700, 9, 'approved', 4, '2025-03-09 11:00:00'),
-(10, 1, 0.7900, 10, 'needs_review', 5, '2025-03-10 11:00:00');
+INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, detected_by, detected_at) VALUES
+(1, 2, 0.8500, 1, 'accepted', 'accept', 1, '2025-03-01 11:00:00'),
+(2, 3, 0.7800, 2, 'processed', 'reject', 2, '2025-03-02 11:00:00'),
+(3, 4, 0.9200, 3, 'pending', NULL, 3, '2025-03-03 11:00:00'),
+(4, 5, 0.8100, 4, 'accepted', 'accept', 4, '2025-03-04 11:00:00'),
+(5, 6, 0.8900, 5, 'sent_back', 'send_back', 5, '2025-03-05 11:00:00'),
+(6, 7, 0.7600, 6, 'processed', 'reject', 1, '2025-03-06 11:00:00'),
+(7, 8, 0.9100, 7, 'accepted', 'accept', 2, '2025-03-07 11:00:00'),
+(8, 9, 0.8300, 8, 'pending', NULL, 3, '2025-03-08 11:00:00'),
+(9, 10, 0.8700, 9, 'accepted', 'accept', 4, '2025-03-09 11:00:00'),
+(10, 1, 0.7900, 10, 'sent_back', 'send_back', 5, '2025-03-10 11:00:00');
 
 -- 12. Thêm 10 bản ghi vào bảng comments
 INSERT INTO comments (entity_type, entity_id, commenter_id, content, created_at) VALUES
@@ -209,3 +209,19 @@ INSERT INTO exam_submissions (submitted_by, course_id, status, submitted_at) VAL
 (3, 8, 'reviewed', '2025-03-08 16:00:00'),
 (4, 9, 'submitted', '2025-03-09 16:00:00'),
 (5, 10, 'approved', '2025-03-10 16:00:00');
+
+-- 17. Thêm dữ liệu mẫu vào bảng duplicate_detections
+INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, status, action, detected_by, processed_by, detected_at, processed_at, detection_feedback, processing_notes) VALUES
+(1, 2, 0.8500, 'processed', 'reject', 1, 6, '2025-03-01 08:00:00', '2025-03-01 10:00:00', 'High similarity detected', 'Clear duplicate of existing question'),
+(3, 4, 0.7800, 'processed', 'reject', 2, 6, '2025-03-02 08:00:00', '2025-03-02 11:00:00', 'Content overlap found', 'Clear duplicate of existing question'),
+(5, 6, 0.9200, 'processed', 'reject', 3, 6, '2025-03-03 08:00:00', '2025-03-03 09:00:00', 'Nearly identical content', 'Clear duplicate of existing question'),
+(7, 8, 0.7600, 'pending', NULL, 4, NULL, '2025-03-04 08:00:00', NULL, 'Potential duplicate', NULL),
+(9, 10, 0.8800, 'processed', 'reject', 5, 6, '2025-03-05 08:00:00', '2025-03-05 12:00:00', 'Similar structure and content', 'Clear duplicate of existing question'),
+(2, 3, 0.7400, 'pending', NULL, 1, NULL, '2025-03-06 08:00:00', NULL, 'Under review', NULL),
+(4, 5, 0.8100, 'processed', 'accept', 2, 6, '2025-03-07 08:00:00', '2025-03-07 14:00:00', 'Similar but distinct', 'Approved as unique question'),
+(6, 7, 0.7900, 'processed', 'reject', 3, 6, '2025-03-08 08:00:00', '2025-03-08 15:00:00', 'Too similar to existing', 'Clear duplicate of existing question'),
+(8, 9, 0.8600, 'pending', NULL, 4, NULL, '2025-03-09 08:00:00', NULL, 'Awaiting review', NULL),
+(10, 1, 0.7700, 'processed', 'reject', 5, 6, '2025-03-10 08:00:00', '2025-03-10 16:00:00', 'Duplicate content', 'Clear duplicate of existing question'),
+-- Thêm nhiều dữ liệu để test
+(1, 3, 0.8200, 'processed', 'reject', 1, 6, '2025-03-11 08:00:00', '2025-03-11 10:00:00', 'Duplicate detected', 'Clear duplicate of existing question'),
+(2, 4, 0.7900, 'processed', 'reject', 2, 6, '2025-03-12 08:00:00', '2025-03-12 11:00:00', 'Similar content', 'Clear duplicate of existing question');

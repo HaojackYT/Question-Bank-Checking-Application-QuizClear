@@ -92,28 +92,35 @@ public class DuplicateDetectionController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }
-
-    @PostMapping("/{id}/process")
+    }    @PostMapping("/{id}/process")
     public ResponseEntity<Map<String, String>> processDetection(
             @PathVariable Long id,
             @RequestBody ProcessDetectionRequest request) {
         try {
+            System.out.println("Processing detection - ID: " + id);
+            System.out.println("Request: " + request.getAction() + ", " + request.getFeedback() + ", " + request.getProcessedBy());
+            
             Long processorId = request.getProcessedBy();
             if (processorId == null) {
+                System.out.println("Processor ID is null - returning bad request");
                 return ResponseEntity.badRequest()
                         .body(Map.of("error", "Processor ID is required"));
             }
             
             duplicationService.processDetection(id, request.getAction(), request.getFeedback(), processorId);
+            System.out.println("Detection processed successfully");
             return ResponseEntity.ok(Map.of("message", "Detection processed successfully"));
         } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException: " + e.getMessage());
             return ResponseEntity.badRequest()
                     .body(Map.of("error", "Invalid action: " + e.getMessage()));
         } catch (RuntimeException e) {
+            System.out.println("RuntimeException: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Internal server error"));
         }
