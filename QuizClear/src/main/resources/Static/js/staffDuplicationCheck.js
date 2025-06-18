@@ -129,8 +129,9 @@ function handleTabClick(tab) {
                     if (!window._detectionTabLoaded) {
                         loadDuplications();
                         window._detectionTabLoaded = true;
-                    }
-                } else if (tabName === 'stat') {
+                    }                } else if (tabName === 'stat') {
+                    // Always refresh statistics when switching to stats tab
+                    console.log("Loading statistics for stats tab...");
                     loadStatistics();
                 }
             })
@@ -217,8 +218,7 @@ async function applyFilters() {
         if (selectedSubmitter && selectedSubmitter.trim() !== '') {
             params.append('submitter', selectedSubmitter.trim());
         }
-        
-        const url = `${API_URLS.filteredDuplications}?${params.toString()}`;
+          const url = `${API_URLS.filteredDuplications}?${params.toString()}`;
         console.log("Fetching filtered data from:", url);
         
         // Show loading indicator
@@ -227,7 +227,19 @@ async function applyFilters() {
             tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Loading...</td></tr>';
         }
         
-        const response = await fetch(url);
+        // Add cache busting for filtered requests too
+        const timestamp = Date.now();
+        const cacheBustedUrl = url + (url.includes('?') ? '&' : '?') + `t=${timestamp}`;
+        
+        const response = await fetch(cacheBustedUrl, {
+            cache: 'no-store',
+            headers: { 
+                'Accept': 'application/json',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            }
+        });
         console.log("Filter response status:", response.status);
         
         if (!response.ok) {
@@ -280,19 +292,38 @@ function bindFilterEvents() {
     console.log("Filter events bound successfully");
 }
 
-async function loadDuplications() {
+async function loadDuplications(preserveFilters = false) {
     try {
-        // Load filter options first
-        await loadFilterOptions();
+        // Load filter options first (only if not preserving filters)
+        if (!preserveFilters) {
+            await loadFilterOptions();
+        }
         
-        // Gọi API thật để lấy dữ liệu từ database
-        const response = await fetch(API_URLS.duplications, {
-            headers: { 'Accept': 'application/json' }
+        // Check if filters are currently applied
+        const subjectSelect = document.querySelector('.filter-select.subject');
+        const submitterSelect = document.querySelector('.filter-select.submitter');
+        const hasActiveFilters = (subjectSelect && subjectSelect.value) || (submitterSelect && submitterSelect.value);
+        
+        // If filters are active, use applyFilters instead of loading all data
+        if (hasActiveFilters && preserveFilters) {
+            console.log('Preserving filters and reapplying...');
+            await applyFilters();
+            return;
+        }          // Gọi API thật để lấy dữ liệu từ database với cache busting
+        const timestamp = Date.now();
+        const response = await fetch(`${API_URLS.duplications}?t=${timestamp}`, {
+            cache: 'no-store',
+            headers: { 
+                'Accept': 'application/json',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            }
         });
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
-        }        const data = await response.json();
+        }const data = await response.json();
         console.log('Loaded data from database:', data);
         
         // Manual debug of first item
@@ -361,8 +392,7 @@ function displayDuplications(duplications) {
                         ${d.similarityScore >= 0.9 ? 'Complete Duplicate' : 'High Similarity'} (${(d.similarityScore * 100).toFixed(1)}%)
                     </div>
                 </td>
-                <td><div class="subject-badge">${d.newQuestion?.courseName || 'N/A'}</div></td>                <td class="submitter-name">${d.newQuestion?.creatorName || 'N/A'}</td>
-                <td class="action-buttons">
+                <td><div class="subject-badge">${d.newQuestion?.courseName || 'N/A'}</div></td>                <td class="submitter-name">${d.newQuestion?.creatorName || 'N/A'}</td>                <td class="action-buttons">
                     <button class="action-icon view-icon" data-detection-id="${d.detectionId}" 
                             ${d.status === 'INVALID' ? 'disabled' : ''} 
                             title="${d.status === 'INVALID' ? 'Detection lỗi, không thể xem chi tiết' : 'View Details'}"
@@ -666,15 +696,55 @@ async function acceptDuplication(button) {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
-        const result = await response.json();
-        console.log('Accept successful:', result);
-        
-        // Show success message
+          const result = await response.json();
+        console.log('Accept successful:', result);        // Show success message
         showSuccessMessage('Detection accepted successfully!');
         
-        // Reload danh sách để cập nhật
-        await loadDuplications();
+        // Remove row from table immediately for better UX
+        const row = button.closest('tr');
+        if (row) {
+            row.remove(); // Remove row immediately instead of styling it
+        }// Wait longer and force refresh to ensure backend has completed
+        setTimeout(async () => {
+            try {
+                console.log('Starting post-action refresh...');
+                
+                // Force clear all possible caches
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                    console.log('Cleared service worker caches');
+                }
+                
+                // Force refresh with multiple cache-busting techniques
+                const timestamp = Date.now();
+                await fetch(`/api/staff/duplications?t=${timestamp}`, { 
+                    cache: 'no-store',
+                    headers: { 
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    }
+                });
+                
+                console.log('Cache-busting request completed, now reloading data...');
+                await loadDuplications(true); // Preserve filters
+                
+                // Also reload statistics if on stats tab
+                const activeTab = document.querySelector('.tab.active');
+                if (activeTab && activeTab.dataset.tab === 'stat') {
+                    console.log('Also refreshing statistics...');
+                    await loadStatistics();
+                }
+                
+                console.log('Post-action refresh completed successfully');
+            } catch (e) {
+                console.error('Error during refresh:', e);
+                // Fallback: reload page if all else fails
+                console.log('Fallback: reloading entire page');
+                window.location.reload();
+            }
+        }, 3000); // Increase to 3 seconds for slower databases
         
     } catch (error) {
         console.error('Error accepting duplicate:', error);
@@ -721,15 +791,55 @@ async function rejectDuplication(button) {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
-        const result = await response.json();
-        console.log('Reject successful:', result);
-        
-        // Show success message
+          const result = await response.json();
+        console.log('Reject successful:', result);        // Show success message
         showSuccessMessage('Detection rejected successfully!');
         
-        // Reload danh sách để cập nhật
-        await loadDuplications();
+        // Remove row from table immediately for better UX
+        const row = button.closest('tr');
+        if (row) {
+            row.remove(); // Remove row immediately instead of styling it
+        }// Wait longer and force refresh to ensure backend has completed
+        setTimeout(async () => {
+            try {
+                console.log('Starting post-reject refresh...');
+                
+                // Force clear all possible caches
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                    console.log('Cleared service worker caches');
+                }
+                
+                // Force refresh with multiple cache-busting techniques
+                const timestamp = Date.now();
+                await fetch(`/api/staff/duplications?t=${timestamp}`, { 
+                    cache: 'no-store',
+                    headers: { 
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    }
+                });
+                
+                console.log('Cache-busting request completed, now reloading data...');
+                await loadDuplications(true); // Preserve filters
+                
+                // Also reload statistics if on stats tab
+                const activeTab = document.querySelector('.tab.active');
+                if (activeTab && activeTab.dataset.tab === 'stat') {
+                    console.log('Also refreshing statistics...');
+                    await loadStatistics();
+                }            
+                
+                console.log('Post-reject refresh completed successfully');
+            } catch (e) {
+                console.error('Error during refresh:', e);
+                // Fallback: reload page if all else fails
+                console.log('Fallback: reloading entire page');
+                window.location.reload();
+            }
+        }, 3000); // Increase to 3 seconds for slower databases
         
     } catch (error) {
         console.error('Error rejecting duplicate:', error);
@@ -852,19 +962,41 @@ function bindDetailsFormEvents() {
                         if (contentType && contentType.includes('application/json')) {
                             const result = await response.json();
                             console.log("Form response data:", result);
-                            
                             if (result.success !== false) {
                                 alert('Detection processed successfully!');
-                                goBackToDetectionList();
+                                // Xóa row khỏi bảng nếu có (nếu đang ở danh sách)
+                                const detectionId = form.getAttribute('data-detection-id');
+                                if (detectionId) {
+                                    const row = document.querySelector(`tr[data-detection-id='${detectionId}']`);
+                                    if (row) {
+                                        row.remove();
+                                    }
+                                }
+                                // Nếu không có row, hoặc đang ở details, reload lại danh sách
+                                setTimeout(async () => {
+                                    try {
+                                        await loadStatistics();
+                                    } catch (e) {
+                                        console.warn('Could not refresh statistics:', e);
+                                    }
+                                    goBackToDetectionList();
+                                }, 500);
                             } else {
                                 throw new Error(result.error || 'Unknown error occurred');
                             }
                         } else {
                             // Handle non-JSON response
-                            const textResponse = await response.text();
-                            console.log("Non-JSON response:", textResponse);
+                            const textResponse = await response.text();                            console.log("Non-JSON response:", textResponse);
                             if (textResponse.includes('success') || response.status === 200) {
                                 alert('Detection processed successfully!');
+                                // Refresh statistics when going back
+                                setTimeout(async () => {
+                                    try {
+                                        await loadStatistics();
+                                    } catch (e) {
+                                        console.warn('Could not refresh statistics:', e);
+                                    }
+                                }, 500);
                                 goBackToDetectionList();
                             } else {
                                 throw new Error('Unexpected response format');
@@ -932,12 +1064,11 @@ function goBackToDetectionList() {
             .then((html) => {
                 contentArea.innerHTML = html;
                 loadCSS("/css/staff/staffDup.css");
-                
-                // Bind events for the loaded content
+                  // Bind events for the loaded content
                 bindFilterEvents();
                 
-                // Load duplications data
-                loadDuplications();
+                // Load duplications data - preserve filters when going back
+                loadDuplications(true);
                 
                 console.log("Detection list loaded successfully");
             })
@@ -1004,7 +1135,13 @@ async function loadStatistics() {
             duplicationRate: 'Loading...'
         });
         
-        const response = await fetch(API_URLS.statistics);
+        const response = await fetch(API_URLS.statistics, {
+            cache: 'no-cache',
+            headers: { 
+                'Cache-Control': 'no-cache',
+                'Accept': 'application/json'
+            }
+        });
         console.log("API Response status:", response.status);
         console.log("API Response ok:", response.ok);
         
@@ -1151,8 +1288,27 @@ function updateCreatorChart(creatorStats) {
             </div>
         `;
     });
-    
-    container.innerHTML = chartHTML;
+      container.innerHTML = chartHTML;
+}
+
+// Debug function to check database state
+async function debugDatabaseState(detectionId, questionId = null) {
+    try {
+        console.log('=== DEBUGGING DATABASE STATE ===');
+        const url = `/api/staff/duplications/debug/${detectionId}${questionId ? `?questionId=${questionId}` : ''}`;
+        console.log('Debug URL:', url);
+        
+        const response = await fetch(url);
+        const result = await response.json();
+        
+        console.log('Debug response:', result);
+        alert('Database state logged to console. Check browser console for details.');
+        
+        return result;
+    } catch (error) {
+        console.error('Error debugging database state:', error);
+        alert('Error debugging database state: ' + error.message);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
