@@ -175,10 +175,9 @@ public class WebPageController {
             User user = userRepository.findByRole(userRole).stream()
                 .findFirst()
                 .orElse(null);
-                
-            if (user != null) {
+                  if (user != null) {
                 UserBasicDTO dto = new UserBasicDTO();
-                dto.setUserId(user.getUserId());
+                dto.setUserId(user.getUserId() != null ? user.getUserId().longValue() : null);
                 dto.setFullName(user.getFullName());
                 dto.setEmail(user.getEmail());
                 dto.setRole(user.getRole().name());
@@ -192,10 +191,9 @@ public class WebPageController {
         
         // Fallback - return first user from database
         return userRepository.findAll().stream()
-            .findFirst()
-            .map(user -> {
+            .findFirst()            .map(user -> {
                 UserBasicDTO dto = new UserBasicDTO();
-                dto.setUserId(user.getUserId());
+                dto.setUserId(user.getUserId() != null ? user.getUserId().longValue() : null);
                 dto.setFullName(user.getFullName());
                 dto.setEmail(user.getEmail());
                 dto.setRole(user.getRole().name());

@@ -29,22 +29,27 @@ public class DatabaseTestController {
     public List<TaskAssignmentDTO> getTasksFromDatabase() {
         try {
             List<Tasks> tasks = tasksRepository.findAll();
-            
-            return tasks.stream()
+              return tasks.stream()
                 .map(task -> new TaskAssignmentDTO(
                     task.getTaskId().longValue(),
                     task.getTitle(),
                     task.getCourse() != null ? task.getCourse().getCourseName() : "N/A",
+                    task.getCourse() != null ? task.getCourse().getCourseName() : "N/A",
                     task.getTotalQuestions(),
-                    task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
+                    task.getTotalQuestions(),
                     0, // Completed questions (simplified)
-                    task.getStatus() != null ? task.getStatus().name() : "N/A"
+                    task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
+                    task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
+                    task.getStatus() != null ? task.getStatus().name() : "N/A",
+                    task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
+                    task.getDescription() != null ? task.getDescription() : "N/A",
+                    null // feedback
                 ))
-                .collect(Collectors.toList());
-        } catch (Exception e) {
+                .collect(Collectors.toList());        } catch (Exception e) {
             // Return error info
             List<TaskAssignmentDTO> errorList = new ArrayList<>();
-            errorList.add(new TaskAssignmentDTO(0L, "DATABASE ERROR: " + e.getMessage(), "", 0, "", 0, "ERROR"));
+            errorList.add(new TaskAssignmentDTO(0L, "DATABASE ERROR: " + e.getMessage(), "ERROR", 
+                    "ERROR", 0, 0, 0, "ERROR", "ERROR", "ERROR", "ERROR", "ERROR", null));
             return errorList;
         }
     }

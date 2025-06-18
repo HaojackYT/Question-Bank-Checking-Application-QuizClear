@@ -19,13 +19,12 @@ public class PriorityConverter implements AttributeConverter<Priority, String> {
         if (dbData == null || dbData.trim().isEmpty()) {
             return null;
         }
-        
-        try {
-            // Convert to uppercase to match enum constants
-            return Priority.valueOf(dbData.toUpperCase().trim());
+          try {
+            // Convert to lowercase to match enum constants
+            return Priority.valueOf(dbData.toLowerCase().trim());
         } catch (IllegalArgumentException e) {
             // If conversion fails, return default value
-            return Priority.MEDIUM;
+            return Priority.medium;
         }
     }
 }

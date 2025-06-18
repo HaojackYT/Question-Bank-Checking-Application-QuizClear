@@ -206,7 +206,54 @@ public class TaskAssignmentService {
             task.getStatus() != null ? task.getStatus().name().toLowerCase() : "N/A",
             task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
             task.getDescription(),
-            null
-        );
+            null        );
+    }
+    
+    // Return List instead of Page for HEDController
+    public List<TaskAssignmentDTO> getTasksForHED() {
+        List<Tasks> tasks = tasksRepository.findAll();
+        return tasks.stream()
+                .map(this::mapToDTOExtended)
+                .collect(Collectors.toList());
+    }
+    
+    // Return Page for pagination
+    public Page<TaskAssignmentDTO> getTasksForHEDPaged(Pageable pageable) {
+        Page<Tasks> tasks = tasksRepository.findAll(pageable);
+        return tasks.map(this::mapToDTOExtended);
+    }
+
+    public List<TaskAssignmentDTO> searchTaskAssignments(String query, String status, String subject) {
+        List<Tasks> tasks = tasksRepository.findAll();
+        
+        return tasks.stream()
+                .filter(task -> {
+                    boolean matches = true;
+                    
+                    // Filter by query (search in title or description)
+                    if (query != null && !query.trim().isEmpty()) {
+                        String searchTerm = query.toLowerCase();
+                        matches = matches && (
+                            (task.getTitle() != null && task.getTitle().toLowerCase().contains(searchTerm)) ||
+                            (task.getDescription() != null && task.getDescription().toLowerCase().contains(searchTerm))
+                        );
+                    }
+                    
+                    // Filter by status
+                    if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("all")) {
+                        matches = matches && task.getStatus() != null && 
+                                 task.getStatus().name().equalsIgnoreCase(status);
+                    }
+                    
+                    // Filter by subject/course
+                    if (subject != null && !subject.trim().isEmpty() && !subject.equalsIgnoreCase("all")) {
+                        matches = matches && task.getCourse() != null && 
+                                 task.getCourse().getCourseName().toLowerCase().contains(subject.toLowerCase());
+                    }
+                    
+                    return matches;
+                })
+                .map(this::mapToDTOExtended)
+                .collect(Collectors.toList());
     }
 }

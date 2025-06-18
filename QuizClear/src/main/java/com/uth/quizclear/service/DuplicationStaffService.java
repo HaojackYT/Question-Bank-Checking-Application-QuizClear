@@ -160,10 +160,10 @@ public class DuplicationStaffService {
         }
 
         return courses.stream()
-                .map(course -> {
-                    try {
+                .map(course -> {                    try {
+                        Long courseId = course.getCourseId();
                         return new SubjectOptionDTO(
-                                course.getCourseId().intValue(),
+                                courseId != null ? courseId.intValue() : 0,
                                 course.getCourseName());
                     } catch (Exception e) {
                         System.err.println("Error mapping course ID " + course.getCourseId() + " to SubjectOptionDTO: " + e.getMessage());
