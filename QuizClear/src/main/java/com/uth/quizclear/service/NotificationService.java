@@ -37,7 +37,7 @@ public class NotificationService {
         notification.setTitle(title);
         notification.setMessage(message);
         notification.setActionUrl(actionUrl);
-        notification.setPriority(priority != null ? priority : Priority.MEDIUM);
+        notification.setPriority(priority != null ? priority : Priority.medium);
         notification.setIsRead(false);
         notification.setCreatedAt(LocalDateTime.now());
         
@@ -54,7 +54,7 @@ public class NotificationService {
         String actionUrl = "/staff/questions"; // Link để xem danh sách câu hỏi của họ
         
         NotificationType type = NotificationType.DUPLICATE_FOUND;
-        Priority priority = Priority.HIGH;
+        Priority priority = Priority.high;
         
         createNotification(creatorId, type, title, message, actionUrl, priority);
     }
