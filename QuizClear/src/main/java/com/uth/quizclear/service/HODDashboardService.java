@@ -1,12 +1,17 @@
 package com.uth.quizclear.service;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.uth.quizclear.repository.TasksRepository;
@@ -15,98 +20,142 @@ import com.uth.quizclear.model.dto.HODDashboardActivityDTO;
 import com.uth.quizclear.model.dto.HODDashboardChartsDTO;
 import com.uth.quizclear.model.dto.HODDashboardDeadlineDTO;
 import com.uth.quizclear.model.dto.HODDashboardStatsDTO;
+import com.uth.quizclear.model.entity.Department;
 import com.uth.quizclear.model.entity.Tasks;
 import com.uth.quizclear.model.enums.TaskStatus;
 import com.uth.quizclear.model.enums.UserRole;
+import com.uth.quizclear.model.entity.User;
 
 @Service
 public class HODDashboardService {
-    @Autowired
-    private UserRepository userRepo;
+        @Autowired
+        private UserRepository userRepo;
 
-    @Autowired
-    private TasksRepository tasksRepo;    public HODDashboardStatsDTO getStats() {
-        long lecturerCount = userRepo.countByRole(UserRole.LEC);
-        // Since TasksRepository doesn't have countByStatus, we'll use manual counting
-        List<Tasks> allTasks = tasksRepo.findAll();
-        long pendingCount = allTasks.stream().filter(t -> t.getStatus() == TaskStatus.pending).count();
-        long approvedCount = allTasks.stream().filter(t -> t.getStatus() == TaskStatus.completed).count();
-        long rejectedCount = allTasks.stream().filter(t -> t.getStatus() == TaskStatus.cancelled).count();
+        @Autowired
+        private TasksRepository tasksRepo;
 
-        return new HODDashboardStatsDTO(
-                lecturerCount,
-                pendingCount,
-                approvedCount,
-                rejectedCount);
-    }
+        // chưa truyền dl change
+        public HODDashboardStatsDTO getStats() {
+                // Lấy HOD đang đăng nhập
+                String email = SecurityContextHolder.getContext().getAuthentication().getName();
+                Optional<User> hodOpt = userRepo.findByEmail(email);
 
-    // lấy dl biểu đồ cột
-    public List<HODDashboardChartsDTO> getBarCharts() {
-        // Lấy tất cả tasks từ repository
-        List<Tasks> allTasks = tasksRepo.findAll();
-        // Nhóm tasks theo tên môn
-        Map<String, List<Tasks>> grouped = allTasks.stream()
-                .filter(t -> t.getCourse() != null)
-                .collect(Collectors.groupingBy(t -> t.getCourse().getCourseName()));
-        // tạo ds
-        List<HODDashboardChartsDTO> result = new ArrayList<>();
+                if (hodOpt.isEmpty()) {
+                        throw new RuntimeException("HOD not found!");
+                }
 
-        // duyệt qua từng nhóm
+                User hod = hodOpt.get();
+                String department = hod.getDepartment();
 
-        for (Map.Entry<String, List<Tasks>> entry : grouped.entrySet()) {
-            String subject = entry.getKey();
-            List<Tasks> tasks = entry.getValue();            int created = tasks.stream()
-                    .mapToInt(t -> t.getTotalQuestions() != null ? t.getTotalQuestions() : 0)
-                    .sum();
+                // Đếm số giảng viên trong cùng khoa
+                long lecturerCount = userRepo.countUsersByRoleAndDepartmentActiveUnlocked(UserRole.LEC, department);
 
-            // Since Tasks doesn't have getPlan(), we'll use the same total questions as target
-            int target = tasks.stream()
-                    .mapToInt(t -> t.getTotalQuestions() != null ? t.getTotalQuestions() : 0)
-                    .sum();
+                // Đếm tasks theo trạng thái
+                List<Tasks> allTasks = tasksRepo.findTasksByDepartment(department);
+                long pendingCount = allTasks.stream().filter(t -> t.getStatus() == TaskStatus.pending).count();
+                long approvedCount = allTasks.stream().filter(t -> t.getStatus() == TaskStatus.completed).count();
+                long rejectedCount = allTasks.stream().filter(t -> t.getStatus() == TaskStatus.cancelled).count();
 
-            result.add(new HODDashboardChartsDTO(subject, created, target));
+                return new HODDashboardStatsDTO(
+                                lecturerCount,
+                                pendingCount,
+                                approvedCount,
+                                rejectedCount);
         }
-        return result;
-    }
 
-    // dl biểu đồ tròn
-    public double getOverallProgress() {
-        List<Tasks> tasks = tasksRepo.findAll();        int created = tasks.stream()
-                .mapToInt(t -> t.getTotalQuestions() == null ? 0 : t.getTotalQuestions())
-                .sum();
+        // lấy dl biểu đồ cột
+        public List<HODDashboardChartsDTO> getBarCharts() {
+                String email = SecurityContextHolder.getContext().getAuthentication().getName();
+                Optional<User> hodOpt = userRepo.findByEmail(email);
+                if (hodOpt.isEmpty()) {
+                        throw new RuntimeException("HOD not found!");
+                }
 
-        // Since Tasks doesn't have getPlan(), we'll use the same total questions as target
-        int target = tasks.stream()
-                .mapToInt(t -> t.getTotalQuestions() == null ? 0 : t.getTotalQuestions())
-                .sum();
+                User hod = hodOpt.get();
+                String department = hod.getDepartment();
+                if (department == null) {
+                        throw new RuntimeException("HOD's department not found!");
+                }
 
-        // tính tỉ lệ phần trăm
-        return target > 0 ? (double) created / target * 100 : 0;
-    }
+                // Lấy tất cả task trong khoa của HOD
+                List<Tasks> allTasks = tasksRepo.findTasksByDepartment(department);
+                if (allTasks.isEmpty())
+                        return new ArrayList<>();
 
-    // lấy deadline
-    public List<HODDashboardDeadlineDTO> getDeadlines() {
-        LocalDateTime now = LocalDateTime.now();
+                // Xác định tháng hiện tại
+                YearMonth currentMonth = YearMonth.now();
 
-        return tasksRepo.findAll().stream()
-                .filter(t -> t.getDueDate() != null && t.getDueDate().isBefore(now.plusDays(7)))
-                .map(t -> new HODDashboardDeadlineDTO(
-                        t.getTitle(),
-                        t.getCourse().getCourseName(),
-                        t.getDueDate().isBefore(now) ? "Overdue" : "Upcoming"))
-                .collect(Collectors.toList());
-    }
+                // Target: đếm tất cả task có dueDate trong tháng hiện tại
+                Map<String, Long> subjectTargetMap = allTasks.stream()
+                                .filter(t -> t.getDueDate() != null)
+                                .filter(t -> YearMonth.from(t.getDueDate()).equals(currentMonth))
+                                .collect(Collectors.groupingBy(
+                                                t -> t.getCourse().getCourseName(),
+                                                Collectors.counting()));
 
-    // lấy hoạt động gần đây
-    public List<HODDashboardActivityDTO> getRecentActivities() {
-        LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
+                // Created: task đã hoàn thành trong tháng hiện tại
+                Map<String, Long> subjectCompletedMap = allTasks.stream()
+                                .filter(t -> t.getStatus() == TaskStatus.completed)
+                                .filter(t -> t.getCompletedAt() != null)
+                                .filter(t -> YearMonth.from(t.getCompletedAt()).equals(currentMonth))
+                                .collect(Collectors.groupingBy(
+                                                t -> t.getCourse().getCourseName(),
+                                                Collectors.counting()));
 
-        return tasksRepo.findAll().stream()
-                .filter(t -> t.getCreatedAt() != null && t.getCreatedAt().isAfter(oneWeekAgo))
-                .map(t -> new HODDashboardActivityDTO(
-                        "New Assignment: " + t.getTitle(),
-                        t.getAssignedBy().getFullName(),
-                        t.getCreatedAt().toString()))
-                .collect(Collectors.toList());
-    }
+                Set<String> allSubjects = new HashSet<>();
+                allSubjects.addAll(subjectTargetMap.keySet());
+                allSubjects.addAll(subjectCompletedMap.keySet());
+
+                List<HODDashboardChartsDTO> result = new ArrayList<>();
+                for (String subject : allSubjects) {
+                        int target = subjectTargetMap.getOrDefault(subject, 0L).intValue();
+                        int created = subjectCompletedMap.getOrDefault(subject, 0L).intValue();
+                        result.add(new HODDashboardChartsDTO(subject, created, target));
+                }
+
+                return result;
+        }
+
+        // dl biểu đồ tròn
+        public double getOverallProgress() {
+                List<Tasks> tasks = tasksRepo.findAll();
+                int created = tasks.stream()
+                                .mapToInt(t -> t.getTotalQuestions() == null ? 0 : t.getTotalQuestions())
+                                .sum();
+
+                // Since Tasks doesn't have getPlan(), we'll use the same total questions as
+                // target
+                int target = tasks.stream()
+                                .mapToInt(t -> t.getTotalQuestions() == null ? 0 : t.getTotalQuestions())
+                                .sum();
+
+                // tính tỉ lệ phần trăm
+                return target > 0 ? (double) created / target * 100 : 0;
+        }
+
+        // lấy deadline
+        public List<HODDashboardDeadlineDTO> getDeadlines() {
+                LocalDateTime now = LocalDateTime.now();
+
+                return tasksRepo.findAll().stream()
+                                .filter(t -> t.getDueDate() != null && t.getDueDate().isBefore(now.plusDays(7)))
+                                .map(t -> new HODDashboardDeadlineDTO(
+                                                t.getTitle(),
+                                                t.getCourse().getCourseName(),
+                                                t.getDueDate().isBefore(now) ? "Overdue" : "Upcoming"))
+                                .collect(Collectors.toList());
+        }
+
+        // lấy hoạt động gần đây
+        public List<HODDashboardActivityDTO> getRecentActivities() {
+                LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
+
+                return tasksRepo.findAll().stream()
+                                .filter(t -> t.getCreatedAt() != null && t.getCreatedAt().isAfter(oneWeekAgo))
+                                .map(t -> new HODDashboardActivityDTO(
+                                                "New Assignment: " + t.getTitle(),
+                                                t.getAssignedBy().getFullName(),
+                                                t.getCreatedAt().toString()))
+                                .collect(Collectors.toList());
+        }
 }

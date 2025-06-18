@@ -5,17 +5,11 @@ public class HODDashboardChartsDTO {
     private String subject;
     private int created;
     private int target;
-    private float percentage;
 
     public HODDashboardChartsDTO(String subject, int created, int target) {
         this.subject = subject;
         this.created = created;
         this.target = target;
-        this.percentage = target != 0 ? (float) created / target * 100 : 0;
-    }
-
-    public float getPercentage() {
-        return percentage;
     }
 
     public String getSubject() {
@@ -44,7 +38,6 @@ public class HODDashboardChartsDTO {
                 "subject='" + subject + '\'' +
                 ", created=" + created +
                 ", target=" + target +
-                ", percentage=" + percentage +
                 '}';
     }
 }
