@@ -2,6 +2,8 @@ package com.uth.quizclear.repository;
 
 import com.uth.quizclear.model.entity.Tasks;
 import com.uth.quizclear.model.enums.TaskType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,4 +17,7 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
 
     @Query("SELECT t FROM Tasks t WHERE t.course.department = :department")
     List<Tasks> findTasksByDepartment(@Param("department") String department);
+
+    Page<Tasks> findByTitleContainingIgnoreCaseAndStatusContainingIgnoreCaseAndCourseCourseId(
+            String title, String status, Long courseId, Pageable pageable);
 }

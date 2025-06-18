@@ -1,16 +1,17 @@
 package com.uth.quizclear.repository;
 
-import com.uth.quizclear.model.entity.User;
-import com.uth.quizclear.model.enums.UserRole;
-import com.uth.quizclear.model.enums.Status;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import com.uth.quizclear.model.entity.User;
+import com.uth.quizclear.model.enums.Status;
+import com.uth.quizclear.model.enums.UserRole;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -113,4 +114,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
   // u.fullName, u.email, u.role.name()) FROM User u WHERE u.userId IN :userIds")
   // List<com.uth.quizclear.model.dto.UserBasicDTO>
   // findUserBasicDTOsByIds(@Param("userIds") List<Long> userIds);
+
+  
+    
+    // Find users for specific purposes
+   // Find user basic info for DTOs (optimized for performance) - TEMPORARILY COMMENTED OUT
+    // @Query("SELECT new com.uth.quizclear.model.dto.UserBasicDTO(u.userId, u.fullName, u.email, u.role.name()) FROM User u WHERE u.userId = :userId")
+    // Optional<com.uth.quizclear.model.dto.UserBasicDTO> findUserBasicDTOById(@Param("userId") Long userId);
+    
+    // @Query("SELECT new com.uth.quizclear.model.dto.UserBasicDTO(u.userId, u.fullName, u.email, u.role.name()) FROM User u WHERE u.userId IN :userIds")
+    // List<com.uth.quizclear.model.dto.UserBasicDTO> findUserBasicDTOsByIds(@Param("userIds") List<Long> userIds);
+
+    List<User> findByRoleAndStatus(UserRole role, Status status);
 }
