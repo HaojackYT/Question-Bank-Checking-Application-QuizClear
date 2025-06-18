@@ -1,188 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
-        <link rel="stylesheet" href="../../Static/header.css">
-        <link rel="stylesheet" href="../../Static/web_styles.css">
-        <link rel="stylesheet" href="../../Static/Menu-Staff.css">
-        <link rel="stylesheet" href="../../Static/css/staff/staffExamManagement_All_Exams.css">
-        <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-        <title>Template</title>
-    </head>
-
-    <body>
-        <!--header-->
-        <div id="header-placeholder"></div>
-
-
-
-        <!-- body -->
-        <div id="Container-body">
-            <!-- Menu -->
-            <div id="menu-HTML"></div>
-
-
-            <!-- Main content -->
-            <div id="main">
-               <div class="exam-management">
-                    <div class="header-container"> 
-                        <div>
-                            <h2>Exam Management</h2>
-                            <p>Create, review, and manage exams across all subjects</p>
-                        </div>
-                        <button class="create-exam-btn">Create New Exam</button>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam Management</title>
+    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/header.css}">
+    <link rel="stylesheet" th:href="@{/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/css/staff/staffExamManagement_All_Exams.css}">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="header" th:insert="~{header_user :: header}"></header>
+<div id="Container-body">
+    <div id="menu-HTML" th:insert="~{Menu-Staff :: menu}"></div>
+    <div id="main">
+        <div class="exam-management">
+            <div class="header-container">
+                <div>
+                    <h2>Exam Management</h2>
+                    <p>Create, review, and manage exams across all subjects</p>
+                </div>
+                <a class="create-exam-btn" th:href="@{/staff/exams/create}">Create New Exam</a>
+            </div>
+            <div class="summary">
+                <div class="box">
+                    <p>Total Exams</p>
+                    <h3 th:text="${totalExams}">0</h3>
+                </div>
+                <div class="box">
+                    <p>Pending Approval</p>
+                    <h3 th:text="${pendingCount}">0</h3>
+                </div>
+                <div class="box">
+                    <p>Approved</p>
+                    <h3 th:text="${approvedCount}">0</h3>
+                </div>
+                <div class="box">
+                    <p>Rejected</p>
+                    <h3 th:text="${rejectedCount}">0</h3>
+                </div>
+            </div>
+            <div class="filters">
+                <div>
+                    <input class="search-box" type="text" placeholder="Search exams...">
+                </div>
+                <div class="filter-section">
+                    <button class="btn-status">All Statuses</button>
+                    <button class="btn-subject">All Subjects</button>
+                    <button class="btn-filter-icon">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="tab-container">
+                <a class="tab" href="#">All Exams</a>
+                <a class="tab" href="#">Pending Approval</a>
+                <a class="tab" href="#">Approved</a>
+                <a class="tab" href="#">Needs Revision</a>
+            </div>
+            <h2>All Exams</h2>
+            <p>Manage all exams in the system</p>
+            <div class="exam-list">
+                <div th:each="exam : ${exams}" class="item-box">
+                    <div>
+                        <i class="fas"
+                           th:classappend="${exam.status == 'Approved'} ? 'fa-check-circle status-icon green-icon' :
+                                           (${exam.status == 'Rejected'} ? 'fa-times-circle status-icon red-icon' :
+                                           'fa-clock status-icon orange-icon')"></i>
+                        <strong th:text="${exam.examTitle}">Exam Title</strong><br>
+                        <small class="item-meta"
+                               th:text="${exam.subject} + ' • Created: ' + ${#temporals.format(exam.createdAt, 'yyyy-MM-dd')} + 
+                               (exam.dueDate != null ? ' • Due: ' + ${#temporals.format(exam.dueDate, 'yyyy-MM-dd')} : '')">
+                            Subject • Created: 2023-06-15 • Due: 2023-06-20
+                        </small>
+                        <div class="progress"
+                             th:classappend="${exam.status == 'Approved'} ? ' green' : 
+                                             (${exam.status == 'Rejected'} ? ' red' : ' orange')"></div>
                     </div>
-
-                    <div class="summary">
-                        <div class="box">
-                            <p>Total Exams</p>
-                            <h3>128</h3>
-                            <span>+6.2% from last month</span>
-                        </div>
-                        <div class="box">
-                            <p>Pending Approval</p>
-                            <h3>24</h3>
-                            <span>(2 urgent due in 48h)</span>
-                        </div>
-                        <div class="box">
-                            <p>Approved</p>
-                            <h3>96</h3>
-                            <span>Ready for distribution</span>
-                        </div>
-                        <div class="box">
-                            <p>Rejected</p>
-                            <h3>8</h3>
-                            <span>Needs revision</span>
-                        </div>
-                    </div>
-
-                    <div class="filters">
-                        <div>
-                            <input class="search-box" type="text" placeholder="Search exams...">
-                        </div>
-                        <div class="filter-section">
-                            <button class="btn-status">All Statuses</button>
-                            <button class="btn-subject">All Subjects</button>
-                            <button class="btn-filter-icon">
-                                <i class="fas fa-filter"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="tab-container">
-                        <a class="tab" href="#">All Exams</a>
-                        <a class="tab" href="#">Pending Approval</a>
-                        <a class="tab" href="#">Approved</a>
-                        <a class="tab" href="#">Needs Revision</a>
-                    </div>
-
-                    <h2>All Exams</h2>
-                    <p>Manage all exams in the system</p>
-
-                    <div class="exam-list">
-                        <div class="exam pending">
-                            <div class="item-box">
-                                <div>
-                                    <i class="fas fa-clock status-icon orange-icon"></i> <strong>Data Structures Final</strong><br>
-                                    <small class="item-meta">Computer Science • Created: 2023-06-15 • Due: 2023-06-20</small>
-                                    </i> <div class="progress orange"></div>
-                                </div>
-                                <div class="actions">
-                                    <span class="status-pending">
-                                        <i class="fas fa-clock status-icon orange-icon"></i>
-                                        Pending
-                                    </span>
-                                        
-                                    <button class="view">View</button>
-                                    <button class="review">Review</button>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="item-box">
-                                <div>
-                                    <i class="fas fa-check-circle status-icon green-icon"></i> <strong>Calculus Midterm</strong><br>
-                                    <small class="item-meta">Mathematics • Created: 2023-06-10 • Due: 2023-06-15</small>
-                                    <div class="progress green"></div>
-                                </div>
-                                <div class="actions">
-                                    <span class="status-approved">
-                                        <i class="fas fa-check-circle status-icon green-icon"> </i>
-                                        Approved
-                                    </span>
-                                    <button class="view1">View</button>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="item-box">
-                                <div>
-                                    <i class="fas fa-times-circle status-icon red-icon"></i> <strong>Database Systems Quiz</strong><br>
-                                    <small class="item-meta">Information Technology • Created: 2023-06-08 • Due: 2023-06-13</small>
-                                    <div class="progress red"></div>
-                                </div>
-                                <div class="actions">
-                                    <span class="status-revision">
-                                        <i class="fas fa-times-circle status-icon red-icon"></i>
-                                        Needs Revision
-                                    </span>
-                                    <button class="view1">View</button>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="item-box">
-                                <div>
-                                    <i class="fas fa-check-circle status-icon green-icon"></i> <strong>Organic Chemistry Final</strong><br>
-                                    <small class="item-meta">Chemistry • Created: 2023-06-05 • Due: 2023-06-10</small>
-                                    <div class="progress green"></div>
-                                </div>
-                                <div class="actions">
-                                    <span class="status-approved">
-                                        <i class="fas fa-check-circle status-icon green-icon"></i>
-                                        Approved
-                                    </span>
-                                    <button class="view1">View</button>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="item-box">
-                                <div>
-                                    <i class="fas fa-clock status-icon orange-icon"></i> <strong>Microeconomics Midterm</strong><br>
-                                    <small class="item-meta">Economics • Created: 2023-08-01 • Due: 2023-08-10</small>
-                                    <div class="progress orange"></div>
-                                </div>
-                                <div class="actions">
-                                    <span class="status-pending">
-                                        <i class="fas fa-clock status-icon orange-icon"></i>
-                                        Pending
-                                    </span>
-                                    <button class="view">View</button>
-                                    <button class="review">Review</button>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="actions">
+                        <span th:if="${exam.status == 'Approved'}" class="status-approved">
+                            <i class="fas fa-check-circle status-icon green-icon"></i> Approved
+                        </span>
+                        <span th:if="${exam.status == 'Rejected'}" class="status-revision">
+                            <i class="fas fa-times-circle status-icon red-icon"></i> Needs Revision
+                        </span>
+                        <span th:if="${exam.status != 'Approved' and exam.status != 'Rejected'}" class="status-pending">
+                            <i class="fas fa-clock status-icon orange-icon"></i> Pending
+                        </span>
+                        <a th:href="@{'/staff/exams/' + ${exam.examId}}" class="view">View</a>
+                        <a th:if="${exam.status == 'Pending'}" th:href="@{'/staff/exams/review/' + ${exam.examId}}" class="review">Review</a>
                     </div>
                 </div>
             </div>
         </div>
-
-
-        <!-- ma nhung header vs menu -->
-        <script>
-            // Load header
-            fetch('../header_user.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('header-placeholder').innerHTML = data;
-                });
-
-            // Load menu
-            fetch('../Menu-Staff.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('menu-HTML').innerHTML = data;
-                });
-
-        </script>
-    </body>
+    </div>
+</div>
+</body>
 </html>
