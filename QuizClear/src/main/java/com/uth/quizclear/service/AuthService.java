@@ -58,15 +58,26 @@ public class AuthService {
 
             // Reset login attempts on successful login
             user.resetLoginAttempts();
-            userRepository.save(user);
-
-            // Create UserBasicDTO
+            userRepository.save(user);            // Create UserBasicDTO
             UserBasicDTO userDTO = new UserBasicDTO();
             userDTO.setUserId(user.getUserId() != null ? user.getUserId().longValue() : null);
             userDTO.setFullName(user.getFullName());
             userDTO.setEmail(user.getEmail());
             userDTO.setRole(user.getRole().name());
-            userDTO.setDepartment(user.getDepartment());
+            userDTO.setDepartment(user.getDepartment());            userDTO.setStatus(user.getStatus()); // Set the status field
+            // Set temporary default values for workPlace and qualification
+            userDTO.setWorkPlace("Default Workplace"); // TODO: Get from user entity
+            userDTO.setQualification("Default Qualification"); // TODO: Get from user entity
+            
+            // Set other fields from User entity
+            userDTO.setStart(user.getStart());
+            userDTO.setEnd(user.getEnd());
+            userDTO.setGender(user.getGender());
+            userDTO.setDateOfBirth(user.getDateOfBirth());
+            userDTO.setNation(user.getNation());
+            userDTO.setPhoneNumber(user.getPhoneNumber());
+            userDTO.setHometown(user.getHometown());
+            userDTO.setContactAddress(user.getContactAddress());
 
             // Determine redirect URL based on role
             String redirectUrl = getRedirectUrlByRole(user.getRole());
