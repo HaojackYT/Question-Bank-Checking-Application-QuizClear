@@ -1,8 +1,12 @@
 package com.uth.quizclear.controller;
 
+import com.uth.quizclear.model.dto.CourseDTO;
 import com.uth.quizclear.model.dto.QuestionDTO;
 import com.uth.quizclear.model.dto.TaskAssignmentDTO;
 import com.uth.quizclear.model.dto.TaskNotificationDTO;
+import com.uth.quizclear.repository.CourseRepository;
+import com.uth.quizclear.model.entity.Course;
+import com.uth.quizclear.service.CourseService;
 import com.uth.quizclear.service.QuestionService;
 import com.uth.quizclear.service.TaskAssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/hed")
@@ -128,5 +133,13 @@ public class HEDAssignmentController {
     @ResponseBody
     public List<Map<String, Object>> getCourses() {
         return taskAssignmentService.getCourses();
+    }
+    @Autowired
+    private CourseService courseService;
+
+    @GetMapping("/courses")
+    public ResponseEntity<List<CourseDTO>> getActiveCourses() {
+        List<CourseDTO> courses = courseService.getActiveCourses();
+        return ResponseEntity.ok(courses);
     }
 }
