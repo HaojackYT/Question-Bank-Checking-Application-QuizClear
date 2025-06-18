@@ -3,6 +3,7 @@ package com.uth.quizclear.controller;
 import com.uth.quizclear.model.dto.DuplicateDetectionDTO;
 import com.uth.quizclear.model.dto.SubjectOptionDTO;
 import com.uth.quizclear.model.dto.UserBasicDTO;
+import com.uth.quizclear.model.entity.DuplicateDetection;
 import com.uth.quizclear.service.DuplicationStaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/staff/duplications")
@@ -459,19 +461,178 @@ public class DuplicationStaffController {
         response.put("message", "Test endpoint working");
         response.put("received", request);
         return ResponseEntity.ok(response);
-    }
-
-    // Get duplication statistics
+    }    // Get duplication statistics
     @GetMapping("/statistics")
     public ResponseEntity<?> getDuplicationStatistics() {
         try {
+            System.out.println("=== STATISTICS API CALLED ===");
             Map<String, Object> statistics = service.getDuplicationStatistics();
-            return ResponseEntity.ok(statistics);        } catch (Exception e) {
+            System.out.println("Statistics data: " + statistics);
+            return ResponseEntity.ok(statistics);
+        } catch (Exception e) {
+            System.err.println("Error getting statistics: " + e.getMessage());
+            e.printStackTrace();
+            
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
             errorResponse.put("type", e.getClass().getSimpleName());
             errorResponse.put("timestamp", java.time.LocalDateTime.now().toString());
             return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    // Debug/Test endpoint to check database state
+    @GetMapping("/debug-state")
+    public ResponseEntity<Map<String, Object>> debugDatabaseState() {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            List<DuplicateDetection> allDetections = service.testRawRepository();
+            result.put("totalDetections", allDetections.size());
+            
+            // Count by status
+            Map<String, Long> statusCounts = allDetections.stream()
+                .collect(Collectors.groupingBy(
+                    d -> d.getStatusString() != null ? d.getStatusString() : "null",
+                    Collectors.counting()
+                ));
+            result.put("statusCounts", statusCounts);
+            
+            // Count by action
+            Map<String, Long> actionCounts = allDetections.stream()
+                .collect(Collectors.groupingBy(
+                    d -> d.getActionString() != null ? d.getActionString() : "null", 
+                    Collectors.counting()
+                ));
+            result.put("actionCounts", actionCounts);
+            
+            // Recent processed items
+            List<Map<String, Object>> recentProcessed = allDetections.stream()
+                .filter(d -> d.getProcessedAt() != null)
+                .sorted((a, b) -> b.getProcessedAt().compareTo(a.getProcessedAt()))
+                .limit(5)
+                .map(d -> {
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("detectionId", d.getDetectionId());
+                    item.put("status", d.getStatusString());
+                    item.put("action", d.getActionString());
+                    item.put("processedAt", d.getProcessedAt());
+                    return item;
+                })
+                .collect(Collectors.toList());
+            result.put("recentProcessed", recentProcessed);
+            
+            result.put("timestamp", java.time.LocalDateTime.now());
+            return ResponseEntity.ok(result);
+            
+        } catch (Exception e) {
+            result.put("error", e.getMessage());
+            result.put("timestamp", java.time.LocalDateTime.now());
+            return ResponseEntity.status(500).body(result);
+        }
+    }
+    
+    // Force refresh statistics endpoint
+    @PostMapping("/refresh-stats")
+    public ResponseEntity<Map<String, Object>> refreshStatistics() {
+        try {
+            System.out.println("=== FORCE REFRESH STATISTICS ===");
+            Map<String, Object> statistics = service.getDuplicationStatistics();
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Statistics refreshed successfully");
+            response.put("data", statistics);
+            response.put("timestamp", java.time.LocalDateTime.now());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("Error refreshing statistics: " + e.getMessage());
+            e.printStackTrace();
+            
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("error", e.getMessage());
+            errorResponse.put("timestamp", java.time.LocalDateTime.now());
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    // Debug endpoint to check database state
+    @GetMapping("/debug/{detectionId}")
+    public ResponseEntity<Map<String, Object>> debugDatabaseState(
+            @PathVariable Long detectionId,
+            @RequestParam(required = false) Long questionId) {
+        
+        System.out.println("=== DEBUG ENDPOINT CALLED ===");
+        System.out.println("Detection ID: " + detectionId);
+        System.out.println("Question ID: " + questionId);
+        
+        try {
+            service.debugDatabaseState(detectionId, questionId);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Database state logged to console");
+            response.put("detectionId", detectionId);
+            response.put("questionId", questionId);
+            response.put("timestamp", java.time.LocalDateTime.now().toString());
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("error", e.getMessage());
+            errorResponse.put("timestamp", java.time.LocalDateTime.now().toString());
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    // Test endpoint to verify database operations
+    @PostMapping("/test-delete/{detectionId}")
+    public ResponseEntity<Map<String, Object>> testDeleteDetection(@PathVariable Long detectionId) {
+        System.out.println("=== TEST DELETE ENDPOINT ===");
+        System.out.println("Testing deletion of detection: " + detectionId);
+        
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            // First, get the detection to see its current state
+            service.debugDatabaseState(detectionId, null);
+            
+            // Check if detection exists before deletion
+            boolean existsBefore = service.getRepository().existsById(detectionId);
+            System.out.println("Detection exists before deletion: " + existsBefore);
+            
+            if (!existsBefore) {
+                response.put("success", false);
+                response.put("message", "Detection not found before deletion");
+                return ResponseEntity.ok(response);
+            }
+              // Delete the detection
+            service.getRepository().deleteById(detectionId);
+            
+            // Force flush through service
+            service.forceFlush();
+            
+            // Check if detection exists after deletion
+            boolean existsAfter = service.getRepository().existsById(detectionId);
+            System.out.println("Detection exists after deletion: " + existsAfter);
+            
+            // Debug database state again
+            service.debugDatabaseState(detectionId, null);
+            
+            response.put("success", true);
+            response.put("existsBefore", existsBefore);
+            response.put("existsAfter", existsAfter);
+            response.put("message", "Delete test completed");
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            System.err.println("Error in test delete: " + e.getMessage());
+            e.printStackTrace();
+            
+            response.put("success", false);
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(response);
         }
     }
 }

@@ -11,6 +11,7 @@ import com.uth.quizclear.repository.DuplicationStaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
@@ -26,11 +27,9 @@ import java.util.HashSet;
 @Service
 public class DuplicationStaffService {      
     @Autowired
-    private DuplicationStaffRepository repository;
-
-    @PersistenceContext
+    private DuplicationStaffRepository repository;    @PersistenceContext
     private EntityManager entityManager;
-
+    
     // @Autowired
     // private QuestionService questionService;
     
@@ -40,8 +39,25 @@ public class DuplicationStaffService {
     public List<DuplicateDetectionDTO> getAllDetections() {
         try {
             System.out.println("DEBUG: Getting pending detections from repository...");
+            
+            // CLEAR CACHE FIRST để đảm bảo data mới nhất
+            entityManager.clear();
+            System.out.println("DEBUG: EntityManager cache cleared");
+            
+            // Get ALL detections first to debug - using fresh query
+            List<DuplicateDetection> allDetections = repository.findAll();
+            System.out.println("DEBUG: Total detections in database: " + allDetections.size());
+            
+            // Count by status
+            Map<String, Long> statusCounts = allDetections.stream()
+                .collect(Collectors.groupingBy(
+                    d -> d.getStatusString() != null ? d.getStatusString() : "null",
+                    Collectors.counting()
+                ));
+            System.out.println("DEBUG: Status distribution: " + statusCounts);
+            
             // Chỉ lấy các detection chưa được processed (status = 'pending')  
-            List<DuplicateDetection> pendingDetections = repository.findAll().stream()
+            List<DuplicateDetection> pendingDetections = allDetections.stream()
                     .filter(detection -> "pending".equals(detection.getStatusString()))
                     .collect(Collectors.toList());
             System.out.println("DEBUG: Found " + pendingDetections.size() + " pending detections");
@@ -81,10 +97,10 @@ public class DuplicationStaffService {
                 System.out.println("  - similarQuestion content: " + (firstDTO.getSimilarQuestion() != null ? firstDTO.getSimilarQuestion().getContent() : "NULL"));
             }
             return result;
-        } catch (Exception e) {
-            System.err.println("Error in getAllDetections: " + e.getMessage());
+        } catch (Exception e) {            System.err.println("Error in getAllDetections: " + e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException("Failed to load detections: " + e.getMessage(), e);        }
+            throw new RuntimeException("Failed to load detections: " + e.getMessage(), e);
+        }
     }
 
     public List<DuplicateDetectionDTO> getDetectionsByStatus(String status) {
@@ -136,7 +152,7 @@ public class DuplicationStaffService {
             return dto;
         }
         return convertToDTO(detection);
-    }    @Transactional
+    }    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public DuplicateDetectionDTO processDetection(Long detectionId, String action, String feedback, Long processorId) {
         System.out.println("=== SERVICE processDetection START ===");
         System.out.println("DetectionId: " + detectionId);
@@ -161,20 +177,37 @@ public class DuplicationStaffService {
 
             DuplicateDetectionAction enumAction = DuplicateDetectionAction.valueOf(action.toUpperCase());
             System.out.println("Parsed enum action: " + enumAction);
-            
-            // Xử lý logic nghiệp vụ dựa theo action
+              // Xử lý logic nghiệp vụ dựa theo action
             System.out.println("Processing action...");
             processDetectionAction(detection, enumAction, feedback, processorId);
             
-            // Cập nhật detection record
-            System.out.println("Updating detection record...");
-            detection.process(enumAction, feedback, processorId);
-            System.out.println("After process - Status: " + detection.getStatus() + ", Action: " + detection.getAction());
+            // Không cần cập nhật detection record vì đã bị xóa trong processDetectionAction
+            System.out.println("Detection processing completed successfully");
             
-            detection = repository.save(detection);
-            System.out.println("Detection saved successfully");
+            // Force flush và clear để đảm bảo changes được commit ngay lập tức
+            entityManager.flush();
+            entityManager.clear();
+            System.out.println("EntityManager flushed and cleared - changes committed to DB immediately");            // Verify deletion bằng cách check lại database
+            boolean detectionStillExists = repository.existsById(detectionId);
+            int detectionCount = repository.countDetectionById(detectionId);
+            System.out.println("Verification - detection still exists after deletion: " + detectionStillExists);
+            System.out.println("Verification - detection count in DB: " + detectionCount);
             
-            DuplicateDetectionDTO result = convertToDTO(detection);
+            // Verify question deletion for REJECT and SEND_BACK actions
+            if (enumAction == DuplicateDetectionAction.REJECT || enumAction == DuplicateDetectionAction.SEND_BACK) {
+                Long questionId = detection.getNewQuestionId();
+                int questionCount = repository.countQuestionById(questionId);
+                System.out.println("Verification - question " + questionId + " count in DB: " + questionCount);
+            }
+            
+            // Debug database state
+            debugDatabaseState(detectionId, detection.getNewQuestionId());
+            
+            // Return success DTO thay vì detection đã bị xóa
+            DuplicateDetectionDTO result = new DuplicateDetectionDTO();
+            result.setDetectionId(detectionId);
+            result.setStatus("PROCESSED");
+            result.setProcessedAt(java.time.LocalDateTime.now());
             System.out.println("=== SERVICE processDetection SUCCESS ===");
             return result;
             
@@ -189,7 +222,7 @@ public class DuplicationStaffService {
 
     /**
      * Xử lý logic nghiệp vụ cho từng loại action
-     */    @Transactional
+     */    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     private void processDetectionAction(DuplicateDetection detection, DuplicateDetectionAction action, 
                                       String feedback, Long processorId) {
         System.out.println("=== processDetectionAction START ===");
@@ -211,35 +244,106 @@ public class DuplicationStaffService {
             }
         } catch (Exception e) {
             System.err.println("Error getting question info for notification: " + e.getMessage());
-        }
-
-        switch (action) {
+        }        switch (action) {
             case ACCEPT:
-                // Chấp nhận câu hỏi - câu hỏi ở lại trong questions table
-                // Chỉ xóa khỏi duplicate_detections
-                System.out.println("ACCEPT: Question " + newQuestionId + " accepted, keeping in questions table");
-                break;
-                  case REJECT:
-                // Từ chối câu hỏi - đánh dấu status là 'rejected' thay vì xóa hoàn toàn
+                // ACCEPT: Xóa khỏi duplicate_detections, giữ lại trong questions
+                System.out.println("ACCEPT: Removing detection from duplicate_detections table, keeping question in questions table");
                 try {
-                    System.out.println("REJECT: Attempting to mark question " + newQuestionId + " as rejected");
-                    repository.updateQuestionStatus(newQuestionId, "rejected");
-                    System.out.println("REJECT: Question " + newQuestionId + " marked as rejected");
+                    repository.deleteById(detection.getDetectionId());
+                    System.out.println("ACCEPT: Detection " + detection.getDetectionId() + " deleted from duplicate_detections");
                 } catch (Exception e) {
-                    System.err.println("Error updating question status " + newQuestionId + ": " + e.getMessage());
-                    throw new RuntimeException("Failed to update question status: " + e.getMessage());
+                    System.err.println("Error deleting detection " + detection.getDetectionId() + ": " + e.getMessage());
+                    throw new RuntimeException("Failed to delete detection: " + e.getMessage());
+                }
+                break;            case REJECT:
+                // REJECT: Xóa khỏi cả duplicate_detections và questions
+                System.out.println("REJECT: Deleting question " + newQuestionId + " and related data");
+                
+                try {
+                    // Disable foreign key checks temporarily
+                    System.out.println("REJECT: Step 1 - Disabling foreign key checks");
+                    repository.disableForeignKeyChecks();
+                    
+                    // 2. Xóa detection khỏi duplicate_detections table (current detection first)
+                    System.out.println("REJECT: Step 2 - Deleting current detection from duplicate_detections table");
+                    repository.deleteById(detection.getDetectionId());
+                    System.out.println("REJECT: Detection " + detection.getDetectionId() + " deleted from duplicate_detections");
+                    
+                    // 3. Xóa question khỏi questions table
+                    System.out.println("REJECT: Step 3 - Deleting question " + newQuestionId + " from questions table");
+                    repository.deleteQuestionById(newQuestionId);
+                    System.out.println("REJECT: Question " + newQuestionId + " deleted from questions");
+                    
+                    // Re-enable foreign key checks
+                    System.out.println("REJECT: Step 4 - Re-enabling foreign key checks");
+                    repository.enableForeignKeyChecks();
+                    System.out.println("REJECT: Foreign key checks re-enabled");
+                    
+                } catch (Exception e) {
+                    // Make sure to re-enable foreign key checks even on error
+                    try {
+                        repository.enableForeignKeyChecks();
+                    } catch (Exception fkError) {
+                        System.err.println("Error re-enabling FK checks: " + fkError.getMessage());
+                    }
+                    System.err.println("Error in REJECT process: " + e.getMessage());
+                    e.printStackTrace();
+                    throw new RuntimeException("Failed to reject question: " + e.getMessage());
+                }
+                break;            case SEND_BACK:
+                // SEND_BACK: Gửi thông báo, xóa khỏi cả duplicate_detections và questions
+                System.out.println("SEND_BACK: Sending notification and deleting question " + newQuestionId);
+                
+                // Gửi thông báo chi tiết hơn cho SEND_BACK
+                if (creatorId != null) {
+                    try {
+                        String detailedFeedback = feedback != null && !feedback.trim().isEmpty() 
+                            ? feedback 
+                            : "Your question has been sent back for revision due to duplication concerns.";
+                        sendNotificationToCreator(creatorId, "SEND_BACK", questionContent, detailedFeedback);
+                        System.out.println("SEND_BACK: Notification sent to creator " + creatorId);
+                    } catch (Exception e) {
+                        System.err.println("Error sending notification for SEND_BACK: " + e.getMessage());
+                        // Continue với deletion dù notification fail
+                    }
+                }
+                
+                try {
+                    // Disable foreign key checks temporarily
+                    System.out.println("SEND_BACK: Step 1 - Disabling foreign key checks");
+                    repository.disableForeignKeyChecks();
+                    
+                    // 2. Xóa detection khỏi duplicate_detections table (current detection first)
+                    System.out.println("SEND_BACK: Step 2 - Deleting current detection from duplicate_detections table");
+                    repository.deleteById(detection.getDetectionId());
+                    System.out.println("SEND_BACK: Detection " + detection.getDetectionId() + " deleted from duplicate_detections");
+                    
+                    // 3. Xóa question khỏi questions table
+                    System.out.println("SEND_BACK: Step 3 - Deleting question " + newQuestionId + " from questions table");
+                    repository.deleteQuestionById(newQuestionId);
+                    System.out.println("SEND_BACK: Question " + newQuestionId + " deleted from questions");
+                    
+                    // Re-enable foreign key checks
+                    System.out.println("SEND_BACK: Step 4 - Re-enabling foreign key checks");
+                    repository.enableForeignKeyChecks();
+                    System.out.println("SEND_BACK: Foreign key checks re-enabled");
+                    
+                } catch (Exception e) {
+                    // Make sure to re-enable foreign key checks even on error
+                    try {
+                        repository.enableForeignKeyChecks();
+                    } catch (Exception fkError) {
+                        System.err.println("Error re-enabling FK checks: " + fkError.getMessage());
+                    }
+                    System.err.println("Error in SEND_BACK process: " + e.getMessage());
+                    e.printStackTrace();
+                    throw new RuntimeException("Failed to send back question: " + e.getMessage());
                 }
                 break;
                 
-            case SEND_BACK:
-                // Gửi lại để sửa - câu hỏi được giữ lại nhưng status có thể thay đổi
-                // Không xóa khỏi questions table, chỉ gửi feedback
-                System.out.println("SEND_BACK: Question " + newQuestionId + " sent back for revision");
-                break;
-                
             default:
-                System.out.println("Other action: " + action + " for question " + newQuestionId);
-                break;
+                System.out.println("Unknown action: " + action + " for detection " + detection.getDetectionId());
+                throw new IllegalArgumentException("Unknown action: " + action);
         }
         
         // Gửi thông báo cho người tạo câu hỏi
@@ -257,11 +361,12 @@ public class DuplicationStaffService {
     private void sendNotificationToCreator(Long creatorId, String action, String questionContent, String feedback) {
         try {            // Sử dụng NotificationService để gửi thông báo
             // notificationService.notifyQuestionCreator(creatorId, action, questionContent, feedback);
-            System.out.println("Notification sent to creator " + creatorId + " for action: " + action);
-        } catch (Exception e) {
+            System.out.println("Notification sent to creator " + creatorId + " for action: " + action);        } catch (Exception e) {
             System.err.println("Failed to send notification: " + e.getMessage());
         }
-    }public List<SubjectOptionDTO> getSubjectOptions() {
+    }
+
+    public List<SubjectOptionDTO> getSubjectOptions() {
         List<Course> courses;
         try {
             courses = repository.findAllCourses(); // This line was causing issues
@@ -715,26 +820,36 @@ public class DuplicationStaffService {
         
         try {            System.out.println("=== GETTING DUPLICATION STATISTICS ===");
             
-            // Total questions checked - dùng native SQL trước
+            // Clear any potential caches
+            entityManager.clear();
+              // Total questions checked - tổng số câu hỏi trong bảng questions
             Long totalQuestions = ((Number) entityManager
                 .createNativeQuery("SELECT COUNT(*) FROM questions")
                 .getSingleResult()).longValue();
             System.out.println("Total questions (native): " + totalQuestions);
             
-            // Total duplicates detected - dùng native SQL với action = 'reject'
+            // Total duplicates detected - tổng số câu hỏi đã từng được phát hiện trùng lặp (bao gồm cả đã xử lý)
+            // Bao gồm tất cả các record từng xuất hiện trong duplicate_detections, kể cả đã xử lý
             Long totalDuplicates = ((Number) entityManager
-                .createNativeQuery("SELECT COUNT(DISTINCT new_question_id) FROM duplicate_detections WHERE action = 'reject'")
+                .createNativeQuery("SELECT COUNT(DISTINCT new_question_id) FROM duplicate_detections")
                 .getSingleResult()).longValue();
-            System.out.println("Total duplicates (native, action=reject): " + totalDuplicates);
-              // Duplication rate - tỷ lệ giữa số câu hỏi trùng lặp và tổng số câu hỏi
+            System.out.println("Total duplicates ever detected: " + totalDuplicates);
+            
+            // Pending detections (chưa xử lý)
+            Long pendingDetections = ((Number) entityManager
+                .createNativeQuery("SELECT COUNT(*) FROM duplicate_detections WHERE status = 'pending'")
+                .getSingleResult()).longValue();
+            System.out.println("Pending detections: " + pendingDetections);
+              
+            // Duplication rate - tỷ lệ giữa tổng số câu hỏi đã từng phát hiện trùng lặp và tổng số câu hỏi
             double duplicationRate = totalQuestions > 0 ? (totalDuplicates.doubleValue() / totalQuestions.doubleValue()) * 100 : 0;
             System.out.println("Duplication rate: " + duplicationRate + "%");
-            
-            // Thử với native SQL cho subject stats
+              
+            // Subject stats - thống kê theo môn học (bao gồm tất cả duplicates từng phát hiện)
             @SuppressWarnings("unchecked")
             List<Object[]> subjectStats = entityManager
                 .createNativeQuery("SELECT c.course_name, " +
-                                 "COALESCE(SUM(CASE WHEN dd.action = 'reject' THEN 1 ELSE 0 END), 0) as duplicate_count, " +
+                                 "COALESCE(COUNT(DISTINCT dd.new_question_id), 0) as duplicate_count, " +
                                  "COUNT(q.question_id) as total_count " +
                                  "FROM courses c " +
                                  "INNER JOIN questions q ON q.course_id = c.course_id " +
@@ -744,16 +859,17 @@ public class DuplicationStaffService {
                 .getResultList();
             System.out.println("Subject stats (native) count: " + subjectStats.size());
             
-            // Thử với native SQL cho creator stats
+            // Creator stats - thống kê theo người tạo (bao gồm tất cả duplicates từng phát hiện)
             @SuppressWarnings("unchecked")
             List<Object[]> creatorStats = entityManager
                 .createNativeQuery("SELECT u.full_name, " +
-                                 "COALESCE(SUM(CASE WHEN dd.action = 'reject' THEN 1 ELSE 0 END), 0) as duplicate_count, " +
+                                 "COALESCE(COUNT(DISTINCT dd.new_question_id), 0) as duplicate_count, " +
                                  "COUNT(q.question_id) as total_count " +
                                  "FROM users u " +
                                  "INNER JOIN questions q ON q.created_by = u.user_id " +
                                  "LEFT JOIN duplicate_detections dd ON dd.new_question_id = q.question_id " +
-                                 "GROUP BY u.user_id, u.full_name " +                                 "ORDER BY duplicate_count DESC")
+                                 "GROUP BY u.user_id, u.full_name " +
+                                 "ORDER BY duplicate_count DESC")
                 .getResultList();
             System.out.println("Creator stats (native) count: " + creatorStats.size());
             
@@ -800,12 +916,20 @@ public class DuplicationStaffService {
                 System.out.println("Creator: " + row[0] + ", Duplicates: " + dupCount + ", Total: " + totCount + ", Percentage: " + percentage);
                 creatorChartData.add(item);
             }
-            
-            statistics.put("totalQuestions", totalQuestions);
+              statistics.put("totalQuestions", totalQuestions);
             statistics.put("totalDuplicates", totalDuplicates);
+            statistics.put("pendingDetections", pendingDetections);
             statistics.put("duplicationRate", Math.round(duplicationRate * 10.0) / 10.0);
             statistics.put("subjectStats", subjectChartData);
             statistics.put("creatorStats", creatorChartData);
+              System.out.println("=== STATISTICS SUMMARY ===");
+            System.out.println("Total Questions Checked: " + totalQuestions);
+            System.out.println("Total Duplicates Ever Detected: " + totalDuplicates);
+            System.out.println("Pending Detections: " + pendingDetections);
+            System.out.println("Duplication Rate: " + duplicationRate + "% (includes all processed duplicates)");
+            System.out.println("Subject Stats Items: " + subjectChartData.size());
+            System.out.println("Creator Stats Items: " + creatorChartData.size());
+            System.out.println("========================");
             
             return statistics;
             
@@ -878,5 +1002,45 @@ public class DuplicationStaffService {
         }
         
         return result;
+    }
+    
+    // Debug method to check database state
+    public void debugDatabaseState(Long detectionId, Long questionId) {
+        System.out.println("=== DATABASE STATE DEBUG ===");
+        try {
+            // Check detection exists
+            boolean detectionExists = repository.existsById(detectionId);
+            int detectionCount = repository.countDetectionById(detectionId);
+            System.out.println("Detection " + detectionId + " exists: " + detectionExists);
+            System.out.println("Detection " + detectionId + " count: " + detectionCount);
+            
+            if (questionId != null) {
+                // Check question exists
+                int questionCount = repository.countQuestionById(questionId);
+                System.out.println("Question " + questionId + " count: " + questionCount);
+            }
+            
+            // Check total pending detections
+            List<DuplicateDetection> allDetections = repository.findAll();
+            List<DuplicateDetection> pendingDetections = repository.findByStatus("pending");
+            System.out.println("Total detections in DB: " + allDetections.size());
+            System.out.println("Pending detections in DB: " + pendingDetections.size());
+            
+        } catch (Exception e) {
+            System.err.println("Error in debugDatabaseState: " + e.getMessage());
+            e.printStackTrace();
+        }
+        System.out.println("=== END DATABASE STATE DEBUG ===");
+    }
+
+    // Getter for repository (for testing purposes)
+    public DuplicationStaffRepository getRepository() {
+        return repository;
+    }
+
+    // Force flush method (for testing purposes)
+    public void forceFlush() {
+        entityManager.flush();
+        entityManager.clear();
     }
 }
