@@ -4,8 +4,6 @@ import com.uth.quizclear.model.dto.CourseDTO;
 import com.uth.quizclear.model.dto.QuestionDTO;
 import com.uth.quizclear.model.dto.TaskAssignmentDTO;
 import com.uth.quizclear.model.dto.TaskNotificationDTO;
-import com.uth.quizclear.repository.CourseRepository;
-import com.uth.quizclear.model.entity.Course;
 import com.uth.quizclear.service.CourseService;
 import com.uth.quizclear.service.QuestionService;
 import com.uth.quizclear.service.TaskAssignmentService;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/hed")
@@ -31,11 +28,14 @@ public class HEDAssignmentController {
     @Autowired
     private QuestionService questionService;
 
+    @Autowired
+    private CourseService courseService;
+
     @GetMapping("/assignments")
     public String showAssignmentManagement(Model model) {
-        Page<TaskAssignmentDTO> assignments = taskAssignmentService.getAllTaskAssignments(PageRequest.of(0, 5));
-        model.addAttribute("assignments", assignments.getContent());
-        model.addAttribute("totalPages", assignments.getTotalPages());
+        Page<TaskAssignmentDTO> tasks = taskAssignmentService.getAllTaskAssignments(PageRequest.of(0, 5));
+        model.addAttribute("assignments", tasks.getContent());
+        model.addAttribute("totalPages", tasks.getTotalPages());
         model.addAttribute("currentPage", 0);
         return "HEAD_OF_DEPARTMENT/HED_AssignmentManagement";
     }
@@ -49,6 +49,21 @@ public class HEDAssignmentController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
         return taskAssignmentService.getAllTaskAssignments(search, status, subject, page, size);
+    }
+
+    // Thêm endpoint mới cho /hed/api/tasks
+    @GetMapping("/api/tasks")
+    @ResponseBody
+    public Page<TaskAssignmentDTO> getTasks(
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "") String status,
+            @RequestParam(defaultValue = "") String subject,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        System.out.println("Received parameters: search=" + search + ", status=" + status + ", subject=" + subject);
+        Page<TaskAssignmentDTO> result = taskAssignmentService.getAllTaskAssignments(search, status, subject, page, size);
+        System.out.println("Tasks found: " + result.getContent().size() + ", Content: " + result.getContent());
+        return result;
     }
 
     @PostMapping("/api/assignments")
@@ -134,8 +149,6 @@ public class HEDAssignmentController {
     public List<Map<String, Object>> getCourses() {
         return taskAssignmentService.getCourses();
     }
-    @Autowired
-    private CourseService courseService;
 
     @GetMapping("/courses")
     public ResponseEntity<List<CourseDTO>> getActiveCourses() {
