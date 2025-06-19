@@ -49,4 +49,11 @@ public class ExamService {
             .collect(Collectors.toList());
     }
 
+    public List<ExamDTO> getApprovedExams() {
+    return examRepository.findByExamStatus(ExamStatus.APPROVED)
+            .stream()
+            .map(this::toDTO)
+            .collect(Collectors.toList());
+    }
+
 }

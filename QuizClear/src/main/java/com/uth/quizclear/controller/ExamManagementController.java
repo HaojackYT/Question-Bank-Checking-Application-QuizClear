@@ -32,4 +32,15 @@ public class ExamManagementController {
         model.addAttribute("pendingExams", examService.getPendingApprovalExams());
         return "Staff/Staff_Exammanage";
     }
+
+    @GetMapping("/approved")
+    public String approvedExams(Model model) {
+        model.addAttribute("totalExams", examService.countAll());
+        model.addAttribute("pendingCount", examService.countByStatus("submitted"));
+        model.addAttribute("approvedCount", examService.countByStatus("approved"));
+        model.addAttribute("rejectedCount", examService.countByStatus("rejected"));
+        model.addAttribute("approvedExams", examService.getApprovedExams());
+        return "Staff/Staff_Exammanage_3";
+    }
+    
 }
