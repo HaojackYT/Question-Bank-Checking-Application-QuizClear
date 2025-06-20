@@ -1,52 +1,57 @@
 package com.uth.quizclear.service;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.uth.quizclear.model.dto.UserBasicDTO;
 import com.uth.quizclear.model.entity.User;
 import com.uth.quizclear.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
-    
+
     @Autowired
     private UserRepository userRepository;
-    
-    // Temporary implementation - Get user profile by userId
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public Optional<UserBasicDTO> getProfileByUserId(Long userId) {
-        // Temporarily use findById and manually convert to UserBasicDTO
-        Optional<User> userOpt = userRepository.findById(userId);        if (userOpt.isPresent()) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
             User user = userOpt.get();
             UserBasicDTO dto = new UserBasicDTO(
                 user.getUserId() != null ? user.getUserId().longValue() : null,
                 user.getFullName(),
                 user.getEmail(),
                 user.getRole() != null ? user.getRole().name() : null
-            );            // Set additional fields
+            );
             dto.setStatus(user.getStatus());
-            // Set temporary default values for workPlace and qualification
-            // These should be retrieved from User entity when database is updated
-            dto.setWorkPlace("Default Workplace"); // TODO: Get from user entity
-            dto.setQualification("Default Qualification"); // TODO: Get from user entity
-            
-            // Set start and end dates (these fields exist in User entity)
+            dto.setWorkPlace("Default Workplace");
+            dto.setQualification("Default Qualification");
             dto.setStart(user.getStart());
             dto.setEnd(user.getEnd());
-            
-            // Set other fields that exist in User entity
             dto.setGender(user.getGender());
             dto.setDateOfBirth(user.getDateOfBirth());
             dto.setNation(user.getNation());
             dto.setPhoneNumber(user.getPhoneNumber());
             dto.setHometown(user.getHometown());
             dto.setContactAddress(user.getContactAddress());
-            
             return Optional.of(dto);
         }
         return Optional.empty();
     }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public void updateUser(User user) {
+        if (user.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        userRepository.save(user);
+    }
 }
-//Chứa logic nghiệp vụ, xử lý dữ liệu, gọi repository để thao tác DB
