@@ -5,7 +5,11 @@ public class CourseDTO {
     private String courseCode;
     private String courseName;
 
-    // Constructors
+    private int credits;
+    private String departmentName;
+    private long cloCount;
+    private long questionCount;
+
     public CourseDTO() {
     }
 
@@ -15,7 +19,15 @@ public class CourseDTO {
         this.courseName = courseName;
     }
 
-    // Getters and Setters
+    public CourseDTO(Long courseId, String courseCode, String courseName, int credits, String departmentName, long cloCount, long questionCount) {
+        this.courseId = courseId;
+        this.courseCode = courseCode;
+        this.courseName = courseName;
+        this.credits = credits;
+        this.departmentName = departmentName;
+        this.cloCount = cloCount;
+        this.questionCount = questionCount;
+    }
     public Long getCourseId() {
         return courseId;
     }
@@ -38,5 +50,37 @@ public class CourseDTO {
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
+    }
+
+    public int getCredits() {
+        return credits;
+    }
+
+    public void setCredits(int credits) {
+        this.credits = credits;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    public long getCloCount() {
+        return cloCount;
+    }
+
+    public void setCloCount(long cloCount) {
+        this.cloCount = cloCount;
+    }
+
+    public long getQuestionCount() {
+        return questionCount;
+    }
+
+    public void setQuestionCount(long questionCount) {
+        this.questionCount = questionCount;
     }
 }
