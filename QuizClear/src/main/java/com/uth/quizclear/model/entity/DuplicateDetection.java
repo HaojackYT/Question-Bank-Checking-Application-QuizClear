@@ -10,22 +10,22 @@ import java.time.LocalDateTime;
 
 /**
  * DuplicateDetection entity for tracking duplicate question detections
- * Uses separate enums with custom converters to map Java enums (UPPERCASE) to database values (lowercase)
+ * Uses separate enums with custom converters to map Java enums (UPPERCASE) to
+ * database values (lowercase)
  */
 @Entity
-@Table(name = "duplicate_detections", 
-       indexes = {
-           @Index(name = "idx_duplicate_new_question", columnList = "new_question_id"),
-           @Index(name = "idx_duplicate_similar_question", columnList = "similar_question_id"),
-           @Index(name = "idx_duplicate_status", columnList = "status"),
-           @Index(name = "idx_duplicate_detected_at", columnList = "detected_at")
-       })
+@Table(name = "duplicate_detections", indexes = {
+        @Index(name = "idx_duplicate_new_question", columnList = "new_question_id"),
+        @Index(name = "idx_duplicate_similar_question", columnList = "similar_question_id"),
+        @Index(name = "idx_duplicate_status", columnList = "status"),
+        @Index(name = "idx_duplicate_detected_at", columnList = "detected_at")
+})
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"detectionFeedback", "processingNotes"})
+@ToString(exclude = { "detectionFeedback", "processingNotes" })
 public class DuplicateDetection {
 
     @Id
@@ -43,7 +43,7 @@ public class DuplicateDetection {
     private Long similarQuestionId;
 
     @Column(name = "ai_check_id")
-    private Long aiCheckId;    // Core duplicate detection fields
+    private Long aiCheckId; // Core duplicate detection fields
     @Column(name = "similarity_score", precision = 5, scale = 4)
     @DecimalMin(value = "0.0", message = "Similarity score must be at least 0.0")
     @DecimalMax(value = "1.0", message = "Similarity score must be at most 1.0")
@@ -106,7 +106,8 @@ public class DuplicateDetection {
     public DuplicateDetection(Long newQuestionId, Long similarQuestionId, BigDecimal similarityScore, Long detectedBy) {
         this.newQuestionId = newQuestionId;
         this.similarQuestionId = similarQuestionId;
-        this.similarityScore = similarityScore;        this.detectedBy = detectedBy;
+        this.similarityScore = similarityScore;
+        this.detectedBy = detectedBy;
         this.detectedAt = LocalDateTime.now();
         this.createdAt = LocalDateTime.now();
         this.statusString = "pending";
@@ -117,7 +118,8 @@ public class DuplicateDetection {
     public Long getId() {
         return detectionId;
     }
-      // Business methods
+
+    // Business methods
     public boolean isPending() {
         DuplicateDetectionStatus currentStatus = getStatus();
         return currentStatus == DuplicateDetectionStatus.PENDING;
@@ -138,7 +140,8 @@ public class DuplicateDetection {
         this.processingNotes = feedback;
         this.processedBy = processorId;
         this.processedAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();        if (action != null) {
+        this.updatedAt = LocalDateTime.now();
+        if (action != null) {
             switch (action) {
                 case ACCEPT -> setStatus(DuplicateDetectionStatus.ACCEPTED);
                 case REJECT -> setStatus(DuplicateDetectionStatus.REJECTED);
@@ -154,50 +157,74 @@ public class DuplicateDetection {
     public DuplicateDetectionStatus getStatus() {
         return convertStringToStatus(statusString);
     }
-    
+
     public void setStatus(DuplicateDetectionStatus status) {
         this.statusString = status != null ? status.getValue() : null;
     }
-    
+
     public DuplicateDetectionAction getAction() {
         return convertStringToAction(actionString);
     }
-    
+
     public void setAction(DuplicateDetectionAction action) {
         this.actionString = action != null ? action.getValue() : null;
     }
-    
+
     private DuplicateDetectionStatus convertStringToStatus(String value) {
-        if (value == null) return null;
+        if (value == null)
+            return null;
         try {
             return DuplicateDetectionStatus.fromValue(value);
         } catch (IllegalArgumentException e) {
             switch (value.toLowerCase()) {
-                case "approved": return DuplicateDetectionStatus.ACCEPTED;
-                case "accepted": return DuplicateDetectionStatus.ACCEPTED;
-                case "rejected": return DuplicateDetectionStatus.REJECTED;
-                case "pending": return DuplicateDetectionStatus.PENDING;
-                case "sent_back": return DuplicateDetectionStatus.SENT_BACK;
-                case "merged": return DuplicateDetectionStatus.MERGED;
-                default: return DuplicateDetectionStatus.PENDING;
+                case "approved":
+                    return DuplicateDetectionStatus.ACCEPTED;
+                case "accepted":
+                    return DuplicateDetectionStatus.ACCEPTED;
+                case "rejected":
+                    return DuplicateDetectionStatus.REJECTED;
+                case "pending":
+                    return DuplicateDetectionStatus.PENDING;
+                case "sent_back":
+                    return DuplicateDetectionStatus.SENT_BACK;
+                case "merged":
+                    return DuplicateDetectionStatus.MERGED;
+                default:
+                    return DuplicateDetectionStatus.PENDING;
             }
         }
     }
-    
+
     private DuplicateDetectionAction convertStringToAction(String value) {
-        if (value == null) return null;
+        if (value == null)
+            return null;
         try {
             return DuplicateDetectionAction.fromValue(value);
         } catch (IllegalArgumentException e) {
             switch (value.toLowerCase()) {
-                case "accept": return DuplicateDetectionAction.ACCEPT;
-                case "reject": return DuplicateDetectionAction.REJECT;
-                case "merge": return DuplicateDetectionAction.MERGE;
-                case "send_back": return DuplicateDetectionAction.SEND_BACK;
-                case "keep_both": return DuplicateDetectionAction.KEEP_BOTH;
-                case "remove_new": return DuplicateDetectionAction.REMOVE_NEW;
-                default: return null;
+                case "accept":
+                    return DuplicateDetectionAction.ACCEPT;
+                case "reject":
+                    return DuplicateDetectionAction.REJECT;
+                case "merge":
+                    return DuplicateDetectionAction.MERGE;
+                case "send_back":
+                    return DuplicateDetectionAction.SEND_BACK;
+                case "keep_both":
+                    return DuplicateDetectionAction.KEEP_BOTH;
+                case "remove_new":
+                    return DuplicateDetectionAction.REMOVE_NEW;
+                default:
+                    return null;
             }
         }
+    }
+
+    public class Status {
+    }
+
+    public Object getSimilarQuestion() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getSimilarQuestion'");
     }
 }
