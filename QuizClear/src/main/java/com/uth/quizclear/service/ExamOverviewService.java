@@ -18,7 +18,6 @@ import com.uth.quizclear.model.entity.Exam;
 import com.uth.quizclear.model.entity.ExamQuestion;
 import com.uth.quizclear.repository.ExamQuestionRepository;
 import com.uth.quizclear.repository.ExamRepository;
-import com.uth.quizclear.repository.UserRepository;
 
 @Service
 public class ExamOverviewService {
@@ -26,8 +25,6 @@ public class ExamOverviewService {
     private ExamRepository examRepository;
     @Autowired
     private ExamQuestionRepository examQuestionRepository;
-    @Autowired
-    private UserRepository userRepository;
 
     public ExamOverviewDTO getExamOverview(Long examId) {
         Exam exam = examRepository.findById(examId)

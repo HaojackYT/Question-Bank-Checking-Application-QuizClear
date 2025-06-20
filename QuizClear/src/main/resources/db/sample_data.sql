@@ -1,4 +1,8 @@
--- 1. Thêm 10 bản ghi vào bảng users
+-- FIXED SAMPLE DATA FOR QUIZCLEAR SYSTEM
+-- Professional and realistic data with no N/A references
+-- All duplicate_detections reference valid question IDs only
+
+-- 1. Users data (core academic staff)
 INSERT INTO users (
     full_name, email, password_hash, role, status, department,
     gender, date_of_birth, nation, phone_number, created_at,
@@ -55,82 +59,81 @@ INSERT INTO plans (course_id, plan_title, plan_description, total_questions, tot
 (10, 'BIO301 Exam Questions', 'Prepare exam questions for Genetics', 30, 10, 10, 8, 2, 5, 6, 'in_progress', '2025-01-10 10:00:00');
 
 -- 5. Thêm 10 bản ghi vào bảng tasks
-INSERT INTO tasks (course_id, plan_id, title, description, task_type, total_questions, assigned_to, assigned_by, status, created_at) VALUES
-(1, 1, 'Create Basic Programming Questions', 'Develop questions on basic programming concepts', 'create_questions', 15, 1, 6, 'completed', '2025-01-01 11:00:00'),
-(2, 2, 'Review Calculus Problems', 'Review and approve calculus problem sets', 'review_questions', 20, 2, 6, 'in_progress', '2025-01-02 11:00:00'),
-(3, 3, 'Develop Mechanics Questions', 'Create questions on classical mechanics principles', 'create_questions', 12, 3, 6, 'pending', '2025-01-03 11:00:00'),
-(4, 4, 'Chemistry Quiz Creation', 'Develop quiz questions for general chemistry', 'create_questions', 10, 4, 6, 'in_progress', '2025-01-04 11:00:00'),
-(5, 5, 'Biology Assessment Review', 'Review cell biology assessment materials', 'review_questions', 18, 5, 6, 'completed', '2025-01-05 11:00:00'),
-(6, 6, 'Data Structures Problems', 'Create problems on data structures implementation', 'create_questions', 15, 1, 6, 'in_progress', '2025-01-06 11:00:00'),
-(7, 7, 'Linear Algebra Review', 'Review linear algebra problem solutions', 'review_questions', 8, 2, 6, 'pending', '2025-01-07 11:00:00'),
-(8, 8, 'Physics Exam Development', 'Develop comprehensive physics examination', 'create_exam', 25, 3, 6, 'in_progress', '2025-01-08 11:00:00'),
-(9, 9, 'Organic Chemistry Questions', 'Create questions on organic chemistry reactions', 'create_questions', 12, 4, 6, 'completed', '2025-01-09 11:00:00'),
-(10, 10, 'Genetics Problem Set', 'Develop genetics problem set', 'create_questions', 10, 5, 6, 'pending', '2025-01-10 11:00:00');
+INSERT INTO tasks (course_id, plan_id, title, description, task_type, total_questions, assigned_to, assigned_by, status, created_at, due_date) VALUES
+(1, 1, 'Create Basic Programming Questions', 'Develop questions on basic programming concepts', 'create_questions', 15, 1, 6, 'completed', '2025-06-13 10:00:00', '2025-06-20 23:59:00'),
+(2, 2, 'Review Calculus Problems', 'Review and approve calculus problem sets', 'review_questions', 20, 2, 6, 'in_progress', '2025-06-17 09:00:00', '2025-06-21 23:59:00'),
+(3, 3, 'Develop Mechanics Questions', 'Create questions on classical mechanics principles', 'create_questions', 12, 3, 6, 'pending', '2025-01-03 11:00:00', '2025-06-22 23:59:00'),
+(4, 4, 'Chemistry Quiz Creation', 'Develop quiz questions for general chemistry', 'create_questions', 10, 4, 6, 'in_progress', '2025-01-04 11:00:00', '2025-06-23 23:59:00'),
+(5, 5, 'Biology Assessment Review', 'Review cell biology assessment materials', 'review_questions', 18, 5, 6, 'completed', '2025-06-18 14:00:00', '2025-06-24 23:59:00'),
+(6, 6, 'Data Structures Problems', 'Create problems on data structures implementation', 'create_questions', 15, 1, 6, 'in_progress', '2025-01-06 11:00:00', '2025-06-25 23:59:00'),
+(7, 7, 'Linear Algebra Review', 'Review linear algebra problem solutions', 'review_questions', 8, 2, 6, 'pending', '2025-01-07 11:00:00', '2025-06-26 23:59:00'),
+(8, 8, 'Physics Exam Development', 'Develop comprehensive physics examination', 'create_exam', 25, 3, 6, 'in_progress', '2025-01-08 11:00:00', '2025-06-27 23:59:00'),
+(9, 9, 'Organic Chemistry Questions', 'Create questions on organic chemistry reactions', 'create_questions', 12, 4, 6, 'completed', '2025-06-15 16:30:00', '2025-06-28 23:59:00'),
+(10, 10, 'Genetics Problem Set', 'Develop genetics problem set', 'create_questions', 10, 5, 6, 'pending', '2025-01-10 11:00:00', '2025-06-29 23:59:00');
 
--- 6. Thêm 10 bản ghi vào bảng questions
+-- 6. Thêm 20 câu hỏi thực tế (ID từ 1-20) - ĐẢM BẢO KHÔNG CÓ N/A
 INSERT INTO questions (course_id, clo_id, task_id, plan_id, difficulty_level, content, answer_key, answer_f1, answer_f2, answer_f3, explanation, created_by, status, created_at) VALUES
-(1, 1, 1, 1, 'recognition', 'What is the purpose of a UML diagram?', 'To visualize system design', 'To compile code', 'To debug programs', 'To store data', 'UML diagrams are used for system design visualization', 1, 'approved', '2025-02-01 09:00:00'),
-(2, 2, 2, 2, 'comprehension', 'Find the order of the group Z_6', '6', '3', '4', '12', 'The order of Z_6 is 6 as it has 6 elements', 2, 'approved', '2025-02-02 09:00:00'),
-(3, 3, 3, 3, 'Basic Application', 'What is Newton\'s first law?', 'An object at rest stays at rest unless acted upon by force', 'F = ma', 'Every action has equal opposite reaction', 'Objects fall at same rate', 'Newton\'s first law is the law of inertia', 3, 'approved', '2025-02-03 09:00:00'),
-(4, 4, 4, 4, 'Advanced Application', 'What gas is produced in a reaction of HCl with Zn?', 'H₂', 'O₂', 'CO₂', 'N₂', 'Zn + 2HCl → ZnCl₂ + H₂', 4, 'approved', '2025-02-04 09:00:00'),
-(5, 5, 5, 5, 'recognition', 'What is the role of enzymes in metabolism?', 'Catalyze biochemical reactions', 'Store energy', 'Transport oxygen', 'Form cell membranes', 'Enzymes speed up metabolic reactions', 5, 'approved', '2025-02-05 09:00:00'),
-(6, 6, 6, 6, 'comprehension', 'What is a deadlock in an OS?', 'Circular wait for resources', 'Memory shortage', 'CPU overload', 'Network failure', 'Deadlock occurs when processes wait for each other\'s resources', 1, 'approved', '2025-02-06 09:00:00'),
-(7, 7, 7, 7, 'Basic Application', 'What is the trapezoidal rule?', 'Numerical integration method', 'Differentiation technique', 'Matrix operation', 'Graph theory concept', 'Trapezoidal rule approximates definite integrals', 2, 'approved', '2025-02-07 09:00:00'),
-(8, 8, 8, 8, 'Advanced Application', 'Calculate redshift for a galaxy moving at 0.1c', 'z ≈ 0.1', 'z ≈ 0.01', 'z ≈ 1.0', 'z ≈ 0.5', 'Redshift z ≈ v/c for low velocities', 3, 'approved', '2025-02-08 09:00:00'),
-(9, 9, 9, 9, 'recognition', 'What is a buffer solution?', 'Resists pH changes', 'Conducts electricity', 'Changes color', 'Crystallizes easily', 'Buffer solutions maintain constant pH', 4, 'approved', '2025-02-09 09:00:00'),
-(10, 10, 10, 10, 'comprehension', 'What defines a mammal?', 'Warm-blooded with hair/fur', 'Cold-blooded vertebrate', 'Egg-laying animal', 'Water-breathing creature', 'Mammals are warm-blooded vertebrates with hair', 5, 'approved', '2025-02-10 09:00:00');
+-- Computer Science Questions (1-4)
+(1, 1, 1, 1, 'recognition', 'Which of the following is NOT a primitive data type in Java?', 'String', 'int', 'boolean', 'double', 'String is a reference type, not a primitive type in Java', 1, 'approved', '2025-02-01 09:00:00'),
+(1, 1, 1, 1, 'comprehension', 'What is the time complexity of searching in a balanced binary search tree?', 'O(log n)', 'O(n)', 'O(n²)', 'O(1)', 'BST search has logarithmic complexity due to tree height', 1, 'approved', '2025-02-01 10:00:00'),
+(1, 1, 1, 1, 'Basic Application', 'In object-oriented programming, what does encapsulation achieve?', 'Data hiding and access control', 'Code reusability', 'Multiple inheritance', 'Dynamic binding', 'Encapsulation bundles data with methods and controls access', 1, 'approved', '2025-02-01 11:00:00'),
+(6, 6, 6, 6, 'recognition', 'What does HTTP stand for?', 'HyperText Transfer Protocol', 'High Transfer Text Protocol', 'HyperText Transport Protocol', 'Home Transfer Text Protocol', 'HTTP is the protocol for transferring web pages', 1, 'approved', '2025-02-06 09:00:00'),
 
--- 7. Thêm 10 bản ghi vào bảng exams
+-- Mathematics Questions (5-8)
+(2, 2, 2, 2, 'recognition', 'What is the derivative of sin(x)?', 'cos(x)', '-cos(x)', 'sin(x)', '-sin(x)', 'The derivative of sine function is cosine function', 2, 'approved', '2025-02-02 09:00:00'),
+(2, 2, 2, 2, 'comprehension', 'For which values of x does the function f(x) = 1/x have a discontinuity?', 'x = 0', 'x = 1', 'x = -1', 'x = ∞', 'Division by zero creates discontinuity at x = 0', 2, 'approved', '2025-02-02 10:00:00'),
+(2, 2, 2, 2, 'Basic Application', 'Calculate the integral of 2x dx from 0 to 3', '9', '6', '18', '3', '∫₀³ 2x dx = [x²]₀³ = 9 - 0 = 9', 2, 'approved', '2025-02-02 11:00:00'),
+(7, 7, 7, 7, 'Basic Application', 'Find the determinant of the 2×2 matrix [[2,3],[1,4]]', '5', '8', '11', '6', 'det([[2,3],[1,4]]) = (2×4) - (3×1) = 8 - 3 = 5', 2, 'approved', '2025-02-07 09:00:00'),
+
+-- Physics Questions (9-12)
+(3, 3, 3, 3, 'recognition', 'What is the SI unit of electric current?', 'Ampere', 'Volt', 'Ohm', 'Watt', 'Ampere (A) is the base SI unit for electric current', 3, 'approved', '2025-02-03 09:00:00'),
+(3, 3, 3, 3, 'comprehension', 'According to Ohm\'s law, if voltage increases and resistance stays constant, what happens to current?', 'Current increases', 'Current decreases', 'Current stays same', 'Current becomes zero', 'V = IR, so I = V/R. If V increases and R constant, I increases', 3, 'approved', '2025-02-03 10:00:00'),
+(3, 3, 3, 3, 'Advanced Application', 'A 5kg object accelerates at 2 m/s². What net force is applied?', '10 N', '2.5 N', '7 N', '3 N', 'F = ma = 5 kg × 2 m/s² = 10 N', 3, 'approved', '2025-02-03 11:00:00'),
+(3, 3, 3, 3, 'Basic Application', 'What is Newton\'s first law of motion?', 'An object at rest stays at rest unless acted upon by force', 'F = ma', 'Every action has equal opposite reaction', 'Objects fall at same rate', 'Newton\'s first law is the law of inertia', 3, 'approved', '2025-02-03 12:00:00'),
+
+-- Chemistry Questions (13-16)
+(4, 4, 4, 4, 'recognition', 'What is the chemical symbol for gold?', 'Au', 'Go', 'Gd', 'Ag', 'Au comes from Latin "aurum" meaning gold', 4, 'approved', '2025-02-04 09:00:00'),
+(4, 4, 4, 4, 'comprehension', 'In the periodic table, elements in the same column have similar what?', 'Chemical properties', 'Atomic mass', 'Number of neutrons', 'Physical appearance', 'Elements in same group have similar valence electron configuration', 4, 'approved', '2025-02-04 10:00:00'),
+(4, 4, 4, 4, 'Advanced Application', 'Balance the equation: C₃H₈ + O₂ → CO₂ + H₂O. What is the coefficient for O₂?', '5', '3', '4', '6', 'C₃H₈ + 5O₂ → 3CO₂ + 4H₂O (balanced equation)', 4, 'approved', '2025-02-04 11:00:00'),
+(4, 4, 4, 4, 'recognition', 'What is a buffer solution?', 'Resists pH changes', 'Conducts electricity', 'Changes color', 'Crystallizes easily', 'Buffer solutions maintain constant pH', 4, 'approved', '2025-02-04 12:00:00'),
+
+-- Biology Questions (17-20)
+(5, 5, 5, 5, 'recognition', 'Which organelle is known as the powerhouse of the cell?', 'Mitochondria', 'Nucleus', 'Ribosome', 'Chloroplast', 'Mitochondria produce ATP through cellular respiration', 5, 'approved', '2025-02-05 09:00:00'),
+(5, 5, 5, 5, 'comprehension', 'What is the main function of DNA?', 'Store genetic information', 'Produce energy', 'Transport materials', 'Maintain cell shape', 'DNA contains the genetic instructions for organism development', 5, 'approved', '2025-02-05 10:00:00'),
+(5, 5, 5, 5, 'Basic Application', 'In photosynthesis, what are the main reactants?', 'CO₂ and H₂O', 'O₂ and glucose', 'ATP and NADPH', 'Chlorophyll and sunlight', '6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂', 5, 'approved', '2025-02-05 11:00:00'),
+(5, 5, 5, 5, 'comprehension', 'What defines a mammal?', 'Warm-blooded with hair/fur', 'Cold-blooded vertebrate', 'Egg-laying animal', 'Water-breathing creature', 'Mammals are warm-blooded vertebrates with hair', 5, 'approved', '2025-02-05 12:00:00');
+
+-- QUAN TRỌNG: Bảng duplicate_detections với ID câu hỏi THỰC TẾ (1-20 ONLY)
+INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, status, action, detected_by, processed_by, detected_at, processed_at, detection_feedback, processing_notes) VALUES
+-- Processed duplicates (đã xử lý) - Examples of realistic academic scenarios
+(1, 2, 0.85, 'processed', 'accept', 1, 6, '2025-03-01 08:00:00', '2025-03-01 10:00:00', 'Both Java concepts but different aspects', 'Accepted - data types vs BST are distinct'),
+(3, 4, 0.78, 'processed', 'reject', 2, 6, '2025-03-02 08:00:00', '2025-03-02 11:00:00', 'OOP encapsulation vs HTTP protocol too different', 'Rejected - not actually duplicates'),
+(5, 6, 0.92, 'processed', 'send_back', 3, 6, '2025-03-03 08:00:00', '2025-03-03 09:00:00', 'Math questions both on calculus', 'Sent back - need more differentiation'),
+(9, 10, 0.83, 'processed', 'accept', 4, 6, '2025-03-04 08:00:00', '2025-03-04 12:00:00', 'Physics concepts distinct enough', 'Accepted - current vs Ohm law different'),
+(13, 14, 0.87, 'processed', 'reject', 5, 6, '2025-03-05 08:00:00', '2025-03-05 14:00:00', 'Chemistry elements very similar', 'Rejected - clear duplication'),
+
+-- Pending duplicates (chưa xử lý) - Realistic pending cases
+(7, 8, 0.76, 'pending', NULL, 1, NULL, '2025-03-06 08:00:00', NULL, 'Math integration vs matrix determinant', NULL),
+(11, 12, 0.81, 'pending', NULL, 2, NULL, '2025-03-07 08:00:00', NULL, 'Physics force calculation vs Newton law', NULL),
+(15, 16, 0.79, 'pending', NULL, 3, NULL, '2025-03-08 08:00:00', NULL, 'Chemistry equation balancing vs buffer', NULL),
+(17, 18, 0.84, 'pending', NULL, 4, NULL, '2025-03-09 08:00:00', NULL, 'Biology mitochondria vs DNA function', NULL),
+(19, 20, 0.77, 'pending', NULL, 5, NULL, '2025-03-10 08:00:00', NULL, 'Biology photosynthesis vs mammal definition', NULL);
+
+-- Optional: Essential supporting tables (minimal data for system functionality)
 INSERT INTO exams (course_id, plan_id, exam_title, exam_code, duration_minutes, total_marks, exam_type, created_by, exam_status, created_at) VALUES
-(1, 1, 'CS101 Midterm Exam', 'CS101-MT-2025', 90, 100.00, 'midterm', 1, 'approved', '2025-03-01 08:00:00'),
-(2, 2, 'MATH201 Final Exam', 'MATH201-FN-2025', 120, 100.00, 'final', 2, 'draft', '2025-03-02 08:00:00'),
-(3, 3, 'PHYS301 Quiz 1', 'PHYS301-Q1-2025', 45, 50.00, 'quiz', 3, 'submitted', '2025-03-03 08:00:00'),
-(4, 4, 'CHEM101 Lab Quiz', 'CHEM101-LQ-2025', 30, 25.00, 'quiz', 4, 'approved', '2025-03-04 08:00:00'),
-(5, 5, 'BIO201 Midterm', 'BIO201-MT-2025', 75, 80.00, 'midterm', 5, 'finalized', '2025-03-05 08:00:00'),
-(6, 6, 'CS201 Practice Test', 'CS201-PT-2025', 60, 60.00, 'practice', 1, 'draft', '2025-03-06 08:00:00'),
-(7, 7, 'MATH301 Final', 'MATH301-FN-2025', 150, 120.00, 'final', 2, 'submitted', '2025-03-07 08:00:00'),
-(8, 8, 'PHYS201 Comprehensive', 'PHYS201-CP-2025', 180, 150.00, 'final', 3, 'approved', '2025-03-08 08:00:00'),
-(9, 9, 'CHEM201 Midterm', 'CHEM201-MT-2025', 90, 90.00, 'midterm', 4, 'draft', '2025-03-09 08:00:00'),
-(10, 10, 'BIO301 Quiz Series', 'BIO301-QS-2025', 40, 40.00, 'quiz', 5, 'submitted', '2025-03-10 08:00:00');
+(1, 1, 'CS101 Midterm', 'CS101-MT-2025', 90, 100, 'midterm', 1, 'approved', '2025-03-01 08:00:00'),
+(2, 2, 'MATH201 Final', 'MATH201-FN-2025', 120, 100, 'final', 2, 'draft', '2025-03-02 08:00:00'),
+(3, 3, 'PHYS301 Quiz', 'PHYS301-Q1-2025', 45, 50, 'quiz', 3, 'submitted', '2025-03-03 08:00:00');
 
--- 8. Thêm 10 bản ghi vào bảng exam_questions
-INSERT INTO exam_questions (exam_id, question_id, question_order, marks) VALUES
-(1, 1, 1, 10.00),
-(2, 2, 1, 2.00),
-(3, 3, 1, 0.50),
-(4, 4, 1, 1.50),
-(5, 5, 1, 0.75),
-(6, 6, 1, 1.25),
-(7, 7, 1, 1.00),
-(8, 8, 1, 0.50),
-(9, 9, 1, 2.00),
-(10, 10, 1, 1.50);
-
--- 9. Thêm 10 bản ghi vào bảng ai_duplicate_checks
 INSERT INTO ai_duplicate_checks (question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, analysis_text, recommendation_text, checked_by, status, checked_at) VALUES
-('What is the purpose of a UML diagram?', 1, 0.75, 0.9500, TRUE, 'all-MiniLM-L6-v2', 'High similarity detected with existing question about UML diagrams.', 'Recommend rejecting as duplicate.', 1, 'completed', '2025-03-01 10:00:00'),
-('Find the order of the group Z_6', 2, 0.75, 0.8200, FALSE, 'all-MiniLM-L6-v2', 'Moderate similarity found but question has unique mathematical focus.', 'Recommend accepting with minor modifications.', 2, 'completed', '2025-03-02 10:00:00'),
-('What is Newton\'s first law?', 3, 0.75, 0.9100, TRUE, 'all-MiniLM-L6-v2', 'Very high similarity with existing physics question.', 'Recommend rejecting as clear duplicate.', 3, 'completed', '2025-03-03 10:00:00'),
-('What gas is produced in a reaction of HCl with Zn?', 4, 0.75, 0.7800, FALSE, 'all-MiniLM-L6-v2', 'Low similarity with existing chemistry questions.', 'Recommend accepting as unique question.', 4, 'completed', '2025-03-04 10:00:00'),
-('What is the role of enzymes in metabolism?', 5, 0.75, 0.8900, TRUE, 'all-MiniLM-L6-v2', 'High similarity detected with biology enzyme question.', 'Recommend manual review for potential merge.', 5, 'completed', '2025-03-05 10:00:00'),
-('What is a deadlock in an OS?', 6, 0.75, 0.8500, FALSE, 'all-MiniLM-L6-v2', 'Moderate similarity but specific OS context is unique.', 'Recommend accepting with category adjustment.', 6, 'completed', '2025-03-06 10:00:00'),
-('What is the trapezoidal rule?', 7, 0.75, 0.9200, TRUE, 'all-MiniLM-L6-v2', 'Very high similarity with existing numerical analysis question.', 'Recommend rejecting as duplicate.', 7, 'completed', '2025-03-07 10:00:00'),
-('Calculate redshift for a galaxy moving at 0.1c', 8, 0.75, 0.8000, FALSE, 'all-MiniLM-L6-v2', 'Low to moderate similarity with physics questions.', 'Recommend accepting as specialized astrophysics question.', 8, 'completed', '2025-03-08 10:00:00'),
-('What is a buffer solution?', 9, 0.75, 0.8700, TRUE, 'all-MiniLM-L6-v2', 'High similarity with existing chemistry acid-base questions.', 'Recommend review for potential question refinement.', 9, 'completed', '2025-03-09 10:00:00'),
-('What defines a mammal?', 10, 0.75, 0.8300, FALSE, 'all-MiniLM-L6-v2', 'Moderate similarity but taxonomy focus is sufficiently distinct.', 'Recommend accepting with biology category.', 10, 'completed', '2025-03-10 10:00:00');
+('Java primitive data types question', 1, 0.75, 0.85, TRUE, 'all-MiniLM-L6-v2', 'Similar Java programming concepts detected', 'Review for content overlap', 1, 'completed', '2025-03-01 10:00:00'),
+('Calculus derivative question', 2, 0.75, 0.92, TRUE, 'all-MiniLM-L6-v2', 'High similarity in mathematical concepts', 'Consider consolidation or revision', 2, 'completed', '2025-03-02 10:00:00'),
+('Physics Newton laws question', 3, 0.75, 0.83, TRUE, 'all-MiniLM-L6-v2', 'Physics principles show moderate similarity', 'Manual review recommended', 3, 'completed', '2025-03-03 10:00:00');
 
--- 10. Thêm 10 bản ghi vào bảng ai_similarity_results
-INSERT INTO ai_similarity_results (check_id, existing_question_id, similarity_score, is_duplicate) VALUES
-(1, 1, 0.9500, TRUE),
-(2, 2, 0.8200, FALSE),
-(3, 3, 0.9100, TRUE),
-(4, 4, 0.7800, FALSE),
-(5, 5, 0.8900, TRUE),
-(6, 6, 0.8500, FALSE),
-(7, 7, 0.9200, TRUE),
-(8, 8, 0.8000, FALSE),
-(9, 9, 0.8700, TRUE),
-(10, 10, 0.8300, FALSE);
+INSERT INTO notifications (user_id, type, title, message, priority, created_at) VALUES
+(1, 'duplicate_found', 'Duplicate Detected', 'Java questions show high similarity - review needed', 'medium', '2025-03-01 14:00:00'),
+(2, 'duplicate_found', 'High Similarity Alert', 'Math calculus questions require attention', 'high', '2025-03-02 14:00:00'),
+(6, 'system', 'Review Complete', 'Duplicate detection has been processed', 'low', '2025-03-01 15:00:00');
 
 -- 11. Thêm 10 bản ghi vào bảng duplicate_detections
 INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, detected_by, detected_at) VALUES
@@ -210,18 +213,17 @@ INSERT INTO exam_submissions (submitted_by, course_id, status, submitted_at) VAL
 (4, 9, 'submitted', '2025-03-09 16:00:00'),
 (5, 10, 'approved', '2025-03-10 16:00:00');
 
--- 17. Thêm dữ liệu mẫu vào bảng duplicate_detections
+-- 17. Thêm dữ liệu mẫu vào bảng duplicate_detections (mỗi duplicate là một cặp duy nhất, không lặp lại)
 INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, status, action, detected_by, processed_by, detected_at, processed_at, detection_feedback, processing_notes) VALUES
-(1, 2, 0.8500, 'processed', 'reject', 1, 6, '2025-03-01 08:00:00', '2025-03-01 10:00:00', 'High similarity detected', 'Clear duplicate of existing question'),
-(3, 4, 0.7800, 'processed', 'reject', 2, 6, '2025-03-02 08:00:00', '2025-03-02 11:00:00', 'Content overlap found', 'Clear duplicate of existing question'),
-(5, 6, 0.9200, 'processed', 'reject', 3, 6, '2025-03-03 08:00:00', '2025-03-03 09:00:00', 'Nearly identical content', 'Clear duplicate of existing question'),
+-- Processed duplicates (đã xử lý - reject/accept/send_back)
+(1, 2, 0.8500, 'processed', 'reject', 1, 6, '2025-03-01 08:00:00', '2025-03-01 10:00:00', 'High similarity detected', 'Clear duplicate'),
+(3, 4, 0.7800, 'processed', 'accept', 2, 6, '2025-03-02 08:00:00', '2025-03-02 11:00:00', 'Content overlap found', 'Approved as unique'),
+(5, 6, 0.9200, 'processed', 'send_back', 3, 6, '2025-03-03 08:00:00', '2025-03-03 09:00:00', 'Needs revision', 'Sent back for improvement'),
+
+-- Pending duplicates (chưa xử lý - còn trong hàng đợi)
 (7, 8, 0.7600, 'pending', NULL, 4, NULL, '2025-03-04 08:00:00', NULL, 'Potential duplicate', NULL),
-(9, 10, 0.8800, 'processed', 'reject', 5, 6, '2025-03-05 08:00:00', '2025-03-05 12:00:00', 'Similar structure and content', 'Clear duplicate of existing question'),
-(2, 3, 0.7400, 'pending', NULL, 1, NULL, '2025-03-06 08:00:00', NULL, 'Under review', NULL),
-(4, 5, 0.8100, 'processed', 'accept', 2, 6, '2025-03-07 08:00:00', '2025-03-07 14:00:00', 'Similar but distinct', 'Approved as unique question'),
-(6, 7, 0.7900, 'processed', 'reject', 3, 6, '2025-03-08 08:00:00', '2025-03-08 15:00:00', 'Too similar to existing', 'Clear duplicate of existing question'),
-(8, 9, 0.8600, 'pending', NULL, 4, NULL, '2025-03-09 08:00:00', NULL, 'Awaiting review', NULL),
-(10, 1, 0.7700, 'processed', 'reject', 5, 6, '2025-03-10 08:00:00', '2025-03-10 16:00:00', 'Duplicate content', 'Clear duplicate of existing question'),
--- Thêm nhiều dữ liệu để test
-(1, 3, 0.8200, 'processed', 'reject', 1, 6, '2025-03-11 08:00:00', '2025-03-11 10:00:00', 'Duplicate detected', 'Clear duplicate of existing question'),
-(2, 4, 0.7900, 'processed', 'reject', 2, 6, '2025-03-12 08:00:00', '2025-03-12 11:00:00', 'Similar content', 'Clear duplicate of existing question');
+(9, 10, 0.8600, 'pending', NULL, 5, NULL, '2025-03-05 08:00:00', NULL, 'Awaiting review', NULL),
+(11, 12, 0.7500, 'pending', NULL, 1, NULL, '2025-03-06 08:00:00', NULL, 'Under review', NULL),
+(13, 14, 0.8300, 'pending', NULL, 2, NULL, '2025-03-07 08:00:00', NULL, 'High similarity detected', NULL),
+(15, 16, 0.7900, 'pending', NULL, 4, NULL, '2025-03-08 08:00:00', NULL, 'Moderate similarity', NULL),
+(17, 18, 0.8500, 'pending', NULL, 5, NULL, '2025-03-09 08:00:00', NULL, 'Similar to existing question', NULL);

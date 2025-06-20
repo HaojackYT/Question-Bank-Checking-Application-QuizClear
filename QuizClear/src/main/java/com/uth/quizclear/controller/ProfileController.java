@@ -33,12 +33,10 @@ public class ProfileController {
     // }
 
     @Autowired
-    private UserService userService;
-
-    @GetMapping("/HED_Profile")
+    private UserService userService;    @GetMapping("/HED_Profile")
     public String profilePage(HttpSession session, Model model) {
         Long userId = (Long) session.getAttribute("userId");
-        Long userId2 = 2L;   // DEBUG TEST - Thay thế bằng userId từ session hoặc tham số
+        Long userId2 = 1L;   // DEBUG TEST - Thay đổi từ 2L thành 1L để test
         if (userId == null) {
             return "redirect:/login";
         }

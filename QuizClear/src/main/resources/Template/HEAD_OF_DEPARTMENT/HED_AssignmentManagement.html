@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/web_styles.css">
     <link rel="stylesheet" href="/css/HED/HED_AssignManagement.css">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Assignment Management</title>
+    <title>Assignment_Management</title>
 </head>
 
 <body>
@@ -219,6 +219,8 @@
 
     <!-- JavaScript -->
     <script>
+        const BASE_URL = 'http://localhost:8081'; // Ensure this matches your backend port
+
         // Utility functions
         function formatDate(dateString) {
             if (!dateString) return 'N/A';
@@ -232,6 +234,21 @@
             errorDiv.style.color = isSuccess ? 'green' : 'red';
             errorDiv.style.display = 'block';
             setTimeout(() => errorDiv.style.display = 'none', 5000);
+        }
+
+        async function fetchWithErrorHandling(url, options = {}) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Error ${response.status}: ${errorText || 'No error details provided'}`);
+                }
+                const text = await response.text();
+                return text ? JSON.parse(text) : {};
+            } catch (error) {
+                console.error(`Fetch error for ${url}:`, error);
+                throw error;
+            }
         }
 
         // Modal controls
@@ -248,8 +265,7 @@
         }
 
         function openDetailsModal(taskId) {
-            fetch(`/hed/api/assignment?taskId=${taskId}`)
-                .then(response => response.json())
+            fetchWithErrorHandling(`${BASE_URL}/hed/api/assignment?taskId=${taskId}`)
                 .then(data => {
                     const titleElement = document.querySelector('.details-modal h2');
                     if (titleElement) titleElement.textContent = `Details - ${data.title || 'N/A'} (ID: ${taskId})`;
@@ -301,7 +317,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching assignment details:', error);
-                    showError('Failed to load assignment details');
+                    showError(`Failed to load assignment details: ${error.message}`);
                 });
         }
 
@@ -335,104 +351,115 @@
         };
 
         // Load dynamic data
-        function loadLecturers() {
-            fetch('/hed/api/lecturers')
-                .then(response => response.json())
-                .then(data => {
-                    const select = document.getElementById('lecturer-select');
-                    select.innerHTML = '<option value="">Select Lecturer</option>';
-                    data.forEach(lecturer => {
-                        const option = document.createElement('option');
-                        option.value = lecturer.id;
-                        option.textContent = lecturer.name;
-                        select.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error fetching lecturers:', error));
+        async function loadLecturers() {
+            try {
+                const lecturers = await fetchWithErrorHandling(`${BASE_URL}/hed/api/lecturers`);
+                const select = document.getElementById('lecturer-select');
+                select.innerHTML = '<option value="">Select Lecturer</option>';
+                lecturers.forEach(lecturer => {
+                    const option = document.createElement('option');
+                    option.value = lecturer.id;
+                    option.textContent = lecturer.name || 'Unknown';
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching lecturers:', error);
+                showError(`Failed to load lecturers: ${error.message}`);
+            }
         }
 
-        function loadCourses() {
-            fetch('/hed/api/courses')
-                .then(response => response.json())
-                .then(data => {
-                    const select = document.getElementById('course-select');
-                    const filterSelect = document.getElementById('course-filter');
-                    select.innerHTML = '<option value="">Select Course</option>';
-                    filterSelect.innerHTML = '<option value="">All Courses</option>';
-                    data.forEach(course => {
-                        const option = document.createElement('option');
-                        option.value = course.id;
-                        option.textContent = course.name;
-                        select.appendChild(option);
-                        filterSelect.appendChild(option.cloneNode(true));
-                    });
-                })
-                .catch(error => console.error('Error fetching courses:', error));
+        async function loadCourses() {
+    try {
+        const courses = await fetchWithErrorHandling(`${BASE_URL}/hed/courses`);
+        console.log('Courses loaded:', courses);
+        if (!Array.isArray(courses) || courses.length === 0) {
+            showError('No courses available');
+            return;
         }
+        const modalSelect = document.getElementById('course-select');
+        const filterSelect = document.getElementById('course-filter');
+        modalSelect.innerHTML = '<option value="">Select Course</option>';
+        filterSelect.innerHTML = '<option value="">All Courses</option>';
+        courses.forEach(course => {
+            if (course.courseId && course.courseName) {
+                const option = document.createElement('option');
+                option.value = course.courseId;
+                option.textContent = course.courseName;
+                modalSelect.appendChild(option);
+                filterSelect.appendChild(option.cloneNode(true));
+            } else {
+                console.warn('Invalid course data:', course);
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching courses:', error);
+        showError(`Failed to load courses: ${error.message}`);
+    }
+}
 
-        function loadQuestions(taskId) {
-            fetch(`/hed/api/assignment/questions?taskId=${taskId}`)
-                .then(response => response.json())
-                .then(data => {
-                    const questionsList = document.getElementById('questions-list');
-                    questionsList.innerHTML = '';
-                    if (data.length === 0) {
-                        questionsList.innerHTML = '<p>No questions available</p>';
-                        return;
-                    }
-                    data.forEach(question => {
-                        const item = document.createElement('div');
-                        item.className = 'question-item';
-                        item.innerHTML = `
-                            <div class="question-header">
-                                <span class="question-title">${question.content || 'N/A'}</span>
-                                <span class="difficulty-badge">${question.difficultyLevel || 'N/A'}</span>
+        async function loadQuestions(taskId) {
+            try {
+                const questions = await fetchWithErrorHandling(`${BASE_URL}/hed/api/assignment/questions?taskId=${taskId}`);
+                const questionsList = document.getElementById('questions-list');
+                questionsList.innerHTML = '';
+                if (!questions || questions.length === 0) {
+                    questionsList.innerHTML = '<p>No questions available</p>';
+                    return;
+                }
+                questions.forEach(question => {
+                    const item = document.createElement('div');
+                    item.className = 'question-item';
+                    item.innerHTML = `
+                        <div class="question-header">
+                            <span class="question-title">${question.content || 'N/A'}</span>
+                            <span class="difficulty-badge">${question.difficultyLevel || 'N/A'}</span>
+                        </div>
+                        <div class="question-options">
+                            <div class="option ${question.answerKey === 'A' ? 'correct' : 'incorrect'}">
+                                A. ${question.answerF1 || 'N/A'} ${question.answerKey === 'A' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>'}
                             </div>
-                            <div class="question-options">
-                                <div class="option ${question.answerKey === 'A' ? 'correct' : 'incorrect'}">
-                                    A. ${question.answerF1 || 'N/A'} ${question.answerKey === 'A' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>'}
-                                </div>
-                                <div class="option ${question.answerKey === 'B' ? 'correct' : 'incorrect'}">
-                                    B. ${question.answerF2 || 'N/A'} ${question.answerKey === 'B' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>'}
-                                </div>
-                                <div class="option ${question.answerKey === 'C' ? 'correct' : 'incorrect'}">
-                                    C. ${question.answerF3 || 'N/A'} ${question.answerKey === 'C' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>'}
-                                </div>
-                                <div class="option ${question.answerKey === 'D' ? 'correct' : 'incorrect'}">
-                                    D. ${question.explanation || 'N/A'} ${question.answerKey === 'D' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>'}
-                                </div>
+                            <div class="option ${question.answerKey === 'B' ? 'correct' : 'incorrect'}">
+                                B. ${question.answerF2 || 'N/A'} ${question.answerKey === 'B' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>'}
                             </div>
-                            <div class="question-actions">
-                                <button class="question-action-btn reject-btn" onclick="updateQuestionStatus(${question.questionId}, 'REJECTED')">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                                <button class="question-action-btn approve-btn" onclick="updateQuestionStatus(${question.questionId}, 'APPROVED')">
-                                    <i class="fas fa-check"></i>
-                                </button>
+                            <div class="option ${question.answerKey === 'C' ? 'correct' : 'incorrect'}">
+                                C. ${question.answerF3 || 'N/A'} ${question.answerKey === 'C' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>'}
                             </div>
-                        `;
-                        questionsList.appendChild(item);
-                    });
-                })
-                .catch(error => console.error('Error fetching questions:', error));
+                            <div class="option ${question.answerKey === 'D' ? 'correct' : 'incorrect'}">
+                                D. ${question.explanation || 'N/A'} ${question.answerKey === 'D' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>'}
+                            </div>
+                        </div>
+                        <div class="question-actions">
+                            <button class="question-action-btn reject-btn" onclick="updateQuestionStatus(${question.questionId}, 'REJECTED')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <button class="question-action-btn approve-btn" onclick="updateQuestionStatus(${question.questionId}, 'APPROVED')">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </div>
+                    `;
+                    questionsList.appendChild(item);
+                });
+            } catch (error) {
+                console.error('Error fetching questions:', error);
+                showError(`Failed to load questions: ${error.message}`);
+            }
         }
 
         function updateQuestionStatus(questionId, status) {
             if (!confirm(`Are you sure you want to ${status.toLowerCase()} this question?`)) return;
-            fetch(`/hed/api/question/${questionId}/status`, {
+            fetchWithErrorHandling(`${BASE_URL}/hed/api/question/${questionId}/status`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status })
             })
-                .then(response => {
-                    if (!response.ok) return response.json().then(err => { throw new Error(err.error || 'Failed to update question status'); });
+                .then(() => {
                     showError(`Question ${status.toLowerCase()} successfully`, true);
                     const taskId = document.querySelector('.details-modal h2').textContent.match(/ID: (\d+)/)[1];
                     loadQuestions(taskId);
                 })
                 .catch(error => {
                     console.error('Error updating question status:', error);
-                    showError(error.message || 'Failed to update question status');
+                    showError(`Failed to update question status: ${error.message}`);
                 });
         }
 
@@ -447,48 +474,48 @@
             const taskId = parseInt(taskIdMatch[1]);
             const mappedStatus = status === 'APPROVED' ? 'completed' : 'cancelled';
             const buttons = document.querySelectorAll('.modal-footer button');
-            buttons.forEach(btn => btn.disabled = true); // Disable buttons during request
+            buttons.forEach(btn => btn.disabled = true);
 
-            fetch(`/hed/api/notifications/${taskId}/status`, {
+            fetchWithErrorHandling(`${BASE_URL}/hed/api/notifications/${taskId}/status`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: mappedStatus })
             })
-                .then(response => {
-                    if (!response.ok) return response.json().then(err => { throw new Error(err.error || 'Failed to update assignment status'); });
+                .then(() => {
                     showError(`Assignment ${action}d successfully`, true);
                     closeDetailsModal();
                     loadAssignments(currentPage);
                 })
                 .catch(error => {
                     console.error('Error updating assignment status:', error);
-                    showError(error.message || 'Failed to update assignment status');
+                    showError(`Failed to update assignment status: ${error.message}`);
                 })
                 .finally(() => {
-                    buttons.forEach(btn => btn.disabled = false); // Re-enable buttons
+                    buttons.forEach(btn => btn.disabled = false);
                 });
         }
 
         // Form submission
         document.getElementById('newAssignForm').addEventListener('submit', function (event) {
             event.preventDefault();
+            const dueDate = document.getElementById('dueDate').value;
+            if (!dueDate.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/)) {
+                showError('Due date must be in format YYYY-MM-DD HH:MM:SS');
+                return;
+            }
             const formData = {
                 lecturerId: document.getElementById('lecturer-select').value,
                 courseId: document.getElementById('course-select').value,
                 totalQuestions: document.getElementById('totalQuestions').value,
                 title: document.getElementById('title').value,
                 description: document.getElementById('description').value,
-                dueDate: document.getElementById('dueDate').value
+                dueDate: dueDate
             };
-            fetch('/hed/api/assignments', {
+            fetchWithErrorHandling(`${BASE_URL}/hed/api/assignments`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             })
-                .then(response => {
-                    if (!response.ok) return response.json().then(err => { throw new Error(err.error || 'Failed to create assignment'); });
-                    return response.json();
-                })
                 .then(() => {
                     closeNewAssignModal();
                     loadAssignments(0);
@@ -496,46 +523,47 @@
                 })
                 .catch(error => {
                     console.error('Error creating assignment:', error);
-                    showError(error.message || 'Failed to create assignment');
+                    showError(`Failed to create assignment: ${error.message}`);
                 });
         });
 
         // Load header and menu
         fetch('/template/header_user.html')
             .then(res => res.text())
-            .then(data => document.getElementById('header-placeholder').innerHTML = data);
+            .then(data => document.getElementById('header-placeholder').innerHTML = data)
+            .catch(error => console.error('Error loading header:', error));
         fetch('/menu-hed')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
                 setActiveMenu(document.title);
-            });
+            })
+            .catch(error => console.error('Error loading menu:', error));
 
         // Pagination and table logic
         let currentPage = /*[[${currentPage}]]*/ 0;
         const pageSize = 5;
 
         function loadAssignments(page = 0) {
-            const searchValue = document.querySelector('.search-input').value;
-            const statusValue = document.getElementById('status-filter').value;
-            const courseValue = document.getElementById('course-filter').value;
-            fetch(`/hed/api/assignments?search=${encodeURIComponent(searchValue)}&status=${statusValue}&subject=${courseValue}&page=${page}&size=${pageSize}&_=${new Date().getTime()}`)
-                .then(response => {
-                    if (!response.ok) throw new Error('Server error: ' + response.status);
-                    return response.json();
-                })
-                .then(data => {
-                    updateTable(data.content || []);
-                    updatePagination(page, data.totalPages || 1);
-                    currentPage = page;
-                })
-                .catch(error => {
-                    console.error('Error fetching assignments:', error);
-                    updateTable([]);
-                    updatePagination(page, 1);
-                    showError(error.message || 'Failed to load assignments');
-                });
-        }
+    const searchValue = document.querySelector('.search-input').value;
+    const statusValue = document.getElementById('status-filter').value;
+    const courseValue = document.getElementById('course-filter').value;
+    console.log('Loading assignments with:', { searchValue, statusValue, courseValue });
+    // Thay courseId thành subject để khớp với backend
+    fetchWithErrorHandling(`${BASE_URL}/hed/api/assignments?search=${encodeURIComponent(searchValue)}&status=${statusValue}&subject=${courseValue}&page=${page}&size=${pageSize}&_=${new Date().getTime()}`)
+        .then(data => {
+            console.log('Assignments response:', data);
+            updateTable(data.content || []);
+            updatePagination(page, data.totalPages || 1);
+            currentPage = page;
+        })
+        .catch(error => {
+            console.error('Error fetching assignments:', error);
+            updateTable([]);
+            updatePagination(page, 1);
+            showError(`Failed to load assignments: ${error.message}`);
+        });
+}
 
         function updateTable(assignments) {
             const tbody = document.querySelector('.assignment-table tbody');
@@ -555,7 +583,6 @@
                     <td><span class="status ${(assignment.status || '').toLowerCase()}">${(assignment.status || 'N/A').replace('_', ' ')}</span></td>
                     <td>
                         <button onclick="openDetailsModal(${assignment.taskId})"><i class="fas fa-eye"></i></button>
-                        
                         <button onclick="deleteAssignment(${assignment.taskId})"><i class="fas fa-trash"></i></button>
                     </td>
                 `;
@@ -589,14 +616,16 @@
         let isExpanded = false;
 
         function loadNotifications() {
-            fetch('/hed/api/notifications')
-                .then(response => response.json())
+            fetchWithErrorHandling(`${BASE_URL}/hed/api/notifications`)
                 .then(data => {
                     allNotifications = data;
                     renderNotifications(isExpanded ? allNotifications.length : MAX_INITIAL_NOTIFICATIONS);
                     toggleButtons();
                 })
-                .catch(error => console.error('Error fetching notifications:', error));
+                .catch(error => {
+                    console.error('Error fetching notifications:', error);
+                    showError(`Failed to load notifications: ${error.message}`);
+                });
         }
 
         function renderNotifications(limit) {
@@ -607,6 +636,7 @@
                 const notificationItem = document.createElement('div');
                 notificationItem.className = 'notification_item';
                 notificationItem.innerHTML = `
+                    <input type="checkbox">
                     <div class="notification-text">
                         <strong>${notification.title || 'N/A'}</strong>
                         <p>Course: ${notification.courseName || 'N/A'} | Due: ${formatDate(notification.dueDate)}</p>
@@ -650,17 +680,16 @@
 
         function deleteAssignment(taskId) {
             if (confirm('Are you sure you want to delete this assignment?')) {
-                fetch(`/hed/api/assignments/${taskId}`, {
+                fetchWithErrorHandling(`${BASE_URL}/hed/api/assignments/${taskId}`, {
                     method: 'DELETE'
                 })
-                    .then(response => {
-                        if (!response.ok) throw new Error('Failed to delete assignment');
+                    .then(() => {
                         loadAssignments(currentPage);
                         showError('Assignment deleted successfully', true);
                     })
                     .catch(error => {
                         console.error('Error deleting assignment:', error);
-                        showError(error.message || 'Failed to delete assignment');
+                        showError(`Failed to delete assignment: ${error.message}`);
                     });
             }
         }
@@ -669,12 +698,18 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadNotifications();
             loadAssignments(currentPage);
+            loadCourses();
             document.querySelector('.search-btn').addEventListener('click', () => loadAssignments(0));
+            // Củng cố sự kiện change cho filter-select
             document.querySelectorAll('.filter-select').forEach(select => {
-                select.addEventListener('change', () => loadAssignments(0));
+                select.addEventListener('change', () => {
+                    console.log(`Filter changed: ${select.id} = ${select.value}`); // Debug: Log thay đổi bộ lọc
+                    loadAssignments(0);
+                });
             });
         });
     </script>
+
     <script src="/js/L_activeMenu.js"></script>
 </body>
 

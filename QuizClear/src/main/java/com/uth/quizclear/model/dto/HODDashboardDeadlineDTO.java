@@ -1,37 +1,46 @@
 package com.uth.quizclear.model.dto;
 
 public class HODDashboardDeadlineDTO {
-    private String title;
-    private String course;
-    private String note;
+    private String title;        // Ex: Deadline: Exam - E1010 - Overdue
+    private String description;  // Ex: Overdue assignments detected. Please check
+    private String actionUrl;     // Ex: /tasks/123 (frontend xử lý)
 
-    public HODDashboardDeadlineDTO(String title, String course, String note) {
+    public HODDashboardDeadlineDTO(String title, String description, String actionUrl) {
         this.title = title;
-        this.course = course;
-        this.note = note;
+        this.description = description;
+        this.actionUrl = actionUrl;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getCourse() {
-        return course;
+    public String getDescription() {
+        return description;
     }
 
-    public String getNote() {
-        return note;
+    public String getActionUrl() {
+        return actionUrl;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setCourse(String course) {
-        this.course = course;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setActionUrl(String actionUrl) {
+        this.actionUrl = actionUrl;
+    }
+    
+    @Override
+    public String toString() {
+        return "HODDashboardDeadlineDTO{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", actionUrl='" + actionUrl + '\'' +
+                '}';
     }
 }

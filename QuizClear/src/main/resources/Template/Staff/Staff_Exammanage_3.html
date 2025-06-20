@@ -1,57 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/css/staff/Staff_Exammanage.css">
+    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/header.css}">
+    <link rel="stylesheet" th:href="@{/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/css/staff/Staff_Exammanage.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Exam Management - QuizClear</title>
 </head>
-
 <body>
-    <!--header-->
-    <div id="header-placeholder"></div>
-
-    <!-- body -->
+    <header class="header" th:insert="~{header_user :: header}"></header>
     <div id="Container-body">
-        <!-- Menu -->
-        <div id="menu-HTML"></div>
-
-        <!-- Main content -->
+        <div id="menu-HTML" th:insert="~{Menu-Staff :: menu}"></div>
         <div id="main">
-            <!-- noi dung duoc nhap trong day -->
             <div id="title-container">
                 <div class="title">
                     <p style="font-size: 32px;font-weight: 600;color: #120368;">Exam Management</p>
                     <p style="color: #4B5563;font-size: 14px;font-weight: 400;">Create, review, and manage exams across all subjects</p>
                 </div>
-                <button type="button" title="Create New Exam">Create New Exam</button>
+                <a th:href="@{/staff/exams/create}" class="btn btn-primary">Create New Exam</a>
             </div>
             <div>
                 <div id="box-container">
                     <div class="box">
                         <p class="text">Total Exams</p>
-                        <span class="number">128</span>
+                        <span class="number" th:text="${totalExams}">0</span>
                         <p class="text"><span>+6.2</span>% from last month</p>
                     </div>
                     <div class="box">
                         <p class="text">Pending Approval</p>
-                        <span class="number">24</span>
+                        <span class="number" th:text="${pendingCount}">0</span>
                         <p class="text">(2 urgent due in 48h)</p>
                     </div>
                     <div class="box">
                         <p class="text">Approved</p>
-                        <span class="number">96</span>
+                        <span class="number" th:text="${approvedCount}">0</span>
                         <p class="text">Ready for distribution</p>
                     </div>
                     <div class="box">
                         <p class="text">Rejected</p>
-                        <span class="number">8</span>
+                        <span class="number" th:text="${rejectedCount}">0</span>
                         <p class="text">Needs revision</p>
                     </div>
                 </div>
@@ -60,6 +51,9 @@
                 <input type="text" placeholder="Search exams...">
                 <select name="status" id="status">
                     <option value="all">All status</option>
+                    <option value="pending">Pending Approval</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
                 </select>
                 <select name="Subject" id="Subject">
                     <option value="all">All Subject</option>
@@ -77,167 +71,30 @@
                     <p style="font-size: 32px;font-weight: 600;color: #120368;">Approved Exams</p>
                     <p style="color: #4B5563;font-size: 14px;font-weight: 400; margin-bottom: 20px;">Exams that have been approved and are ready for use</p>
                 </div>
-                
-                <div class="subject-row approved-exam" data-duplicates="200" data-total="400">
+                <div th:each="exam : ${approvedExams}" class="subject-row approved-exam">
                     <div class="subject-header">
                         <div class="title-with-icon">
                             <i class="fas fa-check-circle check-icon"></i>
-                            <span class="title">Calculus Midterm</span>
+                            <span class="title" th:text="${exam.examTitle}">Exam Title</span>
                         </div>
                         <div class="action-buttons">
-                            <button type="button" class="export-btn" title="Export" onclick="exportExam('Calculus Midterm')">
+                            <a th:href="@{'/staff/exams/export/' + ${exam.examId}}" class="export-btn" title="Export">
                                 <i class="fas fa-download"></i> Export
-                            </button>
-                            <button type="button" class="view-btn" title="View" onclick="viewExam('Calculus Midterm')">
+                            </a>
+                            <a th:href="@{'/staff/exams/' + ${exam.examId}}" class="view-btn" title="View">
                                 <i class="fas fa-eye"></i> View
-                            </button>
+                            </a>
                         </div>
                     </div>
                     <div class="subject-infor">
-                        <span class="subject-name">Mathematics</span>
-                        <div class="create">Created: <span>2023-06-10</span></div>
-                        <div class="approved">Approved by: <span>Dr. Smith on 2023-06-12</span></div>
-                    </div>
-                    <div class="under">2 versions available</div>
-                </div>
-
-                <div class="subject-row approved-exam" data-duplicates="200" data-total="400">
-                    <div class="subject-header">
-                        <div class="title-with-icon">
-                            <i class="fas fa-check-circle check-icon"></i>
-                            <span class="title">Organic Chemistry Final</span>
-                        </div>
-                        <div class="action-buttons">
-                            <button type="button" class="export-btn" title="Export" onclick="exportExam('Organic Chemistry Final')">
-                                <i class="fas fa-download"></i> Export
-                            </button>
-                            <button type="button" class="view-btn" title="View" onclick="viewExam('Organic Chemistry Final')">
-                                <i class="fas fa-eye"></i> View
-                            </button>
-                        </div>
-                    </div>
-                    <div class="subject-infor">
-                        <span class="subject-name">Chemistry</span>
-                        <div class="create">Created: <span>2023-06-05</span></div>
-                        <div class="approved">Approved by: <span>Dr. Johnson on 2023-06-08</span></div>
-                    </div>
-                    <div class="under">3 versions available</div>
-                </div>
-
-                <div class="subject-row approved-exam" data-duplicates="200" data-total="400">
-                    <div class="subject-header">
-                        <div class="title-with-icon">
-                            <i class="fas fa-check-circle check-icon"></i>
-                            <span class="title">Introduction to Physics</span>
-                        </div>
-                        <div class="action-buttons">
-                            <button type="button" class="export-btn" title="Export" onclick="exportExam('Introduction to Physics')">
-                                <i class="fas fa-download"></i> Export
-                            </button>
-                            <button type="button" class="view-btn" title="View" onclick="viewExam('Introduction to Physics')">
-                                <i class="fas fa-eye"></i> View
-                            </button>
-                        </div>
-                    </div>
-                    <div class="subject-infor">
-                        <span class="subject-name">Physics</span>
-                        <div class="create">Created: <span>2023-05-25</span></div>
-                        <div class="approved">Approved by: <span>Dr. Brown on 2023-05-30</span></div>
+                        <span class="subject-name" th:text="${exam.subject}">Subject Name</span>
+                        <div class="create">Created: <span th:text="${#temporals.format(exam.createdAt, 'yyyy-MM-dd')}">2023-06-10</span></div>
+                        <div class="approved">Approved by: <span th:text="${exam.createdBy}">Dr. Smith</span></div>
                     </div>
                     <div class="under">1 version available</div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- ma nhung header vs menu -->
-    <script>
-        // Load header
-        fetch('../../Template/header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-
-        // Load menu
-        fetch('../../Template/Menu-Staff.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-            });
-
-        // Menu navigation functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuItems = document.querySelectorAll('.menu-item');
-            
-            menuItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    // Remove active class from all menu items
-                    menuItems.forEach(menu => menu.classList.remove('active'));
-                    
-                    // Add active class to clicked item
-                    this.classList.add('active');
-                    
-                    // Get menu type
-                    const menuType = this.getAttribute('data-menu');
-                    console.log('Switched to:', menuType);
-                    
-                    // Update content based on menu selection
-                    updateContent(menuType);
-                });
-            });
-        });
-
-        // Export exam functionality
-        function exportExam(examName) {
-            // Show confirmation
-            if (confirm(`Are you sure you want to export "${examName}"?`)) {
-                // Simulate export process
-                console.log(`Exporting exam: ${examName}`);
-                
-                // You can add actual export logic here
-                // For example, download a file or redirect to export page
-                alert(`Exam "${examName}" has been exported successfully!`);
-            }
-        }
-
-        // View exam functionality
-        function viewExam(examName) {
-            console.log(`Viewing exam: ${examName}`);
-            
-            // You can add actual view logic here
-            // For example, redirect to exam view page
-            alert(`Opening exam: "${examName}"`);
-            
-            // Example: window.location.href = `/exam/view/${examId}`;
-        }
-
-        // Update content based on menu selection
-        function updateContent(menuType) {
-            const container = document.getElementById('garph-container');
-            const title = container.querySelector('p:first-child');
-            const subtitle = container.querySelector('p:nth-child(2)');
-            
-            switch(menuType) {
-                case 'all':
-                    title.textContent = 'All Exams';
-                    subtitle.textContent = 'Complete list of all exams in the system';
-                    break;
-                case 'pending':
-                    title.textContent = 'Pending Approval';
-                    subtitle.textContent = 'Exams waiting for review and approval';
-                    break;
-                case 'approved':
-                    title.textContent = 'Approved Exams';
-                    subtitle.textContent = 'Exams that have been approved and are ready for use';
-                    break;
-                case 'rejected':
-                    title.textContent = 'Needs Revision';
-                    subtitle.textContent = 'Exams that require revision before approval';
-                    break;
-            }
-        }
-    </script>
 </body>
-
 </html>

@@ -31,16 +31,42 @@ public interface DuplicationStaffRepository extends JpaRepository<DuplicateDetec
     
     // Get question info for notification (creator_id and content)
     @Query(value = "SELECT q.created_by, q.content FROM questions q WHERE q.question_id = :questionId", nativeQuery = true)
-    Object[] getQuestionInfoForNotification(@Param("questionId") Long questionId);
-      // Delete question by ID
+    Object[] getQuestionInfoForNotification(@Param("questionId") Long questionId);      // Delete question by ID with related data
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM questions WHERE question_id = :questionId", nativeQuery = true)
-    void deleteQuestionById(@Param("questionId") Long questionId);
+    void deleteQuestionById(@Param("questionId") Long questionId);    // Delete related ai_similarity_results before deleting question (safer approach)
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM ai_similarity_results WHERE existing_question_id = :questionId", nativeQuery = true)
+    void deleteAiSimilarityResultsByExistingQuestionId(@Param("questionId") Long questionId);
     
-    // Update question status
+    // Alternative: Just disable the foreign key constraint temporarily
+    @Modifying
+    @Transactional
+    @Query(value = "SET FOREIGN_KEY_CHECKS=0", nativeQuery = true)
+    void disableForeignKeyChecks();
+    
+    @Modifying
+    @Transactional
+    @Query(value = "SET FOREIGN_KEY_CHECKS=1", nativeQuery = true)
+    void enableForeignKeyChecks();
+    
+    // Delete related duplicate_detections by question ID (for cleanup)
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM duplicate_detections WHERE new_question_id = :questionId OR similar_question_id = :questionId", nativeQuery = true)
+    void deleteDuplicateDetectionsByQuestionId(@Param("questionId") Long questionId);
+      // Update question status
     @Modifying
     @Transactional
     @Query(value = "UPDATE questions SET status = :status WHERE question_id = :questionId", nativeQuery = true)
     void updateQuestionStatus(@Param("questionId") Long questionId, @Param("status") String status);
+    
+    // Verification methods
+    @Query(value = "SELECT COUNT(*) FROM duplicate_detections WHERE detection_id = :detectionId", nativeQuery = true)
+    int countDetectionById(@Param("detectionId") Long detectionId);
+    
+    @Query(value = "SELECT COUNT(*) FROM questions WHERE question_id = :questionId", nativeQuery = true)
+    int countQuestionById(@Param("questionId") Long questionId);
 }
