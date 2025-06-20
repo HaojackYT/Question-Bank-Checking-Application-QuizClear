@@ -2,6 +2,7 @@ package com.uth.quizclear.service;
 
 import com.uth.quizclear.model.dto.ExamDTO;
 import com.uth.quizclear.model.entity.Exam;
+import com.uth.quizclear.model.enums.ExamStatus;
 import com.uth.quizclear.repository.ExamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ExamService {
+
     @Autowired
     private ExamRepository examRepository;
 
@@ -36,6 +38,22 @@ public class ExamService {
         dto.setStatus(exam.getExamStatus().getDisplayName());
         dto.setCreatedAt(exam.getCreatedAt());
         dto.setDueDate(exam.getExamDate());
+        dto.setCreatedBy(exam.getCreatedBy() != null ? exam.getCreatedBy().getFullName() : "");;
         return dto;
     }
+
+    public List<ExamDTO> getPendingApprovalExams() {
+    return examRepository.findByExamStatus(ExamStatus.SUBMITTED)
+            .stream()
+            .map(this::toDTO)
+            .collect(Collectors.toList());
+    }
+
+    public List<ExamDTO> getApprovedExams() {
+    return examRepository.findByExamStatus(ExamStatus.APPROVED)
+            .stream()
+            .map(this::toDTO)
+            .collect(Collectors.toList());
+    }
+
 }

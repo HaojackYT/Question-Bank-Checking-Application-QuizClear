@@ -6,12 +6,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.uth.quizclear.repository.TasksRepository;
@@ -20,7 +18,6 @@ import com.uth.quizclear.model.dto.HODDashboardActivityDTO;
 import com.uth.quizclear.model.dto.HODDashboardChartsDTO;
 import com.uth.quizclear.model.dto.HODDashboardDeadlineDTO;
 import com.uth.quizclear.model.dto.HODDashboardStatsDTO;
-import com.uth.quizclear.model.entity.Department;
 import com.uth.quizclear.model.entity.Tasks;
 import com.uth.quizclear.model.enums.TaskStatus;
 import com.uth.quizclear.model.enums.UserRole;
@@ -34,18 +31,14 @@ public class HODDashboardService {
         @Autowired
         private TasksRepository tasksRepo;
 
-        // chưa truyền dl change
-        public HODDashboardStatsDTO getStats() {
-                // Lấy HOD đang đăng nhập
-                String email = SecurityContextHolder.getContext().getAuthentication().getName();
-                Optional<User> hodOpt = userRepo.findByEmail(email);
+        private String getHODDepartment(Long userId) {
+                return userRepo.findById(userId)
+                                .map(User::getDepartment)
+                                .orElseThrow(() -> new RuntimeException("HOD not found!"));
+        }
 
-                if (hodOpt.isEmpty()) {
-                        throw new RuntimeException("HOD not found!");
-                }
-
-                User hod = hodOpt.get();
-                String department = hod.getDepartment();
+        public HODDashboardStatsDTO getStats(Long userId) {
+                String department = getHODDepartment(userId);
 
                 // Đếm số giảng viên trong cùng khoa
                 long lecturerCount = userRepo.countUsersByRoleAndDepartmentActiveUnlocked(UserRole.LEC, department);
@@ -63,19 +56,8 @@ public class HODDashboardService {
                                 rejectedCount);
         }
 
-        // lấy dl biểu đồ cột
-        public List<HODDashboardChartsDTO> getBarCharts() {
-                String email = SecurityContextHolder.getContext().getAuthentication().getName();
-                Optional<User> hodOpt = userRepo.findByEmail(email);
-                if (hodOpt.isEmpty()) {
-                        throw new RuntimeException("HOD not found!");
-                }
-
-                User hod = hodOpt.get();
-                String department = hod.getDepartment();
-                if (department == null) {
-                        throw new RuntimeException("HOD's department not found!");
-                }
+        public List<HODDashboardChartsDTO> getBarCharts(Long userId) {
+                String department = getHODDepartment(userId);
 
                 // Lấy tất cả task trong khoa của HOD
                 List<Tasks> allTasks = tasksRepo.findTasksByDepartment(department);
@@ -116,46 +98,74 @@ public class HODDashboardService {
                 return result;
         }
 
-        // dl biểu đồ tròn
-        public double getOverallProgress() {
-                List<Tasks> tasks = tasksRepo.findAll();
-                int created = tasks.stream()
+        public double getOverallProgress(Long userId) {
+                String department = getHODDepartment(userId);
+                List<Tasks> tasks = tasksRepo.findTasksByDepartment(department);
+
+                // Xác định tháng hiện tại
+                YearMonth currentMonth = YearMonth.now();
+
+                // Lọc các task có dueDate thuộc tháng hiện tại
+                List<Tasks> currentMonthTasks = tasks.stream()
+                                .filter(t -> t.getDueDate() != null)
+                                .filter(t -> YearMonth.from(t.getDueDate()).equals(currentMonth))
+                                .collect(Collectors.toList());
+
+                // Tổng số câu hỏi đã tạo (chỉ tính các task đã completed trong tháng này)
+                int created = currentMonthTasks.stream()
+                                .filter(t -> t.getStatus() == TaskStatus.completed)
                                 .mapToInt(t -> t.getTotalQuestions() == null ? 0 : t.getTotalQuestions())
                                 .sum();
 
-                // Since Tasks doesn't have getPlan(), we'll use the same total questions as
-                // target
-                int target = tasks.stream()
+                // Tổng số câu hỏi dự kiến (target) trong tháng này
+                int target = currentMonthTasks.stream()
                                 .mapToInt(t -> t.getTotalQuestions() == null ? 0 : t.getTotalQuestions())
                                 .sum();
 
-                // tính tỉ lệ phần trăm
                 return target > 0 ? (double) created / target * 100 : 0;
         }
 
-        // lấy deadline
-        public List<HODDashboardDeadlineDTO> getDeadlines() {
+        // Lấy danh sách deadline cho HOD trong vòng 7 ngày tới và quá hạn trong vòng 7
+        // ngày qua
+        public List<HODDashboardDeadlineDTO> getDeadlines(Long userId) {
+                String department = getHODDepartment(userId);
                 LocalDateTime now = LocalDateTime.now();
 
-                return tasksRepo.findAll().stream()
+                return tasksRepo.findTasksByDepartment(department).stream()
                                 .filter(t -> t.getDueDate() != null && t.getDueDate().isBefore(now.plusDays(7)))
-                                .map(t -> new HODDashboardDeadlineDTO(
-                                                t.getTitle(),
-                                                t.getCourse().getCourseName(),
-                                                t.getDueDate().isBefore(now) ? "Overdue" : "Upcoming"))
+                                .map(t -> {
+                                        String title = "Deadline: " + t.getTaskType().name().replace("_", " ") + " - "
+                                                        + t.getCourse().getCourseCode();
+                                        if (t.getDueDate().isBefore(now)) {
+                                                title += " - Overdue";
+                                        }
+                                        String description = (t.getDescription() != null ? t.getDescription()
+                                                        : "Please check");
+                                        return new HODDashboardDeadlineDTO(title, description,
+                                                        "/tasks/" + t.getTaskId());
+                                })
                                 .collect(Collectors.toList());
         }
 
-        // lấy hoạt động gần đây
-        public List<HODDashboardActivityDTO> getRecentActivities() {
+        // Lấy ds các hoạt động gần đây của hod trong 7 ngày qua
+        public List<HODDashboardActivityDTO> getRecentActivities(Long userId) {
+                String department = getHODDepartment(userId);
                 LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
 
-                return tasksRepo.findAll().stream()
+                return tasksRepo.findTasksByDepartment(department).stream()
                                 .filter(t -> t.getCreatedAt() != null && t.getCreatedAt().isAfter(oneWeekAgo))
-                                .map(t -> new HODDashboardActivityDTO(
-                                                "New Assignment: " + t.getTitle(),
-                                                t.getAssignedBy().getFullName(),
-                                                t.getCreatedAt().toString()))
+                                .map(t -> {
+                                        String type = t.getTaskType().toString();
+                                        String lecturerName = t.getAssignedBy().getFullName();
+                                        String course = t.getCourse().getCourseName();
+
+                                        String title = "New " + type + ": " + lecturerName + " - " + t.getTitle();
+                                        String description = lecturerName + " has updated questions for " + course;
+                                        String actionUrl = "/tasks/" + t.getTaskId();
+
+                                        return new HODDashboardActivityDTO(title, description, actionUrl);
+                                })
                                 .collect(Collectors.toList());
         }
+
 }

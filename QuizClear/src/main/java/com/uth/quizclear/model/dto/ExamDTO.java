@@ -10,16 +10,18 @@ public class ExamDTO {
     private String status;
     private LocalDateTime createdAt;
     private LocalDateTime dueDate;
+    private String createdBy;
 
     public ExamDTO() { }
     public ExamDTO(Long examId, String examTitle, String subject, String status, LocalDateTime createdAt,
-            LocalDateTime dueDate) {
+            LocalDateTime dueDate, String createdBy) {
         this.examId = examId;
         this.examTitle = examTitle;
         this.subject = subject;
         this.status = status;
         this.createdAt = createdAt;
         this.dueDate = dueDate;
+        this.createdBy = createdBy;
     }
     
     public Long getExamId() { return examId; }
@@ -39,5 +41,8 @@ public class ExamDTO {
 
     public LocalDateTime getDueDate() { return dueDate; }
     public void setDueDate(LocalDateTime dueDate) { this.dueDate = dueDate; }
+    
+    public String getCreatedBy() { return createdBy; }
+    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
 
 }
