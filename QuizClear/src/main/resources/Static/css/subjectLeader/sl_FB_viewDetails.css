@@ -244,8 +244,55 @@
 /* Action buttons */
 .action-buttons {
     display: flex;
-    gap: 4rem;
+    gap: 1rem;
     justify-content: center;
+    margin: 2rem 0;
+    padding: 1.5rem;
+}
+
+.action-buttons .btn {
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    border: 0.125rem solid;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-width: 7rem;
+    background-color: white;
+}
+
+.action-buttons .btn--edit {
+    border-color: #6b7280;
+    color: #374151;
+}
+
+.action-buttons .btn--edit:hover {
+    background-color: #f3f4f6;
+    border-color: #4b5563;
+}
+
+.action-buttons .btn--assign {
+    border-color: #6b7280;
+    color: #374151;
+}
+
+.action-buttons .btn--assign:hover {
+    background-color: #f3f4f6;
+    border-color: #4b5563;
+}
+
+.action-buttons .btn--resubmit {
+    border-color: #06b6d4;
+    color: #0891b2;
+    background-color: #06b6d4;
+    color: white;
+}
+
+.action-buttons .btn--resubmit:hover {
+    background-color: #0891b2;
+    border-color: #0891b2;
 }
 
 .info-field textarea {
