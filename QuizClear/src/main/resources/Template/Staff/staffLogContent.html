@@ -30,25 +30,10 @@
                         <th>Details</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr th:each="log : ${logs}">
-                        <td class="log-id" th:text="'L' + ${log.id}"></td>
-                        <td class="question-cell" th:text="${log.newQuestion?.content} ?: 'N/A'"></td>
-                        <td class="question-cell" th:text="${log.similarQuestion.content}"></td>
-                        <td>
-                            <div th:classappend="${log.similarityScore >= 0.9} ? 'similarity-complete' : 'similarity-high'" class="similarity-badge">
-                                <span th:text="${log.similarityScore >= 0.9} ? 'Complete Duplicate' : 'High Similarity'"></span>
-                                (<span th:text="${#numbers.formatDecimal(log.similarityScore * 100, 1, 1)} + '%'"></span>)
-                            </div>
-                        </td>
-                        <td>
-                            <div th:classappend="'action-' + ${log.action?.toLowerCase()}" class="action-badge" th:text="${log.action} ?: 'N/A'"></div>
-                        </td>
-                        <td class="processor-name" th:text="${log.processedBy?.name} ?: 'N/A'"></td>
-                        <td class="date-cell" th:text="${#temporals.format(log.processedAt, 'yyyy-MM-dd HH:mm')} ?: 'N/A'"></td>
-                        <td>
-                            <button class="details-btn" th:attr="data-log-id=${log.id}" onclick="showLogDetails(this.dataset.logId)">👁</button>
-                        </td>
+                <tbody id="logs-table-body">
+                    <!-- Data will be loaded dynamically by JavaScript -->
+                    <tr>
+                        <td colspan="8" class="text-center">Loading processing logs...</td>
                     </tr>
                 </tbody>
             </table>

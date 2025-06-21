@@ -635,4 +635,24 @@ public class DuplicationStaffController {
             return ResponseEntity.status(500).body(response);
         }
     }
+
+    // Get processing logs (history)
+    @GetMapping("/processing-logs")
+    public ResponseEntity<?> getProcessingLogs() {
+        try {
+            System.out.println("=== PROCESSING LOGS API CALLED ===");
+            List<Map<String, Object>> logs = service.getProcessingLogs();
+            System.out.println("Processing logs data: " + logs.size() + " entries");
+            return ResponseEntity.ok(logs);
+        } catch (Exception e) {
+            System.err.println("Error getting processing logs: " + e.getMessage());
+            e.printStackTrace();
+            
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            errorResponse.put("type", e.getClass().getSimpleName());
+            errorResponse.put("timestamp", java.time.LocalDateTime.now().toString());
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
 }

@@ -1,3 +1,80 @@
+/* Simple Log Detail Modal Styles - Matching the image */
+.simple-log-modal {
+    background: white;
+    border-radius: 8px;
+    width: 500px;
+    max-height: 600px;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.simple-log-modal .modal-header {
+    background: #f8f9fa;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.simple-log-modal .modal-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.simple-log-modal .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.simple-log-modal .close-btn:hover {
+    color: #333;
+    background: #e9ecef;
+    border-radius: 50%;
+}
+
+.simple-log-modal .modal-body {
+    padding: 1.5rem;
+}
+
+.simple-log-modal .detail-row {
+    display: flex;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+}
+
+.simple-log-modal .detail-row:last-child {
+    margin-bottom: 0;
+}
+
+.simple-log-modal .detail-row .label {
+    font-weight: 600;
+    color: #495057;
+    min-width: 120px;
+    margin-right: 1rem;
+    font-size: 0.9rem;
+}
+
+.simple-log-modal .detail-row .value {
+    color: #333;
+    flex: 1;
+    word-break: break-word;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
 /* Reset cơ bản */
 * {
   margin: 0;
@@ -142,19 +219,24 @@ body {
   font-weight: 600;
 }
 
-.action-rejected {
+.action-accept {
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.action-reject {
   background: #fef2f2;
   color: #dc2626;
 }
 
-.action-merged {
-  background: #f0f9ff;
-  color: #0369a1;
-}
-
-.action-sent-back {
+.action-send-back {
   background: #fffbeb;
   color: #d97706;
+}
+
+.action-unknown {
+  background: #f3f4f6;
+  color: #6b7280;
 }
 
 /* Processor */
@@ -191,10 +273,346 @@ body {
   color: #374151;
 }
 
+/* Text center utility */
+.text-center {
+  text-align: center;
+}
+
+/* Alert styles */
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  margin: 0.5rem 0;
+}
+
+.alert-danger {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+/* Log Detail Modal Styles */
+.log-detail-modal {
+    background: white;
+    border-radius: 12px;
+    max-width: 900px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.log-detail-modal-content {
+    padding: 0;
+    border-radius: 12px;
+    background: white;
+}
+
+.log-detail-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.log-detail-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.log-id-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.log-detail-body {
+    padding: 2rem;
+}
+
+.detail-section {
+    margin-bottom: 2rem;
+}
+
+.detail-section:last-child {
+    margin-bottom: 0;
+}
+
+.detail-section h4 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.detail-item label {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.detail-item span {
+    color: #333;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.action-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.badge-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f1b0b7;
+}
+
+.badge-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.badge-secondary {
+    background: #e2e3e5;
+    color: #383d41;
+    border: 1px solid #d6d8db;
+}
+
+.similarity-info {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1rem;
+    align-items: center;
+}
+
+.similarity-score {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.similarity-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #667eea !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.courses-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.questions-comparison {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.question-block {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.question-block h5 {
+    color: #495057;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.question-content {
+    background: white;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    min-height: 100px;
+}
+
+.question-meta small {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.question-separator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.vs-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 0.9rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feedback-content {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+    min-height: 80px;
+}
+
+.feedback-content p {
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+}
+
+.no-feedback {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.log-detail-footer {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0 0 12px 12px;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: center;
+}
+
+.log-detail-footer .btn {
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.log-detail-footer .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.log-detail-footer .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
 /* Responsive */
 @media (max-width: 48rem) { /* 768px */
   .search-export {
     flex-direction: column;
     align-items: stretch;
   }
+  
+  .log-detail-modal {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .log-detail-header {
+        padding: 1rem;
+    }
+    
+    .log-detail-body {
+        padding: 1rem;
+    }
+    
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .similarity-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .questions-comparison {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .question-separator {
+        order: 2;
+        height: auto;
+        margin: 1rem 0;
+    }
+    
+    .vs-badge {
+        width: 40px;
+        height: 40px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .simple-log-modal {
+        width: 95%;
+        max-height: 85vh;
+    }
+    
+    .simple-log-modal .modal-header {
+        padding: 1rem;
+    }
+    
+    .simple-log-modal .modal-body {
+        padding: 1rem;
+    }
+    
+    .simple-log-modal .detail-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .simple-log-modal .detail-row .label {
+        min-width: auto;
+        margin-right: 0;
+    }
 }
