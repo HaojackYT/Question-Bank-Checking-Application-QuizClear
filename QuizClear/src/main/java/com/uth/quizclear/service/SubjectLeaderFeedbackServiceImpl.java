@@ -115,22 +115,35 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
         });
 
         return feedbackList;
-    }
+    }    @Override
+    public QuestionFeedbackDetailDTO getFeedbackDetail(Long feedbackId, String type) {
+        if ("exam".equalsIgnoreCase(type)) {
+            // Find as Exam first
+            Optional<Exam> examOpt = examRepository.findById(feedbackId);
+            if (examOpt.isPresent()) {
+                Exam exam = examOpt.get();
+                return createExamDetailDTO(exam);
+            }
+        } else if ("question".equalsIgnoreCase(type)) {
+            // Find as Question first
+            Optional<Question> questionOpt = questionRepository.findById(feedbackId);
+            if (questionOpt.isPresent()) {
+                Question question = questionOpt.get();
+                return createQuestionDetailDTO(question);
+            }
+        } else {
+            // Fallback: try both
+            Optional<Question> questionOpt = questionRepository.findById(feedbackId);
+            if (questionOpt.isPresent()) {
+                Question question = questionOpt.get();
+                return createQuestionDetailDTO(question);
+            }
 
-    @Override
-    public QuestionFeedbackDetailDTO getFeedbackDetail(Long feedbackId) {
-        // First try to find as Question
-        Optional<Question> questionOpt = questionRepository.findById(feedbackId);
-        if (questionOpt.isPresent()) {
-            Question question = questionOpt.get();
-            return createQuestionDetailDTO(question);
-        }
-
-        // Then try to find as Exam
-        Optional<Exam> examOpt = examRepository.findById(feedbackId);
-        if (examOpt.isPresent()) {
-            Exam exam = examOpt.get();
-            return createExamDetailDTO(exam);
+            Optional<Exam> examOpt = examRepository.findById(feedbackId);
+            if (examOpt.isPresent()) {
+                Exam exam = examOpt.get();
+                return createExamDetailDTO(exam);
+            }
         }
 
         return null;

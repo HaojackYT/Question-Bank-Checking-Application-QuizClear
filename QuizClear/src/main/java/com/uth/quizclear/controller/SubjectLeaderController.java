@@ -40,9 +40,10 @@ public class SubjectLeaderController {
         
         return "subjectLeader/sl_feedBack";
     }
-    
-    @GetMapping("/feedback/{feedbackId}")
-    public String feedbackDetailPage(@PathVariable Long feedbackId, HttpSession session, Model model) {
+      @GetMapping("/feedback/{feedbackId}")
+    public String feedbackDetailPage(@PathVariable Long feedbackId, 
+                                   @RequestParam(required = false) String type,
+                                   HttpSession session, Model model) {
         // For testing purpose, use hardcoded user ID
         // Long userId = (Long) session.getAttribute("userId");
         // String role = (String) session.getAttribute("role");
@@ -51,12 +52,35 @@ public class SubjectLeaderController {
         //     return "redirect:/login";
         // }
         
-        QuestionFeedbackDetailDTO feedbackDetail = feedbackService.getFeedbackDetail(feedbackId);
+        QuestionFeedbackDetailDTO feedbackDetail = feedbackService.getFeedbackDetail(feedbackId, type);
         if (feedbackDetail == null) {
             return "redirect:/subject-leader/feedback";
         }
         
         model.addAttribute("feedback", feedbackDetail);
+        model.addAttribute("type", type);
+        
+        return "subjectLeader/sl_FB_viewDetails";
+    }
+    
+    @GetMapping("/feedback/{feedbackId}/details")
+    public String feedbackDetailPageWithDetails(@PathVariable Long feedbackId, 
+                                                @RequestParam(required = false) String type,
+                                                HttpSession session, Model model) {
+        // For testing purpose, use hardcoded user ID  
+        // Long userId = (Long) session.getAttribute("userId");
+        // String role = (String) session.getAttribute("role");
+        
+        // if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+        //     return "redirect:/login";
+        // }
+          QuestionFeedbackDetailDTO feedbackDetail = feedbackService.getFeedbackDetail(feedbackId, type);
+        if (feedbackDetail == null) {
+            return "redirect:/subject-leader/feedback";
+        }
+        
+        model.addAttribute("feedback", feedbackDetail);
+        model.addAttribute("type", type);
         
         return "subjectLeader/sl_FB_viewDetails";
     }
@@ -79,10 +103,11 @@ public class SubjectLeaderController {
         List<QuestionFeedbackDTO> feedbackList = feedbackService.getFeedbackForSubjectLeader(userId);
         return ResponseEntity.ok(feedbackList);
     }
-    
-    @GetMapping("/api/feedback/{feedbackId}")
+      @GetMapping("/api/feedback/{feedbackId}")
     @ResponseBody
-    public ResponseEntity<QuestionFeedbackDetailDTO> getFeedbackDetail(@PathVariable Long feedbackId, HttpSession session) {
+    public ResponseEntity<QuestionFeedbackDetailDTO> getFeedbackDetail(@PathVariable Long feedbackId, 
+                                                                      @RequestParam(required = false) String type,
+                                                                      HttpSession session) {
         // Long userId = (Long) session.getAttribute("userId");
         // String role = (String) session.getAttribute("role");
         
@@ -90,7 +115,7 @@ public class SubjectLeaderController {
         //     return ResponseEntity.status(403).build();
         // }
         
-        QuestionFeedbackDetailDTO feedbackDetail = feedbackService.getFeedbackDetail(feedbackId);
+        QuestionFeedbackDetailDTO feedbackDetail = feedbackService.getFeedbackDetail(feedbackId, type);
         if (feedbackDetail == null) {
             return ResponseEntity.notFound().build();
         }

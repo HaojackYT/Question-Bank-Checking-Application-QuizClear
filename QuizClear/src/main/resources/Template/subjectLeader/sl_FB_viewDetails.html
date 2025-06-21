@@ -228,11 +228,17 @@
         // Get URL parameters
         function getUrlParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);        }
-
-        // Initialize page
+            return urlParams.get(name);        }        // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            currentFeedbackId = getUrlParameter('id');
+            // For path: /subject-leader/feedback/{id}/details?type={type}
+            // Extract ID from path
+            const pathSegments = window.location.pathname.split('/');
+            const feedbackIndex = pathSegments.indexOf('feedback');
+            if (feedbackIndex >= 0 && pathSegments[feedbackIndex + 1]) {
+                currentFeedbackId = pathSegments[feedbackIndex + 1];
+            }
+            
+            // Get type from URL parameters
             currentFeedbackType = getUrlParameter('type');
             
             if (currentFeedbackId) {
@@ -240,11 +246,14 @@
             } else {
                 showErrorMessage('No feedback ID provided');
             }
-        });
-
-        // Load feedback detail data
+        });// Load feedback detail data
         function loadFeedbackDetail(feedbackId) {
-            fetch(`/subject-leader/api/feedback/${feedbackId}`)
+            let apiUrl = `/subject-leader/api/feedback/${feedbackId}`;
+            if (currentFeedbackType) {
+                apiUrl += `?type=${currentFeedbackType}`;
+            }
+            
+            fetch(apiUrl)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');

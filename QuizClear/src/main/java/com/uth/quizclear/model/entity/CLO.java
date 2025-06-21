@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import com.uth.quizclear.model.enums.DifficultyLevel;
+import com.uth.quizclear.model.enums.DifficultyLevelConverter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,10 +32,8 @@ public class CLO {
 
     @NotBlank(message = "CLO code is required")
     @Column(name = "clo_code", nullable = false)
-    private String cloCode;
-
-    @NotNull(message = "Difficulty level is required")
-    @Enumerated(EnumType.STRING)
+    private String cloCode;    @NotNull(message = "Difficulty level is required")
+    @Convert(converter = DifficultyLevelConverter.class)
     @Column(name = "difficulty_level", nullable = false)
     private DifficultyLevel difficultyLevel;
 

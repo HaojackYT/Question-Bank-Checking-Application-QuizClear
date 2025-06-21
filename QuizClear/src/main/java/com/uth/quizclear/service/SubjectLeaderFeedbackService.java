@@ -18,7 +18,7 @@ public interface SubjectLeaderFeedbackService {
      * @param feedbackId The ID of the question or exam
      * @return Detailed feedback DTO
      */
-    QuestionFeedbackDetailDTO getFeedbackDetail(Long feedbackId);
+    QuestionFeedbackDetailDTO getFeedbackDetail(Long feedbackId, String type);
     
     /**
      * Update question content based on feedback
