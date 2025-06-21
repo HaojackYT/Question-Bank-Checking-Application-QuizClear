@@ -157,16 +157,16 @@ INSERT INTO comments (entity_type, entity_id, commenter_id, content, created_at)
 
 -- 13. Thêm bản ghi vào bảng exam_reviews (chỉ cho exam_id 1, 2, 3 có sẵn)
 INSERT INTO exam_reviews (exam_id, reviewer_id, review_type, status, comments, created_at) VALUES
-(1, 2, 'subject_leader', 'approved', 'Exam content aligns well with course objectives', '2025-03-01 13:00:00'),
-(2, 3, 'department_head', 'needs_revision', 'Some questions need clarification', '2025-03-02 13:00:00'),
-(3, 4, 'examination_department', 'approved', 'Format and structure are excellent', '2025-03-03 13:00:00'),
-(1, 5, 'subject_leader', 'pending', 'Under review for final approval', '2025-03-04 13:00:00'),
-(2, 1, 'department_head', 'approved', 'Well-balanced difficulty levels', '2025-03-05 13:00:00'),
-(3, 2, 'examination_department', 'needs_revision', 'Minor formatting issues', '2025-03-06 13:00:00'),
-(1, 3, 'subject_leader', 'approved', 'Comprehensive assessment', '2025-03-07 13:00:00'),
-(2, 4, 'department_head', 'needs_revision', 'Time allocation needs adjustment', '2025-03-08 13:00:00'),
-(3, 5, 'examination_department', 'pending', 'Awaiting final review', '2025-03-09 13:00:00'),
-(1, 1, 'subject_leader', 'approved', 'Good variety of question types', '2025-03-10 13:00:00');
+(1, 2, 'SUBJECT_LEADER', 'APPROVED', 'Exam content aligns well with course objectives', '2025-03-01 13:00:00'),
+(2, 3, 'DEPARTMENT_HEAD', 'NEEDS_REVISION', 'Some questions need clarification', '2025-03-02 13:00:00'),
+(3, 4, 'EXAMINATION_DEPARTMENT', 'APPROVED', 'Format and structure are excellent', '2025-03-03 13:00:00'),
+(1, 5, 'SUBJECT_LEADER', 'PENDING', 'Under review for final approval', '2025-03-04 13:00:00'),
+(2, 1, 'DEPARTMENT_HEAD', 'APPROVED', 'Well-balanced difficulty levels', '2025-03-05 13:00:00'),
+(3, 2, 'EXAMINATION_DEPARTMENT', 'NEEDS_REVISION', 'Minor formatting issues', '2025-03-06 13:00:00'),
+(1, 3, 'SUBJECT_LEADER', 'APPROVED', 'Comprehensive assessment', '2025-03-07 13:00:00'),
+(2, 4, 'DEPARTMENT_HEAD', 'NEEDS_REVISION', 'Time allocation needs adjustment', '2025-03-08 13:00:00'),
+(3, 5, 'EXAMINATION_DEPARTMENT', 'PENDING', 'Awaiting final review', '2025-03-09 13:00:00'),
+(1, 1, 'SUBJECT_LEADER', 'APPROVED', 'Good variety of question types', '2025-03-10 13:00:00');
 
 -- 14. Thêm 10 bản ghi vào bảng notifications
 INSERT INTO notifications (user_id, type, title, message, priority, created_at) VALUES
@@ -240,4 +240,24 @@ INSERT INTO duplicate_detections (new_question_id, similar_question_id, similari
 (2, 6, 0.8100, NULL, 'pending', NULL, 3, NULL, '2025-03-22 08:00:00', NULL, 'BST vs derivative similarity', NULL),
 (3, 7, 0.7500, NULL, 'pending', NULL, 4, NULL, '2025-03-23 08:00:00', NULL, 'OOP vs matrix determinant', NULL),
 (4, 8, 0.8300, NULL, 'pending', NULL, 5, NULL, '2025-03-24 08:00:00', NULL, 'HTTP vs physics comparison', NULL);
+
+-- 18. Bổ sung thêm dữ liệu mẫu cho chức năng Approvals của Head of Examination Department
+-- Thêm dữ liệu exam_reviews cho review_type = 'examination_department' (enum value)
+INSERT INTO exam_reviews (exam_id, reviewer_id, review_type, status, comments, created_at) VALUES
+-- Pending approvals (cần phê duyệt bởi Head of Examination Department)
+(1, 6, 'examination_department', 'pending', 'CS101 Midterm exam awaiting final approval from Head of Examination Department', '2025-06-20 08:00:00'),
+(2, 6, 'examination_department', 'pending', 'MATH201 Final exam requires examination department review for compliance', '2025-06-20 10:30:00'),
+(3, 6, 'examination_department', 'pending', 'PHYS301 Quiz needs final examination department approval before implementation', '2025-06-20 14:15:00'),
+
+-- Approved reviews (đã được phê duyệt bởi Head of Examination Department)
+(1, 6, 'examination_department', 'approved', 'CS101 Midterm exam approved with minor formatting suggestions for better readability', '2025-06-19 09:00:00'),
+(2, 6, 'examination_department', 'approved', 'MATH201 Final exam approved for implementation after addressing time concerns', '2025-06-18 11:30:00'),
+
+-- Rejected reviews (bị từ chối bởi Head of Examination Department)
+(3, 6, 'examination_department', 'rejected', 'PHYS301 Quiz rejected due to insufficient question diversity and unclear instructions', '2025-06-17 15:45:00'),
+
+-- Needs revision (cần sửa đổi theo yêu cầu Head of Examination Department)
+(1, 6, 'examination_department', 'needs_revision', 'CS101 Midterm needs revision in question difficulty distribution and answer key formatting', '2025-06-16 13:20:00'),
+(2, 6, 'examination_department', 'needs_revision', 'MATH201 Final requires revision in answer key formatting and time allocation guidelines', '2025-06-15 16:00:00'),
+(3, 6, 'examination_department', 'needs_revision', 'PHYS301 Quiz needs improvement in question clarity and grading rubric', '2025-06-14 10:45:00');
 

@@ -6,7 +6,9 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import com.uth.quizclear.model.enums.ReviewType;
+import com.uth.quizclear.model.enums.ReviewTypeConverter;
 import com.uth.quizclear.model.enums.ExamReviewStatus;
+import com.uth.quizclear.model.enums.ExamReviewStatusConverter;
 
 import java.time.LocalDateTime;
 
@@ -29,16 +31,16 @@ public class ExamReview {
     @ManyToOne
     @JoinColumn(name = "reviewer_id", nullable = false)
     private User reviewer;
-
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = ReviewTypeConverter.class)
     @Column(name = "review_type", nullable = false)
-    private ReviewType reviewType; 
+    private ReviewType reviewType;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = ExamReviewStatusConverter.class)
     @Column(name = "status")
     private ExamReviewStatus status = ExamReviewStatus.PENDING;
 
     @Column(name = "comments", columnDefinition = "TEXT")
-    private String comments;    @Column(name = "created_at")
+    private String comments;
+    @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 }

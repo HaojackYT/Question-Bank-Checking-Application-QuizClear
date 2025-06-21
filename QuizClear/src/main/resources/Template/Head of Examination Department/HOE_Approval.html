@@ -1,212 +1,365 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"> <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+        <link rel="stylesheet" th:href="@{/Static/header.css}">
+        <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+        <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+        <link rel="stylesheet" th:href="@{/Static/css/HOE/HEDApproval.css}">
+        <link
+            href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
+            rel="stylesheet">
+        <style>
+            /* Style cho search và filter bar */
+            .search-filter-bar {
+                margin-bottom: 20px;
+            }
+            
+            .search-form {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                flex-wrap: wrap;
+            }
+            
+            .search-box {
+                display: flex;
+                align-items: center;
+                flex: 1;
+                min-width: 300px;
+            }
+            
+            .search-input {
+                flex: 1;
+                padding: 12px 16px;
+                border: 2px solid #e1e5e9;
+                border-radius: 25px;
+                font-size: 14px;
+                outline: none;
+                transition: border-color 0.3s ease;
+            }
+            
+            .search-input:focus {
+                border-color: #4a90e2;
+            }
+            
+            .search-btn {
+                background: #fcfcfc;
+                border: none;
+                color: rgb(0, 0, 0);
+                padding: 12px 16px;
+                border-radius: 50%;
+                margin-left: 10px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+            
+            .search-btn:hover {
+                background: #357abd;
+            }
+            
+            .filter-dropdown {
+                flex-shrink: 0;
+            }
+            
+            .filter-select {
+                padding: 12px 16px;
+                border: 2px solid #e1e5e9;
+                border-radius: 8px;
+                font-size: 14px;
+                background: white;
+                cursor: pointer;
+                outline: none;
+                min-width: 180px;
+                transition: border-color 0.3s ease;
+            }
+            
+            .filter-select:focus {
+                border-color: #4a90e2;
+            }
+            
+            /* Container viền bao quanh */
+            .approvals-container {
+                border: 0.0625rem solid #E0EAFA;
+                border-radius: 0.5rem;
+                padding: 20px;
+                margin: 20px;
+                background-color: #ffffff;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            
+            /* Responsive design */
+            @media (max-width: 768px) {
+                .search-form {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+                
+                .search-box {
+                    min-width: 100%;
+                    margin-bottom: 10px;
+                }
+                
+                .filter-select {
+                    width: 100%;
+                }
+            }
+        </style>
+        <title th:text="${pageTitle} ?: 'Approvals'">Approvals</title>
+    </head><body> <!--header-->
+        <div th:replace="~{header_user :: header}"></div>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../static/css/HOE/HEDApproval.css">
-    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Approvals</title>
-</head>
+        <!-- body -->
+        <div id="Container-body">
+            <!-- Menu -->
+            <div
+                th:replace="~{'Head of Examination Department/Menu-ExaminationDepartment' :: menu}"></div>
 
-<body>
-    <!--header-->
-    <div id="header-placeholder"></div>
-
-    <!-- body -->
-    <div id="Container-body">
-        <!-- Menu -->
-        <div id="menu-HTML"></div>
-
-        <!-- Main content -->
-        <div id="main">
-            <div class="approvals-container">
-                <div class="page-header">
-                    <h1>Approvals</h1>
-                    <p class="page-subtitle">Approve, decline response from lecturer</p>
-                </div>
-
-                <div class="search-filter-bar">
-                    <div class="search-box">
-                        <input type="text" placeholder="Enter search content ..." class="search-input">
-                        <button class="search-btn">
-                            <i class="fas fa-search"></i>
-                        </button>
+            <!-- Main content -->
+            <div id="main">
+                <div class="approvals-container">
+                    <div class="page-header">
+                        <h1 th:text="${pageTitle} ?: 'Approvals'">Approvals</h1>
+                        <p class="page-subtitle"
+                            th:text="${pageSubtitle} ?: 'Approve, decline response from lecturer'">Approve,
+                            decline response from lecturer</p>
                     </div>
-                    <div class="filter-dropdown">
-                        <select class="filter-select">
-                            <option>All Review Tasks</option>
-                            <option>Pending</option>
-                            <option>Approved</option>
-                            <option>Declined</option>
-                        </select>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                </div>
 
-                <div class="table-container">
-                    <table class="approvals-table">
-                        <thead>
-                            <tr>
-                                <th>Exam ID</th>
-                                <th>Exam Title</th>
-                                <th>Lecturer</th>
-                                <th>Assign Date</th>
-                                <th>Details</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>DB202</td>
-                                <td>Database Systems</td>
-                                <td>Ng Van A</td>
-                                <td>12/04/25</td>
-                                <td>
-                                    <button class="details-btn"
-                                        onclick="openDetailsModal('DB202', 'Database System', 'Department', 'Nguyen Van A', 'The questions are clear, cover a balanced range of difficulty levels, and assess both theoretical knowledge and practical application.\nTime allocation appears appropriate for the expected workload.\nI recommend approving this exam without further revision.')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                                <td><span class="status approved">Approved</span></td>
-                                <td>
-                                   
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>DB202</td>
-                                <td>Operating Systems</td>
-                                <td>Ng Van B</td>
-                                <td>13/04/25</td>
-                                <td>
-                                    <button class="details-btn"
-                                        onclick="openDetailsModal('DB202', 'Operating Systems', 'Department', 'Nguyen Van B', 'The exam content needs revision.\nSome questions are unclear and may confuse students.\nRecommend updating questions 5-8 for better clarity.')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                                <td><span class="status declined">Declined</span></td>
-                                <td>
-                                  
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>DB202</td>
-                                <td>Operating Systems</td>
-                                <td>Ng Van B</td>
-                                <td>13/04/25</td>
-                                <td>
-                                    <button class="details-btn"
-                                        onclick="openDetailsModal('DB202', 'Operating Systems', 'Department', 'Nguyen Van B', 'Pending review for this exam.\nWaiting for lecturer response.')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                                <td><span class="status new">New</span></td>
-                                <td>
-                                     <button class="action-btn approve-btn" onclick="approveExam(this)">
-                                        <i class="fa-regular fa-circle-check"></i>
-                                    </button>
-                                    <button class="action-btn decline-btn" onclick="openDeclineModal()">
-                                        <i class="fa-regular fa-circle-xmark"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Details Modal -->
-            <div id="detailsModal" class="modal">
-                <div class="modal-content details-modal">
-                    <div class="modal-header">
-                        <h2>Details</h2>
-                        <button class="close-btn" onclick="closeModal('detailsModal')">
-                            <i class="fas fa-times"></i>
-                        </button>
+                    <div class="search-filter-bar">
+                        <form method="get" th:action="@{/hoe/approvals}"
+                            class="search-form">
+                            <div class="search-box">
+                                <input type="text" name="search"
+                                    th:value="${searchTerm}"
+                                    placeholder="Enter search content ..."
+                                    class="search-input">
+                                <button type="submit" class="search-btn">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                            <div class="filter-dropdown">
+                                <select name="filter" class="filter-select"
+                                    onchange="this.form.submit()">
+                                    <option value="all"
+                                        th:selected="${currentFilter == 'all'}">All
+                                        Review Tasks</option>
+                                    <option value="pending"
+                                        th:selected="${currentFilter == 'pending'}">Pending</option>
+                                    <option value="approved"
+                                        th:selected="${currentFilter == 'approved'}">Approved</option>
+                                    <option value="rejected"
+                                        th:selected="${currentFilter == 'rejected'}">Rejected</option>
+                                    <option value="needs_revision"
+                                        th:selected="${currentFilter == 'needs_revision'}">Needs
+                                        Revision</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </form>
                     </div>
-                    <div class="modal-body">
-                        <div class="ExamCourse">
+
+                    <!-- Statistics Summary -->
+                    <div class="stats-summary"
+                        style="margin-bottom: 20px; display: flex; gap: 20px;">
+                        <div class="stat-card"
+                            style="padding: 10px; background: #e2e4e6; border-radius: 5px; text-align: center;">
+                            <strong th:text="${totalCount}">0</strong>
+                            <div>Total</div>
+                        </div>
+                        <div class="stat-card"
+                            style="padding: 10px; background: #fff3cd; border-radius: 5px; text-align: center;">
+                            <strong th:text="${pendingCount}">0</strong>
+                            <div>Pending</div>
+                        </div>
+                        <div class="stat-card"
+                            style="padding: 10px; background: #d1edff; border-radius: 5px; text-align: center;">
+                            <strong th:text="${approvedCount}">0</strong>
+                            <div>Approved</div>
+                        </div>
+                        <div class="stat-card"
+                            style="padding: 10px; background: #f8d7da; border-radius: 5px; text-align: center;">
+                            <strong th:text="${rejectedCount}">0</strong>
+                            <div>Rejected</div>
+                        </div>
+                        <div class="stat-card"
+                            style="padding: 10px; background: #ffeaa7; border-radius: 5px; text-align: center;">
+                            <strong th:text="${needsRevisionCount}">0</strong>
+                            <div>Needs Revision</div>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="approvals-table"
+                            th:fragment="approvals-table">
+                            <thead>
+                                <tr>
+                                    <th>Review ID</th>
+                                    <th>Exam Title</th>
+                                    <th>Course</th>
+                                    <th>Created By</th>
+                                    <th>Review Date</th>
+                                    <th>Details</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Hiển thị thông báo nếu không có dữ liệu -->
+                                <tr th:if="${#lists.isEmpty(approvals)}">
+                                    <td colspan="8"
+                                        style="text-align: center; padding: 20px; color: #6c757d;">
+                                        <i class="fas fa-inbox"
+                                            style="font-size: 24px; margin-bottom: 10px;"></i><br>
+                                        No approval requests found.
+                                    </td>
+                                </tr>
+
+                                <!-- Lặp qua danh sách approvals từ controller -->
+                                <tr th:each="approval : ${approvals}">
+                                    <td th:text="${approval.reviewId}">1</td>
+                                    <td
+                                        th:text="${approval.exam.examTitle}">Database
+                                        Systems</td>
+                                    <td
+                                        th:text="${approval.exam.course.courseName}">CS101</td>
+                                    <td
+                                        th:text="${approval.exam.createdBy.fullName}">Nguyen
+                                        Van A</td>
+                                    <td
+                                        th:text="${#temporals.format(approval.createdAt, 'dd/MM/yyyy HH:mm')}">12/04/25</td>
+                                    <td>
+                                        <button class="details-btn"
+                                            th:data-review-id="${approval.reviewId}"
+                                            th:data-exam-title="${approval.exam.examTitle}"
+                                            th:data-course-name="${approval.exam.course.courseName}"
+                                            th:data-reviewer-name="${approval.reviewer.fullName}"
+                                            th:data-comments="${approval.comments}"
+                                            onclick="openDetailsModalFromData(this)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <span
+                                            th:class="'status ' + ${approval.status.name().toLowerCase()}"
+                                            th:text="${approval.status.displayName}"
+                                            th:classappend="${approval.status.name() == 'APPROVED'} ? 'approved' : (${approval.status.name() == 'REJECTED'} ? 'declined' : (${approval.status.name() == 'PENDING'} ? 'new' : 'needs-revision'))">
+                                            Pending
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <!-- Chỉ hiển thị nút action cho status PENDING -->
+                                        <div
+                                            th:if="${approval.status.name() == 'PENDING'}">
+                                            <button
+                                                class="action-btn approve-btn"
+                                                th:data-review-id="${approval.reviewId}"
+                                                onclick="approveExamFromData(this)">
+                                                <i
+                                                    class="fa-regular fa-circle-check"></i>
+                                            </button>
+                                            <button
+                                                class="action-btn decline-btn"
+                                                th:data-review-id="${approval.reviewId}"
+                                                onclick="openDeclineModalFromData(this)">
+                                                <i
+                                                    class="fa-regular fa-circle-xmark"></i>
+                                            </button>
+                                        </div>
+                                        <!-- Hiển thị thông tin đã xử lý cho các status khác -->
+                                        <div
+                                            th:unless="${approval.status.name() == 'PENDING'}"
+                                            style="color: #6c757d; font-style: italic;">
+                                            Processed
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div> <!-- Details Modal -->
+                <div id="detailsModal" class="modal">
+                    <div class="modal-content details-modal">
+                        <div class="modal-header">
+                            <h2>Review Details</h2>
+                            <button class="close-btn"
+                                onclick="closeModal('detailsModal')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="ExamCourse">
+                                <div class="form-group">
+                                    <label>Review ID</label>
+                                    <input type="text" id="modalReviewId"
+                                        readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Exam Title</label>
+                                    <input type="text" id="modalExamTitle"
+                                        readonly>
+                                </div>
+                            </div>
                             <div class="form-group">
-                            <label>Exam ID</label>
-                            <input type="text" id="modalExamId" readonly>
+                                <label>Course</label>
+                                <input type="text" id="modalCourse" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Reviewer</label>
+                                <input type="text" id="modalReviewer" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Comments</label>
+                                <textarea id="modalComments" readonly
+                                    rows="4"></textarea>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Course</label>
-                            <input type="text" id="modalCourse" readonly>
+                    </div>
+                </div>
+
+                <!-- Decline Modal -->
+                <div id="declineModal" class="modal">
+                    <div class="modal-content decline-modal">
+                        <div class="modal-header">
+                            <h2>Decline Review</h2>
+                            <button class="close-btn"
+                                onclick="closeModal('declineModal')">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Responsible Department / Faculty</label>
-                            <input type="text" id="modalDepartment" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label>Review By</label>
-                            <input type="text" id="modalReviewBy" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label>Notes</label>
-                            <textarea id="modalNotes" readonly rows="3"></textarea>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Provide a reason for declining the
+                                    review</label>
+                                <textarea id="declineReason"
+                                    placeholder="Enter your reason here..."
+                                    rows="6"></textarea>
+                            </div>
+                            <input type="hidden" id="declineReviewId">
+                            <div class="modal-actions">
+                                <button class="cancel-btn"
+                                    onclick="closeModal('declineModal')">Cancel</button>
+                                <button class="send-btn"
+                                    onclick="submitDecline()">Send</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Decline Modal -->
-            <div id="declineModal" class="modal">
-                <div class="modal-content decline-modal">
-                    <div class="modal-header">
-                        <h2>Decline Exams</h2>
-                        <button class="close-btn" onclick="closeModal('declineModal')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>Provide a reason for declining the exam</label>
-                            <textarea id="declineReason" placeholder="Enter your reason here..." rows="6"></textarea>
-                        </div>
-                        <div class="modal-actions">
-                            <button class="cancel-btn" onclick="closeModal('declineModal')">Cancel</button>
-                            <button class="send-btn" onclick="submitDecline()">Send</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script>
-        // Load header
-        fetch('../header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-
-        // Load menu
-        fetch('Menu-ExaminationDepartment.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-                setActiveMenu(document.title);
-            });
-
+        </div> <!-- Scripts -->
+        <script>
         // Modal functions
-        function openDetailsModal(examId, course, department, reviewBy, notes) {
-            document.getElementById('modalExamId').value = examId;
+        function openDetailsModal(reviewId, examTitle, course, reviewer, comments) {
+            document.getElementById('modalReviewId').value = reviewId;
+            document.getElementById('modalExamTitle').value = examTitle;
             document.getElementById('modalCourse').value = course;
-            document.getElementById('modalDepartment').value = department;
-            document.getElementById('modalReviewBy').value = reviewBy;
-            document.getElementById('modalNotes').value = notes;
+            document.getElementById('modalReviewer').value = reviewer;
+            document.getElementById('modalComments').value = comments || 'No comments available';
             document.getElementById('detailsModal').style.display = 'block';
         }
 
-        function openDeclineModal() {
+        function openDeclineModal(reviewId) {
+            document.getElementById('declineReviewId').value = reviewId;
             document.getElementById('declineModal').style.display = 'block';
         }
 
@@ -214,28 +367,85 @@
             document.getElementById(modalId).style.display = 'none';
             if (modalId === 'declineModal') {
                 document.getElementById('declineReason').value = '';
+                document.getElementById('declineReviewId').value = '';
             }
         }
 
-        function approveExam(button) {
-            const row = button.closest('tr');
-            const statusCell = row.querySelector('.status');
-            statusCell.textContent = 'Approved';
-            statusCell.className = 'status approved';
+        function approveExam(button, reviewId) {
+            if (confirm('Are you sure you want to approve this review?')) {
+                // TODO: Implement AJAX call to approve endpoint
+                // fetch('/hoe/approvals/approve', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({ reviewId: reviewId })
+                // }).then(response => {
+                //     if (response.ok) {
+                //         location.reload(); // Reload page to see updated status
+                //     }
+                // });
+                
+                // For now, just update UI locally
+                const row = button.closest('tr');
+                const statusCell = row.querySelector('.status');
+                statusCell.textContent = 'Approved';
+                statusCell.className = 'status approved';
+                
+                // Hide action buttons
+                const actionsCell = row.cells[7];
+                actionsCell.innerHTML = '<div style="color: #6c757d; font-style: italic;">Processed</div>';
+                
+                alert('Review has been approved successfully.');
+            }
         }
 
         function submitDecline() {
             const reason = document.getElementById('declineReason').value.trim();
+            const reviewId = document.getElementById('declineReviewId').value;
+            
             if (reason === '') {
-                alert('Please provide a reason for declining the exam.');
+                alert('Please provide a reason for declining the review.');
                 return;
             }
 
-            // Here you would typically send the decline reason to your backend
-            console.log('Decline reason:', reason);
+            // TODO: Implement AJAX call to decline endpoint
+            // fetch('/hoe/approvals/decline', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify({ reviewId: reviewId, reason: reason })
+            // }).then(response => {
+            //     if (response.ok) {
+            //         location.reload(); // Reload page to see updated status
+            //     }
+            // });
+
+            console.log('Decline review ID:', reviewId, 'Reason:', reason);
 
             closeModal('declineModal');
-            alert('Exam has been declined successfully.');
+            alert('Review has been declined successfully.');
+            
+            // For demo purposes, reload the page
+            // location.reload();        
+        }
+
+        // New functions to work with data attributes (safe for Thymeleaf)
+        function openDetailsModalFromData(button) {
+            const reviewId = button.getAttribute('data-review-id');
+            const examTitle = button.getAttribute('data-exam-title');
+            const course = button.getAttribute('data-course-name');
+            const reviewer = button.getAttribute('data-reviewer-name');
+            const comments = button.getAttribute('data-comments');
+            
+            openDetailsModal(reviewId, examTitle, course, reviewer, comments);
+        }
+
+        function approveExamFromData(button) {
+            const reviewId = button.getAttribute('data-review-id');
+            approveExam(button, reviewId);
+        }
+
+        function openDeclineModalFromData(button) {
+            const reviewId = button.getAttribute('data-review-id');
+            openDeclineModal(reviewId);
         }
 
         // Close modal when clicking outside
@@ -250,8 +460,18 @@
                 closeModal('declineModal');
             }
         }
-    </script>
-    <script src="../../Static/js/L_activeMenu.js"></script>
-</body>
 
+        // Auto-submit form when filter changes
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterSelect = document.querySelector('.filter-select');
+            if (filterSelect) {
+                filterSelect.addEventListener('change', function() {
+                    this.form.submit();
+                });
+            }
+        });
+    </script>
+        <script src="../../Static/js/L_activeMenu.js"></script>
+    </body>
 </html>
+<!-- End of HTML Document -->
