@@ -1,19 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <body>
-        <div id="Menu-Staff" th:fragment="menu">
+        <div id="Menu-Staff" th:fragment="menu"
+            style="width: 18vw; height: 100%; background-color: #E0EAFA;">
             <div style="padding: 1rem;">
-                <div class="elements">
-                    <i class="fa-solid fa-house "></i>
-                    <a th:href="@{/hoe/dashboard}">Dashboard</a>
+                <div class="elements"
+                    style="padding: 1rem; display: flex; border-radius: 20px;">
+                    <i class="fa-solid fa-house"
+                        style="color: black; font-size: 1rem;"></i>
+                    <a th:href="@{/hoe/dashboard}"
+                        style="text-decoration: none; color: black; font-size: 1rem; margin-left: 1em;">Dashboard</a>
                 </div>
-                <div class="elements">
-                    <i class="fa-solid fa-file"></i>
-                    <a th:href="@{/hoe/review-assignment}">Review Assignment</a>
+                <div class="elements"
+                    style="padding: 1rem; display: flex; border-radius: 20px;">
+                    <i class="fa-solid fa-file"
+                        style="color: black; font-size: 1rem;"></i>
+                    <a th:href="@{/hoe/review-assignment}"
+                        style="text-decoration: none; color: black; font-size: 1rem; margin-left: 1em;">Review
+                        Assignment</a>
                 </div>
-                <div class="elements active">
-                    <i class="fa-solid fa-file-circle-check"></i>
-                    <a th:href="@{/hoe/approvals}">Approvals</a>
+                <div class="elements active"
+                    style="padding: 1rem; display: flex; border-radius: 20px; background-color: #C6DCFF;">
+                    <i class="fa-solid fa-file-circle-check"
+                        style="color: #0088F0; font-size: 1rem; font-weight: 600;"></i>
+                    <a th:href="@{/hoe/approvals}"
+                        style="text-decoration: none; color: #0088F0; font-size: 1rem; margin-left: 1em; font-weight: 600;">Approvals</a>
                 </div>
             </div>
         </div>

@@ -106,15 +106,16 @@
                 }
             }
         </style>
-        <title th:text="${pageTitle} ?: 'Approvals'">Approvals</title>
-    </head><body> <!--header-->
+        <title th:text="${pageTitle} ?: 'Approvals'">Approvals</title>    </head>
+
+    <body>
+        <!--header-->
         <div th:replace="~{header_user :: header}"></div>
 
         <!-- body -->
         <div id="Container-body">
             <!-- Menu -->
-            <div
-                th:replace="~{'Head of Examination Department/Menu-ExaminationDepartment' :: menu}"></div>
+            <div th:replace="~{'Head of Examination Department/Menu-ExaminationDepartment' :: menu}"></div>
 
             <!-- Main content -->
             <div id="main">
@@ -346,8 +347,32 @@
                     </div>
                 </div>
             </div>
-        </div> <!-- Scripts -->
-        <script>
+            <!-- Decline Modal -->
+            <div id="declineModal" class="modal">
+                <div class="modal-content decline-modal">
+                    <div class="modal-header">
+                        <h2>Decline Exams</h2>
+                        <button class="close-btn" onclick="closeModal('declineModal')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Provide a reason for declining the exam</label>
+                            <textarea id="declineReason" placeholder="Enter your reason here..." rows="6"></textarea>
+                        </div>
+                        <div class="modal-actions">
+                            <button class="cancel-btn" onclick="closeModal('declineModal')">Cancel</button>
+                            <button class="send-btn" onclick="submitDecline()">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
         // Modal functions
         function openDetailsModal(reviewId, examTitle, course, reviewer, comments) {
             document.getElementById('modalReviewId').value = reviewId;
@@ -456,8 +481,7 @@
             if (event.target === detailsModal) {
                 closeModal('detailsModal');
             }
-            if (event.target === declineModal) {
-                closeModal('declineModal');
+            if (event.target === declineModal) {                closeModal('declineModal');
             }
         }
 
@@ -471,7 +495,7 @@
             }
         });
     </script>
-        <script src="../../Static/js/L_activeMenu.js"></script>
-    </body>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
+</body>
 </html>
 <!-- End of HTML Document -->
