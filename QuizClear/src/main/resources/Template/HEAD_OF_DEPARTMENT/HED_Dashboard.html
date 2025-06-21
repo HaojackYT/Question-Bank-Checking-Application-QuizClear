@@ -47,8 +47,8 @@
                     <div class="stat-number">56</div>
                     <div class="stat-change">+23 this month</div>
                 </div>
-                <div class="stat-card reject">
-                    <div class="stat-label">Reject</div>
+                <div class="stat-card rejected">
+                    <div class="stat-label">Rejected</div>
                     <div class="stat-number">32</div>
                     <div class="stat-change">+8 this month</div>
                 </div>
@@ -87,7 +87,6 @@
                 </div>
             </div>
 
-
             <!-- Content Grid for Deadline and Activities -->
             <div class="content-sections">
                 <!-- Deadline Section -->
@@ -99,32 +98,7 @@
                     </div>
 
                     <div class="deadline-list">
-                        <div class="deadline-item">
-                            <div class="deadline-content">
-                                <h3>Deadline: Exam - E1010 - Overdue</h3>
-                                <p>Overdue assignments detected. Please
-                                    check</p>
-                            </div>
-                            <button class="check-btn">Check</button>
-                        </div>
-
-                        <div class="deadline-item">
-                            <div class="deadline-content">
-                                <h3>Deadline: Assignment - Check</h3>
-                                <p>Vo Van E has updated questions for
-                                    Computer Architecture. Please check</p>
-                            </div>
-                            <button class="check-btn">Check</button>
-                        </div>
-
-                        <div class="deadline-item">
-                            <div class="deadline-content">
-                                <h3>Deadline: Exam - E1001</h3>
-                                <p>Upcoming exam needs your approval. Please
-                                    check</p>
-                            </div>
-                            <button class="check-btn">Check</button>
-                        </div>
+                        <!-- Dynamic content will be loaded here -->
                     </div>
                 </div>
 
@@ -137,35 +111,7 @@
                     </div>
 
                     <div class="activities-list">
-                        <div class="activity-item">
-                            <div class="activity-content">
-                                <h3>New Assignment: Assign Lecturer(s) - Web
-                                    Programming</h3>
-                                <p>Assign lecturer(s) to the Web Programming
-                                    Subject</p>
-                            </div>
-                            <button class="check-btn">Check</button>
-                        </div>
-
-                        <div class="activity-item">
-                            <div class="activity-content">
-                                <h3>New Approve: Lecturer Vo Van E - Update
-                                    Question</h3>
-                                <p>Lecturer Vo Van E has updated questions
-                                    for Computer Architecture</p>
-                            </div>
-                            <button class="check-btn">Check</button>
-                        </div>
-
-                        <div class="activity-item">
-                            <div class="activity-content">
-                                <h3>New Assignment: Nguyen Van A -
-                                    Responded</h3>
-                                <p>The lecturer has just responded to your
-                                    feedback.</p>
-                            </div>
-                            <button class="check-btn">Check</button>
-                        </div>
+                        <!-- Dynamic content will be loaded here -->
                     </div>
                 </div>
             </div>
@@ -179,43 +125,9 @@
                         vs Target</p>
                     <div class="bar-chart">
                         <div class="chart-area">
-                            <div class="y-axis">
-                                <span>100</span>
-                                <span>80</span>
-                                <span>60</span>
-                                <span>40</span>
-                                <span>20</span>
-                                <span>0</span>
-                            </div>
+                            <div class="y-axis" id="y-axis"></div>
                             <div class="chart-bars">
-                                <div class="bar-group" data-subject="Database Systems">
-                                    <div class="bar created" style="height: 44px;"></div>
-                                    <div class="bar target" style="height: 54px;"></div>
-                                </div>
-                                <div class="bar-group" data-subject="Web Development">
-                                    <div class="bar created" style="height: 30px;"></div>
-                                    <div class="bar target" style="height: 82px;"></div>
-                                </div>
-                                <div class="bar-group" data-subject="Data Structures">
-                                    <div class="bar created" style="height: 56px;"></div>
-                                    <div class="bar target" style="height: 74px;"></div>
-                                </div>
-                                <div class="bar-group" data-subject="Algorithms">
-                                    <div class="bar created" style="height: 24px;"></div>
-                                    <div class="bar target" style="height: 84px;"></div>
-                                </div>
-                                <div class="bar-group" data-subject="Operating System">
-                                    <div class="bar created" style="height: 60px;"></div>
-                                    <div class="bar target" style="height: 82px;"></div>
-                                </div>
-                                <div class="bar-group" data-subject="Networks">
-                                    <div class="bar created" style="height: 18px;"></div>
-                                    <div class="bar target" style="height: 42px;"></div>
-                                </div>
-                                <div class="bar-group" data-subject="Security">
-                                    <div class="bar created" style="height: 24px;"></div>
-                                    <div class="bar target" style="height: 30px;"></div>
-                                </div>
+                                <!-- Dynamic content will be loaded here -->
                             </div>
                         </div>
                         <div class="chart-legend">
@@ -228,7 +140,7 @@
                                 <span>Target</span>
                             </div>
                         </div>
-                        <div class="chart-tooltip" id="chart-tooltip" style="display: none;">Operating System</div>
+                        <div class="chart-tooltip" id="chart-tooltip" style="display: none;"></div>
                     </div>
                 </div>
 
@@ -236,8 +148,7 @@
                 <div class="progress-section">
                     <h2>Overall Progress</h2>
                     <div class="progress-content">
-                        <div class="progress-percentage-text">72%
-                            Completed</div>
+                        <div class="progress-percentage-text">72% Completed</div>
                         <div class="circular-progress">
                             <svg width="180" height="180" viewBox="0 0 180 180">
                                 <circle cx="90" cy="90" r="75" stroke="#e5e7eb" stroke-width="20" fill="none" />
@@ -262,42 +173,71 @@
         </div>
     </div>
 
-    <!-- ma nhung header vs menu -->
     <script>
-        // RÓT DỮ LIỆU THỐNG KÊ TỔNG QUÁT (Lecturer, Pending, Approved, Rejected)
+        // Fix formatChange function
+        function formatChange(change) {
+            if (change > 0) return `+${change} this month`;
+            if (change < 0) return `${change} this month`;
+            return "0 this month";
+        }
+
+        // Load statistics
         fetch("/api/dashboard/hod/stats")
             .then(res => res.json())
             .then(data => {
-                document.querySelector(".stat-card.lecturer .stat-number").innerText = data.lecturerCount;
-                document.querySelector(".stat-card.pending .stat-number").innerText = data.pendingCount;
-                document.querySelector(".stat-card.approved .stat-number").innerText = data.approvedCount;
-                document.querySelector(".stat-card.reject .stat-number").innerText = data.rejectedCount;
-            });
+                console.log('Stats data:', data); // Debug log
+                
+                document.querySelector(".stat-card.lecturer .stat-number").innerText = data.lecturerCount || 0;
+                document.querySelector(".stat-card.lecturer .stat-change").innerText = formatChange(data.lecturerChange || 0);
 
-        // RÓT DỮ LIỆU BIỂU ĐỒ Created vs Target
+                document.querySelector(".stat-card.pending .stat-number").innerText = data.pendingCount || 0;
+                document.querySelector(".stat-card.pending .stat-change").innerText = formatChange(data.pendingChange || 0);
+
+                document.querySelector(".stat-card.approved .stat-number").innerText = data.approvedCount || 0;
+                document.querySelector(".stat-card.approved .stat-change").innerText = formatChange(data.approvedChange || 0);
+
+                document.querySelector(".stat-card.rejected .stat-number").innerText = data.rejectedCount || 0;
+                document.querySelector(".stat-card.rejected .stat-change").innerText = formatChange(data.rejectedChange || 0);
+            })
+            .catch(error => console.error('Error loading stats:', error));
+
+        // Load bar charts
         fetch("/api/dashboard/hod/subject-progress")
             .then(res => res.json())
             .then(data => {
                 const container = document.querySelector(".chart-bars");
+                const yAxis = document.querySelector(".y-axis");
                 container.innerHTML = "";
+                yAxis.innerHTML = "";
+
+                if (data.length === 0) {
+                    container.innerHTML = '<p style="text-align: center;">No data available</p>';
+                    return;
+                }
+
                 const max = Math.max(...data.map(d => Math.max(d.created, d.target)));
-                const scale = 100 / max;
+                const step = Math.ceil(max / 5);
+                const scale = 100 / (step * 5);
+
+                for (let i = 5; i >= 0; i--) {
+                    yAxis.innerHTML += `<span>${i * step}</span>`;
+                }
 
                 data.forEach(item => {
                     const createdHeight = item.created * scale;
                     const targetHeight = item.target * scale;
 
                     const bar = `
-        <div class="bar-group" data-subject="${item.subject}">
-          <div class="bar created" style="height: ${createdHeight}px;"></div>
-          <div class="bar target" style="height: ${targetHeight}px;"></div>
-        </div>`;
-
+                        <div class="bar-group" data-subject="${item.subject}">
+                            <div class="bar created" style="height: ${createdHeight}px;"></div>
+                            <div class="bar target" style="height: ${targetHeight}px;"></div>
+                        </div>`;
                     container.innerHTML += bar;
                 });
-            });
+            })
+            .catch(error => console.error('Error loading charts:', error));
 
-        // RÓT DỮ LIỆU VÒNG TRÒN PROGRESS
+        // Load progress
         fetch("/api/dashboard/hod/progress-percent")
             .then(res => res.json())
             .then(percent => {
@@ -306,99 +246,76 @@
                 const totalLength = 471;
                 const offset = totalLength - (percent / 100) * totalLength;
                 circle.setAttribute("stroke-dashoffset", offset);
-            });
+            })
+            .catch(error => console.error('Error loading progress:', error));
 
-        // RÓT DEADLINE TASKS
+        // Load deadlines
         fetch("/api/dashboard/hod/deadlines")
             .then(res => res.json())
             .then(data => {
                 const list = document.querySelector(".deadline-list");
                 list.innerHTML = "";
+                
+                if (data.length === 0) {
+                    list.innerHTML = '<p style="text-align: center;">No upcoming deadlines</p>';
+                    return;
+                }
+                
                 data.forEach(task => {
                     const html = `
-        <div class="deadline-item">
-          <div class="deadline-content">
-            <h3>Deadline: ${task.title} - ${task.course}</h3>
-            <p>${task.note}</p>
-          </div>
-          <button class="check-btn">Check</button>
-        </div>`;
+                        <div class="deadline-item">
+                            <div class="deadline-content">
+                                <h3>${task.title}</h3>
+                                <p>${task.description}</p>
+                            </div>
+                            <button class="check-btn" onclick="location.href='${task.actionUrl}'">Check</button>
+                        </div>`;
                     list.innerHTML += html;
                 });
-            });
+            })
+            .catch(error => console.error('Error loading deadlines:', error));
 
-        // RÓT RECENT ACTIVITIES
+        // Load activities
         fetch("/api/dashboard/hod/activities")
             .then(res => res.json())
             .then(data => {
                 const list = document.querySelector(".activities-list");
                 list.innerHTML = "";
+
+                if (data.length === 0) {
+                    list.innerHTML = '<p style="text-align: center; color: red;">No recent activities in the last 7 days</p>';
+                    return;
+                }
+
                 data.forEach(activity => {
                     const html = `
-        <div class="activity-item">
-            <div class="activity-content">
-                <h3>${activity.title}</h3>
-                <p>${activity.description}</p>
-            </div>
-            <button class="check-btn" onclick="location.href='${activity.actionUrl}'">Check</button>
-        </div>`;
+                        <div class="activity-item">
+                            <div class="activity-content">
+                                <h3>${activity.title}</h3>
+                                <p>${activity.description}</p>
+                            </div>
+                            <button class="check-btn" onclick="location.href='${activity.actionUrl}'">Check</button>
+                        </div>`;
                     list.innerHTML += html;
                 });
-            });
+            })
+            .catch(error => console.error('Error loading activities:', error));
 
-    </script>
-    <script>
+        // Load header and menu
         fetch('/template/header_user.html')
             .then(res => res.text())
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
             });
 
-
-        // Load menu
         fetch('/menu-hed')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
-                setActiveMenu(document.title);
+                if (typeof setActiveMenu === 'function') {
+                    setActiveMenu(document.title);
+                }
             });
-        // Chart tooltip functionality
-        document.addEventListener('DOMContentLoaded', function () {
-            const barGroups = document.querySelectorAll('.bar-group');
-            const tooltip = document.getElementById('chart-tooltip');
-
-            barGroups.forEach(group => {
-                group.addEventListener('mouseenter', function () {
-                    const subject = this.getAttribute('data-subject');
-                    tooltip.textContent = subject;
-                    tooltip.style.display = 'block';
-
-                    const rect = this.getBoundingClientRect();
-                    const chartRect = document.querySelector('.chart-area').getBoundingClientRect();
-                    tooltip.style.left = (rect.left - chartRect.left + rect.width / 2) + 'px';
-                    tooltip.style.bottom = '10px';
-                });
-
-                group.addEventListener('mouseleave', function () {
-                    tooltip.style.display = 'none';
-                });
-            });
-
-            // Check button functionality
-            const checkButtons = document.querySelectorAll('.check-btn');
-            checkButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    // Add click animation
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        this.style.transform = 'scale(1)';
-                    }, 150);
-
-                    // You can add your check functionality here
-                    console.log('Check button clicked');
-                });
-            });
-        });
     </script>
     <script src="../../Static/js/L_activeMenu.js"></script>
 </body>
