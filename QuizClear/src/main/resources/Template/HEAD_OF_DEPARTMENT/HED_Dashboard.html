@@ -336,18 +336,19 @@
                 data.forEach(activity => {
                     const html = `
         <div class="activity-item">
-          <div class="activity-content">
-            <h3>${activity.title}</h3>
-            <p>${activity.description}</p>
-          </div>
-          <button class="check-btn">Check</button>
+            <div class="activity-content">
+                <h3>${activity.title}</h3>
+                <p>${activity.description}</p>
+            </div>
+            <button class="check-btn" onclick="location.href='${activity.actionUrl}'">Check</button>
         </div>`;
                     list.innerHTML += html;
                 });
             });
+
     </script>
     <script>
-       fetch('/template/header_user.html')
+        fetch('/template/header_user.html')
             .then(res => res.text())
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;

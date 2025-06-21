@@ -1,6 +1,8 @@
 package com.uth.quizclear.repository;
 
 import com.uth.quizclear.model.entity.CLO;
+import com.uth.quizclear.model.entity.Course;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
@@ -21,4 +23,6 @@ public interface CLORepository extends JpaRepository<CLO, Long> {
     
     // Option 3: Tìm theo cloDescription
     // Optional<CLO> findByCloDescription(String cloDescription);
+
+    long countByCourse(Course course);
 }

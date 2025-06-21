@@ -1,17 +1,13 @@
 package com.uth.quizclear.controller;
 
 import jakarta.servlet.http.HttpSession;
-
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.uth.quizclear.model.dto.HODDashboardActivityDTO;
 import com.uth.quizclear.model.dto.HODDashboardChartsDTO;
 import com.uth.quizclear.model.dto.HODDashboardDeadlineDTO;
@@ -20,98 +16,100 @@ import com.uth.quizclear.service.HODDashboardService;
 
 @RestController
 @RequestMapping("/api/dashboard/hod")
+
 public class HODDashboardController {
 
     @Autowired
     private HODDashboardService dashboardService;
 
-    /**
-     * GET /api/dashboard/hod
-     * Hiển thị thông báo chào mừng nếu người dùng là HOD
-     */
+    // Hàm kiểm tra quyền truy cập của HOD
+    private boolean isHOD(HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
+        return userId != null && role != null && "HOD".equalsIgnoreCase(role);
+    }
 
     @GetMapping("")
     public ResponseEntity<String> getHODDashboard(HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        String role = (String) session.getAttribute("role");
-
-        if (userId == null || role == null || !"HOD".equalsIgnoreCase(role)) {
-            System.out.println("Access denied: Missing or invalid session info");
-            return ResponseEntity.status(403).body("Access denied: Not HOD or not logged in");
+        if (!isHOD(session)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: Not HOD or not logged in");
         }
-
+        Long userId = (Long) session.getAttribute("userId");
         return ResponseEntity.ok("Welcome to HOD Dashboard! UserId: " + userId);
     }
 
-    /**
-     * GET /api/dashboard/hod/stats
-     * Trả về số liệu thống kê cho HOD Dashboard
-     */
     @GetMapping("/stats")
-    public ResponseEntity<HODDashboardStatsDTO> getStats(HttpSession session) {
-        // Kiểm tra session để xác định quyền truy cập
-        Long userId = (Long) session.getAttribute("userId");
-        String role = (String) session.getAttribute("role");
-
-        if (userId == null || role == null || !"HOD".equalsIgnoreCase(role)) {
-            System.out.println("Access denied: Missing or invalid session info");
-            return ResponseEntity.status(403).body(null);
+    public ResponseEntity<?> getStats(HttpSession session) {
+        if (!isHOD(session)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: Not HOD or not logged in");
         }
 
-        HODDashboardStatsDTO stats = dashboardService.getStats();
-        return ResponseEntity.ok(stats);
+        try {
+            Long userId = (Long) session.getAttribute("userId");
+            HODDashboardStatsDTO stats = dashboardService.getStats(userId);
+            return ResponseEntity.ok(stats);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to load stats.");
+        }
     }
 
-    /**
-     * GET /api/dashboard/hod/subject-progress
-     * Trả về dữ liệu biểu đồ cho HOD Dashboard
-     */
     @GetMapping("/subject-progress")
-    public ResponseEntity<List<HODDashboardChartsDTO>> getBarCharts() {
+    public ResponseEntity<?> getBarCharts(HttpSession session) {
+        if (!isHOD(session)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: Not HOD or not logged in");
+        }
+
         try {
-            List<HODDashboardChartsDTO> charts = dashboardService.getBarCharts();
+            Long userId = (Long) session.getAttribute("userId");
+            List<HODDashboardChartsDTO> charts = dashboardService.getBarCharts(userId);
             return ResponseEntity.ok(charts);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to load charts.");
         }
     }
 
     @GetMapping("/progress-percent")
-    public ResponseEntity<Double> getProgressPercent() {
+    public ResponseEntity<?> getProgressPercent(HttpSession session) {
+        if (!isHOD(session)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: Not HOD or not logged in");
+        }
+
         try {
-            double progress = dashboardService.getOverallProgress();
+            Long userId = (Long) session.getAttribute("userId");
+            double progress = dashboardService.getOverallProgress(userId);
             return ResponseEntity.ok(progress);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to load progress.");
         }
     }
 
     @GetMapping("/deadlines")
-    public ResponseEntity<List<HODDashboardDeadlineDTO>> getDeadlines() {
+    public ResponseEntity<?> getDeadlines(HttpSession session) {
+        if (!isHOD(session)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: Not HOD or not logged in");
+        }
+
         try {
-            List<HODDashboardDeadlineDTO> deadlines = dashboardService.getDeadlines();
+            Long userId = (Long) session.getAttribute("userId");
+            List<HODDashboardDeadlineDTO> deadlines = dashboardService.getDeadlines(userId);
             return ResponseEntity.ok(deadlines);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to load deadlines.");
         }
     }
 
     @GetMapping("/activities")
-    public ResponseEntity<List<HODDashboardActivityDTO>> getActivities() {
+    public ResponseEntity<?> getActivities(HttpSession session) {
+        if (!isHOD(session)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: Not HOD or not logged in");
+        }
+
         try {
-            List<HODDashboardActivityDTO> activities = dashboardService.getRecentActivities();
+            Long userId = (Long) session.getAttribute("userId");
+            List<HODDashboardActivityDTO> activities = dashboardService.getRecentActivities(userId);
             return ResponseEntity.ok(activities);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to load activities.");
         }
     }
-
 }

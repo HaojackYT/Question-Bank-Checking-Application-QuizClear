@@ -14,16 +14,23 @@ import java.util.List;
 
 @Repository
 public interface TasksRepository extends JpaRepository<Tasks, Integer> {
+
     List<Tasks> findByTaskType(TaskType taskType);
 
-    @Query("SELECT t FROM Tasks t WHERE t.course.department = :department")
+    // Lấy top 5 task gần nhất của staff (assigned_to)
+    List<Tasks> findTop5ByAssignedTo_UserIdOrderByDueDateDesc(Long userId);
+
+    // Lấy tất cả task của staff (assigned_to), sắp xếp theo dueDate mới nhất
+    List<Tasks> findByAssignedTo_UserIdOrderByDueDateDesc(Long userId);
+
+    @Query("SELECT t FROM Tasks t WHERE t.assignedTo.department = :department")
     List<Tasks> findTasksByDepartment(@Param("department") String department);
 
     // Sửa phương thức để không dùng ContainingIgnoreCase cho status
     @Query("SELECT t FROM Tasks t " +
-           "WHERE (:title IS NULL OR :title = '' OR LOWER(t.title) LIKE LOWER(CONCAT('%', :title, '%'))) " +
-           "AND (:status IS NULL OR :status = '' OR t.status = :status) " +
-           "AND (:courseId IS NULL OR t.course.courseId = :courseId)")
+            "WHERE (:title IS NULL OR :title = '' OR LOWER(t.title) LIKE LOWER(CONCAT('%', :title, '%'))) " +
+            "AND (:status IS NULL OR :status = '' OR t.status = :status) " +
+            "AND (:courseId IS NULL OR t.course.courseId = :courseId)")
     Page<Tasks> findByTitleContainingIgnoreCaseAndStatusAndCourseCourseId(
             @Param("title") String title,
             @Param("status") TaskStatus status,

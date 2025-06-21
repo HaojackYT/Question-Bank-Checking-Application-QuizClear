@@ -1,37 +1,46 @@
 package com.uth.quizclear.model.dto;
 
 public class HODDashboardActivityDTO {
-    private String activityName;
-    private String activityDescription;
-    private String activityDate;
+    private String title;
+    private String description;
+    private String actionUrl;
 
-    public HODDashboardActivityDTO(String activityName, String activityDescription, String activityDate) {
-        this.activityName = activityName;
-        this.activityDescription = activityDescription;
-        this.activityDate = activityDate;
+    public HODDashboardActivityDTO(String title, String description, String actionUrl) {
+        this.title = title;
+        this.description = description;
+        this.actionUrl = actionUrl;
     }
 
-    public String getActivityName() {
-        return activityName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setActivityName(String activityName) {
-        this.activityName = activityName;
+    public String getDescription() {
+        return description;
     }
 
-    public String getActivityDescription() {
-        return activityDescription;
+    public String getActionUrl() {
+        return actionUrl;
     }
 
-    public void setActivityDescription(String activityDescription) {
-        this.activityDescription = activityDescription;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getActivityDate() {
-        return activityDate;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void setActivityDate(String activityDate) {
-        this.activityDate = activityDate;
+    public void setActionUrl(String actionUrl) {
+        this.actionUrl = actionUrl;
+    }
+    @Override
+
+    public String toString() {
+        return "HODDashboardActivityDTO{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", actionUrl='" + actionUrl + '\'' +
+                '}';
     }
 }

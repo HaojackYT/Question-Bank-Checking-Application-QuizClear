@@ -59,17 +59,17 @@ INSERT INTO plans (course_id, plan_title, plan_description, total_questions, tot
 (10, 'BIO301 Exam Questions', 'Prepare exam questions for Genetics', 30, 10, 10, 8, 2, 5, 6, 'in_progress', '2025-01-10 10:00:00');
 
 -- 5. Thêm 10 bản ghi vào bảng tasks
-INSERT INTO tasks (course_id, plan_id, title, description, task_type, total_questions, assigned_to, assigned_by, status, created_at) VALUES
-(1, 1, 'Create Basic Programming Questions', 'Develop questions on basic programming concepts', 'create_questions', 15, 1, 6, 'completed', '2025-01-01 11:00:00'),
-(2, 2, 'Review Calculus Problems', 'Review and approve calculus problem sets', 'review_questions', 20, 2, 6, 'in_progress', '2025-01-02 11:00:00'),
-(3, 3, 'Develop Mechanics Questions', 'Create questions on classical mechanics principles', 'create_questions', 12, 3, 6, 'pending', '2025-01-03 11:00:00'),
-(4, 4, 'Chemistry Quiz Creation', 'Develop quiz questions for general chemistry', 'create_questions', 10, 4, 6, 'in_progress', '2025-01-04 11:00:00'),
-(5, 5, 'Biology Assessment Review', 'Review cell biology assessment materials', 'review_questions', 18, 5, 6, 'completed', '2025-01-05 11:00:00'),
-(6, 6, 'Data Structures Problems', 'Create problems on data structures implementation', 'create_questions', 15, 1, 6, 'in_progress', '2025-01-06 11:00:00'),
-(7, 7, 'Linear Algebra Review', 'Review linear algebra problem solutions', 'review_questions', 8, 2, 6, 'pending', '2025-01-07 11:00:00'),
-(8, 8, 'Physics Exam Development', 'Develop comprehensive physics examination', 'create_exam', 25, 3, 6, 'in_progress', '2025-01-08 11:00:00'),
-(9, 9, 'Organic Chemistry Questions', 'Create questions on organic chemistry reactions', 'create_questions', 12, 4, 6, 'completed', '2025-01-09 11:00:00'),
-(10, 10, 'Genetics Problem Set', 'Develop genetics problem set', 'create_questions', 10, 5, 6, 'pending', '2025-01-10 11:00:00');
+INSERT INTO tasks (course_id, plan_id, title, description, task_type, total_questions, assigned_to, assigned_by, status, created_at, due_date) VALUES
+(1, 1, 'Create Basic Programming Questions', 'Develop questions on basic programming concepts', 'create_questions', 15, 1, 6, 'completed', '2025-06-13 10:00:00', '2025-06-20 23:59:00'),
+(2, 2, 'Review Calculus Problems', 'Review and approve calculus problem sets', 'review_questions', 20, 2, 6, 'in_progress', '2025-06-17 09:00:00', '2025-06-21 23:59:00'),
+(3, 3, 'Develop Mechanics Questions', 'Create questions on classical mechanics principles', 'create_questions', 12, 3, 6, 'pending', '2025-01-03 11:00:00', '2025-06-22 23:59:00'),
+(4, 4, 'Chemistry Quiz Creation', 'Develop quiz questions for general chemistry', 'create_questions', 10, 4, 6, 'in_progress', '2025-01-04 11:00:00', '2025-06-23 23:59:00'),
+(5, 5, 'Biology Assessment Review', 'Review cell biology assessment materials', 'review_questions', 18, 5, 6, 'completed', '2025-06-18 14:00:00', '2025-06-24 23:59:00'),
+(6, 6, 'Data Structures Problems', 'Create problems on data structures implementation', 'create_questions', 15, 1, 6, 'in_progress', '2025-01-06 11:00:00', '2025-06-25 23:59:00'),
+(7, 7, 'Linear Algebra Review', 'Review linear algebra problem solutions', 'review_questions', 8, 2, 6, 'pending', '2025-01-07 11:00:00', '2025-06-26 23:59:00'),
+(8, 8, 'Physics Exam Development', 'Develop comprehensive physics examination', 'create_exam', 25, 3, 6, 'in_progress', '2025-01-08 11:00:00', '2025-06-27 23:59:00'),
+(9, 9, 'Organic Chemistry Questions', 'Create questions on organic chemistry reactions', 'create_questions', 12, 4, 6, 'completed', '2025-06-15 16:30:00', '2025-06-28 23:59:00'),
+(10, 10, 'Genetics Problem Set', 'Develop genetics problem set', 'create_questions', 10, 5, 6, 'pending', '2025-01-10 11:00:00', '2025-06-29 23:59:00');
 
 -- 6. Thêm 20 câu hỏi thực tế (ID từ 1-20) - ĐẢM BẢO KHÔNG CÓ N/A
 INSERT INTO questions (course_id, clo_id, task_id, plan_id, difficulty_level, content, answer_key, answer_f1, answer_f2, answer_f3, explanation, created_by, status, created_at) VALUES
