@@ -36,7 +36,7 @@
 .stat-card.lecturer,
 .stat-card.pending,
 .stat-card.approved,
-.stat-card.reject {
+.stat-card.rejected {
     background: #dbeafe;
 }
 
@@ -260,7 +260,7 @@
 
 .y-axis {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     justify-content: space-between;
     height: 7.5rem;
     margin-right: 0.9375rem;

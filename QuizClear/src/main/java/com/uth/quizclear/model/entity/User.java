@@ -264,4 +264,8 @@ public class User {
         this.department = department;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
 }
