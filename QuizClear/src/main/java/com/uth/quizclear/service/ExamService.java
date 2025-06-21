@@ -56,4 +56,11 @@ public class ExamService {
             .collect(Collectors.toList());
     }
 
+    public List<ExamDTO> getRejectedExams() {
+    return examRepository.findByExamStatus(ExamStatus.REJECTED)
+            .stream()
+            .map(this::toDTO)
+            .collect(Collectors.toList());
+    }
+    
 }

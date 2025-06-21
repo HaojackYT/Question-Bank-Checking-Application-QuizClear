@@ -43,4 +43,13 @@ public class ExamManagementController {
         return "Staff/Staff_Exammanage_3";
     }
     
+    @GetMapping("/needs-revision")
+    public String needsRevisionExams(Model model) {
+        model.addAttribute("totalExams", examService.countAll());
+        model.addAttribute("pendingCount", examService.countByStatus("submitted"));
+        model.addAttribute("approvedCount", examService.countByStatus("approved"));
+        model.addAttribute("rejectedCount", examService.countByStatus("rejected"));
+        model.addAttribute("rejectedExams", examService.getRejectedExams());
+        return "Staff/staffEMNeedsRevision";
+    }
 }
