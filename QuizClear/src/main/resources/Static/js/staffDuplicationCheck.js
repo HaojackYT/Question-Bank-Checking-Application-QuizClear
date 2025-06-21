@@ -133,6 +133,10 @@ function handleTabClick(tab) {
                     // Always refresh statistics when switching to stats tab
                     console.log("Loading statistics for stats tab...");
                     loadStatistics();
+                } else if (tabName === 'proc_log') {
+                    // Load processing logs when switching to processing logs tab
+                    console.log("Loading processing logs for proc_log tab...");
+                    loadProcessingLogs();
                 }
             })
             .catch((err) => {
@@ -257,13 +261,12 @@ async function applyFilters() {
     } catch (error) {
         console.error('Error applying filters:', error);
         
-        // Show error in table
-        const tbody = document.querySelector('.table tbody');
+        // Show error in table        const tbody = document.querySelector('.table tbody');
         if (tbody) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: red;">
-                Error loading filtered data: ${error.message}
-                <br><small>Check console for details</small>
-            </td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: red;">' +
+                'Error loading filtered data: ' + error.message +
+                '<br><small>Check console for details</small>' +
+            '</td></tr>';
         }
         
         alert('Error applying filters: ' + error.message);
@@ -483,19 +486,17 @@ async function showLogDetails(logId) {
         const response = await fetch(`${API_URLS.logDetails}/${logId.replace("L", "")}`, {
             headers: { 'Accept': 'application/json' }
         });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const log = await response.json();
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);        const log = await response.json();
         const modalContent = document.getElementById("logDetailContent");
-        modalContent.innerHTML = `
-            <div class="info-row"><span class="info-label">Log ID:</span><span class="info-value">L${log.id}</span></div>
-            <div class="info-row"><span class="info-label">New Question:</span><span class="info-value">${log.newQuestion?.content || 'N/A'}</span></div>
-            <div class="info-row"><span class="info-label">Similar Question:</span><span class="info-value">${log.similarQuestion.content}</span></div>
-            <div class="info-row"><span class="info-label">Similarity:</span><span class="info-value">${(log.similarityScore * 100).toFixed(1)}%</span></div>
-            <div class="info-row"><span class="info-label">Action:</span><span class="info-value">${log.action || 'N/A'}</span></div>
-            <div class="info-row"><span class="info-label">Processor:</span><span class="info-value">${log.processedBy?.name || 'N/A'}</span></div>
-            <div class="info-row"><span class="info-label">Date:</span><span class="info-value">${log.processedAt ? new Date(log.processedAt).toLocaleString() : 'N/A'}</span></div>
-            <div class="info-row"><span class="info-label">Feedback:</span><span class="info-value">${log.feedback || 'N/A'}</span></div>
-        `;
+        modalContent.innerHTML = 
+            '<div class="info-row"><span class="info-label">Log ID:</span><span class="info-value">L' + log.id + '</span></div>' +
+            '<div class="info-row"><span class="info-label">New Question:</span><span class="info-value">' + (log.newQuestion?.content || 'N/A') + '</span></div>' +
+            '<div class="info-row"><span class="info-label">Similar Question:</span><span class="info-value">' + log.similarQuestion.content + '</span></div>' +
+            '<div class="info-row"><span class="info-label">Similarity:</span><span class="info-value">' + (log.similarityScore * 100).toFixed(1) + '%</span></div>' +
+            '<div class="info-row"><span class="info-label">Action:</span><span class="info-value">' + (log.action || 'N/A') + '</span></div>' +
+            '<div class="info-row"><span class="info-label">Processor:</span><span class="info-value">' + (log.processedBy?.name || 'N/A') + '</span></div>' +
+            '<div class="info-row"><span class="info-label">Date:</span><span class="info-value">' + (log.processedAt ? new Date(log.processedAt).toLocaleString() : 'N/A') + '</span></div>' +
+            '<div class="info-row"><span class="info-label">Feedback:</span><span class="info-value">' + (log.feedback || 'N/A') + '</span></div>';
         document.getElementById("logDetailModal").style.display = "flex";
     } catch (err) {
         console.error('Error loading log details:', err);
@@ -1339,3 +1340,348 @@ document.addEventListener("DOMContentLoaded", () => {
 window.acceptDuplication = acceptDuplication;
 window.rejectDuplication = rejectDuplication;
 window.viewDuplication = viewDuplication;
+
+// Load processing logs
+async function loadProcessingLogs() {
+    try {
+        console.log('Loading processing logs...');
+        const response = await fetch('/api/staff/duplications/processing-logs');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const logs = await response.json();
+        console.log('Processing logs loaded:', logs.length, 'entries');
+        
+        displayProcessingLogs(logs);
+    } catch (error) {
+        console.error('Error loading processing logs:', error);
+        showProcessingLogsError('Failed to load processing logs: ' + error.message);
+    }
+}
+
+// Display processing logs in table
+function displayProcessingLogs(logs) {
+    const tbody = document.querySelector('#logs-table-body');
+    if (!tbody) {
+        console.error('Logs table body not found');
+        return;
+    }
+    
+    if (logs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center">No processing logs found</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = logs.map(log => {
+        // Format date
+        let dateStr = 'N/A';
+        if (log.processedAt) {
+            try {
+                const date = new Date(log.processedAt);
+                dateStr = date.toLocaleString('en-CA', {
+                    year: 'numeric',
+                    month: '2-digit', 
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                }).replace(',', '');
+            } catch (e) {
+                console.warn('Date formatting error:', e);
+                dateStr = log.processedAt;
+            }
+        }
+        
+        // Get action badge class
+        const actionClass = getActionBadgeClass(log.action);
+        
+        // Get similarity badge class
+        const similarityNum = parseFloat(log.similarity);
+        const similarityClass = similarityNum >= 90 ? 'similarity-complete' : 'similarity-high';
+        
+        return `
+            <tr>
+                <td class="log-id">${log.logId || 'N/A'}</td>
+                <td class="question-cell" title="${log.newQuestion || 'N/A'}">${truncateText(log.newQuestion || 'N/A', 50)}</td>
+                <td class="question-cell" title="${log.similarQuestion || 'N/A'}">${truncateText(log.similarQuestion || 'N/A', 50)}</td>
+                <td>
+                    <div class="similarity-badge ${similarityClass}">
+                        ${similarityNum >= 90 ? 'Complete Duplicate' : 'High Similarity'}
+                        (${log.similarity || 'N/A'})
+                    </div>
+                </td>
+                <td>
+                    <div class="action-badge ${actionClass}">${log.action || 'N/A'}</div>
+                </td>
+                <td class="processor-name">${log.processorName || 'N/A'}</td>
+                <td class="date-cell">${dateStr}</td>
+                <td>
+                    <button class="details-btn" data-log-id="${log.logId}" onclick="showLogDetails('${log.logId}')">👁</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+    
+    console.log('Processing logs displayed successfully');
+}
+
+// Get action badge class
+function getActionBadgeClass(action) {
+    switch (action?.toLowerCase()) {
+        case 'accept':
+            return 'badge-success';
+        case 'reject':
+            return 'badge-danger';
+        case 'send_back':
+            return 'badge-warning';
+        default:
+            return 'badge-secondary';
+    }
+}
+
+// Truncate text helper
+function truncateText(text, maxLength) {
+    if (!text || text.length <= maxLength) {
+        return text || 'N/A';
+    }
+    return text.substring(0, maxLength) + '...';
+}
+
+// Show error when processing logs loading fails
+function showProcessingLogsError(message) {
+    const tbody = document.querySelector('#logs-table-body');
+    if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center alert alert-danger">${message}</td></tr>`;
+    }
+}
+
+// Filter logs function
+function filterLogs(searchTerm) {
+    const tbody = document.querySelector('#logs-table-body');
+    if (!tbody) return;
+    
+    const rows = tbody.querySelectorAll('tr');
+    const searchLower = searchTerm.toLowerCase();
+    
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        let found = false;
+        
+        cells.forEach(cell => {
+            if (cell.textContent.toLowerCase().includes(searchLower)) {
+                found = true;
+            }
+        });
+        
+        row.style.display = found ? '' : 'none';
+    });
+}
+
+// Export logs function
+function exportLogs() {
+    const tbody = document.querySelector('#logs-table-body');
+    if (!tbody) {
+        alert('No logs table found');
+        return;
+    }
+    
+    const rows = Array.from(tbody.querySelectorAll('tr:not([style*="display: none"])'));
+    if (rows.length === 0) {
+        alert('No logs to export');
+        return;
+    }
+    
+    const headers = ['Log ID', 'Question', 'Duplicate', 'Similarity', 'Action', 'Processor', 'Date'];
+    const csvData = [headers.join(',')];
+    
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');        if (cells.length >= 7) { // Skip details column
+            const rowData = Array.from(cells).slice(0, 7).map(cell => 
+                '"' + cell.textContent.trim().replace(/"/g, '""') + '"'
+            );
+            csvData.push(rowData.join(','));
+        }
+    });
+    
+    const csv = csvData.join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'processing_logs_' + new Date().toISOString().split('T')[0] + '.csv';
+    link.click();
+    window.URL.revokeObjectURL(url);
+}
+
+// Show log details function - Enhanced version
+async function showLogDetails(logId) {
+    try {
+        console.log('Loading details for log:', logId);
+        
+        // Fetch detailed log information
+        const response = await fetch(`/api/staff/duplications/processing-logs`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const logs = await response.json();
+        const log = logs.find(l => l.logId === logId);
+        
+        if (!log) {
+            throw new Error('Log not found');
+        }
+        
+        // Create simple modal content like in the image
+        const modalContent = `
+            <div class="simple-log-modal">
+                <div class="modal-header">
+                    <h3>Processing Log Details</h3>
+                    <button class="close-btn" onclick="closeLogDetailModal()">×</button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="detail-row">
+                        <span class="label">Log ID:</span>
+                        <span class="value">${log.logId}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="label">Processed At:</span>
+                        <span class="value">${formatDateTime(log.processedAt)}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="label">Question:</span>
+                        <span class="value">${log.newQuestion || 'N/A'}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="label">Duplicate:</span>
+                        <span class="value">${log.similarQuestion || 'N/A'}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="label">Similarity:</span>
+                        <span class="value">${log.similarity}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="label">Action:</span>
+                        <span class="value">${log.action || 'N/A'}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="label">Reason:</span>
+                        <span class="value">High semantic similarity with existing question</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="label">Feedback:</span>
+                        <span class="value">${log.feedback || 'N/A'}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="label">Processor:</span>
+                        <span class="value">${log.processorName || 'N/A'}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Show modal
+        showLogDetailModal(modalContent);
+        
+    } catch (error) {
+        console.error('Error loading log details:', error);
+        alert('Failed to load log details: ' + error.message);
+    }
+}
+
+// Helper function to show the modal
+function showLogDetailModal(content) {
+    // Remove existing modal if any
+    const existingModal = document.getElementById('logDetailModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Create modal
+    const modal = document.createElement('div');
+    modal.id = 'logDetailModal';
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content log-detail-modal-content">
+            ${content}
+        </div>
+    `;
+    
+    // Add modal styles
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    
+    // Add to document
+    document.body.appendChild(modal);
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeLogDetailModal();
+        }
+    });
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeLogDetailModal();
+        }
+    });
+}
+
+// Close modal function
+function closeLogDetailModal() {
+    const modal = document.getElementById('logDetailModal');
+    if (modal) {
+        modal.remove();
+    }
+    
+    // Remove escape key listener
+    document.removeEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeLogDetailModal();
+        }
+    });
+}
+
+// Format date time helper
+function formatDateTime(dateTimeStr) {
+    if (!dateTimeStr) return 'N/A';
+    
+    try {
+        const date = new Date(dateTimeStr);
+        return date.toLocaleString('en-CA', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).replace(',', '');
+    } catch (e) {
+        return dateTimeStr;
+    }
+}
+
+// End of processing logs functions
