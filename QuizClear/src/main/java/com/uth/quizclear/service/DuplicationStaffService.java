@@ -27,7 +27,12 @@ import java.util.HashSet;
 @Service
 public class DuplicationStaffService {      
     @Autowired
-    private DuplicationStaffRepository repository;    @PersistenceContext
+    private DuplicationStaffRepository repository;
+    
+    @Autowired
+    private ProcessingLogService processingLogService;
+    
+    @PersistenceContext
     private EntityManager entityManager;
     
     // @Autowired
@@ -152,7 +157,7 @@ public class DuplicationStaffService {
             return dto;
         }
         return convertToDTO(detection);
-    }    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+    }    @Transactional(rollbackFor = Exception.class)
     public DuplicateDetectionDTO processDetection(Long detectionId, String action, String feedback, Long processorId) {
         System.out.println("=== SERVICE processDetection START ===");
         System.out.println("DetectionId: " + detectionId);
@@ -173,21 +178,29 @@ public class DuplicationStaffService {
             
             if (detection.getNewQuestionId() != null && detection.getNewQuestionId().equals(detection.getSimilarQuestionId())) {
                 throw new IllegalStateException("New and similar question IDs cannot be the same");
-            }
-
-            DuplicateDetectionAction enumAction = DuplicateDetectionAction.valueOf(action.toUpperCase());
+            }            DuplicateDetectionAction enumAction = DuplicateDetectionAction.valueOf(action.toUpperCase());
             System.out.println("Parsed enum action: " + enumAction);
-              // Xử lý logic nghiệp vụ dựa theo action
+            
+            // SAVE PROCESSING LOG FIRST - Lưu lại lịch sử trước khi xóa
+            processingLogService.saveProcessingLog(detection, enumAction, feedback, processorId);
+            
+            // Update detection status to processed before any deletion
+            detection.setActionString(enumAction.name().toLowerCase());
+            detection.setDetectionFeedback(feedback);
+            detection.setProcessedBy(processorId);
+            detection.setProcessedAt(java.time.LocalDateTime.now());
+            detection.setStatusString("processed");
+            repository.save(detection);
+            
+            System.out.println("Detection updated to processed status");
+            
+            // Xử lý logic nghiệp vụ dựa theo action
             System.out.println("Processing action...");
             processDetectionAction(detection, enumAction, feedback, processorId);
             
-            // Không cần cập nhật detection record vì đã bị xóa trong processDetectionAction
             System.out.println("Detection processing completed successfully");
             
-            // Force flush và clear để đảm bảo changes được commit ngay lập tức
-            entityManager.flush();
-            entityManager.clear();
-            System.out.println("EntityManager flushed and cleared - changes committed to DB immediately");            // Verify deletion bằng cách check lại database
+            // Verify deletion was successful for debugging
             boolean detectionStillExists = repository.existsById(detectionId);
             int detectionCount = repository.countDetectionById(detectionId);
             System.out.println("Verification - detection still exists after deletion: " + detectionStillExists);
@@ -203,7 +216,7 @@ public class DuplicationStaffService {
             // Debug database state
             debugDatabaseState(detectionId, detection.getNewQuestionId());
             
-            // Return success DTO thay vì detection đã bị xóa
+            // Return success DTO
             DuplicateDetectionDTO result = new DuplicateDetectionDTO();
             result.setDetectionId(detectionId);
             result.setStatus("PROCESSED");
@@ -232,9 +245,7 @@ public class DuplicationStaffService {
         Long creatorId = null;
         String questionContent = "";
         
-        System.out.println("Processing action for question ID: " + newQuestionId);
-        
-        try {
+        System.out.println("Processing action for question ID: " + newQuestionId);        try {
             // Lấy thông tin câu hỏi để gửi thông báo
             Object[] questionInfo = repository.getQuestionInfoForNotification(newQuestionId);
             if (questionInfo != null && questionInfo.length >= 2) {
@@ -244,7 +255,9 @@ public class DuplicationStaffService {
             }
         } catch (Exception e) {
             System.err.println("Error getting question info for notification: " + e.getMessage());
-        }        switch (action) {
+        }
+        
+        switch (action) {
             case ACCEPT:
                 // ACCEPT: Xóa khỏi duplicate_detections, giữ lại trong questions
                 System.out.println("ACCEPT: Removing detection from duplicate_detections table, keeping question in questions table");
@@ -1042,5 +1055,141 @@ public class DuplicationStaffService {
     public void forceFlush() {
         entityManager.flush();
         entityManager.clear();
+    }    /**
+     * Get processing logs (history) from activity_logs table
+     */
+    public List<Map<String, Object>> getProcessingLogs() {
+        try {
+            System.out.println("=== GETTING PROCESSING LOGS ===");
+              // Get processing logs from activity_logs table with user details
+            @SuppressWarnings("unchecked")
+            List<Object[]> results = entityManager.createNativeQuery(
+                "SELECT al.id, al.activity, al.entity_id, al.created_at, u.full_name " +
+                "FROM activity_logs al " +
+                "LEFT JOIN users u ON al.user_id = u.user_id " +
+                "WHERE al.action = 'PROCESS_DUPLICATE' " +
+                "ORDER BY al.created_at DESC")
+                .getResultList();
+            
+            List<Map<String, Object>> logs = new ArrayList<>();
+            
+            for (Object[] row : results) {
+                Map<String, Object> log = new HashMap<>();
+                
+                // Parse log ID
+                log.put("logId", "L" + String.format("%03d", ((Number) row[0]).intValue()));
+                
+                // Parse activity message to extract details
+                String activity = row[1] != null ? row[1].toString() : "";                // Extract information from the new simplified log message format
+                try {
+                    // New format: "Duplicate Question Processing | ID: 1 | Action: ACCEPT | Question: Java primitive data... | Course: CS101 | Creator: John | Similarity: 85.0% | Duplicate of Question ID: 2 | Feedback: Both approved"
+                    
+                    // Extract basic info
+                    String action = extractFromLog(activity, "Action: ", " | Question:");
+                    String questionContent = extractFromLog(activity, "Question: ", " | Course:");
+                    String course = extractFromLog(activity, "Course: ", " | Creator:");
+                    String creator = extractFromLog(activity, "Creator: ", " | Similarity:");
+                    String similarity = extractFromLog(activity, "Similarity: ", "% | Duplicate of Question ID:");
+                    String duplicateOfId = extractFromLog(activity, "Duplicate of Question ID: ", " | Feedback:");
+                    String feedback = extractFromLog(activity, "Feedback: ", null);
+                    
+                    // Set extracted values with fallbacks
+                    log.put("newQuestion", truncateText(questionContent != null ? questionContent : "Content not available", 50));
+                    log.put("similarQuestion", "Question ID: " + (duplicateOfId != null ? duplicateOfId : "Unknown"));
+                    log.put("similarity", similarity != null ? similarity + "%" : "N/A");
+                    log.put("action", action != null ? action : "Unknown");
+                    log.put("courses", course != null ? course : "Unknown");
+                    log.put("feedback", feedback != null ? feedback : "No feedback provided");
+                    log.put("newCreator", creator != null ? creator : "Unknown");
+                    log.put("similarCreator", "See original question");
+                    
+                } catch (Exception e) {
+                    System.err.println("Error parsing log message: " + e.getMessage());
+                    System.err.println("Activity content: " + activity);
+                    
+                    // Enhanced fallback - try to extract basic information
+                    try {
+                        String action = extractFromLog(activity, "Action: ", " |");
+                        String similarity = extractFromLog(activity, "Similarity: ", "%");
+                        
+                        log.put("newQuestion", "Processing log entry");
+                        log.put("similarQuestion", "Related question");
+                        log.put("similarity", similarity != null ? similarity + "%" : "N/A");
+                        log.put("action", action != null ? action : "Unknown");
+                        log.put("courses", "Multiple courses");
+                        log.put("feedback", "See full log for details");
+                        log.put("newCreator", "Unknown");
+                        log.put("similarCreator", "Unknown");
+                    } catch (Exception fallbackError) {
+                        // Ultimate fallback
+                        log.put("newQuestion", "Unknown");
+                        log.put("similarQuestion", "Unknown");
+                        log.put("similarity", "N/A");
+                        log.put("action", "Unknown");
+                        log.put("courses", "Unknown");
+                        log.put("feedback", "");
+                        log.put("newCreator", "Unknown");
+                        log.put("similarCreator", "Unknown");
+                    }
+                }
+                
+                // Processor info
+                log.put("processorName", row[4] != null ? row[4].toString() : "Unknown");
+                
+                // Date
+                if (row[3] instanceof java.sql.Timestamp) {
+                    java.sql.Timestamp timestamp = (java.sql.Timestamp) row[3];
+                    log.put("processedAt", timestamp.toLocalDateTime());
+                } else {
+                    log.put("processedAt", java.time.LocalDateTime.now());
+                }
+                
+                // Detection ID
+                log.put("detectionId", row[2] != null ? ((Number) row[2]).longValue() : 0L);
+                
+                logs.add(log);
+            }
+            
+            System.out.println("Found " + logs.size() + " processing logs");
+            return logs;
+            
+        } catch (Exception e) {
+            System.err.println("Error getting processing logs: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+    
+    /**
+     * Helper method to extract text between delimiters
+     */
+    private String extractFromLog(String text, String startDelimiter, String endDelimiter) {
+        try {
+            int startIndex = text.indexOf(startDelimiter);
+            if (startIndex == -1) return "Unknown";
+            
+            startIndex += startDelimiter.length();
+            
+            if (endDelimiter == null) {
+                return text.substring(startIndex).trim();
+            }
+            
+            int endIndex = text.indexOf(endDelimiter, startIndex);
+            if (endIndex == -1) return text.substring(startIndex).trim();
+            
+            return text.substring(startIndex, endIndex).trim();
+        } catch (Exception e) {
+            return "Unknown";
+        }
+    }
+    
+    /**
+     * Helper method to truncate text
+     */
+    private String truncateText(String text, int maxLength) {
+        if (text == null || text.length() <= maxLength) {
+            return text != null ? text : "Unknown";
+        }
+        return text.substring(0, maxLength) + "...";
     }
 }

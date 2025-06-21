@@ -243,7 +243,7 @@
   left: 27.5rem;
   top: 88.75rem;
   width: 59.25rem;
-  height: 37.5rem;
+  height: 50.6rem;
   background-color: #ffffff;
   border: 0.125rem solid #e0eafa;
   border-radius: 0.9375rem;
@@ -271,6 +271,7 @@
 
 .duplicate-item {
   position: absolute;
+  margin-top: 8rem;
   left: 2.5625rem;
   width: 51.625rem;
   height: 11.9375rem;
@@ -280,11 +281,11 @@
 }
 
 .duplicate-item:nth-child(4) {
-  top: 7.75rem;
+  top: 14rem;
 }
 
 .duplicate-item:nth-child(5) {
-  top: 21.4375rem;
+  top: 28rem;
 }
 
 .duplicate-header {
@@ -330,9 +331,10 @@
 }
 
 .duplicate-warning-container .see-more {
-  left: 4.375rem;
-  top: 34.5625rem;
-  width: 7.1875rem;
+     left: 1rem;
+    top: 34.5625rem;
+    width: 7.1875rem;
+    margin-top: 14rem;
 }
 
 /* Responsive adjustments - chỉ kích hoạt khi thực sự cần thiết */

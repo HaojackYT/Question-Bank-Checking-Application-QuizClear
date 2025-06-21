@@ -31,12 +31,17 @@ public enum DuplicateDetectionAction {
         if (value == null) {
             return null; // Action can be null
         }
-        
+
         for (DuplicateDetectionAction action : DuplicateDetectionAction.values()) {
             if (action.value.equals(value)) {
                 return action;
             }
         }
         throw new IllegalArgumentException("Unknown DuplicateDetectionAction: " + value);
+    }
+
+    String getContent() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getContent'");
     }
 }

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="/header.css">
-    <link rel="stylesheet" href="/web_styles.css">
-    <link rel="stylesheet" href="/css/HED/HED_Dashboard.css">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/HED/HED_Dashboard.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Dashboard_HED</title>
 </head>
@@ -174,7 +174,6 @@
     </div>
 
     <script>
-        // Fix formatChange function
         function formatChange(change) {
             if (change > 0) return `+${change} this month`;
             if (change < 0) return `${change} this month`;
@@ -185,8 +184,6 @@
         fetch("/api/dashboard/hod/stats")
             .then(res => res.json())
             .then(data => {
-                console.log('Stats data:', data); // Debug log
-                
                 document.querySelector(".stat-card.lecturer .stat-number").innerText = data.lecturerCount || 0;
                 document.querySelector(".stat-card.lecturer .stat-change").innerText = formatChange(data.lecturerChange || 0);
 
@@ -255,12 +252,12 @@
             .then(data => {
                 const list = document.querySelector(".deadline-list");
                 list.innerHTML = "";
-                
+
                 if (data.length === 0) {
                     list.innerHTML = '<p style="text-align: center;">No upcoming deadlines</p>';
                     return;
                 }
-                
+
                 data.forEach(task => {
                     const html = `
                         <div class="deadline-item">
@@ -283,7 +280,7 @@
                 list.innerHTML = "";
 
                 if (data.length === 0) {
-                    list.innerHTML = '<p style="text-align: center; color: red;">No recent activities in the last 7 days</p>';
+                    list.innerHTML = '<p style="text-align: center;">No recent activities in the last 7 days</p>';
                     return;
                 }
 
@@ -299,16 +296,19 @@
                     list.innerHTML += html;
                 });
             })
-            .catch(error => console.error('Error loading activities:', error));
+            .catch(error => console.error('Error loading activities:', error
+        ));
+    </script>
 
-        // Load header and menu
-        fetch('/template/header_user.html')
+    <script th:inline="javascript">
+        // Load header and menu with Thymeleaf paths
+        fetch(/*[[@{/Template/header_user.html}]]*/)
             .then(res => res.text())
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
             });
 
-        fetch('/menu-hed')
+        fetch(/*[[@{/Template/HEAD_OF_DEPARTMENT/Menu-HED.html}]]*/)
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
@@ -316,8 +316,42 @@
                     setActiveMenu(document.title);
                 }
             });
+
+        // Chart tooltip functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const barGroups = document.querySelectorAll('.bar-group');
+            const tooltip = document.getElementById('chart-tooltip');
+
+            barGroups.forEach(group => {
+                group.addEventListener('mouseenter', function () {
+                    const subject = this.getAttribute('data-subject');
+                    tooltip.textContent = subject;
+                    tooltip.style.display = 'block';
+
+                    const rect = this.getBoundingClientRect();
+                    const chartRect = document.querySelector('.chart-area').getBoundingClientRect();
+                    tooltip.style.left = (rect.left - chartRect.left + rect.width / 2) + 'px';
+                    tooltip.style.bottom = '10px';
+                });
+
+                group.addEventListener('mouseleave', function () {
+                    tooltip.style.display = 'none';
+                });
+            });
+
+            // Check button functionality
+            const checkButtons = document.querySelectorAll('.check-btn');
+            checkButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            });
+        });
     </script>
-    <script src="../../Static/js/L_activeMenu.js"></script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
 </html>

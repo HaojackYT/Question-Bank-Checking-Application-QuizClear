@@ -112,12 +112,19 @@ INSERT INTO duplicate_detections (new_question_id, similar_question_id, similari
 (9, 10, 0.83, 'processed', 'accept', 4, 6, '2025-03-04 08:00:00', '2025-03-04 12:00:00', 'Physics concepts distinct enough', 'Accepted - current vs Ohm law different'),
 (13, 14, 0.87, 'processed', 'reject', 5, 6, '2025-03-05 08:00:00', '2025-03-05 14:00:00', 'Chemistry elements very similar', 'Rejected - clear duplication'),
 
--- Pending duplicates (chưa xử lý) - Realistic pending cases
-(7, 8, 0.76, 'pending', NULL, 1, NULL, '2025-03-06 08:00:00', NULL, 'Math integration vs matrix determinant', NULL),
-(11, 12, 0.81, 'pending', NULL, 2, NULL, '2025-03-07 08:00:00', NULL, 'Physics force calculation vs Newton law', NULL),
-(15, 16, 0.79, 'pending', NULL, 3, NULL, '2025-03-08 08:00:00', NULL, 'Chemistry equation balancing vs buffer', NULL),
-(17, 18, 0.84, 'pending', NULL, 4, NULL, '2025-03-09 08:00:00', NULL, 'Biology mitochondria vs DNA function', NULL),
-(19, 20, 0.77, 'pending', NULL, 5, NULL, '2025-03-10 08:00:00', NULL, 'Biology photosynthesis vs mammal definition', NULL);
+-- Pending duplicates (chưa xử lý) - Realistic pending cases  
+(7, 8, 0.76, 'pending', NULL, 1, NULL, '2025-06-20 08:00:00', NULL, 'Math integration vs matrix determinant comparison needed', NULL),
+(11, 12, 0.81, 'pending', NULL, 2, NULL, '2025-06-20 10:00:00', NULL, 'Physics force calculation vs Newton law - requires review', NULL),
+(15, 16, 0.79, 'pending', NULL, 3, NULL, '2025-06-20 14:00:00', NULL, 'Chemistry equation balancing vs buffer solution concepts', NULL),
+(17, 18, 0.84, 'pending', NULL, 4, NULL, '2025-06-21 08:00:00', NULL, 'Biology mitochondria vs DNA function - high similarity detected', NULL),
+(19, 20, 0.88, 'pending', NULL, 5, NULL, '2025-06-21 09:00:00', NULL, 'Biology photosynthesis vs mammal definition - awaiting expert review', NULL),
+
+-- Additional pending duplicates for more demo data
+(2, 5, 0.72, 'pending', NULL, 1, NULL, '2025-06-21 10:00:00', NULL, 'Java BST vs Math derivative - cross-subject similarity check needed', NULL),
+(4, 8, 0.74, 'pending', NULL, 2, NULL, '2025-06-21 11:00:00', NULL, 'HTTP vs Linear Algebra - different domains but similar structure', NULL),
+(6, 11, 0.70, 'pending', NULL, 3, NULL, '2025-06-21 12:00:00', NULL, 'Math discontinuity vs Physics current - conceptual overlap review', NULL),
+(10, 16, 0.77, 'pending', NULL, 4, NULL, '2025-06-21 13:00:00', NULL, 'Physics Ohm law vs Chemistry buffer - formula similarity detected', NULL),
+(12, 19, 0.73, 'pending', NULL, 5, NULL, '2025-06-21 14:00:00', NULL, 'Physics Newton vs Biology photosynthesis - process description similarity', NULL);
 
 -- Optional: Essential supporting tables (minimal data for system functionality)
 INSERT INTO exams (course_id, plan_id, exam_title, exam_code, duration_minutes, total_marks, exam_type, created_by, exam_status, created_at) VALUES
@@ -135,19 +142,6 @@ INSERT INTO notifications (user_id, type, title, message, priority, created_at) 
 (2, 'duplicate_found', 'High Similarity Alert', 'Math calculus questions require attention', 'high', '2025-03-02 14:00:00'),
 (6, 'system', 'Review Complete', 'Duplicate detection has been processed', 'low', '2025-03-01 15:00:00');
 
--- 11. Thêm 10 bản ghi vào bảng duplicate_detections
-INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, detected_by, detected_at) VALUES
-(1, 2, 0.8500, 1, 'accepted', 'accept', 1, '2025-03-01 11:00:00'),
-(2, 3, 0.7800, 2, 'processed', 'reject', 2, '2025-03-02 11:00:00'),
-(3, 4, 0.9200, 3, 'pending', NULL, 3, '2025-03-03 11:00:00'),
-(4, 5, 0.8100, 4, 'accepted', 'accept', 4, '2025-03-04 11:00:00'),
-(5, 6, 0.8900, 5, 'sent_back', 'send_back', 5, '2025-03-05 11:00:00'),
-(6, 7, 0.7600, 6, 'processed', 'reject', 1, '2025-03-06 11:00:00'),
-(7, 8, 0.9100, 7, 'accepted', 'accept', 2, '2025-03-07 11:00:00'),
-(8, 9, 0.8300, 8, 'pending', NULL, 3, '2025-03-08 11:00:00'),
-(9, 10, 0.8700, 9, 'accepted', 'accept', 4, '2025-03-09 11:00:00'),
-(10, 1, 0.7900, 10, 'sent_back', 'send_back', 5, '2025-03-10 11:00:00');
-
 -- 12. Thêm 10 bản ghi vào bảng comments
 INSERT INTO comments (entity_type, entity_id, commenter_id, content, created_at) VALUES
 ('question', 1, 2, 'Good question, clearly formulated', '2025-03-01 12:00:00'),
@@ -161,18 +155,18 @@ INSERT INTO comments (entity_type, entity_id, commenter_id, content, created_at)
 ('plan', 1, 5, 'Comprehensive planning approach', '2025-03-09 12:00:00'),
 ('question', 6, 1, 'Consider simplifying the language', '2025-03-10 12:00:00');
 
--- 13. Thêm 10 bản ghi vào bảng exam_reviews
+-- 13. Thêm bản ghi vào bảng exam_reviews (chỉ cho exam_id 1, 2, 3 có sẵn)
 INSERT INTO exam_reviews (exam_id, reviewer_id, review_type, status, comments, created_at) VALUES
 (1, 2, 'subject_leader', 'approved', 'Exam content aligns well with course objectives', '2025-03-01 13:00:00'),
 (2, 3, 'department_head', 'needs_revision', 'Some questions need clarification', '2025-03-02 13:00:00'),
 (3, 4, 'examination_department', 'approved', 'Format and structure are excellent', '2025-03-03 13:00:00'),
-(4, 5, 'subject_leader', 'pending', 'Under review', '2025-03-04 13:00:00'),
-(5, 1, 'department_head', 'approved', 'Well-balanced difficulty levels', '2025-03-05 13:00:00'),
-(6, 2, 'examination_department', 'rejected', 'Insufficient coverage of topics', '2025-03-06 13:00:00'),
-(7, 3, 'subject_leader', 'approved', 'Comprehensive assessment', '2025-03-07 13:00:00'),
-(8, 4, 'department_head', 'needs_revision', 'Time allocation needs adjustment', '2025-03-08 13:00:00'),
-(9, 5, 'examination_department', 'pending', 'Awaiting final review', '2025-03-09 13:00:00'),
-(10, 1, 'subject_leader', 'approved', 'Good variety of question types', '2025-03-10 13:00:00');
+(1, 5, 'subject_leader', 'pending', 'Under review for final approval', '2025-03-04 13:00:00'),
+(2, 1, 'department_head', 'approved', 'Well-balanced difficulty levels', '2025-03-05 13:00:00'),
+(3, 2, 'examination_department', 'needs_revision', 'Minor formatting issues', '2025-03-06 13:00:00'),
+(1, 3, 'subject_leader', 'approved', 'Comprehensive assessment', '2025-03-07 13:00:00'),
+(2, 4, 'department_head', 'needs_revision', 'Time allocation needs adjustment', '2025-03-08 13:00:00'),
+(3, 5, 'examination_department', 'pending', 'Awaiting final review', '2025-03-09 13:00:00'),
+(1, 1, 'subject_leader', 'approved', 'Good variety of question types', '2025-03-10 13:00:00');
 
 -- 14. Thêm 10 bản ghi vào bảng notifications
 INSERT INTO notifications (user_id, type, title, message, priority, created_at) VALUES
@@ -213,17 +207,36 @@ INSERT INTO exam_submissions (submitted_by, course_id, status, submitted_at) VAL
 (4, 9, 'submitted', '2025-03-09 16:00:00'),
 (5, 10, 'approved', '2025-03-10 16:00:00');
 
--- 17. Thêm dữ liệu mẫu vào bảng duplicate_detections (mỗi duplicate là một cặp duy nhất, không lặp lại)
-INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, status, action, detected_by, processed_by, detected_at, processed_at, detection_feedback, processing_notes) VALUES
--- Processed duplicates (đã xử lý - reject/accept/send_back)
-(1, 2, 0.8500, 'processed', 'reject', 1, 6, '2025-03-01 08:00:00', '2025-03-01 10:00:00', 'High similarity detected', 'Clear duplicate'),
-(3, 4, 0.7800, 'processed', 'accept', 2, 6, '2025-03-02 08:00:00', '2025-03-02 11:00:00', 'Content overlap found', 'Approved as unique'),
-(5, 6, 0.9200, 'processed', 'send_back', 3, 6, '2025-03-03 08:00:00', '2025-03-03 09:00:00', 'Needs revision', 'Sent back for improvement'),
+-- 17. Xóa dữ liệu cũ và thêm dữ liệu mẫu mới vào bảng duplicate_detections
+DELETE FROM duplicate_detections;
 
--- Pending duplicates (chưa xử lý - còn trong hàng đợi)
-(7, 8, 0.7600, 'pending', NULL, 4, NULL, '2025-03-04 08:00:00', NULL, 'Potential duplicate', NULL),
-(9, 10, 0.8600, 'pending', NULL, 5, NULL, '2025-03-05 08:00:00', NULL, 'Awaiting review', NULL),
-(11, 12, 0.7500, 'pending', NULL, 1, NULL, '2025-03-06 08:00:00', NULL, 'Under review', NULL),
-(13, 14, 0.8300, 'pending', NULL, 2, NULL, '2025-03-07 08:00:00', NULL, 'High similarity detected', NULL),
-(15, 16, 0.7900, 'pending', NULL, 4, NULL, '2025-03-08 08:00:00', NULL, 'Moderate similarity', NULL),
-(17, 18, 0.8500, 'pending', NULL, 5, NULL, '2025-03-09 08:00:00', NULL, 'Similar to existing question', NULL);
+INSERT INTO duplicate_detections (new_question_id, similar_question_id, similarity_score, ai_check_id, status, action, detected_by, processed_by, detected_at, processed_at, detection_feedback, processing_notes) VALUES
+-- Processed duplicates (đã xử lý - reject/accept/send_back)
+(1, 2, 0.8500, 1, 'processed', 'reject', 1, 6, '2025-03-01 08:00:00', '2025-03-01 10:00:00', 'High similarity detected', 'Clear duplicate'),
+(3, 4, 0.7800, 2, 'processed', 'accept', 2, 6, '2025-03-02 08:00:00', '2025-03-02 11:00:00', 'Content overlap found', 'Approved as unique'),
+(5, 6, 0.9200, 3, 'processed', 'send_back', 3, 6, '2025-03-03 08:00:00', '2025-03-03 09:00:00', 'Needs revision', 'Sent back for improvement'),
+
+-- Pending duplicates (chưa xử lý - còn trong hàng đợi) - NHIỀU HỎN ĐỂ DEMO
+(7, 8, 0.7600, NULL, 'pending', NULL, 4, NULL, '2025-03-04 08:00:00', NULL, 'Potential duplicate', NULL),
+(9, 10, 0.8600, NULL, 'pending', NULL, 5, NULL, '2025-03-05 08:00:00', NULL, 'Awaiting review', NULL),
+(11, 12, 0.7500, NULL, 'pending', NULL, 1, NULL, '2025-03-06 08:00:00', NULL, 'Under review', NULL),
+(13, 14, 0.8300, NULL, 'pending', NULL, 2, NULL, '2025-03-07 08:00:00', NULL, 'High similarity detected', NULL),
+(15, 16, 0.7900, NULL, 'pending', NULL, 4, NULL, '2025-03-08 08:00:00', NULL, 'Moderate similarity', NULL),
+(17, 18, 0.8500, NULL, 'pending', NULL, 5, NULL, '2025-03-09 08:00:00', NULL, 'Similar to existing question', NULL),
+
+-- Thêm 15 bản ghi nữa để có nhiều dữ liệu demo cho Processing Logs
+(19, 20, 0.8100, NULL, 'pending', NULL, 1, NULL, '2025-03-10 08:00:00', NULL, 'Biology concepts similarity', NULL),
+(1, 3, 0.7200, NULL, 'pending', NULL, 2, NULL, '2025-03-11 08:00:00', NULL, 'Cross-question similarity', NULL),
+(2, 4, 0.8800, NULL, 'pending', NULL, 3, NULL, '2025-03-12 08:00:00', NULL, 'CS vs Web development overlap', NULL),
+(5, 7, 0.7700, NULL, 'pending', NULL, 4, NULL, '2025-03-13 08:00:00', NULL, 'Math concepts comparison', NULL),
+(6, 8, 0.8200, NULL, 'pending', NULL, 5, NULL, '2025-03-14 08:00:00', NULL, 'Linear algebra similarity', NULL),
+(9, 11, 0.7800, NULL, 'pending', NULL, 1, NULL, '2025-03-15 08:00:00', NULL, 'Physics mechanics overlap', NULL),
+(10, 12, 0.8400, NULL, 'pending', NULL, 2, NULL, '2025-03-16 08:00:00', NULL, 'Newton laws similarity', NULL),
+(13, 15, 0.7600, NULL, 'pending', NULL, 3, NULL, '2025-03-17 08:00:00', NULL, 'Chemistry elements comparison', NULL),
+(14, 16, 0.8700, NULL, 'pending', NULL, 4, NULL, '2025-03-18 08:00:00', NULL, 'Periodic table vs buffer solution', NULL),
+(17, 19, 0.7900, NULL, 'pending', NULL, 5, NULL, '2025-03-19 08:00:00', NULL, 'Cell biology overlap', NULL),
+(18, 20, 0.8000, NULL, 'pending', NULL, 1, NULL, '2025-03-20 08:00:00', NULL, 'DNA vs mammal similarity', NULL),
+(1, 5, 0.7300, NULL, 'pending', NULL, 2, NULL, '2025-03-21 08:00:00', NULL, 'Java vs calculus cross-domain', NULL),
+(2, 6, 0.8100, NULL, 'pending', NULL, 3, NULL, '2025-03-22 08:00:00', NULL, 'BST vs derivative similarity', NULL),
+(3, 7, 0.7500, NULL, 'pending', NULL, 4, NULL, '2025-03-23 08:00:00', NULL, 'OOP vs matrix determinant', NULL),
+(4, 8, 0.8300, NULL, 'pending', NULL, 5, NULL, '2025-03-24 08:00:00', NULL, 'HTTP vs physics comparison', NULL);

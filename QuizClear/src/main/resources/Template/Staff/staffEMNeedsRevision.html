@@ -1,59 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
-    <link rel="stylesheet" href="../../static/css/staff/staffEMNeedsRevision.css">
-
+    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/header.css}">
+    <link rel="stylesheet" th:href="@{/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/css/staff/staffEMNeedsRevision.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>staffNeedsRevision</title>
+    <title>Needs Revision</title>
 </head>
-
 <body>
-    <!--header-->
-    <div id="header-placeholder"></div>
-
-
-
-    <!-- body -->
+    <header class="header" th:insert="~{header_user :: header}"></header>
     <div id="Container-body">
-        <!-- Menu -->
-        <div id="menu-HTML"></div>
-
-        <!-- Main content -->
+        <div id="menu-HTML" th:insert="~{Menu-Staff :: menu}"></div>
         <div id="main">
             <div class="header-bar">
                 <div>
                     <div class="title">Exam Management</div>
                     <div class="subtitle">Create, review, and manage exams across all subjects</div>
                 </div>
-                <button class="create-exam-btn">Create New Exam</button>
+                <a th:href="@{/staff/exams/create}" class="create-exam-btn">Create New Exam</a>
             </div>
             <div class="exam-status">
                 <div class="status-item">
                     <div class="status-label">Total Exams</div>
-                    <div class="status-count">128</div>
-                    <div class="status-label"> +6.2% form last month </div>
+                    <div class="status-count" th:text="${totalExams}">0</div>
+                    <div class="status-label">+6.2% from last month</div>
                 </div>
                 <div class="status-item">
                     <div class="status-label">Pending Approval</div>
-                    <div class="status-count">24</div>
-                    <div class="status-label"> (2 urgent due in 48h) </div>
+                    <div class="status-count" th:text="${pendingCount}">0</div>
+                    <div class="status-label">(2 urgent due in 48h)</div>
                 </div>
                 <div class="status-item">
                     <div class="status-label">Approved</div>
-                    <div class="status-count">96</div>
-                    <div class="status-label"> Ready for distribution </div>
+                    <div class="status-count" th:text="${approvedCount}">0</div>
+                    <div class="status-label">Ready for distribution</div>
                 </div>
                 <div class="status-item">
                     <div class="status-label">Rejected</div>
-                    <div class="status-count">8</div>
-                    <div class="status-label"> Needs revision </div>
+                    <div class="status-count" th:text="${rejectedCount}">0</div>
+                    <div class="status-label">Needs revision</div>
                 </div>
             </div>
             <div class="search-filter-bar">
@@ -64,107 +53,48 @@
                     <button class="filter"><i class="fa-solid fa-filter"></i></button>
                 </div>
             </div>
-
             <div class="tabs">
-                <button class="tab" onclick="location.href='staffQuestionBank.html'">
-                    All Exams
-                </button>
-                <button class="tab" onclick="location.href='submission.html'">
-                    Peding Approval
-                </button>
-                <button class="tab" onclick="location.href='planning.html'">
-                    Approved
-                </button>
+                <a class="tab" th:href="@{/staff/exams/all-exams}">All Exams</a>
+                <a class="tab" th:href="@{/staff/exams/pending-approval}">Pending Approval</a>
+                <a class="tab" th:href="@{/staff/exams/approved}">Approved</a>
                 <button class="tab active">Needs Revision</button>
                 <div class="line"></div>
             </div>
-
             <div class="main-content">
                 <div class="content">
                     <h3>Needs Revision</h3>
-                    <p style="color:#555; font-size: 13px; margin-top: 4px;" ;>Exams that require changes before
-                        approval</p>
+                    <p style="color:#555; font-size: 13px; margin-top: 4px;">Exams that require changes before approval</p>
                     <div class="line2"></div>
                     <div class="exam-list">
-                        <div class="exam-item">
+                        <div th:each="exam : ${rejectedExams}" class="exam-item">
                             <div class="left-right-wrapper">
-                                <!-- Left: icon + info + feedback -->
                                 <div class="exam-left">
                                     <div class="icon-wrapper">
                                         <i class="fa-solid fa-circle-exclamation"></i>
                                     </div>
                                     <div class="exam-info">
-                                        <h4>Database Systems Quiz</h4>
-                                        <p>Information Technology • Created: 2023-06-08 • Rejected by
-                                            Dr. Williams on 2023-06-10</p>
-                                        <div class="feedback-noti">
+                                        <h4 th:text="${exam.examTitle}">Exam Title</h4>
+                                        <p>
+                                            <span th:text="${exam.subject}">Subject</span>
+                                            • Created: <span th:text="${#temporals.format(exam.createdAt, 'yyyy-MM-dd')}">2023-06-08</span>
+                                            • Rejected by <span th:text="${exam.createdBy}">Dr. Williams</span>
+                                        </p>
+                                        <div class="feedback-noti" th:if="${exam.status == 'Rejected'}">
                                             <i class="fa-solid fa-circle-exclamation"></i>
-                                            <span style="margin-left: 6px;">Feedback: Insufficient advanced
-                                                questions</span>
+                                            <span style="margin-left: 6px;" th:text="'Feedback: ' + ${exam.feedback}">Feedback: ...</span>
                                         </div>
-
                                     </div>
                                 </div>
-
-                                <!-- Right: Buttons -->
                                 <div class="exam-actions">
-                                    <button class="edit-exam">Edit</button>
-                                    <button class="view-details">View</button>
+                                    <a th:href="@{'/staff/exams/edit/' + ${exam.examId}}" class="edit-exam">Edit</a>
+                                    <a th:href="@{'/staff/exams/' + ${exam.examId}}" class="view-details">View</a>
                                 </div>
                             </div>
                         </div>
-
-                    </div>
-
-                    <div class="exam-list">
-                        <div class="exam-item">
-                            <div class="left-right-wrapper">
-                                <!-- Left: icon + info + feedback -->
-                                <div class="exam-left">
-                                    <div class="icon-wrapper">
-                                        <i class="fa-solid fa-circle-exclamation"></i>
-                                    </div>
-                                    <div class="exam-info">
-                                        <h4>Database Systems Quiz</h4>
-                                        <p>Information Technolog • Created: 2023-06-08 • Rejected by
-                                            Dr. Williams on 2023-06-10</p>
-                                        <div class="feedback-noti">
-                                            <i class="fa-solid fa-circle-exclamation"></i>
-                                            <span style="margin-left: 6px;">Feedback: Insufficient advanced
-                                                questions</span>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <!-- Right: Buttons -->
-                                <div class="exam-actions">
-                                    <button class="edit-exam">Edit</button>
-                                    <button class="view-details">View</button>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
-
             </div>
         </div>
-
-
-         <script>
-        fetch("../header_user.html")
-            .then((response) => response.text())
-            .then((data) => {
-                document.getElementById("header-placeholder").innerHTML = data;
-            });
-
-        fetch("../Menu-Staff.html")
-            .then((response) => response.text())
-            .then((data) => {
-                document.getElementById("menu-HTML").innerHTML = data;
-            });
-    </script>
+    </div>
 </body>
-
 </html>
