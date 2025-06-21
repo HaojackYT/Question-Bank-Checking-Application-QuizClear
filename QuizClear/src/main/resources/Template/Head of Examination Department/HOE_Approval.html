@@ -3,23 +3,21 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../static/css/HOE/HEDApproval.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/HOE/HEDApproval.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Approvals</title>
 </head>
 
-<body>
-    <!--header-->
-    <div id="header-placeholder"></div>
+<body>    <!--header-->
+    <div th:insert="~{header_user :: header}"></div>
 
     <!-- body -->
-    <div id="Container-body">
-        <!-- Menu -->
-        <div id="menu-HTML"></div>
+    <div id="Container-body">        <!-- Menu -->
+        <div th:insert="~{Head of Examination Department/Menu-ExaminationDepartment :: menu}"></div>
 
         <!-- Main content -->
         <div id="main">
@@ -177,24 +175,8 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Scripts -->
+    </div>    <!-- Scripts -->
     <script>
-        // Load header
-        fetch('../header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-
-        // Load menu
-        fetch('Menu-ExaminationDepartment.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-                setActiveMenu(document.title);
-            });
 
         // Modal functions
         function openDetailsModal(examId, course, department, reviewBy, notes) {
@@ -251,7 +233,7 @@
             }
         }
     </script>
-    <script src="../../Static/js/L_activeMenu.js"></script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
 </html>

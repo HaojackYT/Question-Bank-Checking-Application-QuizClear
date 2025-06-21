@@ -1,19 +1,16 @@
-<link rel="stylesheet" href="../../Static/fontawesome/css/all.css">
-<link rel="stylesheet" href="../../Static/Menu-Staff.css">
-<div id="Menu-Staff">
+<div id="Menu-Staff" th:fragment="menu" style="width: 18vw; height: 100%; background-color: #E0EAFA;">
     <div style="padding: 1rem;">
-        <div class="elements">
-            <i class="fa-solid fa-house "></i>
-            <a href="HOE_Dashboard.html">Dashboard</a>
+        <div class="elements" style="padding: 1rem; display: flex; border-radius: 20px;">
+            <i class="fa-solid fa-house" style="color: black; font-size: 1rem;"></i>
+            <a th:href="@{/hoe-dashboard}" style="text-decoration: none; color: black; font-size: 1rem; margin-left: 1em;">Dashboard</a>
         </div>
-        <div class="elements">
-            <i class="fa-solid fa-file"></i>
-            <a href="HOE_ReviewAssignment.html">Review Assignment</a>
+        <div class="elements" style="padding: 1rem; display: flex; border-radius: 20px;">
+            <i class="fa-solid fa-file" style="color: black; font-size: 1rem;"></i>
+            <a th:href="@{/hoe-review-assignment}" style="text-decoration: none; color: black; font-size: 1rem; margin-left: 1em;">Review Assignment</a>
         </div>
-        <div class="elements">
-            <i class="fa-solid fa-file-circle-check"></i>
-            <a href="HOE_Approval.html">Approvals</a>
+        <div class="elements" style="padding: 1rem; display: flex; border-radius: 20px;">
+            <i class="fa-solid fa-file-circle-check" style="color: black; font-size: 1rem;"></i>
+            <a th:href="@{/hoe-approval}" style="text-decoration: none; color: black; font-size: 1rem; margin-left: 1em;">Approvals</a>
         </div>
     </div>
-
 </div>
