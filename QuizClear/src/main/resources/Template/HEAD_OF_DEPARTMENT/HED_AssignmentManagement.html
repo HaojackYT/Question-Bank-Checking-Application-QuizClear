@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="/header.css">
-    <link rel="stylesheet" href="/web_styles.css">
-    <link rel="stylesheet" href="/css/HED/HED_AssignManagement.css">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/HED/HED_AssignManagement.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Assignment_Management</title>
 </head>
@@ -84,16 +84,14 @@
                         </thead>
                         <tbody></tbody>
                     </table>
-                </div>
-
-                <!-- Pagination -->
+                </div>                <!-- Pagination -->
                 <div class="pagination">
-                    <span class="page-info">Total Pages: <span id="total-pages" th:text="${totalPages}">1</span></span>
+                    <span class="page-info">Total Pages: <span id="total-pages" th:text="${totalPages ?: 1}">1</span></span>
                     <div class="pagination-controls">
-                        <button class="page-btn" id="prev-page" th:disabled="${currentPage == 0}">Previous</button>
+                        <button class="page-btn" id="prev-page" th:disabled="${(currentPage ?: 0) == 0}">Previous</button>
                         <div id="page-numbers"></div>
                         <button class="page-btn" id="next-page"
-                            th:disabled="${currentPage == totalPages - 1}">Next</button>
+                            th:disabled="${(currentPage ?: 0) == (totalPages ?: 1) - 1}">Next</button>
                     </div>
                 </div>
             </div>
@@ -218,7 +216,7 @@
     </div>
 
     <!-- JavaScript -->
-    <script>
+    <script th:inline="javascript">
         const BASE_URL = 'http://localhost:8081'; // Ensure this matches your backend port
 
         // Utility functions
@@ -265,7 +263,7 @@
         }
 
         function openDetailsModal(taskId) {
-            fetchWithErrorHandling(`${BASE_URL}/hed/api/assignment?taskId=${taskId}`)
+            fetchWithErrorHandling(`${BASE_URL}/api/hed/assignment?taskId=${taskId}`)
                 .then(data => {
                     const titleElement = document.querySelector('.details-modal h2');
                     if (titleElement) titleElement.textContent = `Details - ${data.title || 'N/A'} (ID: ${taskId})`;
@@ -353,12 +351,11 @@
         // Load dynamic data
         async function loadLecturers() {
             try {
-                const lecturers = await fetchWithErrorHandling(`${BASE_URL}/hed/api/lecturers`);
+                const lecturers = await fetchWithErrorHandling(`${BASE_URL}/api/hed/lecturers`);
                 const select = document.getElementById('lecturer-select');
                 select.innerHTML = '<option value="">Select Lecturer</option>';
                 lecturers.forEach(lecturer => {
-                    const option = document.createElement('option');
-                    option.value = lecturer.id;
+                    const option = document.createElement('option');                    option.value = lecturer.id;
                     option.textContent = lecturer.name || 'Unknown';
                     select.appendChild(option);
                 });
@@ -370,7 +367,7 @@
 
         async function loadCourses() {
     try {
-        const courses = await fetchWithErrorHandling(`${BASE_URL}/hed/courses`);
+        const courses = await fetchWithErrorHandling(`${BASE_URL}/api/hed/courses`);
         console.log('Courses loaded:', courses);
         if (!Array.isArray(courses) || courses.length === 0) {
             showError('No courses available');
@@ -395,11 +392,9 @@
         console.error('Error fetching courses:', error);
         showError(`Failed to load courses: ${error.message}`);
     }
-}
-
-        async function loadQuestions(taskId) {
+}        async function loadQuestions(taskId) {
             try {
-                const questions = await fetchWithErrorHandling(`${BASE_URL}/hed/api/assignment/questions?taskId=${taskId}`);
+                const questions = await fetchWithErrorHandling(`${BASE_URL}/api/hed/assignment/questions?taskId=${taskId}`);
                 const questionsList = document.getElementById('questions-list');
                 questionsList.innerHTML = '';
                 if (!questions || questions.length === 0) {
@@ -443,11 +438,9 @@
                 console.error('Error fetching questions:', error);
                 showError(`Failed to load questions: ${error.message}`);
             }
-        }
-
-        function updateQuestionStatus(questionId, status) {
+        }        function updateQuestionStatus(questionId, status) {
             if (!confirm(`Are you sure you want to ${status.toLowerCase()} this question?`)) return;
-            fetchWithErrorHandling(`${BASE_URL}/hed/api/question/${questionId}/status`, {
+            fetchWithErrorHandling(`${BASE_URL}/api/hed/question/${questionId}/status`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status })
@@ -476,7 +469,7 @@
             const buttons = document.querySelectorAll('.modal-footer button');
             buttons.forEach(btn => btn.disabled = true);
 
-            fetchWithErrorHandling(`${BASE_URL}/hed/api/notifications/${taskId}/status`, {
+            fetchWithErrorHandling(`${BASE_URL}/api/hed/notifications/${taskId}/status`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: mappedStatus })
@@ -511,7 +504,7 @@
                 description: document.getElementById('description').value,
                 dueDate: dueDate
             };
-            fetchWithErrorHandling(`${BASE_URL}/hed/api/assignments`, {
+            fetchWithErrorHandling(`${BASE_URL}/api/hed/assignments`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -525,24 +518,27 @@
                     console.error('Error creating assignment:', error);
                     showError(`Failed to create assignment: ${error.message}`);
                 });
-        });
-
-        // Load header and menu
-        fetch('/template/header_user.html')
+        });        // Load header and menu
+        fetch(/*[[@{/Template/header_user.html}]]*/)
             .then(res => res.text())
             .then(data => document.getElementById('header-placeholder').innerHTML = data)
             .catch(error => console.error('Error loading header:', error));
-        fetch('/menu-hed')
+        fetch(/*[[@{/Template/HEAD_OF_DEPARTMENT/Menu-HED.html}]]*/)
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
                 setActiveMenu(document.title);
             })
-            .catch(error => console.error('Error loading menu:', error));
-
-        // Pagination and table logic
-        let currentPage = /*[[${currentPage}]]*/ 0;
+            .catch(error => console.error('Error loading menu:', error));        // Pagination and table logic
+        let currentPage = /*[[${currentPage ?: 0}]]*/ 0;
         const pageSize = 5;
+        
+        // Load assignments when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Assignment Management page loaded');
+            // For now, just show static content
+            // loadAssignments(currentPage); // Disable for now
+        });
 
         function loadAssignments(page = 0) {
     const searchValue = document.querySelector('.search-input').value;
@@ -550,7 +546,7 @@
     const courseValue = document.getElementById('course-filter').value;
     console.log('Loading assignments with:', { searchValue, statusValue, courseValue });
     // Thay courseId thành subject để khớp với backend
-    fetchWithErrorHandling(`${BASE_URL}/hed/api/assignments?search=${encodeURIComponent(searchValue)}&status=${statusValue}&subject=${courseValue}&page=${page}&size=${pageSize}&_=${new Date().getTime()}`)
+    fetchWithErrorHandling(`${BASE_URL}/api/hed/assignments?search=${encodeURIComponent(searchValue)}&status=${statusValue}&subject=${courseValue}&page=${page}&size=${pageSize}&_=${new Date().getTime()}`)
         .then(data => {
             console.log('Assignments response:', data);
             updateTable(data.content || []);
@@ -608,15 +604,13 @@
             }
             prevButton.onclick = () => currentPage > 0 && loadAssignments(currentPage - 1);
             nextButton.onclick = () => currentPage < totalPages - 1 && loadAssignments(currentPage + 1);
-        }
-
-        // Notification logic
+        }        // Notification logic
         let allNotifications = [];
         const MAX_INITIAL_NOTIFICATIONS = 2;
         let isExpanded = false;
 
         function loadNotifications() {
-            fetchWithErrorHandling(`${BASE_URL}/hed/api/notifications`)
+            fetchWithErrorHandling(`${BASE_URL}/api/hed/notifications`)
                 .then(data => {
                     allNotifications = data;
                     renderNotifications(isExpanded ? allNotifications.length : MAX_INITIAL_NOTIFICATIONS);
@@ -676,11 +670,9 @@
         // Placeholder for edit and delete
         function editAssignment(taskId) {
             showError('Edit functionality not implemented yet');
-        }
-
-        function deleteAssignment(taskId) {
+        }        function deleteAssignment(taskId) {
             if (confirm('Are you sure you want to delete this assignment?')) {
-                fetchWithErrorHandling(`${BASE_URL}/hed/api/assignments/${taskId}`, {
+                fetchWithErrorHandling(`${BASE_URL}/api/hed/assignments/${taskId}`, {
                     method: 'DELETE'
                 })
                     .then(() => {
@@ -692,10 +684,9 @@
                         showError(`Failed to delete assignment: ${error.message}`);
                     });
             }
-        }
-
-        // Initialize
+        }        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('Assignment Management page loaded');
             loadNotifications();
             loadAssignments(currentPage);
             loadCourses();
@@ -710,7 +701,7 @@
         });
     </script>
 
-    <script src="/js/L_activeMenu.js"></script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
 </html>

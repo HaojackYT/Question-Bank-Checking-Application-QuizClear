@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="/header.css">
-    <link rel="stylesheet" href="/web_styles.css">
-    <link rel="stylesheet" href="/css/HED/HED_Dashboard.css">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/HED/HED_Dashboard.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Dashboard_HED</title>
 </head>
@@ -344,11 +344,9 @@
         </div>`;
                     list.innerHTML += html;
                 });
-            });
-
-    </script>
-    <script>
-        fetch('/template/header_user.html')
+            });    </script>
+    <script th:inline="javascript">
+        fetch(/*[[@{/Template/header_user.html}]]*/)
             .then(res => res.text())
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
@@ -356,7 +354,7 @@
 
 
         // Load menu
-        fetch('/menu-hed')
+        fetch(/*[[@{/Template/HEAD_OF_DEPARTMENT/Menu-HED.html}]]*/)
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
@@ -398,9 +396,8 @@
                     console.log('Check button clicked');
                 });
             });
-        });
-    </script>
-    <script src="../../Static/js/L_activeMenu.js"></script>
+        });    </script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
 </html>

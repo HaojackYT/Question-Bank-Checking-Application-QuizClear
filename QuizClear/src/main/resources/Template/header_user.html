@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="stylesheet" th:href="@{/header.css}" />
-    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}" />
+    <link rel="stylesheet" th:href="@{/Static/header.css}" />
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}" />
 </head>
 <body>
 <div id="header-user" th:fragment="header">
@@ -26,10 +26,9 @@
         </div>
         <!-- User icon -->
         <div class="dropdown">
-            <i class="fa-solid fa-user icon-user"></i>
-            <div class="dropdown-content profile-dropdown">
-                <a href="../HED_Profile.html">Profile</a>
-                <a href="#">Logout</a>
+            <i class="fa-solid fa-user icon-user"></i>            <div class="dropdown-content profile-dropdown">
+                <a th:href="@{/api/hed/profile}">Profile</a>
+                <a th:href="@{/logout}">Logout</a>
             </div>
         </div>
     </div>    <script>

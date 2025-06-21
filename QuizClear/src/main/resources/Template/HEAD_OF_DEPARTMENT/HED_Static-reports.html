@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/css/HED/HED_Static-reports.css">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/HED/HED_Static-reports.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Statics&Report</title>
 </head>
@@ -25,27 +25,25 @@
         <div id="main">
             <!-- noi dung duoc nhap trong day -->
 
-            <div class="title">Statistics & Reports</div>
-
-            <div class="stats-container">
+            <div class="title">Statistics & Reports</div>            <div class="stats-container">
                 <div class="stat-card">
                     <div class="stat-title">Total Question</div>
-                    <div class="stat-value">2,847</div>
-                    <div class="stat-change">164<span> this month</span></div>
+                    <div class="stat-value" th:text="${totalQuestions != null ? totalQuestions : '2,847'}">2,847</div>
+                    <div class="stat-change" th:text="${questionChange != null ? questionChange + ' this month' : '164 this month'}">164<span> this month</span></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Approved</div>
-                    <div class="stat-value">50</div>
-                    <div class="stat-change">75,5<span>% of total</span></div>
+                    <div class="stat-value" th:text="${approvedQuestions != null ? approvedQuestions : '50'}">50</div>
+                    <div class="stat-change" th:text="${approvedPercentage != null ? approvedPercentage + '% of total' : '75,5% of total'}">75,5<span>% of total</span></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Pending</div>
-                    <div class="stat-value">342</div>
+                    <div class="stat-value" th:text="${pendingQuestions != null ? pendingQuestions : '342'}">342</div>
                     <div class="stat-change">Waiting review</div>
                 </div>
                  <div class="stat-card">
                     <div class="stat-title">Reject</div>
-                    <div class="stat-value">342</div>
+                    <div class="stat-value" th:text="${rejectedQuestions != null ? rejectedQuestions : '342'}">342</div>
                     <div class="stat-change">Need revision</div>
                 </div>
             </div>
@@ -133,29 +131,26 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- ma nhung header vs menu -->
-    <script>
+    </div>    <!-- ma nhung header vs menu -->
+    <script th:inline="javascript">
         // Load header
-        fetch('../header_user.html')
+        fetch(/*[[@{/Template/header_user.html}]]*/)
             .then(response => response.text())
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
             });
 
         // Load menu
-        fetch('Menu-HED.html')
+        fetch(/*[[@{/Template/HEAD_OF_DEPARTMENT/Menu-HED.html}]]*/)
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
                 setActiveMenu(document.title);
             });
-    </script>
-
-    <script>
-        // Dữ liệu mẫu (có thể thay đổi bằng Java sau này)
-        const data = [
+    </script><script th:inline="javascript">
+        // Dữ liệu từ backend (nếu có) hoặc dữ liệu mẫu
+        /*<![CDATA[*/
+        const data = /*[[${chartData}]]*/ [
             { subject: "Math", created: 40, target: 50 },
             { subject: "Physics", created: 20, target: 70 },
             { subject: "Chemistry", created: 50, target: 60 },
@@ -164,6 +159,7 @@
             { subject: "Geography", created: 20, target: 40 },
             { subject: "Literature", created: 20, target: 30 }
         ];
+        /*]]*/
 
         // Hàm tạo biểu đồ
         function createChart() {
@@ -190,14 +186,14 @@
                 barsContainer.appendChild(barGroup);
             });
         }
-    </script>
-
-    <script>
-        // Dữ liệu mẫu cho biểu đồ vòng (có thể thay đổi bằng Java)
-        const progressData = {
+    </script>    <script th:inline="javascript">
+        // Dữ liệu từ backend (nếu có) cho biểu đồ vòng
+        /*<![CDATA[*/
+        const progressData = /*[[${progressData}]]*/ {
             completed: 75,
             remaining: 25
         };
+        /*]]*/
 
         // Hàm tạo biểu đồ vòng
         function createDoughnutChart() {
@@ -232,11 +228,10 @@
             `;
             container.appendChild(legend);
         }
-    </script>
-
-    <script>
-        // Dữ liệu mẫu cho biểu đồ thanh ngang (có thể thay đổi bằng Java sau này)
-        let barData = [
+    </script>    <script th:inline="javascript">
+        // Dữ liệu từ backend (nếu có) cho biểu đồ thanh ngang
+        /*<![CDATA[*/
+        let barData = /*[[${lecturerData}]]*/ [
             { userName: "Nguyen Van A", completed: 80, inProgress: 10, overdue: 5, remaining: 5 },
             { userName: "Nguyen Van B", completed: 70, inProgress: 15, overdue: 5, remaining: 10 },
             { userName: "Nguyen Van C", completed: 60, inProgress: 20, overdue: 10, remaining: 10 },
@@ -246,6 +241,7 @@
             { userName: "Nguyen Van P", completed: 20, inProgress: 40, overdue: 15, remaining: 25 },
             { userName: "Nguyen Van Q", completed: 10, inProgress: 45, overdue: 20, remaining: 25 }
         ];
+        /*]]*/
 
         // Hàm tạo biểu đồ thanh ngang
         function createCrossBarChart(filteredData = barData) {
@@ -328,7 +324,7 @@
             createCrossBarChart();
         };
     </script>
-    <script src="../../Static/js/L_activeMenu.js"></script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
 </html>
