@@ -1,39 +1,47 @@
-<link rel="stylesheet" href="../../Static/fontawesome/css/all.css">
-<link rel="stylesheet" href="../../Static/Menu-Staff.css">
-<div id="Menu-Staff">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu Fragment</title>
+</head>
+<body>
+
+<div th:fragment="Menu-SL" id="Menu-Staff">
     <div style="padding: 1rem;">
         <div class="elements ">
             <i class="fa-solid fa-house "></i>
-            <a href="slDashboard.html">Dashboard</a>
+            <a th:href="@{/subject-leader/dashboard}">Dashboard</a>
         </div>
         <div class="elements">
             <i class="fa-solid fa-list-check"></i>
-            <a href="slPlans.html">Plans</a>
+            <a th:href="@{/subject-leader/plans}">Plans</a>
         </div>
         <div class="elements">
             <i class="fa-solid fa-comments"></i>
-            <a href="slQuesAssignment.html">Question Assignment</a>
+            <a th:href="@{/subject-leader/question-assignment}">Question Assignment</a>
         </div>
         <div class="elements">
             <i class="fa-solid fa-file"></i>
-            <a href="SLExamAssignment.html">Exam Assignment</a>
+            <a th:href="@{/subject-leader/exam-assignment}">Exam Assignment</a>
         </div>
         <div class="elements">
             <i class="fa-solid fa-copy"></i>
-            <a href="sl_duplicationCheck.html">Duplication Check</a>
+            <a th:href="@{/subject-leader/duplication-check}">Duplication Check</a>
         </div>
         <div class="elements">
             <i class="fa-solid fa-thumbs-up"></i>
-            <a href="slReviewApproval.html">Review & Approval</a>
+            <a th:href="@{/subject-leader/review-approval}">Review & Approval</a>
         </div>
         <div class="elements">
             <i class="fa-solid fa-flag"></i>
-            <a href="SL_SummaryReport.html">Summary Report</a>
+            <a th:href="@{/subject-leader/summary-report}">Summary Report</a>
         </div>
         <div class="elements">
             <i class="fa-solid fa-chart-simple"></i>
-            <a href="sl_feedBack.html">Feedback</a>
+            <a th:href="@{/subject-leader/feedback}">Feedback</a>
         </div>
     </div>
-
 </div>
+
+</body>
+</html>

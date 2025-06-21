@@ -200,8 +200,8 @@ public class WebPageController {
                 dto.setDepartment(user.getDepartment());
                 return dto;
             })
-            .orElse(null);
-    }
+            .orElse(null);    }
     
+    // ========== HELPER METHODS CHO LOGIN ==========
 
 }

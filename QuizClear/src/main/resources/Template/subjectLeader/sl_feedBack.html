@@ -1,27 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/css/subjectLeader/sl_feedBack.css">
+    <link rel="icon" href="data:,">    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/sl_feedBack.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Feedback</title>
 </head>
 
-<body>
-    <!--header-->
-    <div id="header-placeholder"></div>
-
-
+<body>    <!--header-->
+    <header class="header" th:insert="~{header_user :: header}"></header>
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div id="menu-HTML"></div>
+        <div class="sidebar" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
 
 
         <!-- Main content -->
@@ -63,60 +61,174 @@
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Dữ liệu sẽ được thêm vào đây động -->
-                            <tr>
-                                <td>1</td>
-                                <td>Feedback on Q25</td>
-                                <td>Department Head</td>
-                                <td>22/04/25</td>
-                                <td><span class="status completed">Completed</span></td>
-                                <td><span class="action-icon"><i class="fa-solid fa-pen-to-square"></i></a></span></td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Feedback on Q25</td>
-                                <td>Department Head</td>
-                                <td>22/04/25</td>
-                                <td><span class="status in-progress">In Prog.</span></td>
-                                <td><span class="action-icon"><i class="fa-solid fa-pen-to-square"></i></a></span></td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Feedback on Q25</td>
-                                <td>Department Head</td>
-                                <td>22/04/25</td>
-                                <td><span class="status new">New</span></td>
-                                <td><span class="action-icon"><i class="fa-solid fa-pen-to-square"></i></a></span></td>
-                            </tr>
+                        </thead>                        <tbody id="feedback-table-body">
+                            <!-- Dữ liệu sẽ được thêm vào đây động từ database -->
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
-
-
-
-        <!-- ma nhung header vs menu -->
+        </div>        <!-- ma nhung header vs menu -->
+        <script th:src="@{/Static/js/L_activeMenu.js}"></script>
         <script>
-            // Load header
-            fetch('../header_user.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('header-placeholder').innerHTML = data;
-                });
+            // Load feedback data from API
+            loadFeedbackData();
 
-            // Load menu
-            fetch('Menu-SL.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('menu-HTML').innerHTML = data;
-                    setActiveMenu(document.title);
-                });
+            function loadFeedbackData() {
+                fetch('/subject-leader/api/feedback')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        populateFeedbackTable(data);
+                    })
+                    .catch(error => {
+                        console.error('Error loading feedback data:', error);
+                        showNoDataMessage();
+                    });
+            }
 
-        </script>
-        <script src="../../Static/js/L_activeMenu.js"></script>
+            function populateFeedbackTable(feedbackList) {
+                const tbody = document.getElementById('feedback-table-body');
+                tbody.innerHTML = '';
+
+                if (!feedbackList || feedbackList.length === 0) {
+                    showNoDataMessage();
+                    return;
+                }
+
+                feedbackList.forEach((feedback, index) => {
+                    const row = document.createElement('tr');
+                    
+                    // Format date
+                    let formattedDate = 'N/A';
+                    if (feedback.submittedAt || feedback.reviewedAt) {
+                        const date = new Date(feedback.submittedAt || feedback.reviewedAt);
+                        formattedDate = date.toLocaleDateString('en-GB', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: '2-digit'
+                        });
+                    }
+
+                    // Determine status class and text
+                    let statusClass = 'new';
+                    let statusText = 'New';
+                    
+                    if (feedback.status) {
+                        const status = feedback.status.toLowerCase();
+                        if (status.includes('approved') || status.includes('completed')) {
+                            statusClass = 'completed';
+                            statusText = 'Completed';
+                        } else if (status.includes('progress') || status.includes('submitted')) {
+                            statusClass = 'in-progress';
+                            statusText = 'In Prog.';
+                        } else if (status.includes('rejected')) {
+                            statusClass = 'rejected';
+                            statusText = 'Rejected';
+                        }
+                    }
+
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${feedback.title || 'No title'}</td>
+                        <td>${feedback.reviewedByName || feedback.createdByName || 'Unknown'}</td>
+                        <td>${formattedDate}</td>
+                        <td><span class="status ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <span class="action-icon" onclick="viewFeedbackDetail(${feedback.id}, '${feedback.type}')">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </span>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            }
+
+            function showNoDataMessage() {
+                const tbody = document.getElementById('feedback-table-body');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 20px; color: #666;">
+                            No feedback data available
+                        </td>
+                    </tr>
+                `;
+            }            function viewFeedbackDetail(feedbackId, type) {
+                // Navigate to detail page
+                window.location.href = `/subject-leader/feedback/${feedbackId}/details?type=${type}`;
+            }
+
+            // Search functionality
+            function searchFeedback() {
+                const searchInput = document.querySelector('.search-input');
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                
+                const rows = document.querySelectorAll('#feedback-table-body tr');
+                
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    let found = false;
+                    
+                    cells.forEach(cell => {
+                        if (cell.textContent.toLowerCase().includes(searchTerm)) {
+                            found = true;
+                        }
+                    });
+                    
+                    row.style.display = found ? '' : 'none';
+                });
+            }
+
+            // Filter functionality
+            function filterByStatus() {
+                const filterSelect = document.querySelector('.filter-select');
+                const selectedStatus = filterSelect.value;
+                
+                const rows = document.querySelectorAll('#feedback-table-body tr');
+                
+                rows.forEach(row => {
+                    if (selectedStatus === 'All Status') {
+                        row.style.display = '';
+                    } else {
+                        const statusCell = row.querySelector('.status');
+                        if (statusCell) {
+                            const statusText = statusCell.textContent.trim();
+                            const show = statusText.toLowerCase().includes(selectedStatus.toLowerCase()) ||
+                                       (selectedStatus === 'Pending' && statusText === 'New') ||
+                                       (selectedStatus === 'Approved' && statusText === 'Completed') ||
+                                       (selectedStatus === 'Declined' && statusText === 'Rejected');
+                            row.style.display = show ? '' : 'none';
+                        }
+                    }
+                });
+            }
+
+            // Add event listeners
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchBtn = document.querySelector('.search-btn');
+                const searchInput = document.querySelector('.search-input');
+                const filterSelect = document.querySelector('.filter-select');
+                
+                if (searchBtn) {
+                    searchBtn.addEventListener('click', searchFeedback);
+                }
+                
+                if (searchInput) {
+                    searchInput.addEventListener('keyup', function(event) {
+                        if (event.key === 'Enter') {
+                            searchFeedback();
+                        }
+                    });
+                }
+                
+                if (filterSelect) {
+                    filterSelect.addEventListener('change', filterByStatus);
+                }
+            });        </script>
 </body>
 
 </html>

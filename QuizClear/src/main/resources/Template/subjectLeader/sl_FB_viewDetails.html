@@ -1,31 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/css/subjectLeader/sl_FB_viewDetails.css">
+    <link rel="icon" href="data:,">    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/sl_FB_viewDetails.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>SL Plans</title>
 </head>
 
-<body>
-    <!-- Header -->
-    <div id="header-placeholder"></div>
+<body>    <!-- Header -->
+    <header class="header" th:insert="~{header_user :: header}"></header>
 
     <!-- Body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div id="menu-HTML"></div>
+        <div class="sidebar" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
 
         <!-- Main content -->
         <div id="main">
-            <div class="details-container">
-                <div class="page-header">
-                    <a href="sl_feedBack.html">
+            <div class="details-container">                <div class="page-header">
+                    <a href="/subject-leader/feedback">
                         <button class="back-btn">
                             <i class="fas fa-arrow-left"></i>
                         </button>
@@ -219,26 +218,175 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Scripts for loading header, menu, and modal functionality -->
+    </div>    <!-- Scripts for loading header, menu, and modal functionality -->
     <script>
-        // Load header
-        fetch('../header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
+        // Global variables
+        let currentFeedbackId = null;
+        let currentFeedbackType = null;
+        let currentFeedbackData = null;
 
-        // Load menu
-        fetch('Menu-SL.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-                setActiveMenu(document.title);
-            });
+        // Get URL parameters
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);        }
 
-        // Function to format date to YYYY-MM-DD
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            currentFeedbackId = getUrlParameter('id');
+            currentFeedbackType = getUrlParameter('type');
+            
+            if (currentFeedbackId) {
+                loadFeedbackDetail(currentFeedbackId);
+            } else {
+                showErrorMessage('No feedback ID provided');
+            }
+        });
+
+        // Load feedback detail data
+        function loadFeedbackDetail(feedbackId) {
+            fetch(`/subject-leader/api/feedback/${feedbackId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    currentFeedbackData = data;
+                    populateFeedbackDetail(data);
+                })
+                .catch(error => {
+                    console.error('Error loading feedback detail:', error);
+                    showErrorMessage('Error loading feedback data. Please try again.');
+                });
+        }
+
+        // Populate feedback detail form
+        function populateFeedbackDetail(data) {
+            if (!data) {
+                showErrorMessage('No feedback data found');
+                return;
+            }
+
+            // Update information section
+            const infoInputs = document.querySelectorAll('.info-field input, .info-field textarea');
+            
+            // No. field
+            const noInput = infoInputs[0];
+            if (noInput) {
+                noInput.value = `${data.type === 'exam' ? 'EX' : 'Q'}_${data.id}`;
+            }
+
+            // Feedback Giver field
+            const giverInput = infoInputs[1];
+            if (giverInput) {
+                giverInput.value = data.reviewedByName || data.createdByName || 'Unknown';
+            }
+
+            // Feedback Content field
+            const contentInput = infoInputs[2];
+            if (contentInput) {
+                const shortContent = data.title && data.title.length > 50 ? 
+                                   data.title.substring(0, 50) + '...' : 
+                                   (data.title || 'No content');
+                contentInput.value = shortContent;
+            }
+
+            // Created Date field
+            const dateInput = infoInputs[3];
+            if (dateInput) {
+                let formattedDate = 'N/A';
+                if (data.submittedAt || data.createdAt) {
+                    const date = new Date(data.submittedAt || data.createdAt);
+                    formattedDate = date.toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit'
+                    });
+                }
+                dateInput.value = formattedDate;
+            }
+
+            // Status field
+            const statusInput = infoInputs[4];
+            if (statusInput) {
+                statusInput.value = data.status || 'Unknown';
+            }
+
+            // Notes field
+            const notesTextarea = document.querySelector('.info-field textarea');
+            if (notesTextarea) {
+                notesTextarea.value = data.feedback || 'No feedback provided';
+            }
+
+            // Update question content if it's a question
+            if (data.type === 'question') {
+                populateQuestionContent(data);
+            } else if (data.type === 'exam') {
+                populateExamContent(data);
+            }
+        }
+
+        // Populate question content
+        function populateQuestionContent(data) {
+            const questionText = document.getElementById('questionText');
+            const optionA = document.getElementById('optionA');
+            const optionB = document.getElementById('optionB');
+            const optionC = document.getElementById('optionC');
+            const optionD = document.getElementById('optionD');
+
+            if (questionText && data.content) {
+                questionText.innerText = data.content;
+            }
+
+            if (optionA && data.answerF1) optionA.innerText = data.answerF1;
+            if (optionB && data.answerF2) optionB.innerText = data.answerF2;
+            if (optionC && data.answerF3) optionC.innerText = data.answerF3;
+            if (optionD && data.answerKey) optionD.innerText = data.answerKey;
+
+            // Update table header for question
+            const tableHeader = document.querySelector('.questions-table th');
+            if (tableHeader) {
+                tableHeader.textContent = 'Question Content';
+            }
+        }
+
+        // Populate exam content (if needed)
+        function populateExamContent(data) {
+            const questionText = document.getElementById('questionText');
+            
+            if (questionText && data.content) {
+                questionText.innerText = `Exam: ${data.title}`;
+            }
+
+            // Hide options for exam
+            const questionOptions = document.querySelector('.question-options');
+            if (questionOptions) {
+                questionOptions.style.display = 'none';
+            }
+
+            // Update table header for exam
+            const tableHeader = document.querySelector('.questions-table th');
+            if (tableHeader) {
+                tableHeader.textContent = 'Exam Content';
+            }
+        }
+
+        // Show error message
+        function showErrorMessage(message) {
+            const mainContainer = document.querySelector('.details-container');
+            if (mainContainer) {
+                mainContainer.innerHTML = `
+                    <div style="text-align: center; padding: 50px; color: #666;">
+                        <h2>Error</h2>
+                        <p>${message}</p>
+                        <a href="sl_feedBack.html" style="color: #007bff; text-decoration: none;">
+                            ← Back to Feedback List
+                        </a>
+                    </div>
+                `;
+            }
+        }        // Function to format date to YYYY-MM-DD
         function formatDate(date) {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
@@ -250,7 +398,7 @@
         function openAssignModal() {
             // Set Assign Date to current date
             const assignDateInput = document.getElementById('assignDate');
-            const currentDate = new Date('2025-05-31'); // Using the system-provided date
+            const currentDate = new Date();
             assignDateInput.value = formatDate(currentDate);
 
             // Show the modal
@@ -261,17 +409,77 @@
             document.getElementById('assignModal').style.display = 'none';
         }
 
+        // Handle assignment submission
+        function handleAssignment() {
+            const departmentSelect = document.querySelector('#assignModal .modal-select');
+            const lecturerSelect = document.querySelectorAll('#assignModal .modal-select')[1];
+            const dueDateInput = document.querySelector('#assignModal input[type="date"]:not([disabled])');
+            const notesInput = document.querySelector('#assignModal .modal-input[placeholder*="notes"]');
+
+            const assignmentData = {
+                department: departmentSelect ? departmentSelect.value : '',
+                lecturerId: lecturerSelect ? lecturerSelect.value : '',
+                dueDate: dueDateInput ? dueDateInput.value : '',
+                notes: notesInput ? notesInput.value : ''
+            };
+
+            if (!currentFeedbackId) {
+                alert('Error: No feedback ID found');
+                return;
+            }
+
+            fetch(`/subject-leader/api/feedback/${currentFeedbackId}/assign`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(assignmentData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Question assigned successfully!');
+                    closeAssignModal();
+                    // Reload the page to reflect changes
+                    location.reload();
+                } else {
+                    alert('Error assigning question: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error assigning question. Please try again.');
+            });
+        }
+
         // Edit Modal functionality
         function openEditModal() {
-            // Populate modal with current question data
-            document.getElementById('editQuestionText').value = document.getElementById('questionText').innerText;
-            document.getElementById('editOptionA').value = document.getElementById('optionA').innerText;
-            document.getElementById('editOptionB').value = document.getElementById('optionB').innerText;
-            document.getElementById('editOptionC').value = document.getElementById('optionC').innerText;
-            document.getElementById('editOptionD').value = document.getElementById('optionD').innerText;
+            if (!currentFeedbackData || currentFeedbackData.type !== 'question') {
+                alert('Edit is only available for questions');
+                return;
+            }
 
-            // Set correct answer (for now, default to B as per the image; ideally, this should be stored and retrieved)
-            document.getElementById('correctAnswer').value = 'B';
+            // Populate modal with current question data
+            document.getElementById('editQuestionText').value = currentFeedbackData.content || '';
+            document.getElementById('editOptionA').value = currentFeedbackData.answerF1 || '';
+            document.getElementById('editOptionB').value = currentFeedbackData.answerF2 || '';
+            document.getElementById('editOptionC').value = currentFeedbackData.answerF3 || '';
+            document.getElementById('editOptionD').value = currentFeedbackData.answerKey || '';
+
+            // Set correct answer based on answerKey
+            const correctAnswerSelect = document.getElementById('correctAnswer');
+            if (correctAnswerSelect && currentFeedbackData.answerKey) {
+                // Try to determine which option matches the answerKey
+                if (currentFeedbackData.answerKey === currentFeedbackData.answerF1) {
+                    correctAnswerSelect.value = 'A';
+                } else if (currentFeedbackData.answerKey === currentFeedbackData.answerF2) {
+                    correctAnswerSelect.value = 'B';
+                } else if (currentFeedbackData.answerKey === currentFeedbackData.answerF3) {
+                    correctAnswerSelect.value = 'C';
+                } else {
+                    correctAnswerSelect.value = 'D'; // Default to D if answerKey doesn't match any option
+                }
+            }
 
             // Show the modal
             document.getElementById('editModal').style.display = 'block';
@@ -282,18 +490,103 @@
         }
 
         function saveQuestion() {
-            // Update the question section with edited values
-            document.getElementById('questionText').innerText = document.getElementById('editQuestionText').value;
-            document.getElementById('optionA').innerText = document.getElementById('editOptionA').value;
-            document.getElementById('optionB').innerText = document.getElementById('editOptionB').value;
-            document.getElementById('optionC').innerText = document.getElementById('editOptionC').value;
-            document.getElementById('optionD').innerText = document.getElementById('editOptionD').value;
+            if (!currentFeedbackId) {
+                alert('Error: No feedback ID found');
+                return;
+            }
 
-            // Close the modal
-            closeEditModal();
+            const questionData = {
+                content: document.getElementById('editQuestionText').value,
+                answerF1: document.getElementById('editOptionA').value,
+                answerF2: document.getElementById('editOptionB').value,
+                answerF3: document.getElementById('editOptionC').value,
+                correctAnswer: document.getElementById('correctAnswer').value
+            };
+
+            // Set answerKey based on correct answer selection
+            switch(questionData.correctAnswer) {
+                case 'A':
+                    questionData.answerKey = questionData.answerF1;
+                    break;
+                case 'B':
+                    questionData.answerKey = questionData.answerF2;
+                    break;
+                case 'C':
+                    questionData.answerKey = questionData.answerF3;
+                    break;
+                case 'D':
+                    questionData.answerKey = document.getElementById('editOptionD').value;
+                    break;
+            }
+
+            fetch(`/subject-leader/api/feedback/${currentFeedbackId}/update-question`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(questionData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Question updated successfully!');
+                    closeEditModal();
+                    
+                    // Update the display with new values
+                    document.getElementById('questionText').innerText = questionData.content;
+                    document.getElementById('optionA').innerText = questionData.answerF1;
+                    document.getElementById('optionB').innerText = questionData.answerF2;
+                    document.getElementById('optionC').innerText = questionData.answerF3;
+                    document.getElementById('optionD').innerText = questionData.answerKey;
+                    
+                    // Update current data
+                    if (currentFeedbackData) {
+                        currentFeedbackData.content = questionData.content;
+                        currentFeedbackData.answerF1 = questionData.answerF1;
+                        currentFeedbackData.answerF2 = questionData.answerF2;
+                        currentFeedbackData.answerF3 = questionData.answerF3;
+                        currentFeedbackData.answerKey = questionData.answerKey;
+                    }
+                } else {
+                    alert('Error updating question: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating question. Please try again.');
+            });
         }
 
-        // Close modals when clicking outside of them
+        // Resubmit functionality
+        function handleResubmit() {
+            if (!currentFeedbackId) {
+                alert('Error: No feedback ID found');
+                return;
+            }
+
+            if (confirm('Are you sure you want to resubmit this question for review?')) {
+                fetch(`/subject-leader/api/feedback/${currentFeedbackId}/resubmit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Question resubmitted successfully!');
+                        // Reload the page to reflect changes
+                        location.reload();
+                    } else {
+                        alert('Error resubmitting question: ' + (data.message || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error resubmitting question. Please try again.');
+                });
+            }
+        }        // Close modals when clicking outside of them
         window.onclick = function (event) {
             const assignModal = document.getElementById('assignModal');
             const editModal = document.getElementById('editModal');
@@ -304,8 +597,22 @@
                 editModal.style.display = 'none';
             }
         }
+
+        // Add event listeners when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Assign button event listener
+            const assignButton = document.querySelector('.modal-btn--assign');
+            if (assignButton) {
+                assignButton.addEventListener('click', handleAssignment);
+            }
+
+            // Resubmit button event listener
+            const resubmitButton = document.querySelector('.btn--resubmit');
+            if (resubmitButton) {
+                resubmitButton.addEventListener('click', handleResubmit);
+            }        });
     </script>
-    <script src="../../Static/js/L_activeMenu.js"></script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
 </html>

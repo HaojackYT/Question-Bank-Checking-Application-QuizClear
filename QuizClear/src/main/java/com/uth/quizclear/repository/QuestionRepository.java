@@ -82,4 +82,11 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
     List<Object[]> getQuestionDistributionByCourse();
 
     List<Question> findByTaskId(Long taskId);
+    
+    // Methods for Subject Leader feedback management
+    @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department = :department AND q.feedback IS NOT NULL AND q.feedback != '' ORDER BY q.submittedAt DESC")
+    List<Question> findQuestionsWithFeedbackByDepartment(@Param("department") String department);
+    
+    @Query("SELECT q FROM Question q WHERE q.feedback IS NOT NULL AND q.feedback != '' ORDER BY q.submittedAt DESC")
+    List<Question> findAllQuestionsWithFeedback();
 }
