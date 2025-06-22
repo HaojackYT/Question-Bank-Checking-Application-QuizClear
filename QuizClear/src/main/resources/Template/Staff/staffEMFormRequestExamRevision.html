@@ -1,100 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
-    <link rel="stylesheet" href="../../static/css/staff/staffEMFormRequestExamRevision.css">
+    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/header.css}">
+    <link rel="stylesheet" th:href="@{/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/css/staff/staffEMFormRequestExamRevision.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>StaffFormRequestExamRevision</title>
 </head>
-
 <body>
-    <!--header-->
-    <div id="header-placeholder"></div>
-
-
-
-    <!-- body -->
+    <header class="header" th:insert="~{header_user :: header}"></header>
     <div id="Container-body">
-        <!-- Menu -->
-        <div id="menu-HTML"></div>
-
-
-        <!-- Main content -->
+        <div id="menu-HTML" th:insert="~{Menu-Staff :: menu}"></div>
         <div id="main">
-            <!-- noi dung duoc nhap trong day -->
             <div class="exam-revision">
                 <div class="title-content">
-                    <a href="staffEMNeedsRevision.html">
+                    <a th:href="@{/staff/exams/needs-revision}">
                         <i class="fas fa-arrow-left"></i>
                     </a>
                     <div class="title-group">
                         <div class="title">Exam Revision Request</div>
-                        <div class="exam-title">Data Structures Final • CS301-FINAL-2023</div>
+                        <div class="exam-title" th:text="${examRevision.examTitle + ' • ' + examRevision.examCode}">Exam Title • Code</div>
                     </div>
                 </div>
-
-
                 <form class="revision-form">
                     <div class="form-group">
                         <label>Revision Requester</label>
-                        <input type="text">
+                        <input type="text" th:value="${examRevision.requester}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Exam Editor</label>
-                        <input type="text">
+                        <input type="text" th:value="${examRevision.editor}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Exam Title</label>
-                        <input type="text">
+                        <input type="text" th:value="${examRevision.examTitle}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Exam Code</label>
-                        <input type="text">
+                        <input type="text" th:value="${examRevision.examCode}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Subject</label>
-                        <input type="text">
+                        <input type="text" th:value="${examRevision.subject}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Course</label>
-                        <input type="text">
+                        <input type="text" th:value="${examRevision.courseName}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Submission Date</label>
-                        <input type="date" value="2005-06-25">
+                        <input type="date"
+                            th:value="${examRevision.submissionDate != null ? #temporals.format(examRevision.submissionDate, 'yyyy-MM-dd') : ''}"
+                            readonly>
                     </div>
                     <div class="form-group">
                         <label>Due Date</label>
-                        <input type="date" value="2025-06-25">
+                        <input type="date"
+                            th:value="${examRevision.dueDate != null ? #temporals.format(examRevision.dueDate, 'yyyy-MM-dd') : ''}"
+                            readonly>
                     </div>
                     <div class="form-group full-width">
                         <label>Feedback for Revision</label>
-                        <textarea>Give a feedback for exam</textarea>
+                        <textarea readonly th:text="${examRevision.feedback}">Feedback...</textarea>
                     </div>
                     <div class="pending-box">
                         <h3>Exam Pending Revisions</h3>
-                        <p>50 Questions Available • CS301-FINAL-2023</p>
-                        <button type="button" class="view-btn"><i class="fa-regular fa-eye"
-                                style="margin: 0px 5px;"></i> View Questions</button>
+                        <p th:text="${'50 Questions Available • ' + examRevision.examCode}">50 Questions Available • ...</p>
+                        <button type="button" class="view-btn"><i class="fa-regular fa-eye" style="margin: 0px 5px;"></i> View Questions</button>
                     </div>
                 </form>
-
                 <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
                     <button class="send-request-btn">
                         <i class="fa-regular fa-floppy-disk"></i> Send Request
                     </button>
                 </div>
-
                 <div class="history-box">
                     <h3>Exam History</h3>
                     <p class="history-subtitle">Track all changes and activities</p>
                     <ul>
+                        <!-- TODO: Lặp qua danh sách lịch sử nếu có -->
                         <li class="approved">
                             <div class="history-left">
                                 <div class="icon-circle approved-icon">
@@ -107,66 +95,11 @@
                             </div>
                             <em>2023-06-12</em>
                         </li>
-                        <li>
-                            <div class="history-left">
-                                <div class="icon-circle blue-icon">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="text-group">
-                                    <strong>Submitted for review</strong>
-                                    <span>By Prof. Davis</span>
-                                </div>
-                            </div>
-                            <em>2023-06-08</em>
-                        </li>
-                        <li>
-                            <div class="history-left">
-                                <div class="icon-circle blue-icon">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="text-group">
-                                    <strong>Questions finalized</strong>
-                                    <span>By Prof. Davis</span>
-                                </div>
-                            </div>
-                            <em>2023-06-05</em>
-                        </li>
-                        <li>
-                            <div class="history-left">
-                                <div class="icon-circle blue-icon">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="text-group">
-                                    <strong>Exam created</strong>
-                                    <span>By Admin</span>
-                                </div>
-                            </div>
-                            <em>2023-06-01</em>
-                        </li>
+                        <!-- ... -->
                     </ul>
                 </div>
-
             </div>
-
         </div>
     </div>
-
-
-
-    <!-- ma nhung header vs menu -->
-    <script>
-        fetch("../header_user.html")
-            .then((response) => response.text())
-            .then((data) => {
-                document.getElementById("header-placeholder").innerHTML = data;
-            });
-
-        fetch("../Menu-Staff.html")
-            .then((response) => response.text())
-            .then((data) => {
-                document.getElementById("menu-HTML").innerHTML = data;
-            });
-    </script>
 </body>
-
 </html>

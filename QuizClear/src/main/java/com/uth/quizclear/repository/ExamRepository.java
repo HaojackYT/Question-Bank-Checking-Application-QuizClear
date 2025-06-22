@@ -22,4 +22,5 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     @Query("SELECT e FROM Exam e WHERE e.feedback IS NOT NULL AND e.feedback != '' ORDER BY e.submittedAt DESC")
     List<Exam> findAllExamsWithFeedback();
 
+    Exam findByExamId(Long examId);
 }

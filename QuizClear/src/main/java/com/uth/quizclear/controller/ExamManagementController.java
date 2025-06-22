@@ -1,10 +1,12 @@
 package com.uth.quizclear.controller;
 
+import com.uth.quizclear.model.dto.ExamRevisionDTO;
 import com.uth.quizclear.service.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -51,5 +53,17 @@ public class ExamManagementController {
         model.addAttribute("rejectedCount", examService.countByStatus("rejected"));
         model.addAttribute("rejectedExams", examService.getRejectedExams());
         return "Staff/staffEMNeedsRevision";
+    }
+
+    @GetMapping("/revision-request/{examId}")
+    public String showRevisionRequestForm(@PathVariable Long examId, Model model) {
+        ExamRevisionDTO examRevision = examService.getExamRevisionDTO(examId);
+        if (examRevision == null) {
+            // Có thể trả về trang lỗi hoặc redirect
+            model.addAttribute("errorMessage", "Exam not found or has been deleted.");
+            return "error/404"; // hoặc trả về trang needs-revision
+        }
+        model.addAttribute("examRevision", examRevision);
+        return "Staff/staffEMFormRequestExamRevision";
     }
 }

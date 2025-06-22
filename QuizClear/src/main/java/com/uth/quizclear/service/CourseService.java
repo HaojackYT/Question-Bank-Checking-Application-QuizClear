@@ -25,7 +25,6 @@ public class CourseService {
     private final CLORepository cloRepository;
     private final DepartmentRepository departmentRepository; 
 
-    @Autowired
     public CourseService(CourseRepository courseRepository, QuestionRepository questionRepository, CLORepository cloRepository, DepartmentRepository departmentRepository) {
         this.courseRepository = courseRepository;
         this.questionRepository = questionRepository;

@@ -225,6 +225,14 @@
   background-color: #ffa500;
 }
 
+.task-status.completed {
+  background-color: #28a745;
+}
+
+.task-status.cancelled {
+  background-color: #dc3545;
+}
+
 .see-more {
   position: absolute;
   left: 3.0625rem;

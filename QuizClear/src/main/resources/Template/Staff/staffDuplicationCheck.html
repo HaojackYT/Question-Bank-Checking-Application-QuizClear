@@ -6,11 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Duplication Check</title>
     <!-- Prevent favicon 404 error -->
-    <link rel="icon" href="data:,">
-    <link rel="stylesheet" th:href="@{/header.css}"> <!-- CSS riêng cho header -->
-    <link rel="stylesheet" th:href="@{/Menu-Staff.css}"> <!-- CSS riêng cho menu, nếu có -->
-    <link rel="stylesheet" th:href="@{/web_styles.css}"> <!-- CSS bổ sung -->
-    <link rel="stylesheet" th:href="@{/css/staff/staffDup.css}">
+    <link rel="icon" href="data:,">    <link rel="stylesheet" th:href="@{/Static/header.css}"> <!-- CSS riêng cho header -->
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}"> <!-- CSS riêng cho menu, nếu có -->
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}"> <!-- CSS bổ sung -->
+    <link rel="stylesheet" th:href="@{/Static/css/staff/staffDup.css}">
 </head>
 
 <body>
@@ -44,7 +43,7 @@
                         </div>
                     </div>
                 </div>
-            </div>        </div>        <script th:src="@{/js/staffDuplicationCheck.js}" defer></script>
+            </div>        </div>        <script th:src="@{/Static/js/staffDuplicationCheck.js}" defer></script>
         <script>
             // Suppress WebSocket connection errors if not needed
             const originalConsoleError = console.error;

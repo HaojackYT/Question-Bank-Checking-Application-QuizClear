@@ -78,7 +78,7 @@
                         <div class="task-icon">
                             <svg width="30" height="30" viewBox="0 0 24 24"
                                 fill="none"
-                                th:attr="stroke=${task.status == 'In Progress' ? '#0088F0' : (task.status == 'Pending' ? '#FFA500' : '#FFA500')}"
+                                th:attr="stroke=${(task.status != null and task.status == 'In Progress') ? '#0088F0' : '#FFA500'}"
                                 stroke-width="2">
                                 <circle cx="12" cy="12" r="10" />
                                 <polyline points="12,6 12,12 16,14" />
@@ -86,15 +86,14 @@
                         </div>
                         <div class="task-content">
                             <div class="task-title" th:text="${task.title}">Task
-                                Title</div>
-                            <div class="task-due"
+                                Title</div> <div class="task-due"
                                 th:if="${task.dueDate != null}"
-                                th:text="'Due: ' + ${#dates.format(task.dueDate, 'dd/MM/yyyy')}">Due:
+                                th:text="'Due: ' + ${#temporals.format(task.dueDate, 'dd/MM/yyyy')}">Due:
                                 20/05/2025</div>
-                        </div>
-                        <div class="task-status"
-                            th:classappend="${task.status == 'In Progress' ? 'in-progress' : (task.status == 'Pending' ? 'pending' : '')}"
-                            th:text="${task.status}">In Progress</div>
+                        </div> <div class="task-status"
+                            th:classappend="${task.status == 'In Progress' ? 'in-progress' : 'pending'}"
+                            th:text="${task.status != null and (task.status == 'In Progress' or task.status == 'Pending') ? task.status : 'Pending'}">In
+                            Progress</div>
                     </div>
                     <div class="see-more" th:if="${recentTasks.size() > 3}">See
                         more...</div>
@@ -131,9 +130,9 @@
                         <div class="question-box">
                             <div class="question-text"
                                 th:text="${warn.question2}">Question 2</div>
-                        </div>
-                    </div>
-                    <div class="see-more">See more...</div>
+                        </div> </div>
+                    <div class="see-more"
+                        th:if="${totalDuplicateWarnings > 5}">See more...</div>
                 </div>
                 <div style="height: 140rem;"></div>
             </div>
