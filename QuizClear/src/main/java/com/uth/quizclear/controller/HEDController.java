@@ -4,6 +4,7 @@ import com.uth.quizclear.model.dto.ExamSummaryDTO;
 import com.uth.quizclear.model.dto.TaskAssignmentDTO;
 import com.uth.quizclear.service.ExamReviewService;
 import com.uth.quizclear.service.TaskAssignmentService;
+import com.uth.quizclear.service.HEDStaticService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,13 +14,14 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/api/hed")
-public class HEDController {
-
-    @Autowired
+public class HEDController {    @Autowired
     private TaskAssignmentService taskAssignmentService;
 
     @Autowired
     private ExamReviewService examReviewService;
+    
+    @Autowired
+    private HEDStaticService hedStaticService;
 
     /**
      * HED Dashboard page
@@ -66,48 +68,7 @@ public class HEDController {
         List<TaskAssignmentDTO> tasks = taskAssignmentService.getTasksForHED();
         model.addAttribute("tasks", tasks);
         
-        return "HEAD_OF_DEPARTMENT/HED_JoinTask";
-    }
-
-    /**
-     * HED Statistics & Reports page
-     */
-    @GetMapping("/statistics-reports")
-    public String statisticsReports(Model model) {
-        // Add sample data for charts - replace with real service calls later
-        model.addAttribute("totalQuestions", 2847);
-        model.addAttribute("approvedQuestions", 2150);
-        model.addAttribute("pendingQuestions", 342);
-        model.addAttribute("rejectedQuestions", 355);
-        model.addAttribute("questionChange", 164);
-        model.addAttribute("approvedPercentage", 75.5);
-        
-        // Sample data for charts
-        java.util.Map<String, Object> chartData = new java.util.HashMap<>();
-        chartData.put("Math", java.util.Map.of("created", 40, "target", 50));
-        chartData.put("Physics", java.util.Map.of("created", 20, "target", 70));
-        chartData.put("Chemistry", java.util.Map.of("created", 50, "target", 60));
-        chartData.put("Biology", java.util.Map.of("created", 20, "target", 80));
-        chartData.put("History", java.util.Map.of("created", 50, "target", 70));
-        chartData.put("Geography", java.util.Map.of("created", 20, "target", 40));
-        chartData.put("Literature", java.util.Map.of("created", 20, "target", 30));
-        model.addAttribute("chartData", chartData);
-        
-        java.util.Map<String, Integer> progressData = new java.util.HashMap<>();
-        progressData.put("completed", 75);
-        progressData.put("remaining", 25);
-        model.addAttribute("progressData", progressData);
-        
-        // Sample lecturer data
-        java.util.List<java.util.Map<String, Object>> lecturerData = new java.util.ArrayList<>();
-        lecturerData.add(java.util.Map.of("userName", "Nguyen Van A", "completed", 80, "inProgress", 10, "overdue", 5, "remaining", 5));
-        lecturerData.add(java.util.Map.of("userName", "Nguyen Van B", "completed", 70, "inProgress", 15, "overdue", 5, "remaining", 10));
-        lecturerData.add(java.util.Map.of("userName", "Nguyen Van C", "completed", 60, "inProgress", 20, "overdue", 10, "remaining", 10));
-        lecturerData.add(java.util.Map.of("userName", "Nguyen Van D", "completed", 50, "inProgress", 25, "overdue", 10, "remaining", 15));
-        model.addAttribute("lecturerData", lecturerData);
-        
-        return "HEAD_OF_DEPARTMENT/HED_Static-reports";
-    }
+        return "HEAD_OF_DEPARTMENT/HED_JoinTask";    }
 
     /**
      * HED Profile page
@@ -375,5 +336,21 @@ public class HEDController {
             @RequestBody java.util.Map<String, String> statusData) {
         // For now just return success - replace with real service
         return java.util.Map.of("success", true, "message", "Notification status updated successfully");
+    }
+
+    /**
+     * HED Statistics & Reports page
+     */
+    @GetMapping("/statistics-reports")
+    public String statisticsReports(Model model) {
+        System.out.println("=== HEDController.statisticsReports called ===");
+        hedStaticService.populateStatisticsModel(model);
+        
+        // Debug: In ra tất cả attributes trong model
+        model.asMap().forEach((key, value) -> {
+            System.out.println("Model attribute: " + key + " = " + value);
+        });
+        
+        return "HEAD_OF_DEPARTMENT/HED_Static-reports";
     }
 }

@@ -64,13 +64,10 @@
                             <span>40</span>
                             <span>20</span>
                             <span>0</span>
-                        </div>
-                        <!-- Khu vực cột và đường kẻ -->
+                        </div>                        <!-- Khu vực cột và đường kẻ với scroll ngang -->
                         <div class="chart-content" style="flex: 1; display: flex; flex-direction: column;">
-                            <div class="grid-overlay"
-                                style="flex: 1; display: flex; justify-content: space-around; align-items: flex-end; border-left: 0.0625rem solid #E0EAFA; border-bottom: 0.0625rem solid #E0EAFA;">
-                                <div class="bars" id="bars"
-                                    style="width: 100%; height: 100%; display: flex; justify-content: space-around; align-items: flex-end; margin-left: 1.25rem;">
+                            <div class="grid-overlay">
+                                <div class="bars" id="bars">
                                 </div>
                             </div>
                         </div>
@@ -159,30 +156,108 @@
             { subject: "Geography", created: 20, target: 40 },
             { subject: "Literature", created: 20, target: 30 }
         ];
-        /*]]*/
-
-        // Hàm tạo biểu đồ
+        /*]]*/        // Hàm tạo biểu đồ
         function createChart() {
             const barsContainer = document.getElementById('bars');
+            if (!barsContainer) return;
+            
+            barsContainer.innerHTML = ''; // Xóa nội dung cũ
 
-            data.forEach(group => {
-                const barGroup = document.createElement('div');
+            if (!data || data.length === 0) {
+                console.log('No chart data available');
+                return;
+            }            // Tính toán width cần thiết cho container
+            const barGroupWidth = 70; // 28px + 28px + 6px gap + margin
+            const totalWidth = data.length * barGroupWidth + 40; // Thêm padding
+            
+            // Với khung nhỏ (196px), hầu hết trường hợp sẽ cần scroll
+            barsContainer.style.minWidth = totalWidth + 'px';
+
+            // Tạo tooltip global
+            let tooltip = document.getElementById('chart-tooltip');
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.id = 'chart-tooltip';
+                tooltip.style.position = 'absolute';
+                tooltip.style.background = '#4A90E2';
+                tooltip.style.color = 'white';
+                tooltip.style.padding = '12px 16px';
+                tooltip.style.borderRadius = '8px';
+                tooltip.style.fontSize = '14px';
+                tooltip.style.display = 'none';
+                tooltip.style.zIndex = '1000';
+                tooltip.style.pointerEvents = 'none';
+                tooltip.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                tooltip.style.whiteSpace = 'nowrap';
+                document.body.appendChild(tooltip);
+            }
+
+            data.forEach(group => {                const barGroup = document.createElement('div');
                 barGroup.classList.add('bar-group');
+                barGroup.style.display = 'flex';
+                barGroup.style.alignItems = 'flex-end';
+                barGroup.style.height = '100%';
+                barGroup.style.minWidth = '64px'; // Fixed width để đảm bảo đồng nhất
+                barGroup.style.gap = '6px'; // Giảm gap để vừa khung
+                barGroup.style.position = 'relative';
+                barGroup.style.flexShrink = '0';
 
-                // Cột Created
+                // Tính tỉ lệ hoàn thành
+                const completionRate = group.target > 0 ? Math.round((group.created / group.target) * 100) : 0;
+                
+                // Tính chiều cao theo tỉ lệ (max height = 200px tương ứng với 100%)
+                const maxHeight = 200;
+                const createdHeight = Math.max((group.created / 100) * maxHeight, 3); // Tối thiểu 3px
+                const targetHeight = Math.max((group.target / 100) * maxHeight, 3);                // Cột Created (màu #8979FF)
                 const createdBar = document.createElement('div');
                 createdBar.classList.add('bar', 'created');
-                createdBar.style.height = `${group.created}%`;
-                createdBar.innerHTML = `<span class="tooltip">${group.subject}\n${group.created}</span>`;
-                barGroup.appendChild(createdBar);
+                createdBar.style.width = '28px'; // Giảm từ 32px để vừa khung
+                createdBar.style.height = `${createdHeight}px`;
+                createdBar.style.backgroundColor = '#8979FF';
+                createdBar.style.borderRadius = '4px 4px 0 0';
+                createdBar.style.cursor = 'pointer';
+                createdBar.style.transition = 'opacity 0.3s ease';
 
-                // Cột Target
+                // Cột Target (màu #FF928A)
                 const targetBar = document.createElement('div');
                 targetBar.classList.add('bar', 'target');
-                targetBar.style.height = `${group.target}%`;
-                targetBar.innerHTML = `<span class="tooltip">${group.subject}\n${group.target}</span>`;
-                barGroup.appendChild(targetBar);
+                targetBar.style.width = '28px'; // Giảm từ 32px để vừa khung
+                targetBar.style.height = `${targetHeight}px`;
+                targetBar.style.backgroundColor = '#FF928A';
+                targetBar.style.borderRadius = '4px 4px 0 0';
+                targetBar.style.cursor = 'pointer';
+                targetBar.style.transition = 'opacity 0.3s ease';
 
+                // Sự kiện hover cho cả group
+                const showTooltip = (e) => {
+                    tooltip.innerHTML = `${group.subject}<br><span style="color: #B8E6B8;">Completed: ${completionRate}%</span>`;
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = (e.pageX + 10) + 'px';
+                    tooltip.style.top = (e.pageY - 50) + 'px';
+                };
+
+                const hideTooltip = () => {
+                    tooltip.style.display = 'none';
+                };
+
+                // Thêm event listeners
+                createdBar.addEventListener('mouseenter', showTooltip);
+                createdBar.addEventListener('mousemove', showTooltip);
+                createdBar.addEventListener('mouseleave', hideTooltip);
+
+                targetBar.addEventListener('mouseenter', showTooltip);
+                targetBar.addEventListener('mousemove', showTooltip);
+                targetBar.addEventListener('mouseleave', hideTooltip);
+
+                // Thêm hover effect
+                createdBar.addEventListener('mouseenter', () => createdBar.style.opacity = '0.8');
+                createdBar.addEventListener('mouseleave', () => createdBar.style.opacity = '1');
+                
+                targetBar.addEventListener('mouseenter', () => targetBar.style.opacity = '0.8');
+                targetBar.addEventListener('mouseleave', () => targetBar.style.opacity = '1');
+
+                barGroup.appendChild(createdBar);
+                barGroup.appendChild(targetBar);
                 barsContainer.appendChild(barGroup);
             });
         }

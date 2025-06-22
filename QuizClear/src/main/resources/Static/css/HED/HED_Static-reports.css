@@ -84,31 +84,59 @@
 #Question_Progress_container .grid-overlay {
     flex: 1;
     display: flex;
-    justify-content: space-around;
     align-items: flex-end;
     border-left: 0.0625rem solid #E0EAFA;
     border-bottom: 0.0625rem solid #E0EAFA;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 10px;
+    width: 409px !important; /* Giảm xuống 1/2 từ 392px */
+    max-width: 418px !important;
+}
+
+/* Scrollbar styling cho Question Progress chart */
+#Question_Progress_container .grid-overlay::-webkit-scrollbar {
+    height: 8px;
+}
+
+#Question_Progress_container .grid-overlay::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#Question_Progress_container .grid-overlay::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+#Question_Progress_container .grid-overlay::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
 }
 
 #Question_Progress_container .bars {
-    width: 100%;
-    height: 100%;
     display: flex;
-    justify-content: space-around;
     align-items: flex-end;
+    min-width: max-content; /* Cho phép mở rộng để scroll */
+    gap: 15px; /* Giữ gap để có khoảng cách đẹp */
+    height: calc(100% - 20px);
+    padding-right: 20px;
 }
 
 #Question_Progress_container .bar-group {
     display: flex;
     align-items: flex-end;
     height: 100%;
-    width: 8%;
+    min-width: 64px; /* Giảm để vừa khung */
+    gap: 6px; /* Giảm gap để vừa khung */
+    position: relative;
+    flex-shrink: 0;
 }
 
 #Question_Progress_container .bar {
-    width: 25%;
-    margin: 0 0.125rem;
-    transition: all 0.3s ease;
+    width: 28px; /* Giảm từ 32px để vừa khung */
+    border-radius: 4px 4px 0 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
 }
 
 #Question_Progress_container .bar.created {
@@ -135,6 +163,23 @@
     text-align: center;
     margin-bottom: 0.3125rem;
     white-space: pre-line;
+}
+
+/* Tooltip styling cho chart */
+#chart-tooltip {
+    position: absolute;
+    background: #4A90E2;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: none;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    white-space: nowrap;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.4;
 }
 
 #Overall_Progress p {
