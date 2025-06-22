@@ -255,7 +255,8 @@ public class WebPageController {
         mockUser.setFullName("Test Lecturer");
         session.setAttribute("user", mockUser);
         return "redirect:/lecturer/question-management";
-        
+    }
+
     // ========== TEST LOGIN ENDPOINTS ==========
     @GetMapping("/test-login-hoed")
     public String testLoginHoed(HttpSession session) {
