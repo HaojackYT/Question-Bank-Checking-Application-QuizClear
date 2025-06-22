@@ -163,16 +163,15 @@
                         localStorage.setItem('user', JSON.stringify(data.user));
                         localStorage.setItem('isLoggedIn', 'true');
                         loginBtn.textContent = 'Success! Redirecting...';
-                        loginBtn.style.backgroundColor = '#28a745';
-                        setTimeout(() => {
+                        loginBtn.style.backgroundColor = '#28a745';                        setTimeout(() => {
                             let dashboardMap = {
-                                "/staff-dashboard": "/staff/dashboard",
-                                "/lecturer-dashboard": "/Template/Lecturer/lecturerDashboard.html",
-                                "/sl-dashboard": "/Template/subjectLeader/slDashboard.html",
-                                "/hed-dashboard": "/Template/HEAD_OF_DEPARTMENT/HED_Dashboard.html",
-                                "/hoe-dashboard": "/Template/Head of Examination Department/HOE_Dashboard.html"
+                                "/staff-dashboard": "/staff-dashboard",
+                                "/lecturer-dashboard": "/lecturer-dashboard",
+                                "/sl-dashboard": "/sl-dashboard",
+                                "/hed-dashboard": "/hed-dashboard",
+                                "/hoe-dashboard": "/hoe-dashboard"
                             };
-                            let dashboardUrl = dashboardMap[data.redirectUrl] || "/login.html";
+                            let dashboardUrl = dashboardMap[data.redirectUrl] || "/login";
                             window.location.href = dashboardUrl;
                         }, 1000);
                     } else {
