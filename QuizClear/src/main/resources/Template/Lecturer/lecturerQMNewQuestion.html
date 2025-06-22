@@ -107,12 +107,10 @@
                             <textarea class="form-input" rows="4" placeholder="Enter explanation here..."></textarea>
                         </div>
                     </form>
-                </div>
-
-                <!-- Footer -->
-                <p class="footer-message">Check for similar questions before proceeding with submission</p>
+                </div>                <!-- Footer -->
+                <p class="footer-message" id="footer-message">Check for similar questions before proceeding with submission</p>
                 <div class="footer-button">
-                    <button class="save-draft">
+                    <button class="save-draft" id="save-draft-btn">
                         Save Draft <i class="fa-regular fa-floppy-disk"></i>
                     </button>
                     <button class="submit-button">
@@ -122,28 +120,41 @@
             </div>
 
 
-            <!-- ma nhung header vs menu -->
-            <script>
+            <!-- ma nhung header vs menu -->            <script>
                 // Load header
-                fetch('../header_user.html')
+                fetch('/Static/Template/header_user.html')
                     .then(response => response.text())
                     .then(data => {
                         document.getElementById('header-placeholder').innerHTML = data;
-                    });
+                    })
+                    .catch(error => console.log('Header load failed, using fallback'));
 
                 // Load menu
-                fetch('Menu-Lecturer.html')
+                fetch('/Static/Template/Lecturer/Menu-Lecturer.html')
                     .then(response => response.text())
                     .then(data => {
                         document.getElementById('menu-HTML').innerHTML = data;
                         setActiveMenu(document.title);
+                    })
+                    .catch(error => {
+                        console.log('Menu load failed, using fallback');
+                        // Fallback menu basic
+                        document.getElementById('menu-HTML').innerHTML = `
+                            <div style="padding: 1rem; background: #f8f9fa;">
+                                <nav>
+                                    <a href="/lecturer/question-management" style="padding: 0.5rem; margin: 0.2rem; display: inline-block; background: #007bff; color: white; text-decoration: none; border-radius: 0.25rem;">Question Management</a>
+                                    <a href="/lecturer/create-question" style="padding: 0.5rem; margin: 0.2rem; display: inline-block; background: #28a745; color: white; text-decoration: none; border-radius: 0.25rem;">Create Question</a>
+                                </nav>
+                            </div>
+                        `;
                     });
-            </script>
-            <script>
+            </script>            <script>
                 document.addEventListener('DOMContentLoaded', () => {
                     const checkButton = document.querySelector('.check-button');
                     const statusText = document.querySelector('.status-text');
                     const questionTitleInput = document.querySelector('input[placeholder="The title question..."]');
+                    const footerMessage = document.getElementById('footer-message');
+                    const saveDraftBtn = document.getElementById('save-draft-btn');
 
                     if (checkButton && statusText && questionTitleInput) {
                         checkButton.addEventListener('click', async () => {
@@ -160,8 +171,8 @@
                             statusText.classList.remove('safety', 'warring', 'error');
 
                             try {
-                                // Gửi tiêu đề lên server
-                                const response = await fetch('/api/check-duplicate', { //tạm thời
+                                // Gọi API check duplicate
+                                const response = await fetch('/lecturer/api/check-duplicate', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -180,35 +191,67 @@
                                 if (duplicatePercent === 0) {
                                     statusText.textContent = 'No duplicates found';
                                     statusText.classList.add('safety');
+                                    
+                                    // Cập nhật footer message và style cho Save Draft
+                                    footerMessage.textContent = 'Duplicate check completed successfully! You can now save or submit.';
+                                    footerMessage.style.color = '#22c55e'; // Màu xanh
+                                    
+                                    // Chuyển Save Draft button sang màu xanh
+                                    saveDraftBtn.style.backgroundColor = '#22c55e';
+                                    saveDraftBtn.style.color = 'white';
+                                    saveDraftBtn.style.border = '1px solid #16a34a';
+                                    
                                 } else if (duplicatePercent < 50) {
                                     statusText.textContent = `${duplicatePercent}% duplicated`;
                                     statusText.classList.add('warring');
+                                    
+                                    footerMessage.textContent = 'Similar questions found. Please review before proceeding.';
+                                    footerMessage.style.color = '#f59e0b'; // Màu vàng
+                                    
                                 } else {
                                     statusText.textContent = `${duplicatePercent}% duplicated`;
                                     statusText.classList.add('error');
+                                    
+                                    footerMessage.textContent = 'High similarity detected! Please revise your question.';
+                                    footerMessage.style.color = '#ef4444'; // Màu đỏ
+                                }
+
+                                // Hiển thị similar questions nếu có
+                                if (data.similarQuestions && data.similarQuestions.length > 0) {
+                                    console.log('Similar questions found:', data.similarQuestions);
                                 }
 
                             } catch (error) {
-                                console.error(error);
+                                console.error('Duplicate check error:', error);
                                 statusText.textContent = 'Error checking duplicates.';
                                 statusText.classList.add('error');
+                                
+                                footerMessage.textContent = 'Error checking duplicates. Please try again.';
+                                footerMessage.style.color = '#ef4444';
                             } finally {
                                 checkButton.textContent = 'Check Duplicates';
                                 checkButton.disabled = false;
                             }
                         });
                     }
-                });
-
-                document.querySelector('.submit-button').addEventListener('click', function (e) {
+                });                document.querySelector('.submit-button').addEventListener('click', async function (e) {
                     e.preventDefault();
 
                     // Basic validation - cập nhật để kiểm tra cả select
                     const requiredInputs = document.querySelectorAll('input.form-input[placeholder*="Enter"]');
                     const requiredSelects = document.querySelectorAll('select.form-input[required]');
                     const incorrectAnswers = document.querySelectorAll('.incorrect-answers input');
+                    const questionTitle = document.querySelector('input[placeholder="The title question..."]');
 
                     let isValid = true;
+
+                    // Kiểm tra question title
+                    if (!questionTitle.value.trim()) {
+                        questionTitle.style.borderColor = '#ef4444';
+                        isValid = false;
+                    } else {
+                        questionTitle.style.borderColor = '#d1d5db';
+                    }
 
                     // Kiểm tra select fields
                     requiredSelects.forEach(select => {
@@ -240,39 +283,123 @@
                         }
                     });
 
-                    if (isValid) {
-                        // Lấy dữ liệu form
+                    if (!isValid) {
+                        alert('Please fill in all required fields.');
+                        return;
+                    }
+
+                    try {
+                        // Show loading state
+                        const button = this;
+                        const originalText = button.innerHTML;
+                        button.innerHTML = 'Submitting... <i class="fa-solid fa-spinner fa-spin"></i>';
+                        button.disabled = true;
+
+                        // Collect form data
                         const formData = {
-                            subject: document.getElementById('subject').value,
-                            difficulty: document.getElementById('difficulty').value,
-                            questionTitle: document.querySelector('input[placeholder="The title question..."]').value,
-                            correctAnswer: document.querySelector('input[placeholder="Enter the correct answer..."]').value,
-                            incorrectAnswers: Array.from(incorrectAnswers).map(input => input.value),
-                            explanation: document.querySelector('textarea').value
+                            content: questionTitle.value.trim(),
+                            correctAnswer: document.querySelector('input[placeholder="Enter the correct answer..."]').value.trim(),
+                            answer1: incorrectAnswers[0].value.trim(),
+                            answer2: incorrectAnswers[1].value.trim(),
+                            answer3: incorrectAnswers[2].value.trim(),
+                            explanation: document.querySelector('textarea').value.trim(),
+                            action: 'submit'
                         };
 
-                        console.log('Form Data:', formData);
-                        alert('Question submitted successfully!');
-                    } else {
-                        alert('Please fill in all required fields.');
-                    }
-                });
+                        console.log('Submitting question with data:', formData);
 
-                // Save draft functionality
-                document.querySelector('.save-draft').addEventListener('click', function (e) {
+                        // Call API to submit question
+                        const response = await fetch('/lecturer/api/questions', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(formData)
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Failed to submit question');
+                        }
+
+                        const data = await response.json();
+                        
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+
+                        // Success - show message and redirect
+                        alert('Question submitted successfully!');
+                        
+                        // Redirect to Question Management page
+                        window.location.href = '/lecturer/question-management';
+
+                    } catch (error) {
+                        console.error('Submit question error:', error);
+                        alert('Error submitting question: ' + error.message);
+                        
+                        // Reset button state
+                        const button = this;
+                        button.innerHTML = 'Submit <i class="fas fa-paper-plane"></i>';
+                        button.disabled = false;
+                    }
+                });// Save draft functionality
+                document.querySelector('.save-draft').addEventListener('click', async function (e) {
                     e.preventDefault();
 
-                    const formData = {
-                        subject: document.getElementById('subject').value,
-                        difficulty: document.getElementById('difficulty').value,
-                        questionTitle: document.querySelector('input[placeholder="The title question..."]').value,
-                        correctAnswer: document.querySelector('input[placeholder="Enter the correct answer..."]').value,
-                        incorrectAnswers: Array.from(document.querySelectorAll('.incorrect-answers input')).map(input => input.value),
-                        explanation: document.querySelector('textarea').value
-                    };
+                    try {
+                        // Show loading state
+                        const button = this;
+                        const originalText = button.innerHTML;
+                        button.innerHTML = 'Saving... <i class="fa-solid fa-spinner fa-spin"></i>';
+                        button.disabled = true;
 
-                    console.log('Draft saved:', formData);
-                    alert('Draft saved successfully!');
+                        // Collect form data
+                        const formData = {
+                            content: document.querySelector('input[placeholder="The title question..."]').value.trim(),
+                            correctAnswer: document.querySelector('input[placeholder="Enter the correct answer..."]').value.trim(),
+                            answer1: document.querySelectorAll('.incorrect-answers input')[0].value.trim(),
+                            answer2: document.querySelectorAll('.incorrect-answers input')[1].value.trim(),
+                            answer3: document.querySelectorAll('.incorrect-answers input')[2].value.trim(),
+                            explanation: document.querySelector('textarea').value.trim(),
+                            action: 'draft'
+                        };
+
+                        console.log('Saving draft with data:', formData);
+
+                        // Call API to save draft
+                        const response = await fetch('/lecturer/api/questions', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(formData)
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Failed to save draft');
+                        }
+
+                        const data = await response.json();
+                        
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+
+                        // Success - show message and redirect
+                        alert('Draft saved successfully!');
+                        
+                        // Redirect to Question Management page
+                        window.location.href = '/lecturer/question-management';
+
+                    } catch (error) {
+                        console.error('Save draft error:', error);
+                        alert('Error saving draft: ' + error.message);
+                        
+                        // Reset button state
+                        const button = this;
+                        button.innerHTML = 'Save Draft <i class="fa-regular fa-floppy-disk"></i>';
+                        button.disabled = false;
+                    }
                 });
             </script>
 

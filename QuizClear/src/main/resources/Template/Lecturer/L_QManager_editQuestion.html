@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -45,26 +45,30 @@
             <!-- Information Section -->
             <div class="info-section">
                 <h2 class="section-title">Information</h2>
-                <p class="section-subtitle">Enter detailed information for the question</p>
-
-                <form>
+                <p class="section-subtitle">Enter detailed information for the question</p>                <form>
+                    <!-- Hidden field for question ID -->
+                    <input type="hidden" id="questionId" th:value="${question != null ? question.questionId : ''}">
+                    
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Subject <span class="required">(*)</span></label>
-                            <!-- đỗ dữ liệu vào đây-->
-                            <input type="text" class="form-input" id="subject" value="Mathematics" readonly>
+                            <input type="text" class="form-input" id="subject" 
+                                   th:value="${question != null ? question.course.courseName : 'Select subject...'}" 
+                                   readonly>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Difficulty Level <span class="required">(*)</span></label>
-                            <!-- đỗ dữ liệu vào đây -->
-                            <input type="text" class="form-input" id="difficulty" value="Easy" readonly>
+                            <input type="text" class="form-input" id="difficulty" 
+                                   th:value="${question != null ? question.difficultyLevel : 'Select difficulty...'}" 
+                                   readonly>
                         </div>
                     </div>
 
                     <div class="form-group full-width">
                         <label class="form-label">Question Title</label>
-                        <!-- đỗ dữ liệu vào đây, người dùng có thể tự do edit -->
-                        <input type="text" class="form-input" value="The title question...">
+                        <input type="text" class="form-input" id="questionTitle"
+                               th:value="${question != null ? question.content : ''}"
+                               placeholder="Enter question title...">
                     </div>
 
                     <!-- Duplicate Check -->
@@ -78,29 +82,31 @@
                             <span class="status-text">Ready to check</span>
                             <button type="button" class="check-button">Check Duplicates</button>
                         </div>
-                    </div>
-
-                    <div class="form-group">
+                    </div>                    <div class="form-group">
                         <label class="form-label">Correct Answer <span class="required">(*)</span></label>
-                        <!-- đỗ dữ liệu vào đây, người dùng có thể tự do edit -->
-                        <input type="text" class="form-input" value="Enter the correct answer...">
+                        <input type="text" class="form-input" id="correctAnswer"
+                               th:value="${question != null ? question.answerKey : ''}"
+                               placeholder="Enter the correct answer...">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Incorrect Answers <span class="required">(*)</span></label>
                         <div class="incorrect-answers">
-                            <!-- đỗ dữ liệu vào đây, người dùng có thể tự do edit -->
-                            <input type="text" class="form-input" value="Enter an incorrect answer...">
-                            <!-- đỗ dữ liệu vào đây, người dùng có thể tự do edit -->
-                            <input type="text" class="form-input" value="Enter an incorrect answer...">
-                            <!-- đỗ dữ liệu vào đây, người dùng có thể tự do edit -->
-                            <input type="text" class="form-input" value="Enter an incorrect answer...">
+                            <input type="text" class="form-input" id="incorrectAnswer1"
+                                   th:value="${question != null ? question.answerF1 : ''}"
+                                   placeholder="Enter an incorrect answer...">
+                            <input type="text" class="form-input" id="incorrectAnswer2"
+                                   th:value="${question != null ? question.answerF2 : ''}"
+                                   placeholder="Enter an incorrect answer...">
+                            <input type="text" class="form-input" id="incorrectAnswer3"
+                                   th:value="${question != null ? question.answerF3 : ''}"
+                                   placeholder="Enter an incorrect answer...">
                         </div>
-                    </div>
-
-                    <div class="form-group">
+                    </div>                    <div class="form-group">
                         <label class="form-label">Correct answer explanation</label>
-                        <input class="form-input" rows="4" value="Enter explanation here..."></input>
+                        <textarea class="form-input" rows="4" id="explanation"
+                                  th:text="${question != null ? question.explanation : ''}"
+                                  placeholder="Enter explanation here..."></textarea>
                     </div>
                 </form>
             </div>
@@ -117,28 +123,39 @@
             </div>
         </div>
 
-        <!-- ma nhung header vs menu -->
-        <script>
+        <!-- ma nhung header vs menu -->        <script>
             // Load header
-            fetch('../header_user.html')
+            fetch('/Static/Template/header_user.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('header-placeholder').innerHTML = data;
-                });
+                })
+                .catch(error => console.log('Header load failed, using fallback'));
 
             // Load menu
-            fetch('Menu-Lecturer.html')
+            fetch('/Static/Template/Lecturer/Menu-Lecturer.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('menu-HTML').innerHTML = data;
                     setActiveMenu(document.title);
+                })
+                .catch(error => {
+                    console.log('Menu load failed, using fallback');
+                    // Fallback menu basic
+                    document.getElementById('menu-HTML').innerHTML = `
+                        <div style="padding: 1rem; background: #f8f9fa;">
+                            <nav>
+                                <a href="/lecturer/question-management" style="padding: 0.5rem; margin: 0.2rem; display: inline-block; background: #007bff; color: white; text-decoration: none; border-radius: 0.25rem;">Question Management</a>
+                                <a href="/lecturer/create-question" style="padding: 0.5rem; margin: 0.2rem; display: inline-block; background: #28a745; color: white; text-decoration: none; border-radius: 0.25rem;">Create Question</a>
+                            </nav>
+                        </div>
+                    `;
                 });
-        </script>
-        <script>
+        </script>        <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const checkButton = document.querySelector('.check-button');
                 const statusText = document.querySelector('.status-text');
-                const questionTitleInput = document.querySelector('input[placeholder="The title question..."]');
+                const questionTitleInput = document.querySelector('#questionTitle');
 
                 if (checkButton && statusText && questionTitleInput) {
                     checkButton.addEventListener('click', async () => {
@@ -155,8 +172,8 @@
                         statusText.classList.remove('safety', 'warring', 'error');
 
                         try {
-                            // Gửi tiêu đề lên server
-                            const response = await fetch('/api/check-duplicate', { //tạm thời
+                            // Gọi API check duplicate
+                            const response = await fetch('/lecturer/api/check-duplicate', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -183,8 +200,13 @@
                                 statusText.classList.add('error');
                             }
 
+                            // Hiển thị similar questions nếu có
+                            if (data.similarQuestions && data.similarQuestions.length > 0) {
+                                console.log('Similar questions found:', data.similarQuestions);
+                            }
+
                         } catch (error) {
-                            console.error(error);
+                            console.error('Duplicate check error:', error);
                             statusText.textContent = 'Error checking duplicates.';
                             statusText.classList.add('error');
                         } finally {
@@ -193,67 +215,106 @@
                         }
                     });
                 }
+            });            // Handle Save Draft button
+            document.querySelector('.save-draft').addEventListener('click', async function (e) {
+                e.preventDefault();
+                await saveQuestion('draft');
             });
 
-            document.querySelector('.submit-button').addEventListener('click', function (e) {
+            // Handle Submit button
+            document.querySelector('.submit-button').addEventListener('click', async function (e) {
                 e.preventDefault();
+                await saveQuestion('submit');
+            });
 
+            async function saveQuestion(action) {
+                const questionId = document.getElementById('questionId').value;
                 const subject = document.getElementById('subject').value.trim();
                 const difficulty = document.getElementById('difficulty').value.trim();
-                const questionTitle = document.querySelector('input[placeholder="The title question..."]').value.trim();
-                const correctAnswer = document.querySelector('input[placeholder="Enter the correct answer..."]').value.trim();
-                const incorrectAnswers = Array.from(document.querySelectorAll('.incorrect-answers input')).map(input => input.value.trim());
-                const explanation = document.querySelector('textarea').value.trim();
+                const questionTitle = document.getElementById('questionTitle').value.trim();
+                const correctAnswer = document.getElementById('correctAnswer').value.trim();
+                const incorrectAnswer1 = document.getElementById('incorrectAnswer1').value.trim();
+                const incorrectAnswer2 = document.getElementById('incorrectAnswer2').value.trim();
+                const incorrectAnswer3 = document.getElementById('incorrectAnswer3').value.trim();
+                const explanation = document.getElementById('explanation').value.trim();
 
-                let isValid = true;
+                // Validation cho Submit nhưng không cho Save Draft
+                if (action === 'submit') {
+                    let isValid = true;
 
-                // Kiểm tra Subject & Difficulty
-                if (!subject) {
-                    document.getElementById('subject').style.borderColor = '#ef4444';
-                    isValid = false;
-                } else {
-                    document.getElementById('subject').style.borderColor = '#d1d5db';
+                    // Kiểm tra các trường required
+                    if (!questionTitle) {
+                        alert('Please enter the question title.');
+                        return;
+                    }
+
+                    if (!correctAnswer) {
+                        alert('Please enter the correct answer.');
+                        return;
+                    }
+
+                    if (!incorrectAnswer1 || !incorrectAnswer2 || !incorrectAnswer3) {
+                        alert('Please enter all incorrect answers.');
+                        return;
+                    }
                 }
 
-                if (!difficulty) {
-                    document.getElementById('difficulty').style.borderColor = '#ef4444';
-                    isValid = false;
-                } else {
-                    document.getElementById('difficulty').style.borderColor = '#d1d5db';
-                }
+                // Prepare data
+                const formData = {
+                    questionId: questionId || null,
+                    content: questionTitle,
+                    correctAnswer: correctAnswer,
+                    answer1: incorrectAnswer1,
+                    answer2: incorrectAnswer2,
+                    answer3: incorrectAnswer3,
+                    explanation: explanation,
+                    action: action
+                };
 
-                // Kiểm tra các trường input khác
-                if (!questionTitle) {
-                    alert('Please enter the question title.');
-                    isValid = false;
-                }
+                console.log('Saving question with data:', formData);
 
-                if (!correctAnswer) {
-                    alert('Please enter the correct answer.');
-                    isValid = false;
-                }
+                try {
+                    // Show loading state
+                    const button = action === 'draft' ? document.querySelector('.save-draft') : document.querySelector('.submit-button');
+                    const originalText = button.textContent;
+                    button.textContent = action === 'draft' ? 'Saving...' : 'Submitting...';
+                    button.disabled = true;
 
-                if (incorrectAnswers.some(ans => !ans)) {
-                    alert('Please enter all incorrect answers.');
-                    isValid = false;
-                }
+                    const response = await fetch('/lecturer/api/questions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
 
-                if (isValid) {
-                    const formData = {
-                        subject,
-                        difficulty,
-                        questionTitle,
-                        correctAnswer,
-                        incorrectAnswers,
-                        explanation
-                    };
+                    if (!response.ok) {
+                        throw new Error('Failed to save question');
+                    }
 
-                    console.log('Form Data:', formData);
-                    alert('Question submitted successfully!');
-                } else {
-                    alert('Please fill in all required fields.');
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    // Success
+                    alert(action === 'draft' ? 'Question saved as draft successfully!' : 'Question submitted successfully!');
+                    
+                    // Redirect back to question management
+                    window.location.href = '/lecturer/question-management';
+
+                } catch (error) {
+                    console.error('Save question error:', error);
+                    alert('Error saving question: ' + error.message);
+                } finally {
+                    // Reset button state
+                    const button = action === 'draft' ? document.querySelector('.save-draft') : document.querySelector('.submit-button');
+                    const originalText = action === 'draft' ? 'Save Draft' : 'Submit';
+                    button.textContent = originalText;
+                    button.disabled = false;
                 }
-            });
+            }
         </script>
 
         <script src="../../Static/js/L_activeMenu.js"></script>

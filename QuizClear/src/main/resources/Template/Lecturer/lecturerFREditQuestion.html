@@ -151,9 +151,8 @@
                         statusText.textContent = 'Checking for duplicates...';
                         statusText.classList.remove('safety', 'warring', 'error');
 
-                        try {
-                            // Gửi tiêu đề lên server
-                            const response = await fetch('/api/check-duplicate', { //tạm thời
+                        try {                            // Gọi API check duplicate
+                            const response = await fetch('/lecturer/api/check-duplicate', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'

@@ -24,12 +24,17 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
     
     // Find by CLO
     List<Question> findByClo_CloId(Long cloId);
-    Integer countByClo_CloId(Long cloId);
-      // Find by creator
+    Integer countByClo_CloId(Long cloId);      // Find by creator
     List<Question> findByCreatedBy_UserId(Long creatorId);
     
     // Find by course
     List<Question> findByCourse_CourseId(Long courseId);
+    
+    // Find by course and creator
+    List<Question> findByCourse_CourseIdAndCreatedBy_UserId(Long courseId, Long creatorId);
+    
+    // Find by task
+    List<Question> findByTaskId(Long taskId);
     
     // Find by status
     List<Question> findByStatus(QuestionStatus status);
@@ -66,27 +71,13 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
     @Query("SELECT q.difficultyLevel as level, COUNT(q) as count FROM Question q GROUP BY q.difficultyLevel")
     List<Object[]> getQuestionDifficultyStatistics();
     
+    @Query("SELECT c.courseName as courseName, COUNT(q) as count FROM Question q JOIN q.course c GROUP BY c.courseName")
+    List<Object[]> getQuestionDistributionByCourse();
+    
+    @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department = :department AND q.feedback IS NOT NULL")
+    List<Question> findQuestionsWithFeedbackByDepartment(@Param("department") String department);
+    
     // Recent questions
     @Query("SELECT q FROM Question q WHERE q.createdAt >= :since ORDER BY q.createdAt DESC")
     List<Question> findRecentQuestions(@Param("since") LocalDateTime since);
-    
-    // Questions pending approval
-    @Query("SELECT q FROM Question q WHERE q.status = 'PENDING' ORDER BY q.createdAt ASC")
-    List<Question> findPendingQuestions();
-      // Top creators
-    @Query("SELECT u.fullName as creatorName, COUNT(q) as questionCount FROM Question q JOIN q.createdBy u GROUP BY u.userId, u.fullName ORDER BY COUNT(q) DESC")
-    List<Object[]> getTopQuestionCreators();
-    
-    // Course-wise question distribution
-    @Query("SELECT c.courseName as courseName, COUNT(q) as questionCount FROM Question q JOIN q.course c GROUP BY c.courseId, c.courseName ORDER BY COUNT(q) DESC")
-    List<Object[]> getQuestionDistributionByCourse();
-
-    List<Question> findByTaskId(Long taskId);
-    
-    // Methods for Subject Leader feedback management
-    @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department = :department AND q.feedback IS NOT NULL AND q.feedback != '' ORDER BY q.submittedAt DESC")
-    List<Question> findQuestionsWithFeedbackByDepartment(@Param("department") String department);
-    
-    @Query("SELECT q FROM Question q WHERE q.feedback IS NOT NULL AND q.feedback != '' ORDER BY q.submittedAt DESC")
-    List<Question> findAllQuestionsWithFeedback();
 }

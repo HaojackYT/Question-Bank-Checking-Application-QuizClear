@@ -135,9 +135,7 @@ public class WebPageController {
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
         model.addAttribute("user", user);
         return "slDashboard"; // This will look for templates/slDashboard.html
-    }
-
-    @GetMapping("/lecturer-dashboard")
+    }    @GetMapping("/lecturer-dashboard")
     public String lecturerDashboard(HttpSession session, Model model) {
         if (!isAuthorized(session, "Lec")) {
             return "redirect:/login";
@@ -188,10 +186,10 @@ public class WebPageController {
             // Log error and return fallback
             System.err.println("Error getting user from database: " + e.getMessage());
         }
-        
-        // Fallback - return first user from database
+          // Fallback - return first user from database
         return userRepository.findAll().stream()
-            .findFirst()            .map(user -> {
+            .findFirst()
+            .map(user -> {
                 UserBasicDTO dto = new UserBasicDTO();
                 dto.setUserId(user.getUserId() != null ? user.getUserId().longValue() : null);
                 dto.setFullName(user.getFullName());
@@ -200,8 +198,19 @@ public class WebPageController {
                 dto.setDepartment(user.getDepartment());
                 return dto;
             })
-            .orElse(null);    }
+            .orElse(null);
+    }
     
     // ========== HELPER METHODS CHO LOGIN ==========
-
+    
+    @GetMapping("/test-lecturer")
+    public String testLecturer(HttpSession session) {
+        // Create a mock session for testing
+        UserBasicDTO mockUser = new UserBasicDTO();
+        mockUser.setUserId(1L);
+        mockUser.setRole("Lec");
+        mockUser.setFullName("Test Lecturer");
+        session.setAttribute("user", mockUser);
+        return "redirect:/lecturer/question-management";
+    }
 }

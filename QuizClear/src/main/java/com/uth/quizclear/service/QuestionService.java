@@ -6,7 +6,6 @@ import com.uth.quizclear.model.entity.User;
 import com.uth.quizclear.model.enums.QuestionStatus;
 import com.uth.quizclear.repository.QuestionRepository;
 import com.uth.quizclear.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,12 +16,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class QuestionService {
-
-    private final QuestionRepository questionRepository;
+public class QuestionService {    private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
 
-    @Autowired
     public QuestionService(QuestionRepository questionRepository, UserRepository userRepository) {
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
