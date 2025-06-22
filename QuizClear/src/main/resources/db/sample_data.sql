@@ -261,3 +261,28 @@ INSERT INTO exam_reviews (exam_id, reviewer_id, review_type, status, comments, c
 (2, 6, 'examination_department', 'needs_revision', 'MATH201 Final requires revision in answer key formatting and time allocation guidelines', '2025-06-15 16:00:00'),
 (3, 6, 'examination_department', 'needs_revision', 'PHYS301 Quiz needs improvement in question clarity and grading rubric', '2025-06-14 10:45:00');
 
+-- 17. Thêm dữ liệu cho bảng exam_assignments
+INSERT INTO exam_assignments (
+    assignment_name, description, course_id, assigned_to, assigned_by, status, 
+    deadline, total_questions, duration_minutes, instructions, created_at, created_by
+) VALUES
+-- Các assignment của Subject Leader (SL) phân công cho Lecturer
+('CS101 Midterm Exam Creation', 'Create midterm exam for Introduction to Computer Science covering basic programming concepts', 1, 1, 3, 'ASSIGNED', '2025-07-15 23:59:59', 30, 90, 'Focus on Java basics, OOP principles, and data structures. Include 20 multiple choice and 10 short answer questions.', '2025-06-20 08:00:00', 3),
+('MATH201 Final Exam Development', 'Develop comprehensive final exam for Calculus II covering integration and series', 2, 2, 8, 'IN_PROGRESS', '2025-07-20 23:59:59', 25, 120, 'Cover integration techniques, infinite series, and applications. Include both calculation and proof questions.', '2025-06-18 10:30:00', 8),
+('PHYS301 Quiz Assignment', 'Create physics quiz on classical mechanics principles', 3, 3, 3, 'SUBMITTED', '2025-07-10 23:59:59', 15, 45, 'Focus on Newton laws, energy conservation, and momentum. Include problem-solving questions.', '2025-06-15 14:20:00', 3),
+('CHEM101 Lab Exam Creation', 'Design laboratory practical exam for General Chemistry', 4, 4, 8, 'APPROVED', '2025-07-25 23:59:59', 20, 60, 'Include identification questions, reaction mechanisms, and calculation problems.', '2025-06-12 09:15:00', 8),
+('BIO201 Assessment Development', 'Create comprehensive assessment for Cell Biology course', 5, 5, 3, 'REJECTED', '2025-07-05 23:59:59', 35, 75, 'Cover cell structure, organelles, and cellular processes. Include diagrams and short essays.', '2025-06-10 11:45:00', 3),
+
+-- Assignments đã hoàn thành và published
+('CS201 Data Structures Exam', 'Final exam for Data Structures course focusing on algorithms and complexity', 6, 1, 8, 'PUBLISHED', '2025-06-30 23:59:59', 40, 100, 'Include implementation questions, algorithm analysis, and time complexity problems.', '2025-06-08 13:30:00', 8),
+('MATH301 Linear Algebra Quiz', 'Quick assessment on matrix operations and vector spaces', 7, 2, 3, 'PUBLISHED', '2025-06-28 23:59:59', 12, 30, 'Focus on matrix multiplication, determinants, and eigenvalues. Short calculation problems only.', '2025-06-05 16:00:00', 3),
+
+-- Assignments trong trạng thái draft
+('PHYS201 E&M Midterm', 'Midterm exam for Electricity and Magnetism covering field theory', 8, 3, 8, 'DRAFT', '2025-08-01 23:59:59', 28, 85, 'Cover electric fields, magnetic fields, and electromagnetic induction. Include conceptual and calculation questions.', '2025-06-22 07:45:00', 8),
+('CHEM201 Organic Chemistry Final', 'Comprehensive final exam for Organic Chemistry course', 9, 4, 3, 'DRAFT', '2025-08-10 23:59:59', 45, 150, 'Include reaction mechanisms, synthesis problems, and spectroscopy analysis. Focus on practical applications.', '2025-06-21 14:20:00', 3),
+('BIO301 Genetics Assessment', 'Assessment covering inheritance patterns and gene expression', 10, 5, 8, 'ASSIGNED', '2025-07-30 23:59:59', 22, 70, 'Cover Mendelian genetics, molecular genetics, and population genetics. Include pedigree analysis.', '2025-06-19 10:30:00', 8),
+
+-- Assignments with overdue deadlines for testing
+('OVERDUE: CS Advanced Topics', 'Overdue assignment for advanced computer science topics', 1, 1, 3, 'ASSIGNED', '2025-06-15 23:59:59', 20, 60, 'Cover advanced algorithms, design patterns, and software architecture.', '2025-06-01 08:00:00', 3),
+('OVERDUE: MATH Statistics Quiz', 'Overdue statistics quiz assignment', 2, 2, 8, 'IN_PROGRESS', '2025-06-10 23:59:59', 18, 50, 'Cover probability distributions, hypothesis testing, and regression analysis.', '2025-05-28 09:30:00', 8);
+
