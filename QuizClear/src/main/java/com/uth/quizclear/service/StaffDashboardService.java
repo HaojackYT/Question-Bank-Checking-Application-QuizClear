@@ -8,7 +8,6 @@ import com.uth.quizclear.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,27 +89,32 @@ public class StaffDashboardService {
                     t.setId(task.getTaskId());
                     t.setTitle(task.getTitle());
                     String status = (task.getStatus() != null) ? task.getStatus().name() : null;
+
+                    // Debug log để xem giá trị status thực tế
+                    System.out.println("DEBUG Task: " + task.getTitle() + " - Status from DB: " + status);
+
                     if (status == null || status.trim().isEmpty()) {
                         t.setStatus("Pending");
+                        System.out.println(
+                                "DEBUG: Task '" + task.getTitle() + "' has NULL/empty status, setting to Pending");
                     } else {
-                        switch (status.toLowerCase()) {
-                            case "in_progress":
-                                t.setStatus("In Progress");
-                                break;
-                            case "pending":
-                                t.setStatus("Pending");
-                                break;
-                            case "completed":
-                                t.setStatus("Completed");
-                                break;
-                            case "cancelled":
-                                t.setStatus("Cancelled");
-                                break;
-                            default:
-                                t.setStatus("Pending"); // Nếu giá trị lạ, vẫn trả về Pending
-                                break;
+                        // Normalize status và so sánh - chỉ 2 trạng thái: In Progress và Pending
+                        String normalizedStatus = status.toLowerCase().trim().replace("_", " ");
+                        if ("in progress".equals(normalizedStatus)) {
+                            t.setStatus("In Progress");
+                        } else {
+                            // Tất cả status khác đều chuyển thành Pending (bao gồm "completed", "pending",
+                            // etc.)
+                            System.out.println(
+                                    "DEBUG: Converting status '" + status + "' to Pending for task: "
+                                            + task.getTitle());
+                            t.setStatus("Pending");
                         }
                     }
+
+                    // Debug final status
+                    System.out.println("DEBUG Task: " + task.getTitle() + " - Final Status: " + t.getStatus());
+
                     t.setSubject(task.getCourse() != null ? task.getCourse().getCourseName() : "");
                     t.setDueDate(task.getDueDate());
                     return t;
@@ -121,7 +125,7 @@ public class StaffDashboardService {
         // allTasks: trả về toàn bộ cho API see more
         dto.setAllTasks(allTasks);
 
-        // Danh sách cảnh báo trùng lặp (top 5 warning của staffId)
+        // Danh sách cảnh báo trùng lặp (top 5 warning của staffId cho dashboard)
         List<DuplicateWarningDTO> warnings = duplicateDetectionRepository
                 .findTop5ByDetectedByOrderByDetectedAtDesc(staffId)
                 .stream().map(det -> {
@@ -141,6 +145,10 @@ public class StaffDashboardService {
                     return w;
                 }).collect(Collectors.toList());
         dto.setDuplicateWarnings(warnings);
+
+        // Lấy tổng số warnings để kiểm tra có nhiều hơn 5 không
+        long totalWarnings = duplicateDetectionRepository.findByDetectedBy(staffId).size();
+        dto.setTotalDuplicateWarnings((int) totalWarnings);
 
         return dto;
     }

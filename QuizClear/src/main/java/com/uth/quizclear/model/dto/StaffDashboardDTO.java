@@ -21,6 +21,7 @@ public class StaffDashboardDTO {
 
     // Danh sách cảnh báo trùng lặp
     private List<DuplicateWarningDTO> duplicateWarnings;
+    private int totalDuplicateWarnings; // Tổng số cảnh báo trùng lặp (để kiểm tra logic "See more...")
 
     // Danh sách nhiệm vụ đầy đủ cho See more
     private List<TaskDTO> allTasks;
@@ -112,6 +113,14 @@ public class StaffDashboardDTO {
 
     public void setDuplicateWarnings(List<DuplicateWarningDTO> duplicateWarnings) {
         this.duplicateWarnings = duplicateWarnings;
+    }
+
+    public int getTotalDuplicateWarnings() {
+        return totalDuplicateWarnings;
+    }
+
+    public void setTotalDuplicateWarnings(int totalDuplicateWarnings) {
+        this.totalDuplicateWarnings = totalDuplicateWarnings;
     }
 
     public List<TaskDTO> getAllTasks() {
