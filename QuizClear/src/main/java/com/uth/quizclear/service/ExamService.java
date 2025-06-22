@@ -1,6 +1,7 @@
 package com.uth.quizclear.service;
 
 import com.uth.quizclear.model.dto.ExamDTO;
+import com.uth.quizclear.model.dto.ExamRevisionDTO;
 import com.uth.quizclear.model.entity.Exam;
 import com.uth.quizclear.model.enums.ExamStatus;
 import com.uth.quizclear.repository.ExamRepository;
@@ -63,4 +64,20 @@ public class ExamService {
             .collect(Collectors.toList());
     }
     
+    public ExamRevisionDTO getExamRevisionDTO(Long examId) {
+        Exam exam = examRepository.findByExamId(examId);
+        if (exam == null) return null;
+        ExamRevisionDTO dto = new ExamRevisionDTO();
+        dto.setExamId(exam.getExamId());
+        dto.setExamTitle(exam.getExamTitle() != null ? exam.getExamTitle() : "");
+        dto.setExamCode(exam.getExamCode() != null ? exam.getExamCode() : "");
+        dto.setSubject(exam.getCourse() != null ? exam.getCourse().getCourseName() : "");
+        dto.setCourseName(exam.getCourse() != null ? exam.getCourse().getCourseName() : "");
+        dto.setRequester(exam.getApprovedBy() != null ? exam.getApprovedBy().getFullName() : "");
+        dto.setEditor(exam.getCreatedBy() != null ? exam.getCreatedBy().getFullName() : "");
+        dto.setSubmissionDate(exam.getSubmittedAt());
+        dto.setDueDate(exam.getExamDate());
+        dto.setFeedback(exam.getFeedback() != null ? exam.getFeedback() : "");
+        return dto;
+    }
 }
