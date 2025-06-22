@@ -207,7 +207,7 @@ public class WebPageController {
 
     private boolean isAuthorized(HttpSession session, String requiredRole) {
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
-        return user != null && user.getRole().equals(requiredRole);
+        return user != null && user.getRole() != null && user.getRole().equalsIgnoreCase(requiredRole);
     }
     
     // Helper method to get user from database instead of mock data
