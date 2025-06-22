@@ -1,6 +1,7 @@
 name: quizclear
 
 services:
+  # MySQL Database
   db:
     image: mysql:8.0
     container_name: mysql_container
@@ -15,6 +16,48 @@ services:
       - mysql_data:/var/lib/mysql
       - ./QuizClear/src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/01_init.sql
       - ./QuizClear/src/main/resources/db/sample_data.sql:/docker-entrypoint-initdb.d/02_sample_data.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 5
+      interval: 30s
+
+  # AI Service (Flask)
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: ai_service_container
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    volumes:
+      - ./ai-service:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      timeout: 10s
+      retries: 3
+      interval: 30s
+  # Spring Boot Application
+  app:
+    build:
+      context: ./QuizClear
+      dockerfile: Dockerfile
+    container_name: spring_boot_container
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/QuizClear
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=123456
+      - AI_SERVICE_URL=http://ai-service:5000
+    depends_on:
+      db:
+        condition: service_healthy
+      ai-service:
+        condition: service_healthy
 
 volumes:
   mysql_data:

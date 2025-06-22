@@ -71,6 +71,24 @@ def health_check():
             }
         }), 500
 
+@app.route('/health', methods=['GET'])
+def health_check_docker():
+    """Health check endpoint for Docker health monitoring"""
+    try:
+        # Simple health check - just return OK status
+        return jsonify({
+            'status': 'healthy',
+            'timestamp': datetime.now().isoformat(),
+            'service': 'AI Duplicate Detection Service'
+        }), 200
+    except Exception as e:
+        logger.error(f"Health check failed: {str(e)}")
+        return jsonify({
+            'status': 'unhealthy',
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
+        }), 500
+
 @app.route('/api/check-duplicate', methods=['POST'])
 def check_duplicate():
     """
