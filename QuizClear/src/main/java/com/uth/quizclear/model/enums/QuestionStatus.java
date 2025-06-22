@@ -8,7 +8,9 @@ public enum QuestionStatus {
     SUBMITTED("submitted"),
     APPROVED("approved"),
     REJECTED("rejected"),
-    ARCHIVED("archived");
+    ARCHIVED("archived"),
+    DECLINED("declined");
+
 
     private final String value;
 

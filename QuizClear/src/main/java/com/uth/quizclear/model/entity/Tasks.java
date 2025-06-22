@@ -62,6 +62,9 @@ public class Tasks {
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
+    @Column(name = "assigned_at")
+    private LocalDateTime assignedAt;
+
     // Getters and Setters
     public Integer getTaskId() {
         return taskId;
@@ -158,4 +161,9 @@ public class Tasks {
     public void setCompletedAt(LocalDateTime completedAt) {
         this.completedAt = completedAt;
     }
+
+    public LocalDateTime getAssignedAt() {
+    return assignedAt;
+}
+
 }

@@ -268,4 +268,8 @@ public class User {
         return createdAt;
     }
 
+    public User(long userId) {
+    this.userId = userId;
+}
+
 }

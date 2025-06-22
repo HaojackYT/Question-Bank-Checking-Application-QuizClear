@@ -11,7 +11,7 @@
     <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/slReviewApproval.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <title>Review&Approval</title>
+    <title>Review & Approval</title>
     <style>
         .status.cancelled {
             background-color: #4d0a11;
@@ -125,7 +125,7 @@
                     <td><span class="status ${task.status.toLowerCase().replace(' ', '-')}">${task.status}</span></td>
                     <td><button class="details-btn" onclick="viewDetails(${task.taskId})"><i class="fa-solid fa-eye"></i></button></td>
                     <td>
-                        ${task.rawStatus !== 'completed' ? `
+                        ${task.rawStatus !== 'pending' && task.rawStatus !== 'completed' ? `
                             <button class="action-btn approve" onclick="approveTask(${task.taskId})"><i class="fa-regular fa-circle-check"></i></button>
                             <button class="action-btn decline" onclick="openDeclineModal(${task.taskId})"><i class="fa-regular fa-circle-xmark"></i></button>
                         ` : ''}
@@ -137,7 +137,7 @@
 
         // View task details
         function viewDetails(taskId) {
-            window.location.href = `/subject-leader/review-approval/details/${taskId}`;
+            window.location.href = `/subject-leader/review-approval/details/${taskId}?taskId=${taskId}`;
         }
 
         // Open decline modal

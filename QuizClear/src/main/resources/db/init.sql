@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS questions (
   approved_at DATETIME DEFAULT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  status ENUM('draft', 'submitted', 'approved', 'rejected', 'archived') NOT NULL DEFAULT 'draft',
+  status ENUM('draft', 'submitted', 'approved', 'rejected', 'archived', 'declined') NOT NULL DEFAULT 'draft',
   block_question ENUM('block', 'active') NOT NULL DEFAULT 'active',
   hidden_question TINYINT(1) NOT NULL DEFAULT 0,
   usage_count INT DEFAULT 0,

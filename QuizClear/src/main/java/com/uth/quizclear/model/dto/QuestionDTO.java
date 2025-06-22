@@ -3,6 +3,9 @@ package com.uth.quizclear.model.dto;
 import com.uth.quizclear.model.enums.DifficultyLevel;
 import com.uth.quizclear.model.enums.QuestionStatus;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class QuestionDTO {
     private Long questionId;
     private Long taskId;
@@ -14,6 +17,11 @@ public class QuestionDTO {
     private String answerF3;
     private String explanation;
     private QuestionStatus status;
+    private String displayStatus; // Hiển thị: Approved, Completed, Declined
+    private String updatedDate; // questions.updated_at
+    private String options; // answer_f1, answer_f2, answer_f3
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yy");
 
     public QuestionDTO() {}
 
@@ -68,5 +76,61 @@ public class QuestionDTO {
 
     public void setStatusAsString(String status) {
         this.status = status != null ? QuestionStatus.valueOf(status.toUpperCase()) : null;
+    }
+
+    // Thêm getter và setter cho displayStatus
+    public String getDisplayStatus() {
+        return displayStatus;
+    }
+
+    public void setDisplayStatus(String displayStatus) {
+        this.displayStatus = displayStatus;
+    }
+
+    // Thêm getter và setter cho updatedDate
+    public String getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(String updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+
+    // Thêm getter và setter cho options
+    public String getOptions() {
+        return options;
+    }
+
+    public void setOptions(String options) {
+        this.options = options;
+    }
+
+    // Thêm phương thức để format updatedDate từ LocalDateTime
+    public void setUpdatedDateFromLocalDateTime(LocalDateTime date) {
+        this.updatedDate = date != null ? date.format(DATE_FORMATTER) : "";
+    }
+
+    // Thêm phương thức để set displayStatus từ status
+    public void setDisplayStatusFromStatus(QuestionStatus status) {
+        this.status = status;
+        if (status != null) {
+            switch (status) {
+                case APPROVED:
+                    this.displayStatus = "Approved";
+                    break;
+                case SUBMITTED:
+                    this.displayStatus = "Completed";
+                    break;
+                case DECLINED:
+                    this.displayStatus = "Declined";
+                case REJECTED:
+                    this.displayStatus = "Rejected";
+                    break;
+                default:
+                    this.displayStatus = status.name();
+            }
+        } else {
+            this.displayStatus = "";
+        }
     }
 }
