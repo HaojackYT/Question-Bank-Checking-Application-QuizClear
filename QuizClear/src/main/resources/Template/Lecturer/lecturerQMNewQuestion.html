@@ -156,12 +156,41 @@
                     const footerMessage = document.getElementById('footer-message');
                     const saveDraftBtn = document.getElementById('save-draft-btn');
 
-                    if (checkButton && statusText && questionTitleInput) {
-                        checkButton.addEventListener('click', async () => {
+                    if (checkButton && statusText && questionTitleInput) {                        checkButton.addEventListener('click', async () => {
                             const title = questionTitleInput.value.trim();
+                            const subject = document.getElementById('subject').value.trim();
+                            const difficulty = document.getElementById('difficulty').value.trim();
+                            const correctAnswer = document.querySelector('input[placeholder="Enter the correct answer..."]').value.trim();
+                            const incorrectAnswers = Array.from(document.querySelectorAll('.incorrect-answers input')).map(input => input.value.trim());
 
+                            // Validate all required fields before AI check
                             if (!title) {
                                 alert('Please enter the question title first.');
+                                questionTitleInput.focus();
+                                return;
+                            }
+
+                            if (!subject) {
+                                alert('Please select a subject first.');
+                                document.getElementById('subject').focus();
+                                return;
+                            }
+
+                            if (!difficulty) {
+                                alert('Please select difficulty level first.');
+                                document.getElementById('difficulty').focus();
+                                return;
+                            }
+
+                            if (!correctAnswer) {
+                                alert('Please enter the correct answer first.');
+                                document.querySelector('input[placeholder="Enter the correct answer..."]').focus();
+                                return;
+                            }
+
+                            if (incorrectAnswers.some(ans => !ans)) {
+                                alert('Please enter all incorrect answers first.');
+                                document.querySelector('.incorrect-answers input:not([value])').focus();
                                 return;
                             }
 
@@ -170,14 +199,21 @@
                             statusText.textContent = 'Checking for duplicates...';
                             statusText.classList.remove('safety', 'warring', 'error');
 
-                            try {
-                                // Gọi API check duplicate
+                            try {                                // Gọi API check duplicate với đầy đủ thông tin câu hỏi
+                                const questionData = {
+                                    questionTitle: title,
+                                    correctAnswer: correctAnswer,
+                                    incorrectAnswers: incorrectAnswers,
+                                    subject: subject,
+                                    difficulty: difficulty
+                                };
+
                                 const response = await fetch('/lecturer/api/check-duplicate', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
                                     },
-                                    body: JSON.stringify({ questionTitle: title })
+                                    body: JSON.stringify(questionData)
                                 });
 
                                 if (!response.ok) {

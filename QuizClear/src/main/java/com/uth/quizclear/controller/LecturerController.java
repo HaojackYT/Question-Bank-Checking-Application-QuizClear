@@ -2,10 +2,14 @@ package com.uth.quizclear.controller;
 
 import com.uth.quizclear.model.entity.Question;
 import com.uth.quizclear.model.entity.Course;
+import com.uth.quizclear.model.entity.CLO;
+import com.uth.quizclear.model.entity.User;
 import com.uth.quizclear.model.enums.DifficultyLevel;
 import com.uth.quizclear.model.enums.QuestionStatus;
 import com.uth.quizclear.repository.QuestionRepository;
 import com.uth.quizclear.repository.CourseRepository;
+import com.uth.quizclear.repository.CLORepository;
+import com.uth.quizclear.repository.UserRepository;
 import com.uth.quizclear.model.dto.UserBasicDTO;
 import com.uth.quizclear.service.AIService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +33,18 @@ public class LecturerController {
     
     @Autowired
     private CourseRepository courseRepository;
-
+    
     @Autowired
-    private AIService aiService;    /**
+    private CLORepository cloRepository;
+    
+    @Autowired
+    private UserRepository userRepository;    @Autowired
+    private AIService aiService;
+
+    /**
      * Lecturer Question Management page
-     */    @GetMapping("/question-management")
+     */
+    @GetMapping("/question-management")
     public String questionManagement(Model model, HttpSession session) {
         // Get user from session
         Object userObj = session.getAttribute("user");
@@ -321,8 +332,7 @@ public class LecturerController {
                     System.out.println("Invalid questionId format: " + questionIdObj);
                 }
             }
-                
-            if (questionId != null) {
+                  if (questionId != null) {
                 System.out.println("Updating existing question with ID: " + questionId);
                 question = questionRepository.findById(questionId)
                     .orElseThrow(() -> new RuntimeException("Question not found"));
@@ -334,8 +344,31 @@ public class LecturerController {
             } else {
                 System.out.println("Creating new question");
                 question = new Question();
-                // Set created by - this would need proper User entity setup
-                // question.setCreatedBy(userRepository.findById(lecturerId).orElse(null));
+                
+                // Set required fields for new question
+                // Set createdBy
+                User creator = userRepository.findById(lecturerId).orElse(null);
+                if (creator == null) {
+                    // Create a default user for demo
+                    creator = new User();
+                    creator.setUserId(lecturerId);
+                }
+                question.setCreatedBy(creator);
+                
+                // Set course (use first available course)
+                List<Course> courses = courseRepository.findAll();
+                if (!courses.isEmpty()) {
+                    question.setCourse(courses.get(0));
+                }
+                
+                // Set CLO (use first available CLO)
+                List<CLO> clos = cloRepository.findAll();
+                if (!clos.isEmpty()) {
+                    question.setClo(clos.get(0));
+                }
+                
+                // Set default values
+                question.setDifficultyLevel(DifficultyLevel.RECOGNITION);
             }
             
             // Update question data
@@ -357,15 +390,32 @@ public class LecturerController {
             if (questionData.get("explanation") != null) {
                 question.setExplanation(questionData.get("explanation").toString());
             }
-            
-            // Set course (use default course for demo - need to implement proper course selection)
+              // Set course and CLO if not already set
             if (question.getCourse() == null) {
                 List<Course> courses = courseRepository.findAll();
                 if (!courses.isEmpty()) {
                     question.setCourse(courses.get(0)); // Use first available course
                 }
             }
-              // Set difficulty (use default for demo)
+            
+            if (question.getClo() == null) {
+                List<CLO> clos = cloRepository.findAll();
+                if (!clos.isEmpty()) {
+                    question.setClo(clos.get(0)); // Use first available CLO
+                }
+            }
+            
+            if (question.getCreatedBy() == null) {
+                User creator = userRepository.findById(lecturerId).orElse(null);
+                if (creator == null) {
+                    // Create a default user for demo
+                    creator = new User();
+                    creator.setUserId(lecturerId);
+                }
+                question.setCreatedBy(creator);
+            }
+            
+            // Set difficulty (use default for demo)
             if (question.getDifficultyLevel() == null) {
                 question.setDifficultyLevel(DifficultyLevel.RECOGNITION);
             }
@@ -399,9 +449,7 @@ public class LecturerController {
             response.put("error", "Failed to save question: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
         }
-    }
-
-    /**
+    }    /**
      * API endpoint để check duplicate questions sử dụng AI
      */
     @PostMapping("/api/check-duplicate")
@@ -420,6 +468,8 @@ public class LecturerController {
             }
             
             String questionContent = requestData.get("questionTitle").toString();
+            String correctAnswer = requestData.get("correctAnswer") != null ? 
+                requestData.get("correctAnswer").toString() : "";
             
             if (questionContent == null || questionContent.trim().isEmpty()) {
                 Map<String, Object> response = new HashMap<>();
@@ -427,21 +477,37 @@ public class LecturerController {
                 return ResponseEntity.badRequest().body(response);
             }
             
-            // Get existing questions từ database để check duplicate
-            List<Question> existingQuestions = questionRepository.findByStatus(QuestionStatus.APPROVED);
+            System.out.println("Checking duplicate for question: " + questionContent);
+            
+            // Get existing questions từ database để check duplicate  
+            // Lấy tất cả questions, không chỉ APPROVED để có thể detect duplicate với cả draft/submitted
+            List<Question> existingQuestions = questionRepository.findAll();
+            
+            System.out.println("Found " + existingQuestions.size() + " existing questions in database");
             
             // Prepare existing questions for AI service
             List<Map<String, Object>> existingQuestionsData = existingQuestions.stream()
                 .map(q -> {
                     Map<String, Object> qData = new HashMap<>();
                     qData.put("content", q.getContent());
+                    qData.put("correct_answer", q.getAnswerKey());
                     qData.put("id", q.getQuestionId());
                     return qData;
                 })
                 .collect(Collectors.toList());
             
+            // Create full question text for better AI analysis
+            String fullQuestionText = questionContent;
+            if (!correctAnswer.isEmpty()) {
+                fullQuestionText += " Correct answer: " + correctAnswer;
+            }
+            
+            System.out.println("Calling AI service with full question: " + fullQuestionText);
+            
             // Call AI service
-            Map<String, Object> aiResult = aiService.checkDuplicate(questionContent, existingQuestionsData);
+            Map<String, Object> aiResult = aiService.checkDuplicate(fullQuestionText, existingQuestionsData);
+            
+            System.out.println("AI service result: " + aiResult);
             
             // Prepare response
             Map<String, Object> response = new HashMap<>();
@@ -451,20 +517,36 @@ public class LecturerController {
                 response.put("duplicatePercent", 0);
                 response.put("message", "AI check completed (fallback mode)");
                 response.put("similarQuestions", List.of());
+                System.out.println("AI service error, using fallback");
             } else {
                 // Extract results from AI response
                 Integer duplicatesFound = (Integer) aiResult.getOrDefault("duplicates_found", 0);
                 @SuppressWarnings("unchecked")
                 List<Map<String, Object>> similarQuestions = (List<Map<String, Object>>) aiResult.getOrDefault("similar_questions", List.of());
-                
-                // Calculate percentage based on similarity
-                int duplicatePercent = duplicatesFound > 0 ? 
-                    Math.min(100, duplicatesFound * 25) : 0; // Simple calculation
+                  // Calculate percentage based on similarity scores
+                int duplicatePercent = 0;
+                if (similarQuestions != null && !similarQuestions.isEmpty()) {
+                    // Get highest similarity score
+                    double maxSimilarity = similarQuestions.stream()
+                        .mapToDouble(q -> {
+                            Object sim = q.get("similarity_score"); // Fix: use "similarity_score" instead of "similarity"
+                            if (sim instanceof Number) {
+                                return ((Number) sim).doubleValue();
+                            }
+                            return 0.0;
+                        })
+                        .max()
+                        .orElse(0.0);
+                    
+                    duplicatePercent = (int) Math.round(maxSimilarity * 100);
+                }
                 
                 response.put("duplicatePercent", duplicatePercent);
                 response.put("duplicatesFound", duplicatesFound);
                 response.put("similarQuestions", similarQuestions);
                 response.put("message", "Duplicate check completed successfully");
+                
+                System.out.println("AI check completed: " + duplicatePercent + "% similarity");
             }
             
             return ResponseEntity.ok(response);
