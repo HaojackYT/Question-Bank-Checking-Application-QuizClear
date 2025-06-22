@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../static/css/subjectLeader/slReviewApproval.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <link rel="stylesheet" th:href="@{/Static/FontAwesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/slReviewApproval.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Review&Approval</title>
@@ -15,12 +15,12 @@
 
 <body>
     <!--header-->
-    <div id="header-placeholder"></div>
+    <div th:replace="~{header_user :: header}"></div>
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div id="menu-HTML"></div>
+        <div th:replace="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
 
         <!-- Main content -->
         <div id="main">
@@ -119,23 +119,10 @@
         </div>
     </div>
 
-    <!-- JavaScript for loading header and menu -->
+    <!-- JavaScript for Thymeleaf -->
     <script>
-        fetch('../header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-
-        fetch('Menu-SL.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-                setActiveMenu(document.title);
-            });
-
         function viewDetails(id) {
-            window.location.href = `slReviewApprovalDetail.html?id=${id}`;
+            window.location.href = `/subject-leader/review-approval/details/${id}`;
         }
 
         function openDeclineModal() {
@@ -165,7 +152,7 @@
         // Close modal when clicking on overlay
         document.getElementById('modalOverlay').addEventListener('click', closeModal);
     </script>
-    <script src="../../Static/js/L_activeMenu.js"></script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
 </html>

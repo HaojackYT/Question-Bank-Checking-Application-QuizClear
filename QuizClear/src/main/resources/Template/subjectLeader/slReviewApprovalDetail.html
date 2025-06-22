@@ -1,32 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../static/css/subjectLeader/slReviewApprovalDetail.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <link rel="stylesheet" th:href="@{/Static/FontAwesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/slReviewApprovalDetail.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Review&Approval</title>
 </head>
 
-<body>
-    <!--header-->
-    <div id="header-placeholder"></div>
+<body>    <!--header-->
+    <div th:replace="~{header_user :: header}"></div>
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div id="menu-HTML"></div>
+        <div th:replace="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
 
         <!-- Main content -->
         <div id="main">
-            <div class="details-container">
-                <div class="page-header">
-                    <a href="slReviewApproval.html">
+            <div class="details-container">                <div class="page-header">
+                    <a th:href="@{/subject-leader/review-approval}">
                         <button class="back-btn">
                             <i class="fas fa-arrow-left"></i>
                         </button>
@@ -38,11 +36,10 @@
                     <h2>Information</h2>
                     <p class="section-subtitle">Display all related information</p>
 
-                    <div class="info-grid">
-                        <div class="info-row">
+                    <div class="info-grid">                        <div class="info-row">
                             <div class="info-field">
                                 <label>No.</label>
-                                <input type="text" value="1" readonly>
+                                <input type="text" th:value="${taskId ?: '1'}" readonly>
                             </div>
                             <div class="info-field">
                                 <label>Lecturer</label>
@@ -208,23 +205,8 @@
             <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
             <button class="modal-btn send" onclick="sendDeclineReason()">Send</button>
         </div>
-    </div>
-
-    <!-- JavaScript for loading header and menu -->
+    </div>    <!-- JavaScript for Thymeleaf -->
     <script>
-        fetch('../header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-
-        fetch('Menu-SL.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-                setActiveMenu(document.title);
-            });
-
         function goBack() {
             window.history.back();
         }
@@ -296,7 +278,7 @@
         // Close modal when clicking on overlay
         document.getElementById('modalOverlay').addEventListener('click', closeModal);
     </script>
-    <script src="../../Static/js/L_activeMenu.js"></script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
 </html>
