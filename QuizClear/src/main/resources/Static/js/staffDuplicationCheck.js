@@ -106,11 +106,10 @@ function handleTabClick(tab) {
         console.error("Content area not found");
         return;
     }
-    
-    const tabConfig = {
-        detection: { file: API_URLS.dupContent, css: "/css/staff/staffDup.css" },
-        stat: { file: API_URLS.statContent, css: "/css/staff/staffStats.css" },
-        proc_log: { file: API_URLS.logContent, css: "/css/staff/staffLogs.css" }
+      const tabConfig = {
+        detection: { file: API_URLS.dupContent, css: "/Static/css/staff/staffDup.css" },
+        stat: { file: API_URLS.statContent, css: "/Static/css/staff/staffStats.css" },
+        proc_log: { file: API_URLS.logContent, css: "/Static/css/staff/staffLogs.css" }
     };
     
     const { file, css } = tabConfig[tabName] || {};
