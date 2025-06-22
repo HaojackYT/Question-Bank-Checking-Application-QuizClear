@@ -208,7 +208,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     display: none;
-    z-index: 1001;
+    z-index: 1002;
     padding: 1.5625rem;
     box-sizing: border-box;
 }
@@ -238,6 +238,16 @@
 /* Header Section */
 .assignment-header {
     margin-bottom: 2rem;
+}
+
+/* Main Content Area - Container with border */
+.main-content-area {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    background-color: #ffffff;
+    margin: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .assignment-header h1 {
@@ -404,6 +414,155 @@ tr:hover {
     color: var(--quizclear-icon-color);
     justify-content: center;
     align-items: center;
+}
+
+/* Statistics Section Styles */
+.statistics-section {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: var(--quizclear-background-white);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--quizclear-border-color);
+}
+
+.statistics-section h3 {
+    margin: 0 0 1rem 0;
+    color: var(--quizclear-text-color-dark);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.stat-card {
+    background: var(--quizclear-background-light);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    border: 1px solid var(--quizclear-border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card.warning {
+    background: #ffebee;
+    border-color: #f44336;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--quizclear-primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.stat-card.warning .stat-number {
+    color: #f44336;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--quizclear-text-color-light);
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Notification Styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 4px;
+    z-index: 10000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    font-weight: 500;
+    min-width: 300px;
+    max-width: 500px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.notification.success {
+    background: #4caf50;
+    color: white;
+}
+
+.notification.error {
+    background: #f44336;
+    color: white;
+}
+
+.notification.info {
+    background: #2196f3;
+    color: white;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Status Badge Updates */
+.status.draft {
+    background-color: #e8eaf6;
+    color: #3f51b5;
+}
+
+.status.assigned {
+    background-color: #e3f2fd;
+    color: #2196f3;
+}
+
+.status.in-progress {
+    background-color: #fff3e0;
+    color: #ff9800;
+}
+
+.status.submitted {
+    background-color: #f3e5f5;
+    color: #9c27b0;
+}
+
+.status.approved {
+    background-color: #e8f5e9;
+    color: #4caf50;
+}
+
+.status.rejected {
+    background-color: #ffebee;
+    color: #f44336;
+}
+
+.status.published {
+    background-color: #e0f2f1;
+    color: #009688;
+}
+
+/* Action Icons */
+.action-icon.delete-icon {
+    color: #f44336;
+    transition: color 0.2s ease;
+}
+
+.action-icon.delete-icon:hover {
+    color: #d32f2f;
+    background-color: #ffebee;
 }
 
 /* Media queries for responsiveness (example) */

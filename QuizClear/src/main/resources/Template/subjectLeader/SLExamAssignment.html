@@ -1,241 +1,302 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
-    <link rel="stylesheet" href="../../Static/css/subjectLeader/SLExamAssignment.css">
-    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>ExamAssignment</title>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/Static/fontawesome/css/all.css">
+        <link rel="stylesheet" href="/Static/header.css">
+        <link rel="stylesheet" href="/Static/web_styles.css">
+        <link rel="stylesheet" href="/Static/Menu-Staff.css">
+        <link rel="stylesheet"
+            href="/Static/css/subjectLeader/SLExamAssignment.css">
+        <link
+            href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
+            rel="stylesheet">
+        <title>ExamAssignment</title>
+    </head>
 
-<body>
-    <!--header-->
-    <div id="header-placeholder"></div>
+    <body>
+        <!--header-->
+        <div id="header-placeholder"></div>
 
-    <!-- body -->
-    <div id="Container-body">
-        <!-- Menu -->
-        <div id="menu-HTML"></div>
+        <!-- body -->
+        <div id="Container-body">
+            <!-- Menu -->
+            <div id="menu-HTML"></div>
 
-        <div id="newAssignModalOverlay" class="modal-overlay"></div>
+            <div id="newAssignModalOverlay" class="modal-overlay"></div>
 
-        <div id="newAssignModal" class="new-assign-modal">
-            <div class="modal-header">
-                <h2>New Assign</h2>
-                <button type="button" class="close-modal-btn">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="examTitle">Exam Title</label>
-                        <input type="text" id="examTitle" placeholder="Title">
-                    </div>
-                    <div class="form-group">
-                        <label for="lecturer">Lecturer</label>
-                        <select id="lecturer">
-                            <option value="Nguyen Van A">Nguyen Van A</option>
-                            <option value="Nguyen Van B">Nguyen Van B</option>
-                        </select>
-                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            fill="currentColor" width="16px" height="16px">
-                            <path d="M7 10l5 5 5-5z" />
-                        </svg>
-                    </div>
-                    <div class="form-group">
-                        <label for="course">Course</label>
-                        <input type="text" id="course" placeholder="Database">
-                    </div>
-                    <div class="form-group">
-                        <label for="noOfExams">No. of Exams</label>
-                        <input type="number" id="noOfExams" placeholder="4">
-                    </div>
-                    <div class="form-group">
-                        <label for="structure">Structure</label>
-                        <select id="structure">
-                            <option value="Multiple Choices">Multiple Choices</option>
-                            <option value="Essay">Essay</option>
-                        </select>
-                        <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            fill="currentColor" width="16px" height="16px">
-                            <path d="M7 10l5 5 5-5z" />
-                        </svg>
-                    </div>
-                    <div class="form-group">
-                        <label for="assignDate">Assign Date</label>
-                        <input type="text" id="assignDate" placeholder="20/4/25">
-                    </div>
-                    <div class="form-group">
-                        <label for="dueDate">Due Date</label>
-                        <input type="text" id="dueDate" placeholder="20/4/25">
-                    </div>
+            <div id="newAssignModal" class="new-assign-modal">
+                <div class="modal-header">
+                    <h2>New Assign</h2>
+                    <button type="button"
+                        class="close-modal-btn">&times;</button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="cancel-button close-modal-btn">Cancel</button>
-                <button type="button" class="assign-button">Assign</button>
-            </div>
-        </div>
-
-        <div id="detailsModalOverlay" class="modal-overlay"></div>
-
-        <div id="detailsModal" class="details-modal">
-            <div class="modal-header">
-                <h2>Details</h2>
-                <button type="button" class="close-details-modal-btn">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="detailsExamTitle">Exam Title</label>
-                        <input type="text" id="detailsExamTitle" value="DB202" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="detailsLecturer">Lecturer</label>
-                        <input type="text" id="detailsLecturer" value="Nguyen Van A" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="detailsCourse">Course</label>
-                        <input type="text" id="detailsCourse" value="Database" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="detailsNoOfExams">No. of Exams</label>
-                        <input type="number" id="detailsNoOfExams" value="4" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="detailsStructure">Structure</label>
-                        <input type="text" id="detailsStructure" value="Multiple Choices" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="detailsAssignDate">Assign Date</label>
-                        <input type="text" id="detailsAssignDate" value="25/4/25" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="detailsDueDate">Due Date</label>
-                        <input type="text" id="detailsDueDate" value="25/4/25" readonly>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main content -->
-        <div id="main">
-            <div class="main-content-area">
-                <div class="assignment-header">
-                    <h1>Exam Assignment</h1>
-                    <p>View, assign tasks and track exam progress.</p>
-                </div>
-
-                <div class="assignment-actions">
-                    <div class="search-filter-bar">
-                        <div class="search-box">
-                            <input type="text" placeholder="Enter search content ..." class="search-input">
-                            <button class="search-btn">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                        <div class="filter-dropdown">
-                            <select class="filter-select">
-                                <option>All Status</option>
-                                <option>Pending</option>
-                                <option>In Completed</option>
-                                <option>Completed</option>
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="examTitle">Exam Title</label>
+                            <input type="text" id="examTitle"
+                                placeholder="Title">
+                        </div> <div class="form-group">
+                            <label for="lecturer">Lecturer</label>
+                            <select id="lecturer">
+                                <option th:each="lecturer : ${lecturers}"
+                                    th:value="${lecturer.userId}"
+                                    th:text="${lecturer.fullName}">Select
+                                    Lecturer</option>
                             </select>
-                            <i class="fas fa-chevron-down"></i>
+                            <svg class="dropdown-arrow"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor" width="16px" height="16px">
+                                <path d="M7 10l5 5 5-5z" />
+                            </svg>
+                        </div>
+                        <div class="form-group">
+                            <label for="course">Course</label>
+                            <select id="course">
+                                <option th:each="course : ${courses}"
+                                    th:value="${course.courseId}"
+                                    th:text="${course.courseName}">Select
+                                    Course</option>
+                            </select>
+                            <svg class="dropdown-arrow"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor" width="16px" height="16px">
+                                <path d="M7 10l5 5 5-5z" />
+                            </svg>
+                        </div>
+                        <div class="form-group">
+                            <label for="noOfExams">No. of Exams</label>
+                            <input type="number" id="noOfExams" placeholder="4">
+                        </div>
+                        <div class="form-group">
+                            <label for="structure">Structure</label>
+                            <select id="structure">
+                                <option value="Multiple Choices">Multiple
+                                    Choices</option>
+                                <option value="Essay">Essay</option>
+                            </select>
+                            <svg class="dropdown-arrow"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor" width="16px" height="16px">
+                                <path d="M7 10l5 5 5-5z" />
+                            </svg>
+                        </div>
+                        <div class="form-group">
+                            <label for="assignDate">Assign Date</label>
+                            <input type="text" id="assignDate"
+                                placeholder="20/4/25">
+                        </div>
+                        <div class="form-group">
+                            <label for="dueDate">Due Date</label>
+                            <input type="text" id="dueDate"
+                                placeholder="20/4/25">
                         </div>
                     </div>
-
-                    <button class="new-assign-button" id="newAssignBtn">
-                        <i class="fa fa-plus"></i> New assign
-                    </button>
                 </div>
-
-                <div class="exam-assignment-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="header-item">No.</th>
-                                <th class="header-item">Exam Title</th>
-                                <th class="header-item">No. of Exams</th>
-                                <th class="header-item">Structure</th>
-                                <th class="header-item">Due Date</th>
-                                <th class="header-item">Status</th>
-                                <th class="header-item">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>DAI SO</td>
-                                <td>4</td>
-                                <td>M.Cs</td>
-                                <td>22/04/25</td>
-                                <td><span class="status completed">Completed</span></td>
-                                <td class="actions completed-row-actions">
-                                    <button class="action-icon view-icon">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
-                                    <button class="action-icon edit-icon">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Nguyen Van B</td>
-                                <td>2</td>
-                                <td>M.Cs</td>
-                                <td>22/04/25</td>
-                                <td><span class="status in-progress">In Prog.</span></td>
-                                <td class="actions">
-                                    <button class="action-icon view-icon">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
-                                    <button class="action-icon edit-icon">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Nguyen Van B</td>
-                                <td>3</td>
-                                <td>M.Cs</td>
-                                <td>22/04/25</td>
-                                <td><span class="status new">New</span></td>
-                                <td class="actions">
-                                    <button class="action-icon view-icon">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
-                                    <button class="action-icon edit-icon">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="modal-footer">
+                    <button type="button"
+                        class="cancel-button close-modal-btn">Cancel</button>
+                    <button type="button" class="assign-button">Assign</button>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <script src="../../Static/js/SLExamAssignment.js"></script>
+            <div id="detailsModalOverlay" class="modal-overlay"></div>
 
-    <!-- ma nhung header vs menu -->
-    <script>
-        // Load header
-        fetch('../header_user.html')
+            <div id="detailsModal" class="details-modal">
+                <div class="modal-header">
+                    <h2>Details</h2>
+                    <button type="button"
+                        class="close-details-modal-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="detailsExamTitle">Exam Title</label>
+                            <input type="text" id="detailsExamTitle"
+                                value="DB202" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="detailsLecturer">Lecturer</label>
+                            <input type="text" id="detailsLecturer"
+                                value="Nguyen Van A" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="detailsCourse">Course</label>
+                            <input type="text" id="detailsCourse"
+                                value="Database" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="detailsNoOfExams">No. of Exams</label>
+                            <input type="number" id="detailsNoOfExams" value="4"
+                                readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="detailsStructure">Structure</label>
+                            <input type="text" id="detailsStructure"
+                                value="Multiple Choices" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="detailsAssignDate">Assign Date</label>
+                            <input type="text" id="detailsAssignDate"
+                                value="25/4/25" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="detailsDueDate">Due Date</label>
+                            <input type="text" id="detailsDueDate"
+                                value="25/4/25" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <div id="main">
+                <div class="main-content-area">
+                    <div class="assignment-header">
+                        <h1>Exam Assignment</h1>
+                        <p>View, assign tasks and track exam progress.</p>
+                    </div>
+
+                    <div class="assignment-actions">
+                        <div class="search-filter-bar">
+                            <div class="search-box">
+                                <input type="text"
+                                    placeholder="Enter search content ..."
+                                    class="search-input">
+                                <button class="search-btn">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div> <div class="filter-dropdown">
+                                <select class="filter-select" id="statusFilter">
+                                    <option value>All Status</option>
+                                    <option
+                                        th:each="status : ${assignmentStatuses}"
+                                        th:value="${status}"
+                                        th:text="${status.description}">Status</option>
+                                </select>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+
+                        <button class="new-assign-button" id="newAssignBtn">
+                            <i class="fa fa-plus"></i> New assign
+                        </button>
+                    </div> <div class="exam-assignment-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="header-item">No.</th>
+                                    <th class="header-item">Assignment Name</th>
+                                    <th class="header-item">Course</th>
+                                    <th class="header-item">Lecturer</th>
+                                    <th class="header-item">Due Date</th>
+                                    <th class="header-item">Status</th>
+                                    <th class="header-item">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="assignmentTableBody">
+                                <tr
+                                    th:each="assignment, iterStat : ${assignments}">
+                                    <td th:text="${iterStat.count}">1</td>
+                                    <td
+                                        th:text="${assignment.assignmentName}">Assignment
+                                        Name</td>
+                                    <td
+                                        th:text="${assignment.courseCode + ' - ' + assignment.courseName}">Course</td>
+                                    <td
+                                        th:text="${assignment.assignedToName}">Lecturer</td>
+                                    <td
+                                        th:text="${#temporals.format(assignment.deadline, 'dd/MM/yyyy')}">Due
+                                        Date</td>
+                                    <td>
+                                        <span
+                                            th:class="'status ' + ${assignment.statusBadgeClass}"
+                                            th:text="${assignment.statusDisplayName}">Status</span>
+                                    </td>
+                                    <td class="actions">
+                                        <button class="action-icon view-icon"
+                                            th:onclick="'viewAssignment(' + ${assignment.assignmentId} + ')'">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                        <button class="action-icon edit-icon"
+                                            th:onclick="'editAssignment(' + ${assignment.assignmentId} + ')'"
+                                            th:if="${assignment.canEdit}">
+                                            <i
+                                                class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button class="action-icon delete-icon"
+                                            th:onclick="'deleteAssignment(' + ${assignment.assignmentId} + ')'"
+                                            th:if="${assignment.canEdit}">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Show message if no assignments -->
+                                <tr th:if="${#lists.isEmpty(assignments)}">
+                                    <td colspan="7"
+                                        style="text-align: center; padding: 20px;">
+                                        No assignments found. Click "New assign"
+                                        to create your first assignment.
+                                    </td>
+                                </tr>
+                            </tbody> </table>
+                    </div>
+
+                    <!-- Statistics Section -->
+                    <div class="statistics-section" th:if="${statistics}">
+                        <h3>Assignment Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number"
+                                    th:text="${statistics.assigned}">0</div>
+                                <div class="stat-label">Assigned</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number"
+                                    th:text="${statistics.inProgress}">0</div>
+                                <div class="stat-label">In Progress</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number"
+                                    th:text="${statistics.submitted}">0</div>
+                                <div class="stat-label">Submitted</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number"
+                                    th:text="${statistics.approved}">0</div>
+                                <div class="stat-label">Approved</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number"
+                                    th:text="${statistics.published}">0</div>
+                                <div class="stat-label">Published</div>
+                            </div>
+                            <div class="stat-card warning"
+                                th:if="${statistics.overdue > 0}">
+                                <div class="stat-number"
+                                    th:text="${statistics.overdue}">0</div>
+                                <div class="stat-label">Overdue</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <script src="/Static/js/SLExamAssignment.js"></script>
+
+        <!-- ma nhung header vs menu -->
+        <script>        // Load header
+        fetch('/Template/header_user.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('header-placeholder').innerHTML = data;
-            });
-
-        // Load menu
-        fetch('Menu-SL.html')
+            });// Load menu
+        fetch('/Template/subjectLeader/Menu-SL.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('menu-HTML').innerHTML = data;
@@ -243,7 +304,7 @@
             });
 
     </script>
-    <script src="../../Static/js/L_activeMenu.js"></script>
-</body>
+        <script src="/Static/js/L_activeMenu.js"></script>
+    </body>
 
 </html>
