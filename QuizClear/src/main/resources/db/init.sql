@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS questions (
   approved_at DATETIME DEFAULT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  status ENUM('draft', 'submitted', 'approved', 'rejected', 'archived') NOT NULL DEFAULT 'draft',
+  status ENUM('draft', 'submitted', 'approved', 'rejected', 'archived', 'declined') NOT NULL DEFAULT 'draft',
   block_question ENUM('block', 'active') NOT NULL DEFAULT 'active',
   hidden_question TINYINT(1) NOT NULL DEFAULT 0,
   usage_count INT DEFAULT 0,
@@ -326,3 +326,39 @@ CREATE TABLE IF NOT EXISTS exam_submissions (
 
 -- Bật lại kiểm tra khóa ngoại sau khi tạo xong tất cả bảng
 SET FOREIGN_KEY_CHECKS=1;
+
+-- 17. Exam Assignments (Phân công tạo đề thi)
+CREATE TABLE IF NOT EXISTS exam_assignments (
+  assignment_id INT AUTO_INCREMENT PRIMARY KEY,
+  assignment_name VARCHAR(200) NOT NULL,
+  description TEXT DEFAULT NULL,
+  course_id INT NOT NULL,
+  assigned_to INT NOT NULL,
+  assigned_by INT NOT NULL,
+  status ENUM('DRAFT', 'ASSIGNED', 'IN_PROGRESS', 'SUBMITTED', 'APPROVED', 'REJECTED', 'PUBLISHED') NOT NULL DEFAULT 'DRAFT',
+  deadline DATETIME DEFAULT NULL,
+  submitted_at DATETIME DEFAULT NULL,
+  approved_at DATETIME DEFAULT NULL,
+  published_at DATETIME DEFAULT NULL,
+  total_questions INT DEFAULT NULL,
+  duration_minutes INT DEFAULT NULL,
+  instructions TEXT DEFAULT NULL,
+  feedback TEXT DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  created_by INT DEFAULT NULL,
+  updated_by INT DEFAULT NULL,
+  deleted_at DATETIME DEFAULT NULL,
+  deleted_by INT DEFAULT NULL,
+  version BIGINT DEFAULT 0,
+  FOREIGN KEY (course_id) REFERENCES courses(course_id),
+  FOREIGN KEY (assigned_to) REFERENCES users(user_id),
+  FOREIGN KEY (assigned_by) REFERENCES users(user_id),
+  FOREIGN KEY (created_by) REFERENCES users(user_id),
+  FOREIGN KEY (updated_by) REFERENCES users(user_id),
+  FOREIGN KEY (deleted_by) REFERENCES users(user_id),
+  INDEX idx_exam_assignment_course (course_id),
+  INDEX idx_exam_assignment_assigned_to (assigned_to),
+  INDEX idx_exam_assignment_status (status),
+  INDEX idx_exam_assignment_deadline (deadline)
+) ENGINE=InnoDB;

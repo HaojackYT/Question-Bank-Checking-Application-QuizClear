@@ -21,6 +21,68 @@ public class SubjectLeaderController {
     private SubjectLeaderFeedbackService feedbackService;
     
     // View pages
+    @GetMapping("/dashboard")
+    public String dashboardPage(HttpSession session, Model model) {
+        // For testing purpose, use hardcoded user ID
+        Long userId = 3L;
+        
+        model.addAttribute("userId", userId);
+        
+        return "subjectLeader/slDashboard";
+    }
+    
+    @GetMapping("/plans")
+    public String plansPage(HttpSession session, Model model) {
+        Long userId = 3L;
+        model.addAttribute("userId", userId);
+        return "subjectLeader/slPlans";
+    }
+    
+    @GetMapping("/question-assignment")
+    public String questionAssignmentPage(HttpSession session, Model model) {
+        Long userId = 3L;
+        model.addAttribute("userId", userId);
+        return "subjectLeader/slQuestionAssignment";
+    }
+    
+    @GetMapping("/exam-assignment")
+    public String examAssignmentPage(HttpSession session, Model model) {
+        Long userId = 3L;
+        model.addAttribute("userId", userId);
+        return "subjectLeader/slExamAssignment";
+    }
+    
+    @GetMapping("/duplication-check")
+    public String duplicationCheckPage(HttpSession session, Model model) {
+        Long userId = 3L;
+        model.addAttribute("userId", userId);
+        return "subjectLeader/slDuplicationCheck";
+    }
+    
+    @GetMapping("/review-approval")
+    public String reviewApprovalPage(HttpSession session, Model model) {
+        // For testing purpose, use hardcoded user ID
+        Long userId = 3L;
+        
+        // Add any required data for the review approval page
+        // This can be expanded based on your business logic
+        model.addAttribute("userId", userId);
+        
+        return "subjectLeader/slReviewApproval";
+    }
+    
+    @GetMapping("/review-approval/details/{id}")
+    public String reviewApprovalDetailPage(@PathVariable Long id, HttpSession session, Model model) {
+        // For testing purpose, use hardcoded user ID
+        Long userId = 3L;
+        
+        // Add logic to fetch review approval details by id
+        model.addAttribute("taskId", id);
+        model.addAttribute("userId", userId);
+        
+        return "subjectLeader/slReviewApprovalDetail";
+    }
+    
     @GetMapping("/feedback")
     public String feedbackPage(HttpSession session, Model model) {
         // For testing purpose, use hardcoded user ID
@@ -207,5 +269,11 @@ public class SubjectLeaderController {
             return ResponseEntity.internalServerError()
                 .body(Map.of("success", false, "message", "Error resubmitting question: " + e.getMessage()));
         }
+    }
+      @GetMapping("/summary-report")
+    public String summaryReportPage(HttpSession session, Model model) {
+        Long userId = 3L;
+        model.addAttribute("userId", userId);
+        return "subjectLeader/slSummaryReport";
     }
 }

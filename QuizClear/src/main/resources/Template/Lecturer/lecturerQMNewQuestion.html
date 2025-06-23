@@ -4,22 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/css/Lecturer/L_createQuestion.css">
+    <link rel="stylesheet" th:href="@{/Static/FontAwesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/Lecturer/L_createQuestion.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>QuestionManager</title>
 </head>
 
 <body>
     <!--header-->
-    <div id="header-placeholder"></div>
+    <div th:replace="~{/Template/header_user.html}"></div>
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div id="menu-HTML"></div>
+        <div th:replace="~{/Template/Lecturer/Menu-Lecturer.html}"></div>
 
         <!-- Main content -->
         <div id="main">
@@ -119,36 +119,7 @@
                 </div>
             </div>
 
-
-            <!-- ma nhung header vs menu -->            <script>
-                // Load header
-                fetch('/Static/Template/header_user.html')
-                    .then(response => response.text())
-                    .then(data => {
-                        document.getElementById('header-placeholder').innerHTML = data;
-                    })
-                    .catch(error => console.log('Header load failed, using fallback'));
-
-                // Load menu
-                fetch('/Static/Template/Lecturer/Menu-Lecturer.html')
-                    .then(response => response.text())
-                    .then(data => {
-                        document.getElementById('menu-HTML').innerHTML = data;
-                        setActiveMenu(document.title);
-                    })
-                    .catch(error => {
-                        console.log('Menu load failed, using fallback');
-                        // Fallback menu basic
-                        document.getElementById('menu-HTML').innerHTML = `
-                            <div style="padding: 1rem; background: #f8f9fa;">
-                                <nav>
-                                    <a href="/lecturer/question-management" style="padding: 0.5rem; margin: 0.2rem; display: inline-block; background: #007bff; color: white; text-decoration: none; border-radius: 0.25rem;">Question Management</a>
-                                    <a href="/lecturer/create-question" style="padding: 0.5rem; margin: 0.2rem; display: inline-block; background: #28a745; color: white; text-decoration: none; border-radius: 0.25rem;">Create Question</a>
-                                </nav>
-                            </div>
-                        `;
-                    });
-            </script>            <script>
+            <script>
                 document.addEventListener('DOMContentLoaded', () => {
                     const checkButton = document.querySelector('.check-button');
                     const statusText = document.querySelector('.status-text');

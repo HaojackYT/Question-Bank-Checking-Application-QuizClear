@@ -4,22 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/FontAwesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/css/Lecturer/L-EXE_Draft.css">
+    <link rel="stylesheet" th:href="@{/Static/FontAwesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/Lecturer/L-EXE_Draft.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Exam Evaluation</title>
 </head>
 
 <body>
     <!--header-->
-    <div id="header-placeholder"></div>
+    <div th:replace="~{/Template/header_user.html}"></div>
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div id="menu-HTML"></div>
+        <div th:replace="~{/Template/Lecturer/Menu-Lecturer.html}"></div>
 
         <!-- Main content -->
         <div id="main">
@@ -226,20 +226,6 @@
 
         <!-- ma nhung header vs menu -->
         <script>
-            // Load header
-            fetch('../header_user.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('header-placeholder').innerHTML = data;
-                });
-
-            // Load menu
-            fetch('Menu-Lecturer.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('menu-HTML').innerHTML = data;
-                    setActiveMenu(document.title);
-                });
             function toggleQuestion(header) {
                 const questionBox = header.parentElement;
                 const toggleIcon = header.querySelector('.toggle-icon');
