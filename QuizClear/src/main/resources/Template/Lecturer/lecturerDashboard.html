@@ -13,14 +13,12 @@
     <title>Dashboard_L</title>
 </head>
 
-<body>
-    <!--header-->
-    <div th:replace="~{/Template/header_user.html}"></div>
+<body>    <!--header-->
+    <div th:replace="~{header_user}"></div>
 
     <!-- body -->
-    <div id="Container-body">
-        <!-- Menu -->
-        <div th:replace="~{/Template/Lecturer/Menu-Lecturer.html}"></div>
+    <div id="Container-body">        <!-- Menu -->
+        <div th:replace="~{Lecturer/Menu-Lecturer}"></div>
 
         <!-- Main content -->
         <div id="main">

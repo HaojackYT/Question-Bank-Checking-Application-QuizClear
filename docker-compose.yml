@@ -39,8 +39,7 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       timeout: 10s
       retries: 3
-      interval: 30s
-  # Spring Boot Application
+      interval: 30s  # Spring Boot Application
   app:
     build:
       context: ./QuizClear
@@ -53,6 +52,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=123456
       - AI_SERVICE_URL=http://ai-service:5000
+      - SPRING_JPA_SHOW_SQL=true
+      - LOGGING_LEVEL_COM_UTH_QUIZCLEAR=DEBUG
     depends_on:
       db:
         condition: service_healthy

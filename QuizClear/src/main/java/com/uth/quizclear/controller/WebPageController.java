@@ -80,9 +80,8 @@ public class WebPageController {
                 case "HoD":
                     return "redirect:/hed-dashboard";
                 case "SL":
-                    return "redirect:/sl-dashboard";
-                case "Lec":
-                    return "redirect:/lecturer-dashboard";                case "HoED":
+                    return "redirect:/sl-dashboard";                case "Lec":
+                    return "redirect:/lecturer-dashboard";case "HoED":
                     return "redirect:/hoe-dashboard";
                 default:
                     // Invalid role, clear session and redirect to login
@@ -138,11 +137,25 @@ public class WebPageController {
         return "slDashboard"; // This will look for templates/slDashboard.html
     }    @GetMapping("/lecturer-dashboard")
     public String lecturerDashboard(HttpSession session, Model model) {
-        if (!isAuthorized(session, "Lec")) {
-            return "redirect:/login";        }
+        System.out.println("DEBUG: Accessing /lecturer-dashboard");
+        
+        // Check if user is logged in
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
+        if (user == null) {
+            System.out.println("DEBUG: No user in session, redirecting to login");
+            return "redirect:/login";
+        }
+        
+        System.out.println("DEBUG: User role is: '" + user.getRole() + "'");
+        
+        if (!isAuthorized(session, "Lec")) {
+            System.out.println("DEBUG: User not authorized for Lecturer role");
+            return "redirect:/login";
+        }
+        
         model.addAttribute("user", user);
-        return "lecturerDashboard"; // This will look for templates/lecturerDashboard.html
+        System.out.println("DEBUG: Returning Lecturer/lecturerDashboard template for user: " + user.getFullName());
+        return "Lecturer/lecturerDashboard"; // This will look for templates/Lecturer/lecturerDashboard.html
     }
 
     @GetMapping("/hoe-dashboard")
@@ -207,7 +220,11 @@ public class WebPageController {
 
     private boolean isAuthorized(HttpSession session, String requiredRole) {
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
-        return user != null && user.getRole() != null && user.getRole().equalsIgnoreCase(requiredRole);
+        boolean authorized = user != null && user.getRole() != null && user.getRole().equalsIgnoreCase(requiredRole);
+        System.out.println("DEBUG: isAuthorized - User: " + (user != null ? user.getEmail() : "null") + 
+                          ", Role: '" + (user != null ? user.getRole() : "null") + 
+                          "', Required: '" + requiredRole + "', Authorized: " + authorized);
+        return authorized;
     }
     
     // Helper method to get user from database instead of mock data

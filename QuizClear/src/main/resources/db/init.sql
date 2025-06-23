@@ -359,6 +359,19 @@ CREATE TABLE IF NOT EXISTS exam_assignments (
   FOREIGN KEY (deleted_by) REFERENCES users(user_id),
   INDEX idx_exam_assignment_course (course_id),
   INDEX idx_exam_assignment_assigned_to (assigned_to),
-  INDEX idx_exam_assignment_status (status),
-  INDEX idx_exam_assignment_deadline (deadline)
+  INDEX idx_exam_assignment_status (status),  INDEX idx_exam_assignment_deadline (deadline)
 ) ENGINE=InnoDB;
+
+-- Thêm user test đơn giản cho debug
+INSERT INTO users (
+    full_name, email, password_hash, role, status, department,
+    gender, date_of_birth, nation, phone_number, created_at,
+    hometown, contact_address, start, end, work_place, qualification
+) VALUES (
+    'Test Lecturer', 'test@lecturer.com', 'password123', 'Lec', 'active', 'Computer Science', 
+    'male', '1990-01-01', 'Vietnam', '0123456789', NOW(),
+    'Hanoi', 'Test Address', '2024-01-01', '2030-01-01', 'UTC Campus 1', 'MSc Computer Science'
+);
+
+-- Bật lại kiểm tra khóa ngoại
+SET FOREIGN_KEY_CHECKS=1;
