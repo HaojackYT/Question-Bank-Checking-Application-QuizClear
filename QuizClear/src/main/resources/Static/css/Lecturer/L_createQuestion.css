@@ -230,7 +230,6 @@
      justify-content: right;
      gap: 1rem;
  }
-
  .submit-button,
  .save-draft {
      color: white;
@@ -239,26 +238,67 @@
      border-radius: 6px;
      font-size: 1rem;
      cursor: pointer;
-     transition: background-color 0.2s;
+     transition: all 0.2s ease;
+     display: inline-flex;
+     align-items: center;
+     justify-content: center;
  }
 
  .submit-button {
      background: #2563eb;
  }
 
- .submit-button:hover {
+ .submit-button:hover:not(:disabled) {
      background: #1d4ed8;
  }
 
- .save-draft {
-     background-color: #757575;
+ .submit-button:disabled {
+     cursor: not-allowed;
+     opacity: 0.6;
  }
 
- .save-draft:hover {
-     background-color: #999;
+ .save-draft {
+     background-color: #22c55e;
+ }
+
+ .save-draft:hover:not(:disabled) {
+     background-color: #16a34a;
+ }
+
+ .save-draft:disabled {
+     cursor: not-allowed;
+     opacity: 0.6;
  }
 
  .submit-button i,
  .save-draft i {
      margin-left: 0.5rem;
+ }
+
+ /* Button color variations for different states */
+ .submit-button.warning {
+     background-color: #f59e0b;
+     border: 1px solid #d97706;
+ }
+
+ .submit-button.warning:hover:not(:disabled) {
+     background-color: #d97706;
+ }
+
+ .submit-button.danger {
+     background-color: #ef4444;
+     border: 1px solid #dc2626;
+ }
+
+ .submit-button.danger:hover:not(:disabled) {
+     background-color: #dc2626;
+ }
+
+ .submit-button.success {
+     background-color: #22c55e;
+     border: 1px solid #16a34a;
+ }
+
+ .submit-button.success:hover:not(:disabled) {
+     background-color: #16a34a;
  }
