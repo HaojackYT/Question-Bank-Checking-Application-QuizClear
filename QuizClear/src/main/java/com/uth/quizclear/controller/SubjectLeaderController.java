@@ -269,11 +269,85 @@ public class SubjectLeaderController {
             return ResponseEntity.internalServerError()
                 .body(Map.of("success", false, "message", "Error resubmitting question: " + e.getMessage()));
         }
-    }
-      @GetMapping("/summary-report")
+    }    @GetMapping("/summary-report")
     public String summaryReportPage(HttpSession session, Model model) {
         Long userId = 3L;
         model.addAttribute("userId", userId);
-        return "subjectLeader/slSummaryReport";
+        return "subjectLeader/SL_SummaryReport";
+    }
+    
+    // API endpoints for serving template fragments
+    @GetMapping("/api/template/header")
+    @ResponseBody
+    public String getHeaderTemplate() {
+        return """
+            <div id="header-user>
+                <p id="LOGO" style="font-family: 'RocknRoll One', serif; font-weight: 500;">QuizClear</p>
+                <div id="element">
+                    <!-- Bell icon -->
+                    <div class="dropdown">
+                        <i class="fa-regular fa-bell icon-user icon" style="font-size: 1.3rem"></i>
+                        <div class="dropdown-content notification-dropdown">
+                            <h3>Notification</h3>
+                            <a href="/assignment/1" class="notification-item">
+                                <p class="notification-title">NEW Assignment: Assign lecturer(s) to the Database Subject</p>
+                                <p class="due-date">Due: 2025 - 05 - 25</p>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- User icon -->
+                    <div class="dropdown">
+                        <i class="fa-solid fa-user icon-user"></i>
+                        <div class="dropdown-content profile-dropdown">
+                            <a href="/api/hed/profile">Profile</a>
+                            <a href="/logout">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            """;
+    }
+    
+    @GetMapping("/api/template/menu-sl")
+    @ResponseBody
+    public String getMenuTemplate() {
+        return """
+            <div id="Menu-Staff">
+                <div style="padding: 1rem;">
+                    <div class="elements">
+                        <i class="fa-solid fa-house"></i>
+                        <a href="/subject-leader/dashboard">Dashboard</a>
+                    </div>
+                    <div class="elements">
+                        <i class="fa-solid fa-list-check"></i>
+                        <a href="/subject-leader/plans">Plans</a>
+                    </div>
+                    <div class="elements">
+                        <i class="fa-solid fa-comments"></i>
+                        <a href="/subject-leader/question-assignment">Question Assignment</a>
+                    </div>
+                    <div class="elements">
+                        <i class="fa-solid fa-file"></i>
+                        <a href="/subject-leader/exam-assignment">Exam Assignment</a>
+                    </div>
+                    <div class="elements">
+                        <i class="fa-solid fa-copy"></i>
+                        <a href="/subject-leader/duplication-check">Duplication Check</a>
+                    </div>
+                    <div class="elements">
+                        <i class="fa-solid fa-thumbs-up"></i>
+                        <a href="/subject-leader/review-approval">Review & Approval</a>
+                    </div>
+                    <div class="elements">
+                        <i class="fa-solid fa-flag"></i>
+                        <a href="/subject-leader/summary-report">Summary Report</a>
+                    </div>
+                    <div class="elements">
+                        <i class="fa-solid fa-chart-simple"></i>
+                        <a href="/subject-leader/feedback">Feedback</a>
+                    </div>
+                </div>
+            </div>
+            """;
     }
 }

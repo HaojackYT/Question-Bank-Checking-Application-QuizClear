@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Controller
@@ -36,8 +37,7 @@ public class LecturerController {
     
     @Autowired
     private CLORepository cloRepository;
-    
-    @Autowired
+      @Autowired
     private UserRepository userRepository;    @Autowired
     private AIService aiService;
 
@@ -450,116 +450,102 @@ public class LecturerController {
             return ResponseEntity.status(500).body(response);
         }
     }    /**
-     * API endpoint để check duplicate questions sử dụng AI
+     * Check for duplicate questions using AI service
      */
     @PostMapping("/api/check-duplicate")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> checkDuplicate(
-            @RequestBody Map<String, Object> requestData,
-            HttpSession session) {
+    @ResponseBody    public ResponseEntity<Map<String, Object>> checkDuplicate(@RequestBody Map<String, Object> questionData, HttpSession session) {
         try {
-            // Get user from session
-            Object userObj = session.getAttribute("user");
-            Long lecturerId = 1L; // Default fallback
+            System.out.println("=== DUPLICATE CHECK REQUEST ===");
+            System.out.println("Request data: " + questionData);
             
-            if (userObj != null && userObj instanceof UserBasicDTO) {
-                UserBasicDTO user = (UserBasicDTO) userObj;
-                lecturerId = user.getUserId();
-            }
+            Map<String, Object> response = new HashMap<>();
+              // Get question data
+            String questionTitle = (String) questionData.get("questionTitle");
             
-            String questionContent = requestData.get("questionTitle").toString();
-            String correctAnswer = requestData.get("correctAnswer") != null ? 
-                requestData.get("correctAnswer").toString() : "";
+            System.out.println("Question title: " + questionTitle);
             
-            if (questionContent == null || questionContent.trim().isEmpty()) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("error", "Question content is required");
+            if (questionTitle == null || questionTitle.trim().isEmpty()) {
+                response.put("error", "Question title is required");
                 return ResponseEntity.badRequest().body(response);
             }
-            
-            System.out.println("Checking duplicate for question: " + questionContent);
-            
-            // Get existing questions từ database để check duplicate  
-            // Lấy tất cả questions, không chỉ APPROVED để có thể detect duplicate với cả draft/submitted
-            List<Question> existingQuestions = questionRepository.findAll();
-            
-            System.out.println("Found " + existingQuestions.size() + " existing questions in database");
-            
-            // Prepare existing questions for AI service
-            List<Map<String, Object>> existingQuestionsData = existingQuestions.stream()
-                .map(q -> {
-                    Map<String, Object> qData = new HashMap<>();
-                    qData.put("content", q.getContent());
-                    qData.put("correct_answer", q.getAnswerKey());
-                    qData.put("id", q.getQuestionId());
-                    return qData;
-                })
-                .collect(Collectors.toList());
-            
-            // Create full question text for better AI analysis
-            String fullQuestionText = questionContent;
-            if (!correctAnswer.isEmpty()) {
-                fullQuestionText += " Correct answer: " + correctAnswer;
+              // Get existing questions from database to compare
+            List<Map<String, Object>> existingQuestions = new ArrayList<>();
+            try {
+                // Fetch existing questions from database
+                List<Question> questions = questionRepository.findAll();
+                for (Question q : questions) {
+                    Map<String, Object> questionMap = new HashMap<>();
+                    questionMap.put("id", q.getQuestionId());
+                    questionMap.put("content", q.getContent());
+                    existingQuestions.add(questionMap);
+                }
+            } catch (Exception e) {
+                // If can't fetch questions, continue with empty list
+                existingQuestions = new ArrayList<>();
             }
             
-            System.out.println("Calling AI service with full question: " + fullQuestionText);
-            
-            // Call AI service
-            Map<String, Object> aiResult = aiService.checkDuplicate(fullQuestionText, existingQuestionsData);
-            
-            System.out.println("AI service result: " + aiResult);
-            
-            // Prepare response
-            Map<String, Object> response = new HashMap<>();
-            
-            if (aiResult.containsKey("error")) {
-                // AI service error - return fallback
-                response.put("duplicatePercent", 0);
-                response.put("message", "AI check completed (fallback mode)");
-                response.put("similarQuestions", List.of());
-                System.out.println("AI service error, using fallback");
-            } else {
-                // Extract results from AI response
-                Integer duplicatesFound = (Integer) aiResult.getOrDefault("duplicates_found", 0);
-                @SuppressWarnings("unchecked")
-                List<Map<String, Object>> similarQuestions = (List<Map<String, Object>>) aiResult.getOrDefault("similar_questions", List.of());
-                  // Calculate percentage based on similarity scores
-                int duplicatePercent = 0;
-                if (similarQuestions != null && !similarQuestions.isEmpty()) {
-                    // Get highest similarity score
-                    double maxSimilarity = similarQuestions.stream()
-                        .mapToDouble(q -> {
-                            Object sim = q.get("similarity_score"); // Fix: use "similarity_score" instead of "similarity"
-                            if (sim instanceof Number) {
-                                return ((Number) sim).doubleValue();
-                            }
-                            return 0.0;
-                        })
-                        .max()
-                        .orElse(0.0);
+            // Call AI service for real duplicate detection
+            try {
+                Map<String, Object> aiResponse = aiService.checkDuplicate(questionTitle, existingQuestions);
+                  if (aiResponse.containsKey("error")) {
+                    // AI service failed, return basic response
+                    response.put("duplicatePercent", 0);
+                    response.put("similarQuestions", new ArrayList<>());
+                    response.put("status", "warning");
+                    response.put("message", "AI service temporarily unavailable");
+                    response.put("debug", "AI service error: " + aiResponse.get("error"));                } else {
+                    // Process AI response
+                    System.out.println("AI Response: " + aiResponse.toString());
+                    int duplicatesFound = (Integer) aiResponse.getOrDefault("duplicates_found", 0);
+                    List<?> similarQuestions = (List<?>) aiResponse.getOrDefault("similar_questions", new ArrayList<>());
                     
-                    duplicatePercent = (int) Math.round(maxSimilarity * 100);
+                    System.out.println("Duplicates found: " + duplicatesFound);
+                    System.out.println("Similar questions count: " + similarQuestions.size());
+                    
+                    // Calculate percentage - if any duplicates found, show percentage
+                    int duplicatePercent = 0;
+                    if (duplicatesFound > 0 && !similarQuestions.isEmpty()) {
+                        // Get highest similarity score from first result
+                        if (similarQuestions.get(0) instanceof Map) {
+                            Map<?, ?> firstResult = (Map<?, ?>) similarQuestions.get(0);
+                            Object scoreObj = firstResult.get("similarity_score");
+                            System.out.println("First result: " + firstResult.toString());
+                            System.out.println("Score object: " + scoreObj);
+                            if (scoreObj != null) {
+                                double score = ((Number) scoreObj).doubleValue();
+                                duplicatePercent = (int) Math.round(score * 100);
+                                System.out.println("Calculated duplicate percent: " + duplicatePercent);
+                            } else {
+                                System.out.println("Score object is null!");
+                            }
+                        } else {
+                            System.out.println("First result is not a Map: " + similarQuestions.get(0).getClass());
+                        }
+                    } else {
+                        System.out.println("Condition failed: duplicatesFound=" + duplicatesFound + ", similarQuestions.isEmpty()=" + similarQuestions.isEmpty());
+                    }
+                    
+                    response.put("duplicatePercent", duplicatePercent);
+                    response.put("similarQuestions", similarQuestions);
+                    response.put("status", "success");
+                    response.put("totalChecked", existingQuestions.size());
+                    response.put("duplicatesFound", duplicatesFound);
+                    response.put("debug", "AI Response: " + aiResponse.toString());
                 }
-                
-                response.put("duplicatePercent", duplicatePercent);
-                response.put("duplicatesFound", duplicatesFound);
-                response.put("similarQuestions", similarQuestions);
-                response.put("message", "Duplicate check completed successfully");
-                
-                System.out.println("AI check completed: " + duplicatePercent + "% similarity");
+                  } catch (Exception aiError) {
+                // Fallback if AI service fails
+                response.put("duplicatePercent", 0);
+                response.put("similarQuestions", new ArrayList<>());
+                response.put("status", "warning");
+                response.put("message", "AI service error: " + aiError.getMessage());
+                response.put("debug", "Exception: " + aiError.getClass().getSimpleName() + " - " + aiError.getMessage());
             }
             
             return ResponseEntity.ok(response);
-            
         } catch (Exception e) {
-            System.err.println("Error in duplicate check: " + e.getMessage());
-            e.printStackTrace();
-            
-            Map<String, Object> response = new HashMap<>();
-            response.put("duplicatePercent", 0);
-            response.put("error", "Error checking duplicates: " + e.getMessage());
-            response.put("message", "Duplicate check failed");
-            return ResponseEntity.status(500).body(response);
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to check duplicates: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorResponse);
         }
     }
 }

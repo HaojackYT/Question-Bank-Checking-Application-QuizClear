@@ -23,7 +23,7 @@
 
 #box-container {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     justify-content: space-between;
     margin: 1.25rem 0;
 }

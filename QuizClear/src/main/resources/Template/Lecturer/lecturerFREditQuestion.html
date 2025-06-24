@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/Static/FontAwesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
     <link rel="stylesheet" th:href="@{/Static/header.css}">
     <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
     <link rel="stylesheet" th:href="@{/Static/css/Lecturer/L_createQuestion.css}">
@@ -14,12 +14,12 @@
 
 <body>
     <!--header-->
-    <div th:replace="~{/Template/header_user.html}"></div>
+    <div th:replace="header_user"></div>
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div th:replace="~{/Template/Lecturer/Menu-Lecturer.html}"></div>
+        <div th:replace="Lecturer/Menu-Lecturer"></div>
 
         <!-- Main content -->
         <div id="main">
@@ -145,10 +145,20 @@
 
                             if (!response.ok) {
                                 throw new Error('Failed to check duplicates');
-                            }
-
-                            const data = await response.json();
+                            }                            const data = await response.json();
+                            console.log('Duplicate check response:', data);
+                            console.log('Type of duplicatePercent:', typeof data.duplicatePercent);
+                            console.log('Value of duplicatePercent:', data.duplicatePercent);
+                            
                             const duplicatePercent = data.duplicatePercent;
+
+                            // Null safety check
+                            if (duplicatePercent === undefined || duplicatePercent === null) {
+                                console.error('duplicatePercent is undefined or null');
+                                statusText.textContent = 'Error: Invalid response from server';
+                                statusText.classList.add('error');
+                                return;
+                            }
 
                             // Hiển thị kết quả
                             if (duplicatePercent === 0) {

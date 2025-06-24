@@ -21,7 +21,6 @@ services:
       timeout: 10s
       retries: 5
       interval: 30s
-
   # AI Service (Flask)
   ai-service:
     build:
@@ -35,11 +34,13 @@ services:
       - FLASK_DEBUG=1
     volumes:
       - ./ai-service:/app
+      - ai_models:/app/models  # Persistent volume for AI models
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       timeout: 10s
       retries: 3
       interval: 30s
+      
   # Spring Boot Application
   app:
     build:
@@ -53,6 +54,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=123456
       - AI_SERVICE_URL=http://ai-service:5000
+      - SPRING_JPA_SHOW_SQL=true
+      - LOGGING_LEVEL_COM_UTH_QUIZCLEAR=DEBUG
     depends_on:
       db:
         condition: service_healthy
@@ -61,3 +64,4 @@ services:
 
 volumes:
   mysql_data:
+  ai_models:  # Persistent volume for AI models to avoid re-downloading

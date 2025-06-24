@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}">
-    <link rel="stylesheet" th:href="@{/header.css}">
-    <link rel="stylesheet" th:href="@{/Menu-Staff.css}">
-    <link rel="stylesheet" th:href="@{/web_styles.css}">
-    <link rel="stylesheet" th:href="@{/css/staff/Staff_Exammanage.css}">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/staff/Staff_Exammanage.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Exam Management - QuizClear</title>
 </head>
@@ -28,12 +28,12 @@
                     <div class="box">
                         <p class="text">Total Exams</p>
                         <span class="number" th:text="${totalExams}">0</span>
-                        <p class="text"><span>+6.2</span>% from last month</p>
+                        <!-- <p class="text"><span>+6.2</span>% from last month</p> -->
                     </div>
                     <div class="box">
                         <p class="text">Pending Approval</p>
                         <span class="number" th:text="${pendingCount}">0</span>
-                        <p class="text">(2 urgent due in 48h)</p>
+                        <!-- <p class="text">(2 urgent due in 48h)</p> -->
                     </div>
                     <div class="box">
                         <p class="text">Approved</p>
@@ -51,9 +51,9 @@
                 <input type="text" placeholder="Search exams...">
                 <select name="status" id="status">
                     <option value="all">All status</option>
-                    <option value="pending">Pending Approval</option>
+                    <!-- <option value="pending">Pending Approval</option>
                     <option value="approved">Approved</option>
-                    <option value="rejected">Rejected</option>
+                    <option value="rejected">Rejected</option> -->
                 </select>
                 <select name="Subject" id="Subject">
                     <option value="all">All Subject</option>
@@ -91,7 +91,7 @@
                         <div class="create">Created: <span th:text="${#temporals.format(exam.createdAt, 'yyyy-MM-dd')}">2023-06-10</span></div>
                         <div class="approved">Approved by: <span th:text="${exam.createdBy}">Dr. Smith</span></div>
                     </div>
-                    <div class="under">1 version available</div>
+                    <!-- <div class="under">1 version available</div> -->
                 </div>
             </div>
         </div>
