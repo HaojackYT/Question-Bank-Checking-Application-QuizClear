@@ -27,18 +27,22 @@
                 <div class="box">
                     <p>Total Exams</p>
                     <h3 th:text="${totalExams}">0</h3>
+                    <!-- <p class="text"><span>+6.2</span>% from last month</p> -->
                 </div>
                 <div class="box">
                     <p>Pending Approval</p>
                     <h3 th:text="${pendingCount}">0</h3>
+                    <!-- <p class="text">(2 urgent due in 48h)</p> -->
                 </div>
                 <div class="box">
                     <p>Approved</p>
                     <h3 th:text="${approvedCount}">0</h3>
+                    <p class="text">Ready for distribution</p>
                 </div>
                 <div class="box">
                     <p>Rejected</p>
                     <h3 th:text="${rejectedCount}">0</h3>
+                    <p class="text">Needs revision</p>
                 </div>
             </div>
             <div class="filters">

@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}">
-    <link rel="stylesheet" th:href="@{/header.css}">
-    <link rel="stylesheet" th:href="@{/web_styles.css}">
-    <link rel="stylesheet" th:href="@{/Menu-Staff.css}">
-    <link rel="stylesheet" th:href="@{/css/staff/staffEMNeedsRevision.css}">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/staff/staffEMNeedsRevision.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Needs Revision</title>
 </head>
@@ -27,12 +27,12 @@
                 <div class="status-item">
                     <div class="status-label">Total Exams</div>
                     <div class="status-count" th:text="${totalExams}">0</div>
-                    <div class="status-label">+6.2% from last month</div>
+                    <!-- <div class="status-label">+6.2% from last month</div> -->
                 </div>
                 <div class="status-item">
                     <div class="status-label">Pending Approval</div>
                     <div class="status-count" th:text="${pendingCount}">0</div>
-                    <div class="status-label">(2 urgent due in 48h)</div>
+                    <!-- <div class="status-label">(2 urgent due in 48h)</div> -->
                 </div>
                 <div class="status-item">
                     <div class="status-label">Approved</div>
@@ -76,12 +76,12 @@
                                         <h4 th:text="${exam.examTitle}">Exam Title</h4>
                                         <p>
                                             <span th:text="${exam.subject}">Subject</span>
-                                            • Created: <span th:text="${#temporals.format(exam.createdAt, 'yyyy-MM-dd')}">2023-06-08</span>
+                                            • Created: <span th:text="${exam.createdAt != null ? #temporals.format(exam.createdAt, 'yyyy-MM-dd') : ''}">2023-06-08</span>
                                             • Rejected by <span th:text="${exam.createdBy}">Dr. Williams</span>
                                         </p>
                                         <div class="feedback-noti" th:if="${exam.status == 'Rejected'}">
                                             <i class="fa-solid fa-circle-exclamation"></i>
-                                            <span style="margin-left: 6px;" th:text="'Feedback: ' + ${exam.feedback}">Feedback: ...</span>
+                                            <span style="margin-left: 6px;" th:text="${'Feedback: ' + exam.feedback}">Feedback: ...</span>
                                         </div>
                                     </div>
                                 </div>
