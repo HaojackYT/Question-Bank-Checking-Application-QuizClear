@@ -187,9 +187,8 @@
                             checkButton.textContent = 'Checking...';
                             checkButton.disabled = true;
                             statusText.textContent = 'Checking for duplicates...';
-                            statusText.classList.remove('safety', 'warring', 'error');
-
-                            try {                                // Gọi API check duplicate với đầy đủ thông tin câu hỏi
+                            statusText.classList.remove('safety', 'warring', 'error');                            try {
+                                // Gọi API check duplicate với đầy đủ thông tin câu hỏi
                                 const questionData = {
                                     questionTitle: title,
                                     correctAnswer: correctAnswer,
@@ -197,6 +196,8 @@
                                     subject: subject,
                                     difficulty: difficulty
                                 };
+
+                                console.log('Sending duplicate check request:', questionData);
 
                                 const response = await fetch('/lecturer/api/check-duplicate', {
                                     method: 'POST',
@@ -206,12 +207,27 @@
                                     body: JSON.stringify(questionData)
                                 });
 
+                                console.log('Response status:', response.status);
+
                                 if (!response.ok) {
-                                    throw new Error('Failed to check duplicates');
+                                    throw new Error(`HTTP ${response.status}: Failed to check duplicates`);
+                                }                                const data = await response.json();
+                                console.log('Duplicate check response:', data);
+                                console.log('Type of duplicatePercent:', typeof data.duplicatePercent);
+                                console.log('Value of duplicatePercent:', data.duplicatePercent);
+                                console.log('duplicatePercent === 0:', data.duplicatePercent === 0);
+                                console.log('duplicatePercent == 0:', data.duplicatePercent == 0);
+                                  const duplicatePercent = data.duplicatePercent;
+                                
+                                // Null safety check
+                                if (duplicatePercent === undefined || duplicatePercent === null) {
+                                    console.error('duplicatePercent is undefined or null');
+                                    statusText.textContent = 'Error: Invalid response from server';
+                                    statusText.classList.add('error');
+                                    return;
                                 }
 
-                                const data = await response.json();
-                                const duplicatePercent = data.duplicatePercent;                                // Hiển thị kết quả
+                                // Hiển thị kết quả
                                 if (duplicatePercent === 0) {
                                     statusText.textContent = 'No duplicates found';
                                     statusText.classList.add('safety');

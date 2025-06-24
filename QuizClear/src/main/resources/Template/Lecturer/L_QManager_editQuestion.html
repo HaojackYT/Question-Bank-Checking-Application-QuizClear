@@ -155,10 +155,20 @@
 
                             if (!response.ok) {
                                 throw new Error('Failed to check duplicates');
-                            }
-
-                            const data = await response.json();
+                            }                            const data = await response.json();
+                            console.log('Duplicate check response:', data);
+                            console.log('Type of duplicatePercent:', typeof data.duplicatePercent);
+                            console.log('Value of duplicatePercent:', data.duplicatePercent);
+                            
                             const duplicatePercent = data.duplicatePercent;
+
+                            // Null safety check
+                            if (duplicatePercent === undefined || duplicatePercent === null) {
+                                console.error('duplicatePercent is undefined or null');
+                                statusText.textContent = 'Error: Invalid response from server';
+                                statusText.classList.add('error');
+                                return;
+                            }
 
                             // Hiển thị kết quả
                             if (duplicatePercent === 0) {
