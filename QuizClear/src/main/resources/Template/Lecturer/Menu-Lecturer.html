@@ -1,26 +1,29 @@
-<link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
-<link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
-<div id="Menu-Staff">
-    <div style="padding: 1rem;">        <div class="elements">
-            <i class="fa-solid fa-house"></i>
-            <a href="/lecturer-dashboard">Dashboard</a>
-        </div>
-        <div class="elements">
-            <i class="fa-solid fa-file"></i>
-            <a href="/lecturer/question-management">Question Management</a>
-        </div>
-        <div class="elements">
-            <i class="fa-solid fa-comments"></i>
-            <a href="lecturerFeedback.html">Feedback & Revision</a>
-        </div>
-        <div class="elements">
-            <i class="fa-solid fa-list-check"></i>
-            <a href="lecturerTask.html">Task</a>
-        </div>
-        <div class="elements">
-            <i class="fa-solid fa-file-lines"></i>
-            <a href="lecturerEETaskExam.html">Exam Evaluation</a>
+<!-- Menu fragment for Lecturer -->
+<div th:fragment="menu" xmlns:th="http://www.thymeleaf.org">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+    <div id="Menu-Staff">
+        <div style="padding: 1rem;">
+            <div class="elements">
+                <i class="fa-solid fa-house"></i>
+                <a href="/lecturer-dashboard">Dashboard</a>
+            </div>
+            <div class="elements">
+                <i class="fa-solid fa-file"></i>
+                <a href="/lecturer/question-management">Question Management</a>
+            </div>
+            <div class="elements">
+                <i class="fa-solid fa-comments"></i>
+                <a href="lecturerFeedback.html">Feedback & Revision</a>
+            </div>
+            <div class="elements">
+                <i class="fa-solid fa-list-check"></i>
+                <a href="lecturerTask.html">Task</a>
+            </div>
+            <div class="elements">
+                <i class="fa-solid fa-file-lines"></i>
+                <a href="lecturerEETaskExam.html">Exam Evaluation</a>
+            </div>
         </div>
     </div>
 </div>
-
