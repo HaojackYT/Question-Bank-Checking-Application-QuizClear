@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/Static/FontAwesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
     <link rel="stylesheet" th:href="@{/Static/header.css}">
     <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
     <link rel="stylesheet" th:href="@{/Static/css/Lecturer/lecturerTask.css}">
@@ -15,7 +15,7 @@
 
 <body>
     <!--header-->
-    <div th:replace="~{/Template/header_user.html}"></div>
+    <div th:replace="header_user"></div>
 
     <div id="overlay">
         <div class="modal">
@@ -59,7 +59,7 @@
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div th:replace="~{/Template/Lecturer/Menu-Lecturer.html}"></div>
+        <div th:replace="Lecturer/Menu-Lecturer"></div>
 
 
         <!-- Main content -->
