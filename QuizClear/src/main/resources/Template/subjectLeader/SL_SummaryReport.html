@@ -1,25 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
+<head>    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/fontawesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../Static/css/subjectLeader/SL_SummaryReport.css">
+
+    <!-- FontAwesome - try local first, fallback to CDN -->
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" 
+          onerror="this.onerror=null;this.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';">
+    <!-- Other CSS files -->
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/SL_SummaryReport.css}">
+
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>SummaryReport</title>
 </head>
 
 <body>
     <!--header-->
-    <div id="header-placeholder"></div>
+    <div th:replace="~{header_user :: header}"></div>
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div id="menu-HTML"></div>
+        <div th:replace="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
 
         <!-- Main content -->
         <div id="main">
@@ -220,13 +226,11 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- New Summary Modal -->
+    </div>    <!-- New Summary Modal -->
     <div class="modal-overlay" id="modalOverlay"></div>
     <div class="modal" id="newSummaryModal">
         <div class="modal-header">
-            <h2>New Summary</h2>
+            <h2 id="modalTitle">New Summary</h2>
             <button class="modal-close" onclick="closeNewSummaryModal()">&times;</button>
         </div>
         <div class="modal-body">
@@ -273,29 +277,28 @@
                         class="form-textarea"></textarea>
                 </div>
             </div>
-        </div>
-        <div class="modal-footer">
+        </div>        <div class="modal-footer">
             <button class="modal-btn cancel" onclick="closeNewSummaryModal()">Cancel</button>
             <button class="modal-btn save-draft" onclick="saveAsDraft()">Save as Draft</button>
-            <button class="modal-btn create" onclick="createSummary()">Create</button>
+            <button class="modal-btn create" id="submitBtn" onclick="createSummary()">Create</button>
         </div>
-    </div>
-
-    <!-- JavaScript -->
+    </div>    <!-- JavaScript -->
     <script>
-        // Load header and menu
-        fetch('../header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-
-        fetch('Menu-SL.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-                setActiveMenu(document.title);
-            });
+        // Set active menu for current page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait a bit to ensure menu is loaded from Thymeleaf
+            setTimeout(() => {
+                const menuItems = document.querySelectorAll('#Menu-Staff .elements');
+                menuItems.forEach(item => {
+                    const link = item.querySelector('a');
+                    if (link && link.getAttribute('href') === '/subject-leader/summary-report') {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            }, 100);
+        });
 
         // Navigation functions
         function viewSummaryDetails(summaryId) {
@@ -306,27 +309,49 @@
         function goBackToMain() {
             document.getElementById('summaryDetailsPage').style.display = 'none';
             document.getElementById('summaryReportPage').style.display = 'block';
-        }
-
-        function editSummary(summaryId) {
+        }        function editSummary(summaryId) {
             // Open edit modal with existing data
-            openNewSummaryModal();
-            // Populate form with existing data
-            document.getElementById('summaryTitle').value = 'Midterm Test';
-            document.getElementById('summaryRecipient').value = 'Department Head';
-            // etc.
+            openEditSummaryModal(summaryId);
         }
 
         // Modal functions
         function openNewSummaryModal() {
+            // Reset modal for new summary
+            document.getElementById('modalTitle').textContent = 'New Summary';
+            document.getElementById('submitBtn').textContent = 'Create';
+            document.getElementById('submitBtn').onclick = createSummary;
+            
+            // Clear form
+            clearForm();
+            
             document.getElementById('modalOverlay').style.display = 'block';
             document.getElementById('newSummaryModal').style.display = 'block';
         }
 
-        function closeNewSummaryModal() {
-            document.getElementById('modalOverlay').style.display = 'none';
-            document.getElementById('newSummaryModal').style.display = 'none';
-            // Clear form
+        function openEditSummaryModal(summaryId) {
+            // Set modal for edit
+            document.getElementById('modalTitle').textContent = 'Edit Summary';
+            document.getElementById('submitBtn').textContent = 'Update';
+            document.getElementById('submitBtn').onclick = function() { updateSummary(summaryId); };
+            
+            // Populate form with existing data based on summaryId
+            populateFormWithExistingData(summaryId);
+            
+            document.getElementById('modalOverlay').style.display = 'block';
+            document.getElementById('newSummaryModal').style.display = 'block';
+        }
+
+        function populateFormWithExistingData(summaryId) {
+            // This would normally fetch data from backend based on summaryId
+            // For now, using sample data
+            document.getElementById('summaryTitle').value = 'Midterm Test';
+            document.getElementById('summaryRecipient').value = 'Department Head';
+            document.getElementById('summaryTotalQues').value = '20';
+            document.getElementById('summarySubmissionDate').value = '23/05/25';
+            document.getElementById('summaryNotes').value = 'Sample notes for editing...';
+        }
+
+        function clearForm() {
             const form = document.querySelector('.modal-form');
             const inputs = form.querySelectorAll('input, textarea, select');
             inputs.forEach(input => {
@@ -336,6 +361,11 @@
                     input.selectedIndex = 0;
                 }
             });
+        }        function closeNewSummaryModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.getElementById('newSummaryModal').style.display = 'none';
+            // Clear form when closing
+            clearForm();
         }
 
         function saveAsDraft() {
@@ -358,15 +388,28 @@
             }
         }
 
+        function updateSummary(summaryId) {
+            // Update summary logic
+            const title = document.getElementById('summaryTitle').value;
+            const recipient = document.getElementById('summaryRecipient').value;
+
+            if (title && recipient) {
+                alert('Summary updated successfully! ID: ' + summaryId);
+                closeNewSummaryModal();
+                // Refresh table or update existing row
+            } else {
+                alert('Please fill in all required fields');
+            }
+        }
+
         // Close modal when clicking overlay
         document.getElementById('modalOverlay').addEventListener('click', closeNewSummaryModal);
 
         // Prevent modal from closing when clicking inside modal
         document.getElementById('newSummaryModal').addEventListener('click', function (e) {
-            e.stopPropagation();
-        });
+            e.stopPropagation();        });
     </script>
-<script src="../../Static/js/L_activeMenu.js"></script>
+<script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
 </html>

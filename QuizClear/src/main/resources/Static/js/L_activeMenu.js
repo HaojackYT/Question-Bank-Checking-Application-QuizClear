@@ -1,27 +1,27 @@
 // Hàm để gắn class active dựa trên tiêu đề
 function setActiveMenu(title) {
   const menuItems = [
-    { title: "Dashboard_L", link: "lecturerDashboard.html" },
-    { title: "QuestionManager", link: "lectureQuesManagement.html" },
-    { title: "FeedbackRevisions", link: "lecturerFeedback.html" },
-    { title: "Task", link: "lecturerTask.html" },
-    { title: "Exam Evaluation", link: "lecturerEETaskExam.html" },
-    { title: "Dashboard_HOE", link: "HOE_Dashboard.html" },
-    { title: "Review_Assignment", link: "HOE_ReviewAssignment.html" },
-    { title: "Approvals", link: "HOE_Approval.html" },
-    { title: "Dashboard_HED", link: "HED_Dashboard.html" },
-    { title: "Assignment_Management", link: "HED_AssignmentManagement.html" },
-    { title: "Approve_Question", link: "HED_ApproveQuestion.html" },
-    { title: "Join_Task", link: "HED_JoinTask.html" },
-    { title: "Statics&Report", link: "HED_Static-reports.html" },
-    { title: "Dashboard_sl", link: "slDashboard.html" },
-    { title: "Plans", link: "slPlans.html" },
-    { title: "QuestionAssignment", link: "slQuesAssignment.html" },
-    { title: "ExamAssignment", link: "SLExamAssignment.html" },
-    { title: "DuplicationCheck", link: "sl_duplicationCheck.html" },
-    { title: "Review&Approval", link: "slReviewApproval.html" },
-    { title: "SummaryReport", link: "SL_SummaryReport.html" },
-    { title: "Feedback", link: "sl_feedBack.html" },
+    { title: "Dashboard_L", link: "/lecturer/dashboard" },
+    { title: "QuestionManager", link: "/lecturer/question-management" },
+    { title: "FeedbackRevisions", link: "/lecturer/feedback" },
+    { title: "Task", link: "/lecturer/task" },
+    { title: "Exam Evaluation", link: "/lecturer/exam-evaluation" },
+    { title: "Dashboard_HOE", link: "/hoe/dashboard" },
+    { title: "Review_Assignment", link: "/hoe/review-assignment" },
+    { title: "Approvals", link: "/hoe/approval" },
+    { title: "Dashboard_HED", link: "/hed/dashboard" },
+    { title: "Assignment_Management", link: "/hed/assignment-management" },
+    { title: "Approve_Question", link: "/hed/approve-question" },
+    { title: "Join_Task", link: "/hed/join-task" },
+    { title: "Statics&Report", link: "/hed/static-reports" },
+    { title: "Dashboard_sl", link: "/subject-leader/dashboard" },
+    { title: "Plans", link: "/subject-leader/plans" },
+    { title: "QuestionAssignment", link: "/subject-leader/question-assignment" },
+    { title: "ExamAssignment", link: "/subject-leader/exam-assignment" },
+    { title: "DuplicationCheck", link: "/subject-leader/duplication-check" },
+    { title: "Review&Approval", link: "/subject-leader/review-approval" },
+    { title: "SummaryReport", link: "/subject-leader/summary-report" },
+    { title: "Feedback", link: "/subject-leader/feedback" },
   ];
 
   // Lấy tất cả các phần tử menu
@@ -29,10 +29,15 @@ function setActiveMenu(title) {
 
   // Duyệt qua các phần tử menu để tìm và gắn class active
   elements.forEach(element => {
-    const link = element.querySelector('a').getAttribute('href');
-    const menuItem = menuItems.find(item => item.link === link && item.title === title);
-    if (menuItem) {
-      element.classList.add('active');
+    const linkElement = element.querySelector('a');
+    if (linkElement) {
+      const link = linkElement.getAttribute('href');
+      const menuItem = menuItems.find(item => item.link === link && item.title === title);
+      if (menuItem) {
+        element.classList.add('active');
+      } else {
+        element.classList.remove('active');
+      }
     }
   });
 }
