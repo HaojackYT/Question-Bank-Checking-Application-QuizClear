@@ -109,15 +109,13 @@
                                   placeholder="Enter explanation here..."></textarea>
                     </div>
                 </form>
-            </div>
-
-            <!-- Footer -->
-            <p class="footer-message">Check for similar questions before proceeding with submission</p>
+            </div>            <!-- Footer -->
+            <p class="footer-message" id="footer-message" style="color: #ef4444; font-weight: 500;">Check for similar questions before proceeding with submission</p>
             <div class="footer-button">
-                <button class="save-draft">
+                <button class="save-draft" id="save-draft-btn">
                     Save Draft <i class="fa-regular fa-floppy-disk"></i>
                 </button>
-                <button class="submit-button">
+                <button class="submit-button" id="submit-btn">
                     Submit <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
@@ -128,13 +126,75 @@
                 const checkButton = document.querySelector('.check-button');
                 const statusText = document.querySelector('.status-text');
                 const questionTitleInput = document.querySelector('#questionTitle');
+                const footerMessage = document.getElementById('footer-message');
+                const saveDraftBtn = document.getElementById('save-draft-btn');
+                const submitButton = document.getElementById('submit-btn');
+
+                // State variables
+                let aiCheckPassed = false;
+                let aiCheckResult = null;
+
+                // Initialize button states
+                function initializeButtons() {
+                    // Save Draft button - always green and enabled
+                    saveDraftBtn.style.backgroundColor = '#22c55e';
+                    saveDraftBtn.style.color = 'white';
+                    saveDraftBtn.style.border = '1px solid #16a34a';
+                    saveDraftBtn.disabled = false;
+                    
+                    // Submit button - initially gray and disabled until AI check
+                    submitButton.style.backgroundColor = '#9ca3af';
+                    submitButton.style.color = '#6b7280';
+                    submitButton.style.border = '1px solid #9ca3af';
+                    submitButton.style.cursor = 'not-allowed';
+                    submitButton.disabled = true;
+                    
+                    // Footer message - warning red initially
+                    footerMessage.style.color = '#ef4444';
+                    footerMessage.style.fontWeight = '500';
+                    footerMessage.textContent = 'Check for similar questions before proceeding with submission';
+                }
+
+                // Initialize buttons on page load
+                initializeButtons();
 
                 if (checkButton && statusText && questionTitleInput) {
                     checkButton.addEventListener('click', async () => {
                         const title = questionTitleInput.value.trim();
+                        const subject = document.getElementById('subject').value.trim();
+                        const difficulty = document.getElementById('difficulty').value.trim();
+                        const correctAnswer = document.getElementById('correctAnswer').value.trim();
+                        const incorrectAnswer1 = document.getElementById('incorrectAnswer1').value.trim();
+                        const incorrectAnswer2 = document.getElementById('incorrectAnswer2').value.trim();
+                        const incorrectAnswer3 = document.getElementById('incorrectAnswer3').value.trim();
 
+                        // Validate all required fields before AI check
                         if (!title) {
                             alert('Please enter the question title first.');
+                            questionTitleInput.focus();
+                            return;
+                        }
+
+                        if (!subject) {
+                            alert('Please select a subject first.');
+                            document.getElementById('subject').focus();
+                            return;
+                        }
+
+                        if (!difficulty) {
+                            alert('Please select difficulty level first.');
+                            document.getElementById('difficulty').focus();
+                            return;
+                        }
+
+                        if (!correctAnswer) {
+                            alert('Please enter the correct answer first.');
+                            document.getElementById('correctAnswer').focus();
+                            return;
+                        }
+
+                        if (!incorrectAnswer1 || !incorrectAnswer2 || !incorrectAnswer3) {
+                            alert('Please enter all incorrect answers first.');
                             return;
                         }
 
@@ -144,33 +204,94 @@
                         statusText.classList.remove('safety', 'warring', 'error');
 
                         try {
-                            // Gọi API check duplicate
+                            // Gọi API check duplicate với đầy đủ thông tin câu hỏi
+                            const questionData = {
+                                questionTitle: title,
+                                correctAnswer: correctAnswer,
+                                incorrectAnswers: [incorrectAnswer1, incorrectAnswer2, incorrectAnswer3],
+                                subject: subject,
+                                difficulty: difficulty
+                            };
+
+                            console.log('Sending duplicate check request:', questionData);
+
                             const response = await fetch('/lecturer/api/check-duplicate', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
-                                body: JSON.stringify({ questionTitle: title })
+                                body: JSON.stringify(questionData)
                             });
 
+                            console.log('Response status:', response.status);
+
                             if (!response.ok) {
-                                throw new Error('Failed to check duplicates');
+                                throw new Error(`HTTP ${response.status}: Failed to check duplicates`);
                             }
 
                             const data = await response.json();
+                            console.log('Duplicate check response:', data);
                             const duplicatePercent = data.duplicatePercent;
+                            
+                            // Null safety check
+                            if (duplicatePercent === undefined || duplicatePercent === null) {
+                                console.error('duplicatePercent is undefined or null');
+                                statusText.textContent = 'Error: Invalid response from server';
+                                statusText.classList.add('error');
+                                return;
+                            }
 
                             // Hiển thị kết quả
                             if (duplicatePercent === 0) {
                                 statusText.textContent = 'No duplicates found';
                                 statusText.classList.add('safety');
+                                aiCheckPassed = true;
+                                
+                                footerMessage.textContent = 'Duplicate check completed successfully! You can now submit.';
+                                footerMessage.style.color = '#22c55e';
+                                footerMessage.style.fontWeight = '500';
+                                
+                                // Submit button turns green and enabled
+                                submitButton.style.backgroundColor = '#22c55e';
+                                submitButton.style.color = 'white';
+                                submitButton.style.border = '1px solid #16a34a';
+                                submitButton.style.cursor = 'pointer';
+                                submitButton.disabled = false;
+                                
                             } else if (duplicatePercent < 50) {
                                 statusText.textContent = `${duplicatePercent}% duplicated`;
                                 statusText.classList.add('warring');
+                                aiCheckPassed = false;
+                                
+                                footerMessage.textContent = 'Similar questions found. Submit button will ask for confirmation.';
+                                footerMessage.style.color = '#f59e0b';
+                                footerMessage.style.fontWeight = '500';
+                                
+                                // Submit button turns orange but enabled
+                                submitButton.style.backgroundColor = '#f59e0b';
+                                submitButton.style.color = 'white';
+                                submitButton.style.border = '1px solid #d97706';
+                                submitButton.style.cursor = 'pointer';
+                                submitButton.disabled = false;
+                                
                             } else {
                                 statusText.textContent = `${duplicatePercent}% duplicated`;
                                 statusText.classList.add('error');
+                                aiCheckPassed = false;
+                                
+                                footerMessage.textContent = 'High similarity detected! Submit button will ask for confirmation.';
+                                footerMessage.style.color = '#ef4444';
+                                footerMessage.style.fontWeight = '500';
+                                
+                                // Submit button turns red but enabled
+                                submitButton.style.backgroundColor = '#ef4444';
+                                submitButton.style.color = 'white';
+                                submitButton.style.border = '1px solid #dc2626';
+                                submitButton.style.cursor = 'pointer';
+                                submitButton.disabled = false;
                             }
+
+                            aiCheckResult = duplicatePercent;
 
                             // Hiển thị similar questions nếu có
                             if (data.similarQuestions && data.similarQuestions.length > 0) {
@@ -181,112 +302,136 @@
                             console.error('Duplicate check error:', error);
                             statusText.textContent = 'Error checking duplicates.';
                             statusText.classList.add('error');
+                            
+                            footerMessage.textContent = 'Error checking duplicates. Please try again.';
+                            footerMessage.style.color = '#ef4444';
+                            aiCheckPassed = false;
                         } finally {
                             checkButton.textContent = 'Check Duplicates';
                             checkButton.disabled = false;
                         }
                     });
                 }
-            });            // Handle Save Draft button
-            document.querySelector('.save-draft').addEventListener('click', async function (e) {
-                e.preventDefault();
-                await saveQuestion('draft');
-            });
 
-            // Handle Submit button
-            document.querySelector('.submit-button').addEventListener('click', async function (e) {
-                e.preventDefault();
-                await saveQuestion('submit');
-            });
+                // Handle Save Draft button
+                saveDraftBtn.addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    await saveQuestion('draft');
+                });
 
-            async function saveQuestion(action) {
-                const questionId = document.getElementById('questionId').value;
-                const subject = document.getElementById('subject').value.trim();
-                const difficulty = document.getElementById('difficulty').value.trim();
-                const questionTitle = document.getElementById('questionTitle').value.trim();
-                const correctAnswer = document.getElementById('correctAnswer').value.trim();
-                const incorrectAnswer1 = document.getElementById('incorrectAnswer1').value.trim();
-                const incorrectAnswer2 = document.getElementById('incorrectAnswer2').value.trim();
-                const incorrectAnswer3 = document.getElementById('incorrectAnswer3').value.trim();
-                const explanation = document.getElementById('explanation').value.trim();
+                // Handle Submit button
+                submitButton.addEventListener('click', async function (e) {
+                    e.preventDefault();
 
-                // Validation cho Submit nhưng không cho Save Draft
-                if (action === 'submit') {
-                    let isValid = true;
-
-                    // Kiểm tra các trường required
-                    if (!questionTitle) {
-                        alert('Please enter the question title.');
+                    // Check if submit button is disabled (AI check not run)
+                    if (submitButton.disabled) {
+                        alert('Please run the duplicate check first before submitting.');
                         return;
                     }
 
-                    if (!correctAnswer) {
-                        alert('Please enter the correct answer.');
-                        return;
+                    // If AI check failed (duplicates found), show confirmation
+                    if (!aiCheckPassed && aiCheckResult !== null) {
+                        const confirmMessage = `Warning: This question has ${aiCheckResult}% similarity with existing questions. Are you sure you want to submit anyway?`;
+                        if (!confirm(confirmMessage)) {
+                            return;
+                        }
                     }
 
-                    if (!incorrectAnswer1 || !incorrectAnswer2 || !incorrectAnswer3) {
-                        alert('Please enter all incorrect answers.');
-                        return;
+                    await saveQuestion('submit');
+                });
+
+                async function saveQuestion(action) {
+                    const questionId = document.getElementById('questionId').value;
+                    const subject = document.getElementById('subject').value.trim();
+                    const difficulty = document.getElementById('difficulty').value.trim();
+                    const questionTitle = document.getElementById('questionTitle').value.trim();
+                    const correctAnswer = document.getElementById('correctAnswer').value.trim();
+                    const incorrectAnswer1 = document.getElementById('incorrectAnswer1').value.trim();
+                    const incorrectAnswer2 = document.getElementById('incorrectAnswer2').value.trim();
+                    const incorrectAnswer3 = document.getElementById('incorrectAnswer3').value.trim();
+                    const explanation = document.getElementById('explanation').value.trim();
+
+                    // Validation cho Submit nhưng không cho Save Draft
+                    if (action === 'submit') {
+                        // Continue with submit validation and logic
+                        let isValid = true;
+
+                        // Kiểm tra các trường required
+                        if (!questionTitle) {
+                            alert('Please enter the question title.');
+                            return;
+                        }
+
+                        if (!correctAnswer) {
+                            alert('Please enter the correct answer.');
+                            return;
+                        }
+
+                        if (!incorrectAnswer1 || !incorrectAnswer2 || !incorrectAnswer3) {
+                            alert('Please enter all incorrect answers.');
+                            return;
+                        }
+                    }
+
+                    // Prepare data
+                    const formData = {
+                        questionId: questionId || null,
+                        content: questionTitle,
+                        correctAnswer: correctAnswer,
+                        answer1: incorrectAnswer1,
+                        answer2: incorrectAnswer2,
+                        answer3: incorrectAnswer3,
+                        explanation: explanation,
+                        subject: subject,
+                        difficulty: difficulty,
+                        action: action
+                    };
+
+                    console.log('Saving question with data:', formData);
+
+                    try {
+                        // Show loading state
+                        const button = action === 'draft' ? saveDraftBtn : submitButton;
+                        const originalText = button.innerHTML;
+                        button.innerHTML = action === 'draft' ? 'Saving... <i class="fa-solid fa-spinner fa-spin"></i>' : 'Submitting... <i class="fa-solid fa-spinner fa-spin"></i>';
+                        button.disabled = true;
+
+                        const response = await fetch('/lecturer/api/questions', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(formData)
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Failed to save question');
+                        }
+
+                        const data = await response.json();
+                        
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+
+                        // Success
+                        alert(action === 'draft' ? 'Question saved as draft successfully! You can continue editing it later.' : 'Question submitted successfully!');
+                        
+                        // Redirect back to question management
+                        window.location.href = '/lecturer/question-management';
+
+                    } catch (error) {
+                        console.error('Save question error:', error);
+                        alert('Error saving question: ' + error.message);
+                        
+                        // Reset button state
+                        const button = action === 'draft' ? saveDraftBtn : submitButton;
+                        const originalText = action === 'draft' ? 'Save Draft <i class="fa-regular fa-floppy-disk"></i>' : 'Submit <i class="fas fa-paper-plane"></i>';
+                        button.innerHTML = originalText;
+                        button.disabled = action === 'draft' ? false : submitButton.disabled;
                     }
                 }
-
-                // Prepare data
-                const formData = {
-                    questionId: questionId || null,
-                    content: questionTitle,
-                    correctAnswer: correctAnswer,
-                    answer1: incorrectAnswer1,
-                    answer2: incorrectAnswer2,
-                    answer3: incorrectAnswer3,
-                    explanation: explanation,
-                    action: action
-                };
-
-                console.log('Saving question with data:', formData);
-
-                try {
-                    // Show loading state
-                    const button = action === 'draft' ? document.querySelector('.save-draft') : document.querySelector('.submit-button');
-                    const originalText = button.textContent;
-                    button.textContent = action === 'draft' ? 'Saving...' : 'Submitting...';
-                    button.disabled = true;
-
-                    const response = await fetch('/lecturer/api/questions', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Failed to save question');
-                    }
-
-                    const data = await response.json();
-                    
-                    if (data.error) {
-                        throw new Error(data.error);
-                    }
-
-                    // Success
-                    alert(action === 'draft' ? 'Question saved as draft successfully!' : 'Question submitted successfully!');
-                    
-                    // Redirect back to question management
-                    window.location.href = '/lecturer/question-management';
-
-                } catch (error) {
-                    console.error('Save question error:', error);
-                    alert('Error saving question: ' + error.message);
-                } finally {
-                    // Reset button state
-                    const button = action === 'draft' ? document.querySelector('.save-draft') : document.querySelector('.submit-button');
-                    const originalText = action === 'draft' ? 'Save Draft' : 'Submit';
-                    button.textContent = originalText;
-                    button.disabled = false;
-                }
-            }
+            });
         </script>
 
         <script src="../../Static/js/L_activeMenu.js"></script>

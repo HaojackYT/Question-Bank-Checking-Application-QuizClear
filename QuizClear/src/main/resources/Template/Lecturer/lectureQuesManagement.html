@@ -509,23 +509,20 @@
             
             questions.forEach(question => {
                 const row = document.createElement('tr');                // Check if edit button should be shown based on status
-                // Show edit button for 'submitted', 'rejected', and 'approved' status, not for 'draft'
-                const showEditButton = (question.status === 'submitted' || question.status === 'rejected' || question.status === 'approved');
+                // Show edit button for 'draft' and 'rejected' status (can be edited)
+                const showEditButton = (question.status === 'DRAFT' || question.status === 'draft' || question.status === 'rejected');
                 const editButtonHtml = showEditButton ? 
-                    `<a href="/lecturer/edit-question?id=${question.id}"><button class="circle-button delete editQuestion"><i class="fa-solid fa-pen-to-square"></i></button></a>` : '';
-                  // Status buttons based on current status
-                let statusButtonsHtml = '';
-                if (question.status === 'draft' || question.status === 'rejected') {
-                    statusButtonsHtml = `
-                        <button class="action-button remember" onclick="updateQuestionStatus(${question.id}, 'remember')">Remember</button>
-                        <button class="action-button save" onclick="updateQuestionStatus(${question.id}, 'save')">Save</button>
-                    `;
-                } else if (question.status === 'submitted') {
+                    `<a href="/lecturer/edit-question?id=${question.id}"><button class="circle-button delete editQuestion"><i class="fa-solid fa-pen-to-square"></i></button></a>` : '';// Status buttons based on current status
+                let statusButtonsHtml = '';                if (question.status === 'DRAFT' || question.status === 'draft' || question.status === 'rejected') {
                     statusButtonsHtml = `
                         <button class="action-button remember" onclick="updateQuestionStatus(${question.id}, 'remember')">Remember</button>
                         <button class="action-button drop" onclick="updateQuestionStatus(${question.id}, 'drop')">Drop</button>
                     `;
-                } else if (question.status === 'approved') {
+                } else if (question.status === 'SUBMITTED' || question.status === 'submitted') {
+                    statusButtonsHtml = `
+                        <button class="action-button save" onclick="updateQuestionStatus(${question.id}, 'save')">Save</button>
+                    `;
+                }else if (question.status === 'approved') {
                     statusButtonsHtml = `
                         <button class="action-button remember" onclick="updateQuestionStatus(${question.id}, 'remember')">Remember</button>
                         <button class="action-button drop" onclick="updateQuestionStatus(${question.id}, 'drop')">Drop</button>

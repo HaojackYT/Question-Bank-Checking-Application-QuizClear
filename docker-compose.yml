@@ -21,7 +21,6 @@ services:
       timeout: 10s
       retries: 5
       interval: 30s
-
   # AI Service (Flask)
   ai-service:
     build:
@@ -35,6 +34,7 @@ services:
       - FLASK_DEBUG=1
     volumes:
       - ./ai-service:/app
+      - ai_models:/app/models  # Persistent volume for AI models
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       timeout: 10s
@@ -64,3 +64,4 @@ services:
 
 volumes:
   mysql_data:
+  ai_models:  # Persistent volume for AI models to avoid re-downloading

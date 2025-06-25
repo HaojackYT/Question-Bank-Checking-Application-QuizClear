@@ -80,8 +80,10 @@ public class WebPageController {
                 case "HoD":
                     return "redirect:/hed-dashboard";
                 case "SL":
-                    return "redirect:/sl-dashboard";                case "Lec":
-                    return "redirect:/lecturer-dashboard";case "HoED":
+                    return "redirect:/sl-dashboard";
+                case "Lec":
+                    return "redirect:/lecturer-dashboard";
+                case "HoED":
                     return "redirect:/hoe-dashboard";
                 default:
                     // Invalid role, clear session and redirect to login
@@ -100,7 +102,9 @@ public class WebPageController {
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
         model.addAttribute("user", user);
         return "staffDashboard"; // This will look for templates/staffDashboard.html
-    }    @GetMapping("/hed-dashboard")
+    }
+
+    @GetMapping("/hed-dashboard")
     public String hedDashboard(HttpSession session, Model model) {
         // Simple mock user for now
         UserBasicDTO user = new UserBasicDTO();
@@ -111,14 +115,18 @@ public class WebPageController {
         user.setDepartment("Computer Science");
         model.addAttribute("user", user);
         return "HEAD_OF_DEPARTMENT/HED_Dashboard";
-    }@GetMapping("/hed-approve-questions")
+    }
+
+    @GetMapping("/hed-approve-questions")
     public String hedApproveQuestions(HttpSession session, Model model) {
         // TODO: Implement proper authentication when ready
         // For now, use first HoD user from database
         UserBasicDTO user = getUserFromDatabase("HoD");
         model.addAttribute("user", user);
         return "HEAD_OF_DEPARTMENT/HED_ApproveQuestion";
-    }    @GetMapping("/hed-join-task")
+    }
+
+    @GetMapping("/hed-join-task")
     public String hedJoinTask(HttpSession session, Model model) {
         // TODO: Implement proper authentication when ready
         // For now, use first HoD user from database
@@ -135,24 +143,26 @@ public class WebPageController {
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
         model.addAttribute("user", user);
         return "slDashboard"; // This will look for templates/slDashboard.html
-    }    @GetMapping("/lecturer-dashboard")
+    }
+
+    @GetMapping("/lecturer-dashboard")
     public String lecturerDashboard(HttpSession session, Model model) {
         System.out.println("DEBUG: Accessing /lecturer-dashboard");
-        
+
         // Check if user is logged in
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
         if (user == null) {
             System.out.println("DEBUG: No user in session, redirecting to login");
             return "redirect:/login";
         }
-        
+
         System.out.println("DEBUG: User role is: '" + user.getRole() + "'");
-        
+
         if (!isAuthorized(session, "Lec")) {
             System.out.println("DEBUG: User not authorized for Lecturer role");
             return "redirect:/login";
         }
-        
+
         model.addAttribute("user", user);
         System.out.println("DEBUG: Returning Lecturer/lecturerDashboard template for user: " + user.getFullName());
         return "Lecturer/lecturerDashboard"; // This will look for templates/Lecturer/lecturerDashboard.html
@@ -161,23 +171,25 @@ public class WebPageController {
     @GetMapping("/hoe-dashboard")
     public String hoeDashboard(HttpSession session, Model model) {
         System.out.println("DEBUG: Accessing /hoe-dashboard");
-        
+
         // Check if user is logged in
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
         if (user == null) {
             System.out.println("DEBUG: No user in session, redirecting to login");
             return "redirect:/login";
         }
-          // Check if user has correct role
+        // Check if user has correct role
         if (!"HOED".equals(user.getRole())) {
             System.out.println("DEBUG: User role is " + user.getRole() + ", not HOED");
             return "redirect:/login";
         }
-        
+
         model.addAttribute("user", user);
         System.out.println("DEBUG: Returning HOE_Dashboard template for user: " + user.getFullName());
         return "Head of Examination Department/HOE_Dashboard";
-    }    @GetMapping("/hoe-review-assignment")
+    }
+
+    @GetMapping("/hoe-review-assignment")
     public String hoeReviewAssignment(HttpSession session, Model model) {
         // Check if user is logged in and has correct role
         if (!isAuthorized(session, "HOED")) {
@@ -186,7 +198,9 @@ public class WebPageController {
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
         model.addAttribute("user", user);
         return "Head of Examination Department/HOE_ReviewAssignment";
-    }    @GetMapping("/hoe-approval")
+    }
+
+    @GetMapping("/hoe-approval")
     public String hoeApproval(HttpSession session, Model model) {
         // Check if user is logged in and has correct role
         if (!isAuthorized(session, "HOED")) {
@@ -195,7 +209,9 @@ public class WebPageController {
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
         model.addAttribute("user", user);
         return "Head of Examination Department/HOE_Approval";
-    }    @GetMapping("/hoe-new-assign")
+    }
+
+    @GetMapping("/hoe-new-assign")
     public String hoeNewAssign(HttpSession session, Model model) {
         // Check if user is logged in and has correct role
         if (!isAuthorized(session, "HOED")) {
@@ -216,25 +232,25 @@ public class WebPageController {
     @GetMapping("/Template/HEAD_OF_DEPARTMENT/Menu-HED.html")
     public String hedMenu() {
         return "HEAD_OF_DEPARTMENT/Menu-HED";
-    }    // ========== HELPER METHODS CHO LOGIN ==========
+    } // ========== HELPER METHODS CHO LOGIN ==========
 
     private boolean isAuthorized(HttpSession session, String requiredRole) {
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
         boolean authorized = user != null && user.getRole() != null && user.getRole().equalsIgnoreCase(requiredRole);
-        System.out.println("DEBUG: isAuthorized - User: " + (user != null ? user.getEmail() : "null") + 
-                          ", Role: '" + (user != null ? user.getRole() : "null") + 
-                          "', Required: '" + requiredRole + "', Authorized: " + authorized);
+        System.out.println("DEBUG: isAuthorized - User: " + (user != null ? user.getEmail() : "null") +
+                ", Role: '" + (user != null ? user.getRole() : "null") +
+                "', Required: '" + requiredRole + "', Authorized: " + authorized);
         return authorized;
     }
-    
+
     // Helper method to get user from database instead of mock data
     private UserBasicDTO getUserFromDatabase(String role) {
         try {
             UserRole userRole = UserRole.valueOf(role);
             User user = userRepository.findByRole(userRole).stream()
-                .findFirst()
-                .orElse(null);
-                  if (user != null) {
+                    .findFirst()
+                    .orElse(null);
+            if (user != null) {
                 UserBasicDTO dto = new UserBasicDTO();
                 dto.setUserId(user.getUserId() != null ? user.getUserId().longValue() : null);
                 dto.setFullName(user.getFullName());
@@ -247,22 +263,21 @@ public class WebPageController {
             // Log error and return fallback
             System.err.println("Error getting user from database: " + e.getMessage());
         }
-          // Fallback - return first user from database
+        // Fallback - return first user from database
         return userRepository.findAll().stream()
-            .findFirst()
-            .map(user -> {
-                UserBasicDTO dto = new UserBasicDTO();
-                dto.setUserId(user.getUserId() != null ? user.getUserId().longValue() : null);
-                dto.setFullName(user.getFullName());
-                dto.setEmail(user.getEmail());
-                dto.setRole(user.getRole().name());
-                dto.setDepartment(user.getDepartment());
-                return dto;
-            })
-            .orElse(null);
+                .findFirst()
+                .map(user -> {
+                    UserBasicDTO dto = new UserBasicDTO();
+                    dto.setUserId(user.getUserId() != null ? user.getUserId().longValue() : null);
+                    dto.setFullName(user.getFullName());
+                    dto.setEmail(user.getEmail());
+                    dto.setRole(user.getRole().name());
+                    dto.setDepartment(user.getDepartment());
+                    return dto;
+                })
+                .orElse(null);
     }
-    
-    
+
     @GetMapping("/test-lecturer")
     public String testLecturer(HttpSession session) {
         // Create a mock session for testing
@@ -284,14 +299,14 @@ public class WebPageController {
         user.setEmail("emily.foster@university.edu");
         user.setRole("HOED");
         user.setDepartment("Computer Science");
-        
+
         // Set user in session
         session.setAttribute("user", user);
-        
+
         System.out.println("DEBUG: Created test session for HoED user: " + user.getFullName());
         return "redirect:/hoe-dashboard";
     }
-    
+
     @GetMapping("/test-logout")
     public String testLogout(HttpSession session) {
         session.invalidate();
@@ -310,13 +325,13 @@ public class WebPageController {
         user.setRole("HOED");
         user.setDepartment("Computer Science");
         user.setStatus(com.uth.quizclear.model.enums.Status.ACTIVE);
-        
+
         // Set all session attributes like AuthController does
         session.setAttribute("userId", user.getUserId());
         session.setAttribute("user", user);
         session.setAttribute("role", user.getRole());
         session.setAttribute("isLoggedIn", true);
-        
+
         System.out.println("DEBUG: Bypass login - Created session for Emily Foster");
         return "redirect:/hoe-dashboard";
     }
@@ -325,13 +340,13 @@ public class WebPageController {
     @GetMapping("/debug-session")
     public String debugSession(HttpSession session, Model model) {
         UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
-        
+
         if (user == null) {
             model.addAttribute("message", "No user in session");
         } else {
             model.addAttribute("message", "User found: " + user.getFullName() + " (Role: " + user.getRole() + ")");
         }
-        
+
         return "login"; // Just return login page with message
 
     }
