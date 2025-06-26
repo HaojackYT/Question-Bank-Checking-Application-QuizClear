@@ -1,174 +1,138 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../../Static/fontawesome/css/all.css">
-        <link rel="stylesheet" href="../../Static/header.css">
-        <link rel="stylesheet" href="../../Static/web_styles.css">
-        <link rel="stylesheet" href="../header_user.html">
-        <link rel="stylesheet" href="../../Static/Menu-Staff.css">
-        <link rel="stylesheet" href="../../Static/css/staff/Staff_Create_New_Exam.css">
-        <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-        <title>Template</title>
-    </head>
-
-    <body>
-        <!--header-->
-        <div id="header-placeholder"></div>
-
-
-
-        <!-- body -->
-        <div id="Container-body">
-            <!-- Menu -->
-            <div id="menu-HTML"></div>
-
-
-            <!-- Main content -->
-            <div id="main">
-               <!-- noi dung duoc nhap trong day -->
-
-               <!-- khoi tieu de va quay lai -->
-                <div style="display: flex; align-items: center; gap: 0.625rem;">
-                    <a href="#!" style="color: black; width: 2.5rem; height: 2.5rem; font-size: 2.5rem;"><i class="fa-solid fa-arrow-left"></i></a>
-                    <p style="color: #120368; font-size: 2.25rem; font-weight: 600;">Create New Exam</p>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/staff/Staff_Create_New_Exam.css}">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Create New Exam - Step 1</title>
+</head>
+<body>
+    <header class="header" th:insert="~{header_user :: header}"></header>
+    <div id="Container-body">
+        <div id="menu-HTML" th:insert="~{Menu-Staff :: menu}"></div>
+        <div id="main">
+            <!-- Step indicator -->
+            <div style="display: flex; align-items: center; gap: 0.625rem;">
+                <a th:href="@{/staff/exams/all-exams}" style="color: black; width: 2.5rem; height: 2.5rem; font-size: 2.5rem;">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <p style="color: #120368; font-size: 2.25rem; font-weight: 600;">Create New Exam</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <div class="Step-Container Step-Container_continue">
+                    <i class="fa-solid fa-1 step Step_continue"></i>
+                    <p class="p_continue">Basic info</p>
                 </div>
-
-                <!-- khoi cac buoc -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                    <!-- buoc 1 -->
-                    <div class="Step-Container Step-Container_continue">
-                        <i class="fa-solid fa-1 step Step_continue"></i>
-                        <p class="p_continue">Basic info</p>
-                    </div>
-
-                    <!-- buoc 2 -->
-                    <div class="Step-Container">
-                        <i class="fa-solid fa-2 step"></i>
-                        <p>Structure</p>
-                    </div>
-
-                    <!-- buoc 3 -->
-                    <div class="Step-Container">
-                        <i class="fa-solid fa-3 step"></i>
-                        <p>Assignment</p>
-                    </div>
-
-                    <!-- buoc 4-->
-                    <div class="Step-Container">
-                        <i class="fa-solid fa-4 step"></i>
-                        <p>Review</p>
-                    </div>
+                <div class="Step-Container">
+                    <i class="fa-solid fa-2 step"></i>
+                    <p>Structure</p>
                 </div>
-
-                <!-- khoi noi dung -->
-                <div id="content-container" style="display: flex; flex-direction: column; gap: 1.25rem;">
-
-                    <!-- khoi tieu de -->
-                    <div>
-                        <p style="font-size: 1.0625rem; font-weight: 600;">Exam Details</p>
-                        <p style="font-size: 0.75rem; color: #6B7280;">Enter the basic information about the exam</p>
-                    </div>
-
-                    <!-- khoi noi dung -->
+                <div class="Step-Container">
+                    <i class="fa-solid fa-3 step"></i>
+                    <p>Assignment</p>
+                </div>
+                <div class="Step-Container">
+                    <i class="fa-solid fa-4 step"></i>
+                    <p>Review</p>
+                </div>
+            </div>
+            <!-- Main form -->
+            <div id="content-container" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <div>
+                    <p style="font-size: 1.0625rem; font-weight: 600;">Exam Details</p>
+                    <p style="font-size: 0.75rem; color: #6B7280;">Enter the basic information about the exam</p>
+                </div>
+                <form th:action="@{/staff/exams/create/step1}" th:object="${examCreateDTO}" method="post">
                     <div id="content">
-                        <!-- khoi tren -->
                         <div id="top-content">
-                            <!-- khoi trai -->
                             <div id="left-content">
                                 <div>
                                     <p>Exam Title</p>
-                                    <input type="text" placeholder="e.g., Midterm Exam, Final Exam">
+                                    <input type="text" th:field="*{examTitle}" placeholder="e.g., Midterm Exam, Final Exam" required>
                                 </div>
                                 <div>
                                     <p>Subject</p>
-                                    <select name="Subject" id="Subject" title="Subject">
-                                        <option value="Select_Subject">select Subject</option>
-                                    </select>                                       
+                                    <select th:field="*{subjectId}" required>
+                                        <option value="">Select Subject</option>
+                                        <option th:each="subject : ${subjects}"
+                                                th:value="${subject.id}"
+                                                th:text="${subject.name}"></option>
+                                    </select>
                                 </div>
                                 <div>
                                     <p>Semester</p>
-                                    <select name="Semester" id="Semester" title="Semester">
-                                        <option value="Select_Semester">Select_Semester</option>
-                                    </select>                                   
+                                    <select th:field="*{semester}" required>
+                                        <option value="">Select Semester</option>
+                                        <option th:each="sem : ${semesters}" th:value="${sem}" th:text="${sem}"></option>
+                                    </select>
                                 </div>
                                 <div>
                                     <p>Exam Type</p>
-                                    <select name="Exam_Type" id="Exam_Type" title="Exam_Type">
-                                        <option value="Select_Exam_Type">Select_Exam_Type</option>
-                                    </select>                                   
+                                    <select th:field="*{examType}" required>
+                                        <option value="">Select Exam Type</option>
+                                        <option th:each="type : ${examTypes}" th:value="${type}" th:text="${type}"></option>
+                                    </select>
                                 </div>
                             </div>
-
-                            <!-- khoi phai -->
                             <div id="right-content">
                                 <div>
                                     <p>Exam Code</p>
-                                    <input type="text" placeholder="e.g., CS101-FINAL-2023">
+                                    <input type="text" th:field="*{examCode}" placeholder="e.g., CS101-FINAL-2023" required>
                                 </div>
                                 <div>
                                     <p>Course/Module</p>
-                                    <select name="course" id="course" title="Course">
-                                        <option value="Select_course">Select_course</option>
+                                    <select th:field="*{courseId}" required>
+                                        <option value="">Select Course</option>
+                                        <option th:each="course : ${courses}"
+                                                th:value="${course.id}"
+                                                th:text="${course.name}"></option>
                                     </select>
                                 </div>
                                 <div>
                                     <p>Deadline Date</p>
-                                    <input type="date" title="Deadline_Date">
+                                    <input type="date" th:field="*{deadlineDate}" required>
                                 </div>
                                 <div>
                                     <p>Duration (minutes)</p>
-                                    <input type="text" placeholder="e.g., 120" title="Duration">
+                                    <input type="number" th:field="*{durationMinutes}" placeholder="e.g., 120" min="1" required>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- khoi duoi -->
                         <div style="padding-right: 2.1875rem;">
                             <div>
                                 <p style="font-size: 0.75rem;">Exam Description</p>
-                                <input type="text" name="Description" id="Description" placeholder="Enter a brief description of the exam">
+                                <textarea th:field="*{description}"
+                                        placeholder="Enter a brief description of the exam"
+                                        style="min-height: 5rem; max-height: 5rem; height: 5rem; border: 1px solid #ccc; border-radius: 6px; resize: none; width: 100%;"></textarea>
                             </div>
                             <div>
-                                <p style="font-size: 0.75rem;">Exam Instructions</p>
-                                <textarea name="Instructions" id="Instructions" placeholder="
-                            1. Read all questions carefully before answering.
-                            2. Each question has only one correct answer.
-                            3. There is no negative marking for wrong answers.
-                            4. You have the entire duration to complete the exam."
-                             style="min-height: 7.125rem;"></textarea>
+                                <p style="font-size: 0.75rem;">
+                                    Exam Instructions
+                                    <span title="Instructions for students"><i class="fa-regular fa-circle-question"></i></span>
+                                </p>
+                                <textarea th:field="*{instructions}"
+                                        placeholder="1. Read all questions carefully before answering.
+2. Each question has only one correct answer.
+3. There is no negative marking for wrong answers.
+4. You have the entire duration to complete the exam."
+                                        style="min-height: 7.125rem; max-height: 7.125rem; height: 7.125rem; border: 1px solid #ccc; border-radius: 6px; resize: none; width: 100%;"></textarea>
                             </div>
                             <div id="button-container">
-                                <button title="Cancel">Cancel</button>
-                                <button title="Next">Next
-                                    <i class="fa-solid fa-arrow-right"></i>
+                                <a th:href="@{/staff/exams/all-exams}" class="btn btn-secondary" title="Cancel">Cancel</a>
+                                <button type="submit" class="btn btn-primary" title="Next">
+                                    Next <i class="fa-solid fa-arrow-right"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
-
-
-
-        <!-- ma nhung header vs menu -->
-        <script>
-            // Load header
-            fetch('../header_user.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('header-placeholder').innerHTML = data;
-                });
-
-            // Load menu
-            fetch('../Menu-Staff.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('menu-HTML').innerHTML = data;
-                });
-
-        </script>
-    </body>
+    </div>
+</body>
 </html>

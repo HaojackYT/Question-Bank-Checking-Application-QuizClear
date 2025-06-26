@@ -1,286 +1,154 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../Static/fontawesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../header_user.html">
-    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
-    <link rel="stylesheet" href="../../Static/css/staff/Staff_Create_New_Exam.css">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/staff/Staff_Create_New_Exam.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Template</title>
+    <title>Create New Exam - Step 2</title>
 </head>
-
 <body>
-    <!--header-->
-    <div id="header-placeholder"></div>
-
-
-
-    <!-- body -->
+    <header class="header" th:insert="~{header_user :: header}"></header>
     <div id="Container-body">
-        <!-- Menu -->
-        <div id="menu-HTML"></div>
-
-
-        <!-- Main content -->
+        <div id="menu-HTML" th:insert="~{Menu-Staff :: menu}"></div>
         <div id="main">
-
-            <!-- khoi tieu de va quay lai -->
+            <!-- Step indicator -->
             <div style="display: flex; align-items: center; gap: 0.625rem;">
-                <a href="#!" style="color: black; width: 2.5rem; height: 2.5rem; font-size: 2.5rem;"><i
-                        class="fa-solid fa-arrow-left"></i></a>
+                <a th:href="@{/staff/exams/create/step1}" style="color: black; width: 2.5rem; height: 2.5rem; font-size: 2.5rem;">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
                 <p style="color: #120368; font-size: 2.25rem; font-weight: 600;">Create New Exam</p>
             </div>
-
-            <!-- khoi cac buoc -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                <!-- buoc 1 -->
                 <div class="Step-Container Step-Container_done">
                     <i class="fa-solid fa-check step Step_done"></i>
                     <p class="p_done">Basic info</p>
                 </div>
-
-                <!-- buoc 2 -->
                 <div class="Step-Container Step-Container_continue">
                     <i class="fa-solid fa-2 step Step_continue"></i>
                     <p class="p_continue">Structure</p>
                 </div>
-
-                <!-- buoc 3 -->
                 <div class="Step-Container">
                     <i class="fa-solid fa-3 step"></i>
                     <p>Assignment</p>
                 </div>
-
-                <!-- buoc 4-->
                 <div class="Step-Container">
                     <i class="fa-solid fa-4 step"></i>
                     <p>Review</p>
                 </div>
             </div>
-
-            <!-- khoi noi dung -->
             <div id="content-container" style="display: flex; flex-direction: column; gap: 1.25rem;">
-
-                <!-- khoi tieu de -->
                 <div>
                     <p style="font-size: 1.0625rem; font-weight: 600;">Exam Structure</p>
                     <p style="font-size: 0.75rem; color: #6B7280;">Define the structure and question distribution</p>
                 </div>
-
-                <!-- khoi noi dung -->
-                <div id="content" style="margin: 0;">
-                    <!-- khoi noi dung -->
-                    <div id="conten-container">
-                        <div class="to-work">
-                            <p class="work">Difficulty Distribution</p>
-                            <p class="work">CLO Mapping</p>
-                        </div>
-
-                        <!-- total container-->
-                        <div id="total-container">
-                            <div class="total">
-                                <p>Total Number of Questions</p>
-                                <input type="text" id="total-questions" placeholder="50">
+                <form th:action="@{/staff/exams/create/step2}" th:object="${examCreateDTO}" method="post">
+                    <div id="content" style="margin: 0;">
+                        <div id="conten-container">
+                            <div class="to-work">
+                                <p class="work">Difficulty Distribution</p>
+                                <p class="work">CLO Mapping</p>
                             </div>
-                            <div class="total">
-                                <p>Number of Versions</p>
-                                <input type="text" id="total-versions" placeholder="2">
-                            </div>
-                        </div>
-
-                        <!-- chon so luong cau o moi lv -->
-                        <div>
-                            <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 1.25rem;">
-                                <p style="font-size: 0.875rem; font-weight: 500;">Difficulty Distribution</p>
-                                <p style="font-size: 0.75rem; color: #2563EB;">Total <span>100</span>%</p>
-                            </div>
-
-                            <div class="range-container">
-                                <div style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
-                                    <p>Basic (Recognition)</p>
-                                    <p>-<span>25</span>%</p>
+                            <div id="total-container">
+                                <div class="total">
+                                    <p>Total Number of Questions</p>
+                                    <input type="number" th:field="*{totalQuestions}" placeholder="50" min="1" required>
                                 </div>
-                                <p class="range-value"><span id="range-value-basic">13</span> question</p>
-                                <input type="range" id="range-basic" min="0" max="100" value="25" style="width: 100%;"
-                                    title="Basic Difficulty Range" class="custom-slider cross1">
-                            </div>
-
-
-                            <div class="range-container">
-                                <div style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
-                                    <p>Intermediate (Understanding)</p>
-                                    <p>-<span>25</span>%</p>
-                                </div>
-                                <p class="range-value"><span id="range-value-Intermediate">13</span> question</p>
-                                <input type="range" id="range-Intermediate" min="0" max="100" value="25"
-                                    style="width: 100%;" title="Intermediate (Understanding)"
-                                    class="custom-slider cross2">
-                            </div>
-
-
-                            <div class="range-container">
-                                <div style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
-                                    <p>Advanced (Application)</p>
-                                    <p>-<span>25</span>%</p>
-                                </div>
-                                <p class="range-value"><span id="range-value-Advanced">13</span> question</p>
-                                <input type="range" id="range-Advanced" min="0" max="100" value="25"
-                                    style="width: 100%;" title="Advanced (Application)" class="custom-slider cross3">
-                            </div>
-
-
-                            <div class="range-container">
-                                <div style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
-                                    <p>Expert (High Application)</p>
-                                    <p>-<span>25</span>%</p>
-                                </div>
-                                <p class="range-value"><span id="range-value-Expert">13</span> question</p>
-                                <input type="range" id="range-Expert" min="0" max="100" value="25" style="width: 100%;"
-                                    title="Expert (High Application)" class="custom-slider cross4">
-                            </div>
-                        </div>
-
-                        <!-- cot phan tram da chon cau hoi theo lv -->
-                        <div style="display: flex; flex-direction: column;">
-                            <p style="font-size: 0.875rem; font-weight: 500;">Difficulty Distribution Preview</p>
-                            <div
-                                style="padding: 0 2.5rem; display: flex; flex-direction: row; justify-content: space-around; border: 0.0625rem solid #E5E7EB; border-radius: 0.375rem;">
-                                <div class="colum-container">
-                                    <div class="colum" id="Basic"></div>
-                                    <p>Basic</p>
-                                    <p><span id="value-basic">25</span>%</p>
-                                </div>
-                                <div class="colum-container">
-                                    <div class="colum" id="Intermediate"></div>
-                                    <p>Intermediate</p>
-                                    <p><span id="value-intermediate">25</span>%</p>
-                                </div>
-                                <div class="colum-container">
-                                    <div class="colum" id="Advanced"></div>
-                                    <p>Advanced</p>
-                                    <p><span id="value-advanced">25</span>%</p>
-                                </div>
-                                <div class="colum-container">
-                                    <div class="colum" id="Expert"></div>
-                                    <p>Expert</p>
-                                    <p><span id="value-expert">25</span>%</p>
+                                <div class="total">
+                                    <p>Number of Versions</p>
+                                    <input type="number" th:field="*{totalVersions}" placeholder="2" min="1" required>
                                 </div>
                             </div>
-                        </div>
-                        <p style="font-size: 0.875rem; font-weight: 500; margin-top: 1.25rem; margin-bottom: 0.625rem;">Question
-                            Sources</p>
-                        <div
-                            style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 1.25rem;">
-                            <div class="Question-container" style="margin-right: 2%;">
-                                <p>Primary Question Source</p>
-                                <select name="PrimaryQuestionSource" id="PrimaryQuestionSource"
-                                    title="PrimaryQuestionSource">
-                                    <option value="Question_Bank">Question_Bank</option>
-                                </select>
-                            </div>
-                            <div class="Question-container">
-                                <p>Question Bank Filter</p>
-                                <select name="Question_Bank_Filter" id="Question_Bank_Filter"
-                                    title="Question_Bank_Filter">
-                                    <option value="All_Question">All_Question</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div
-                            style="display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 1.25rem; margin-top: 1.875rem;">
-                            <div class="tick-container">
-                                <p>Additional Settings</p>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider"></span>
-                                </label>
-
-                            </div>
-                            <div class="tick-container">
-                                <div class="text">
-                                    <p class="text-title">Check for Duplicate Questions</p>
-                                    <p class="text-conten">Automatically check for similar questions in the database</p>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="tick-container">
-                                <div class="text">
-                                    <p class="text-title">Check CLO Coverage</p>
-                                    <p class="text-conten">Ensure all Course Learning Outcomes are covered</p>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="tick-container">
-                                <div class="text">
-                                    <p class="text-title">Randomize Question Order</p>
-                                    <p class="text-conten">Questions will appear in random order for each exam version
+                            <!-- Difficulty Distribution -->
+                            <div>
+                                <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 1.25rem;">
+                                    <p style="font-size: 0.875rem; font-weight: 500;">Difficulty Distribution</p>
+                                    <p style="font-size: 0.75rem; color: #2563EB;">Total 
+                                        <span th:text="${(examCreateDTO.percentBasic ?: 0) + (examCreateDTO.percentIntermediate ?: 0) + (examCreateDTO.percentAdvanced ?: 0) + (examCreateDTO.percentExpert ?: 0)}">100</span>%
                                     </p>
                                 </div>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="tick-container">
-                                <div class="text">
-                                    <p class="text-title">Randomize Answer Options</p>
-                                    <p class="text-conten">Answer options will be shuffled for each question</p>
+                                <div class="range-container">
+                                    <div style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
+                                        <p>Basic (Recognition)</p>
+                                        <p>-<span th:text="*{percentBasic}">25</span>%</p>
+                                    </div>
+                                    <p class="range-value"><span th:text="*{percentBasic}">13</span> question</p>
+                                    <input type="range" th:field="*{percentBasic}" min="0" max="100" step="1" />
                                 </div>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider"></span>
-                                </label>
+                                <div class="range-container">
+                                    <div style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
+                                        <p>Intermediate (Understanding)</p>
+                                        <p>-<span th:text="*{percentIntermediate}">25</span>%</p>
+                                    </div>
+                                    <p class="range-value"><span th:text="*{percentIntermediate}">13</span> question</p>
+                                    <input type="range" th:field="*{percentIntermediate}" min="0" max="100" step="1" />
+                                </div>
+                                <div class="range-container">
+                                    <div style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
+                                        <p>Advanced (Application)</p>
+                                        <p>-<span th:text="*{percentAdvanced}">25</span>%</p>
+                                    </div>
+                                    <p class="range-value"><span th:text="*{percentAdvanced}">13</span> question</p>
+                                    <input type="range" th:field="*{percentAdvanced}" min="0" max="100" step="1" />
+                                </div>
+                                <div class="range-container">
+                                    <div style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
+                                        <p>Expert (High Application)</p>
+                                        <p>-<span th:text="*{percentExpert}">25</span>%</p>
+                                    </div>
+                                    <p class="range-value"><span th:text="*{percentExpert}">13</span> question</p>
+                                    <input type="range" th:field="*{percentExpert}" min="0" max="100" step="1" />
+                                </div>
+                            </div>
+                            <!-- Additional Settings -->
+                            <div style="display: flex; flex-direction: column; margin-top: 1.875rem;">
+                                <div class="tick-container">
+                                    <p>Check for Duplicate Questions</p>
+                                    <label class="switch">
+                                        <input type="checkbox" th:field="*{checkDuplicateQuestions}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="tick-container">
+                                    <p>Check CLO Coverage</p>
+                                    <label class="switch">
+                                        <input type="checkbox" th:field="*{checkCloCoverage}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="tick-container">
+                                    <p>Randomize Question Order</p>
+                                    <label class="switch">
+                                        <input type="checkbox" th:field="*{randomizeQuestionOrder}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="tick-container">
+                                    <p>Randomize Answer Options</p>
+                                    <label class="switch">
+                                        <input type="checkbox" th:field="*{randomizeAnswerOptions}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
+                        <!-- Buttons -->
+                        <div id="button-container">
+                            <a th:href="@{/staff/exams/create/step1}" class="btn btn-secondary" title="Previous">
+                                <i class="fa-solid fa-chevron-left"></i> Previous
+                            </a>
+                            <button type="submit" class="btn btn-primary" title="Next">
+                                Next <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
                     </div>
-
-                    <!-- khoi nut -->
-                    <div id="button-container">
-                        <button title="Cancel">
-                            <i class="fa-solid fa-chevron-left"></i>
-                            Previous
-                        </button>
-                        <button title="Next">
-                            Next
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
-    </div>
-
-
-
-    <!-- ma nhung header vs menu -->
-    <script>
-        // Load header
-        fetch('../header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-
-        // Load menu
-        fetch('../Menu-Staff.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-            });
-    </script>
-    <script src="../../Static/js/Staff_create_exam_step2.js"></script>
 </body>
-
 </html>

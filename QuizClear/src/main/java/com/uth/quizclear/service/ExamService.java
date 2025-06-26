@@ -1,5 +1,6 @@
 package com.uth.quizclear.service;
 
+import com.uth.quizclear.model.dto.ExamCreateDTO;
 import com.uth.quizclear.model.dto.ExamDTO;
 import com.uth.quizclear.model.dto.ExamRevisionDTO;
 import com.uth.quizclear.model.entity.Exam;
@@ -80,4 +81,13 @@ public class ExamService {
         dto.setFeedback(exam.getFeedback() != null ? exam.getFeedback() : "");
         return dto;
     }
+
+    public Exam saveExam(ExamCreateDTO dto) {
+        Exam exam = new Exam();
+        exam.setExamTitle(dto.getExamTitle());
+        exam.setExamCode(dto.getExamCode());
+        // set các trường khác
+        return examRepository.save(exam);
+    }
+
 }
