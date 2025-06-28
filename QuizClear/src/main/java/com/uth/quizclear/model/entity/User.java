@@ -15,6 +15,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "users")
@@ -101,12 +103,29 @@ public class User {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    // Temporarily comment out until database is updated
-    // @Column(name = "work_place") // Bổ sung trường workPlace cho Profile
-    // private String workPlace;
+    @Column(name = "work_place") // Bổ sung trường workPlace cho Profile
+    private String workPlace;
 
-    // @Column(name = "qualification") // Bổ sung trường qualification cho Profile
-    // private String qualification;
+    @Column(name = "qualification") // Bổ sung trường qualification cho Profile
+    private String qualification;
+
+    // Relationships with new permission system
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<UserDepartmentAssignment> departmentAssignments = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<UserSubjectAssignment> subjectAssignments = new HashSet<>();
+
+    // Relationships as head/leader
+    @OneToMany(mappedBy = "headOfDepartment", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Department> headsOfDepartments = new HashSet<>();
+
+    @OneToMany(mappedBy = "subjectLeader", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Subject> leadsSubjects = new HashSet<>();
 
     // JPA lifecycle callbacks
     @PrePersist
@@ -205,24 +224,23 @@ public class User {
         return this.fullName;
     }
 
-    // Temporarily comment out until database is updated
     // Getter và setter cho workPlace
-    // public String getWorkPlace() {
-    // return workPlace;
-    // }
+    public String getWorkPlace() {
+        return workPlace;
+    }
 
-    // public void setWorkPlace(String workPlace) {
-    // this.workPlace = workPlace;
-    // }
+    public void setWorkPlace(String workPlace) {
+        this.workPlace = workPlace;
+    }
 
     // Getter và setter cho qualification
-    // public String getQualification() {
-    // return qualification;
-    // }
+    public String getQualification() {
+        return qualification;
+    }
 
-    // public void setQualification(String qualification) {
-    // this.qualification = qualification;
-    // }
+    public void setQualification(String qualification) {
+        this.qualification = qualification;
+    }
 
     public Integer getUserId() {
         return userId.intValue();
@@ -272,4 +290,64 @@ public class User {
     this.userId = userId;
 }
 
+    // Helper methods for new relationships
+    public void addDepartmentAssignment(UserDepartmentAssignment assignment) {
+        departmentAssignments.add(assignment);
+        assignment.setUser(this);
+    }
+
+    public void removeDepartmentAssignment(UserDepartmentAssignment assignment) {
+        departmentAssignments.remove(assignment);
+        assignment.setUser(null);
+    }
+
+    public void addSubjectAssignment(UserSubjectAssignment assignment) {
+        subjectAssignments.add(assignment);
+        assignment.setUser(this);
+    }
+
+    public void removeSubjectAssignment(UserSubjectAssignment assignment) {
+        subjectAssignments.remove(assignment);
+        assignment.setUser(null);
+    }
+
+    // Permission checking methods
+    public boolean hasPermissionInDepartment(String departmentName, UserRole role) {
+        return departmentAssignments.stream()
+                .anyMatch(assignment -> 
+                    assignment.isCurrentlyEffective() &&
+                    assignment.getDepartmentName().equals(departmentName) &&
+                    assignment.getRole() == role);
+    }
+
+    public boolean hasPermissionInSubject(String subjectCode, UserRole role) {
+        return subjectAssignments.stream()
+                .anyMatch(assignment -> 
+                    assignment.isCurrentlyEffective() &&
+                    assignment.getSubjectCode().equals(subjectCode) &&
+                    assignment.getRole() == role);
+    }
+
+    public boolean isHeadOfAnyDepartment() {
+        return !headsOfDepartments.isEmpty();
+    }
+
+    public boolean isLeaderOfAnySubject() {
+        return !leadsSubjects.isEmpty();
+    }
+
+    // Utility methods for permission system
+    public Set<String> getManagedDepartments() {
+        return departmentAssignments.stream()
+                .filter(UserDepartmentAssignment::isCurrentlyEffective)
+                .map(UserDepartmentAssignment::getDepartmentName)
+                .collect(java.util.stream.Collectors.toSet());
+    }
+
+    public Set<String> getManagedSubjects() {
+        return subjectAssignments.stream()
+                .filter(UserSubjectAssignment::isCurrentlyEffective)
+                .map(UserSubjectAssignment::getSubjectCode)
+                .collect(java.util.stream.Collectors.toSet());
+    }
 }

@@ -28,29 +28,41 @@
                 <h1>Dashboard</h1>
                 <p class="welcome-text">Welcome back, Head of Department.
                     Let's make today productive!</p>
+                
+                <!-- Department Scope Indicator -->
+                <div id="hed-scope-indicator" class="scope-indicator-hed" style="margin-top: 10px;">
+                    <div class="scope-info">
+                        <span class="scope-label">Loading department information...</span>
+                        <span class="scope-details"></span>
+                    </div>
+                </div>
             </div>
 
             <!-- Statistics Cards -->
             <div class="stats-container">
                 <div class="stat-card lecturer">
-                    <div class="stat-label">Lecturer</div>
-                    <div class="stat-number">54</div>
-                    <div class="stat-change">+6 this month</div>
+                    <div class="stat-label">Lecturers</div>
+                    <div class="stat-number" id="total-lecturers">-</div>
+                    <div class="stat-change" id="lecturers-change">Loading...</div>
+                    <div class="scope-indicator">In your departments</div>
                 </div>
                 <div class="stat-card pending">
-                    <div class="stat-label">Pending</div>
-                    <div class="stat-number">25</div>
-                    <div class="stat-change">+5 this month</div>
+                    <div class="stat-label">Pending Approvals</div>
+                    <div class="stat-number" id="pending-approvals">-</div>
+                    <div class="stat-change" id="pending-change">Loading...</div>
+                    <div class="scope-indicator">Requiring your review</div>
                 </div>
                 <div class="stat-card approved">
-                    <div class="stat-label">Approved</div>
-                    <div class="stat-number">56</div>
-                    <div class="stat-change">+23 this month</div>
+                    <div class="stat-label">Approved This Month</div>
+                    <div class="stat-number" id="approved-count">-</div>
+                    <div class="stat-change" id="approved-change">Loading...</div>
+                    <div class="scope-indicator">From your departments</div>
                 </div>
                 <div class="stat-card rejected">
-                    <div class="stat-label">Rejected</div>
-                    <div class="stat-number">32</div>
-                    <div class="stat-change">+8 this month</div>
+                    <div class="stat-label">Subjects</div>
+                    <div class="stat-number" id="total-subjects">-</div>
+                    <div class="stat-change" id="subjects-change">Loading...</div>
+                    <div class="scope-indicator">Under your management</div>
                 </div>
             </div>
 
@@ -298,6 +310,261 @@
             })
             .catch(error => console.error('Error loading activities:', error
         ));
+
+        // HED Dashboard Department Scope Functionality
+        // Load department-specific statistics and data
+        async function loadHEDDepartmentData() {
+            try {
+                // Get HED scope information
+                const scopeResponse = await fetch('/api/user/current-scope');
+                if (scopeResponse.ok) {
+                    const scope = await scopeResponse.json();
+                    updateHEDScopeIndicator(scope);
+                    await loadDepartmentStatistics(scope);
+                    await loadDepartmentActivities(scope);
+                    await loadDepartmentDeadlines(scope);
+                } else {
+                    console.error('Failed to load HED scope');
+                }
+            } catch (error) {
+                console.error('Error loading HED department data:', error);
+            }
+        }
+
+        // Update scope indicator with department information
+        function updateHEDScopeIndicator(scope) {
+            const scopeIndicator = document.getElementById('hed-scope-indicator');
+            if (!scopeIndicator) return;
+
+            const deptCount = scope.managedDepartmentIds ? scope.managedDepartmentIds.length : 0;
+            const subjCount = scope.accessibleSubjectIds ? scope.accessibleSubjectIds.length : 0;
+
+            if (scope.canApproveAll) {
+                scopeIndicator.innerHTML = `
+                    <div class="scope-info all-departments">
+                        <span class="scope-label">All Departments Access</span>
+                        <span class="scope-details">Managing institution-wide operations</span>
+                    </div>
+                `;
+            } else if (deptCount > 0) {
+                scopeIndicator.innerHTML = `
+                    <div class="scope-info department-scope">
+                        <span class="scope-label">Department Scope:</span>
+                        <span class="scope-details">${scope.departmentName || deptCount + ' departments'} - ${subjCount} subjects</span>
+                    </div>
+                `;
+            } else {
+                scopeIndicator.innerHTML = `
+                    <div class="scope-info no-scope">
+                        <span class="scope-label">No Department Assigned</span>
+                        <span class="scope-details">Contact administrator for department assignment</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Load department-specific statistics
+        async function loadDepartmentStatistics(scope) {
+            try {
+                const params = new URLSearchParams();
+                if (scope.managedDepartmentIds && scope.managedDepartmentIds.length > 0) {
+                    params.append('departmentIds', scope.managedDepartmentIds.join(','));
+                }
+                params.append('requestingUserId', scope.userId);
+                params.append('userRole', scope.userRole);
+
+                const response = await fetch(`/api/dashboard/hed/stats?${params}`);
+                if (response.ok) {
+                    const stats = await response.json();
+                    updateHEDStatistics(stats);
+                } else {
+                    console.error('Failed to load department statistics');
+                    loadFallbackStats();
+                }
+            } catch (error) {
+                console.error('Error loading department statistics:', error);
+                loadFallbackStats();
+            }
+        }
+
+        // Update HED statistics display
+        function updateHEDStatistics(stats) {
+            // Update lecturer count
+            const totalLecturers = document.getElementById('total-lecturers');
+            const lecturersChange = document.getElementById('lecturers-change');
+            if (totalLecturers) totalLecturers.textContent = stats.totalLecturers || 0;
+            if (lecturersChange) lecturersChange.textContent = `+${stats.lecturersThisMonth || 0} this month`;
+
+            // Update pending approvals
+            const pendingApprovals = document.getElementById('pending-approvals');
+            const pendingChange = document.getElementById('pending-change');
+            if (pendingApprovals) pendingApprovals.textContent = stats.pendingApprovals || 0;
+            if (pendingChange) pendingChange.textContent = `+${stats.pendingThisMonth || 0} new`;
+
+            // Update approved count
+            const approvedCount = document.getElementById('approved-count');
+            const approvedChange = document.getElementById('approved-change');
+            if (approvedCount) approvedCount.textContent = stats.approvedThisMonth || 0;
+            if (approvedChange) approvedChange.textContent = `+${stats.approvedGrowth || 0}% from last month`;
+
+            // Update subjects count
+            const totalSubjects = document.getElementById('total-subjects');
+            const subjectsChange = document.getElementById('subjects-change');
+            if (totalSubjects) totalSubjects.textContent = stats.totalSubjects || 0;
+            if (subjectsChange) subjectsChange.textContent = `${stats.activeSubjects || 0} active`;
+        }
+
+        // Load department activities
+        async function loadDepartmentActivities(scope) {
+            try {
+                const params = new URLSearchParams();
+                if (scope.managedDepartmentIds && scope.managedDepartmentIds.length > 0) {
+                    params.append('departmentIds', scope.managedDepartmentIds.join(','));
+                }
+                params.append('limit', '10');
+
+                const response = await fetch(`/api/dashboard/hed/activities?${params}`);
+                if (response.ok) {
+                    const activities = await response.json();
+                    updateActivitiesList(activities);
+                }
+            } catch (error) {
+                console.error('Error loading department activities:', error);
+            }
+        }
+
+        // Load department deadlines
+        async function loadDepartmentDeadlines(scope) {
+            try {
+                const params = new URLSearchParams();
+                if (scope.managedDepartmentIds && scope.managedDepartmentIds.length > 0) {
+                    params.append('departmentIds', scope.managedDepartmentIds.join(','));
+                }
+                params.append('upcoming', 'true');
+
+                const response = await fetch(`/api/dashboard/hed/deadlines?${params}`);
+                if (response.ok) {
+                    const deadlines = await response.json();
+                    updateDeadlinesList(deadlines);
+                }
+            } catch (error) {
+                console.error('Error loading department deadlines:', error);
+            }
+        }
+
+        // Update activities list
+        function updateActivitiesList(activities) {
+            const activitiesList = document.querySelector('.activities-list');
+            if (!activitiesList) return;
+
+            if (activities.length === 0) {
+                activitiesList.innerHTML = '<p class="no-activities">No recent activities in your departments</p>';
+                return;
+            }
+
+            activitiesList.innerHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon ${activity.type}">
+                        <i class="${getActivityIcon(activity.type)}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p class="activity-text">${activity.description}</p>
+                        <span class="activity-time">${formatActivityTime(activity.timestamp)}</span>
+                        ${activity.departmentName ? `<small class="activity-dept">${activity.departmentName}</small>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update deadlines list
+        function updateDeadlinesList(deadlines) {
+            const deadlinesList = document.querySelector('.deadline-list');
+            if (!deadlinesList) return;
+
+            if (deadlines.length === 0) {
+                deadlinesList.innerHTML = '<p class="no-deadlines">No upcoming deadlines in your departments</p>';
+                return;
+            }
+
+            deadlinesList.innerHTML = deadlines.map(deadline => `
+                <div class="deadline-item ${getDeadlineUrgency(deadline.dueDate)}">
+                    <div class="deadline-info">
+                        <h4>${deadline.title}</h4>
+                        <p>${deadline.description}</p>
+                        <span class="deadline-dept">${deadline.departmentName}</span>
+                    </div>
+                    <div class="deadline-date">
+                        <span class="date">${formatDate(deadline.dueDate)}</span>
+                        <span class="days-left">${getDaysLeft(deadline.dueDate)} days left</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Helper functions
+        function getActivityIcon(type) {
+            const icons = {
+                'approval': 'fa-solid fa-check-circle',
+                'submission': 'fa-solid fa-upload',
+                'assignment': 'fa-solid fa-tasks',
+                'review': 'fa-solid fa-eye',
+                'default': 'fa-solid fa-info-circle'
+            };
+            return icons[type] || icons.default;
+        }
+
+        function formatActivityTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffHours = Math.floor((now - date) / (1000 * 60 * 60));
+            
+            if (diffHours < 1) return 'Just now';
+            if (diffHours < 24) return `${diffHours}h ago`;
+            const diffDays = Math.floor(diffHours / 24);
+            if (diffDays < 7) return `${diffDays}d ago`;
+            return date.toLocaleDateString();
+        }
+
+        function getDeadlineUrgency(dueDate) {
+            const days = getDaysLeft(dueDate);
+            if (days <= 1) return 'urgent';
+            if (days <= 3) return 'warning';
+            return 'normal';
+        }
+
+        function getDaysLeft(dueDate) {
+            const today = new Date();
+            const due = new Date(dueDate);
+            const diffTime = due - today;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                year: 'numeric'
+            });
+        }
+
+        function loadFallbackStats() {
+            updateHEDStatistics({
+                totalLecturers: 0,
+                lecturersThisMonth: 0,
+                pendingApprovals: 0,
+                pendingThisMonth: 0,
+                approvedThisMonth: 0,
+                approvedGrowth: 0,
+                totalSubjects: 0,
+                activeSubjects: 0
+            });
+        }
+
+        // Initialize HED department data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHEDDepartmentData();
+        });
     </script>
 
     <script th:inline="javascript">

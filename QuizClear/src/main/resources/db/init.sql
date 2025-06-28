@@ -375,3 +375,126 @@ INSERT INTO users (
 
 -- Bật lại kiểm tra khóa ngoại
 SET FOREIGN_KEY_CHECKS=1;
+
+-- =================================================================
+-- PHẦN BỔ SUNG: HỆ THỐNG PHÂN QUYỀN THEO KHOA/BỘ MÔN
+-- =================================================================
+
+-- 18. Departments (Khoa/Bộ phận)
+CREATE TABLE IF NOT EXISTS departments (
+  department_id INT AUTO_INCREMENT PRIMARY KEY,
+  department_code VARCHAR(20) NOT NULL UNIQUE,
+  department_name VARCHAR(255) NOT NULL,
+  description TEXT DEFAULT NULL,
+  head_of_department_id INT DEFAULT NULL,
+  status ENUM('active', 'inactive') DEFAULT 'active',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (head_of_department_id) REFERENCES users(user_id),
+  INDEX idx_department_code (department_code),
+  INDEX idx_department_status (status)
+) ENGINE=InnoDB;
+
+-- 19. Subjects (Bộ môn/Môn học)
+CREATE TABLE IF NOT EXISTS subjects (
+  subject_id INT AUTO_INCREMENT PRIMARY KEY,
+  subject_code VARCHAR(20) NOT NULL UNIQUE,
+  subject_name VARCHAR(255) NOT NULL,
+  credits INT DEFAULT 0,
+  department_id INT NOT NULL,
+  subject_leader_id INT DEFAULT NULL,
+  description TEXT DEFAULT NULL,
+  status ENUM('active', 'inactive') DEFAULT 'active',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (department_id) REFERENCES departments(department_id),
+  FOREIGN KEY (subject_leader_id) REFERENCES users(user_id),
+  INDEX idx_subject_code (subject_code),
+  INDEX idx_subject_department (department_id),
+  INDEX idx_subject_status (status)
+) ENGINE=InnoDB;
+
+-- 20. User Department Assignments (Phân quyền người dùng theo Khoa)
+CREATE TABLE IF NOT EXISTS user_department_assignments (
+  assignment_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  department_id INT NOT NULL,
+  role_in_department ENUM('head', 'member', 'observer') DEFAULT 'member',
+  assigned_by INT DEFAULT NULL,
+  assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  status ENUM('active', 'inactive') DEFAULT 'active',
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (department_id) REFERENCES departments(department_id) ON DELETE CASCADE,
+  FOREIGN KEY (assigned_by) REFERENCES users(user_id),
+  UNIQUE KEY unique_user_department (user_id, department_id),
+  INDEX idx_user_dept_user (user_id),
+  INDEX idx_user_dept_department (department_id)
+) ENGINE=InnoDB;
+
+-- 21. User Subject Assignments (Phân quyền người dùng theo Bộ môn)
+CREATE TABLE IF NOT EXISTS user_subject_assignments (
+  assignment_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  subject_id INT NOT NULL,
+  role_in_subject ENUM('leader', 'lecturer', 'assistant', 'observer') DEFAULT 'lecturer',
+  assigned_by INT DEFAULT NULL,
+  assigned_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  status ENUM('active', 'inactive') DEFAULT 'active',
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE,
+  FOREIGN KEY (assigned_by) REFERENCES users(user_id),
+  UNIQUE KEY unique_user_subject (user_id, subject_id),
+  INDEX idx_user_subj_user (user_id),
+  INDEX idx_user_subj_subject (subject_id)
+) ENGINE=InnoDB;
+
+-- 22. Question Access Permissions (Quyền truy cập câu hỏi theo phạm vi)
+CREATE TABLE IF NOT EXISTS question_access_permissions (
+  permission_id INT AUTO_INCREMENT PRIMARY KEY,
+  question_id INT NOT NULL,
+  department_id INT DEFAULT NULL,
+  subject_id INT DEFAULT NULL,
+  access_level ENUM('read', 'write', 'approve', 'manage') NOT NULL DEFAULT 'read',
+  granted_by INT DEFAULT NULL,
+  granted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  status ENUM('active', 'inactive') DEFAULT 'active',
+  notes TEXT DEFAULT NULL,
+  FOREIGN KEY (question_id) REFERENCES questions(question_id) ON DELETE CASCADE,
+  FOREIGN KEY (department_id) REFERENCES departments(department_id) ON DELETE CASCADE,
+  FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE,
+  FOREIGN KEY (granted_by) REFERENCES users(user_id),
+  INDEX idx_question_access_question (question_id),
+  INDEX idx_question_access_dept (department_id),
+  INDEX idx_question_access_subject (subject_id)
+) ENGINE=InnoDB;
+
+-- 23. Duplicate Check Scopes (Phạm vi so sánh trùng lặp)
+CREATE TABLE IF NOT EXISTS duplicate_check_scopes (
+  scope_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  check_type ENUM('global', 'department', 'subject', 'course') NOT NULL DEFAULT 'course',
+  department_id INT DEFAULT NULL,
+  subject_id INT DEFAULT NULL,
+  course_id INT DEFAULT NULL,
+  is_default BOOLEAN DEFAULT FALSE,
+  created_by INT DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (department_id) REFERENCES departments(department_id) ON DELETE CASCADE,
+  FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE,
+  FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE,
+  FOREIGN KEY (created_by) REFERENCES users(user_id),
+  INDEX idx_dup_scope_user (user_id),
+  INDEX idx_dup_scope_type (check_type),
+  INDEX idx_dup_scope_dept (department_id),
+  INDEX idx_dup_scope_subject (subject_id)
+) ENGINE=InnoDB;
+
+-- Thêm foreign key constraints cho liên kết departments và subjects với bảng courses hiện có
+-- (Tùy chọn: có thể thêm sau nếu muốn liên kết chặt chẽ)
+-- ALTER TABLE courses ADD COLUMN department_id_new INT DEFAULT NULL;
+-- ALTER TABLE courses ADD FOREIGN KEY (department_id_new) REFERENCES departments(department_id);
+
+-- Bật lại kiểm tra khóa ngoại cuối cùng
+SET FOREIGN_KEY_CHECKS=1;

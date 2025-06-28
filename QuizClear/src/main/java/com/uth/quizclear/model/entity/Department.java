@@ -23,7 +23,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"users", "courses"})
+@ToString(exclude = {"users", "courses", "userDepartmentAssignments", "subjects"})
 public class Department extends BaseEntity {
 
     @Id
@@ -57,7 +57,16 @@ public class Department extends BaseEntity {
     private List<User> users;
 
     @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Course> courses;    @Override
+    private List<Course> courses;
+
+    // New relationships for permission system
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserDepartmentAssignment> userDepartmentAssignments;
+
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Subject> subjects;
+
+    @Override
     public Long getId() {
         return departmentId;
     }

@@ -5,6 +5,7 @@ import com.uth.quizclear.model.enums.QuestionStatus;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class QuestionDTO {
     private Long questionId;
@@ -20,6 +21,28 @@ public class QuestionDTO {
     private String displayStatus; // Hiển thị: Approved, Completed, Declined
     private String updatedDate; // questions.updated_at
     private String options; // answer_f1, answer_f2, answer_f3
+    
+    // Scope and permission fields
+    private Long departmentId;
+    private String departmentName;
+    private Long subjectId;
+    private String subjectName;
+    private Long createdById;
+    private String createdByName;
+    private Long reviewedById;
+    private String reviewedByName;
+    
+    // Permission flags for current user
+    private Boolean canEdit;
+    private Boolean canDelete;
+    private Boolean canReview;
+    private Boolean canApprove;
+    private Boolean isWithinScope;
+    
+    // Filtering fields
+    private List<Long> accessibleDepartmentIds;
+    private List<Long> accessibleSubjectIds;
+    private String requestingUserRole;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yy");
 
@@ -133,4 +156,55 @@ public class QuestionDTO {
             this.displayStatus = "";
         }
     }
+
+    // Getter and Setter for scope and permission fields
+    public Long getDepartmentId() { return departmentId; }
+    public void setDepartmentId(Long departmentId) { this.departmentId = departmentId; }
+    
+    public String getDepartmentName() { return departmentName; }
+    public void setDepartmentName(String departmentName) { this.departmentName = departmentName; }
+    
+    public Long getSubjectId() { return subjectId; }
+    public void setSubjectId(Long subjectId) { this.subjectId = subjectId; }
+    
+    public String getSubjectName() { return subjectName; }
+    public void setSubjectName(String subjectName) { this.subjectName = subjectName; }
+    
+    public Long getCreatedById() { return createdById; }
+    public void setCreatedById(Long createdById) { this.createdById = createdById; }
+    
+    public String getCreatedByName() { return createdByName; }
+    public void setCreatedByName(String createdByName) { this.createdByName = createdByName; }
+    
+    public Long getReviewedById() { return reviewedById; }
+    public void setReviewedById(Long reviewedById) { this.reviewedById = reviewedById; }
+    
+    public String getReviewedByName() { return reviewedByName; }
+    public void setReviewedByName(String reviewedByName) { this.reviewedByName = reviewedByName; }
+    
+    // Permission flags
+    public Boolean getCanEdit() { return canEdit; }
+    public void setCanEdit(Boolean canEdit) { this.canEdit = canEdit; }
+    
+    public Boolean getCanDelete() { return canDelete; }
+    public void setCanDelete(Boolean canDelete) { this.canDelete = canDelete; }
+    
+    public Boolean getCanReview() { return canReview; }
+    public void setCanReview(Boolean canReview) { this.canReview = canReview; }
+    
+    public Boolean getCanApprove() { return canApprove; }
+    public void setCanApprove(Boolean canApprove) { this.canApprove = canApprove; }
+    
+    public Boolean getIsWithinScope() { return isWithinScope; }
+    public void setIsWithinScope(Boolean isWithinScope) { this.isWithinScope = isWithinScope; }
+    
+    // Filtering fields
+    public List<Long> getAccessibleDepartmentIds() { return accessibleDepartmentIds; }
+    public void setAccessibleDepartmentIds(List<Long> accessibleDepartmentIds) { this.accessibleDepartmentIds = accessibleDepartmentIds; }
+    
+    public List<Long> getAccessibleSubjectIds() { return accessibleSubjectIds; }
+    public void setAccessibleSubjectIds(List<Long> accessibleSubjectIds) { this.accessibleSubjectIds = accessibleSubjectIds; }
+    
+    public String getRequestingUserRole() { return requestingUserRole; }
+    public void setRequestingUserRole(String requestingUserRole) { this.requestingUserRole = requestingUserRole; }
 }

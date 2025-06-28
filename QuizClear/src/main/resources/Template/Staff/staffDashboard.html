@@ -20,36 +20,38 @@
         <div id="Container-body">
             <div class="sidebar" th:insert="~{Menu-Staff :: menu}"></div>
             <div id="main">
+                <!-- Scope Indicator -->
+                <div id="staff-scope-indicator" class="scope-indicator-staff" style="margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;">
+                    <div class="scope-info">
+                        <span class="scope-label">Loading scope information...</span>
+                        <span class="scope-details"></span>
+                    </div>
+                </div>
+
                 <div class="stats-container">
                     <div class="stat-card">
-                        <div class="stat-title">Total subjects</div>
-                        <div class="stat-value"
-                            th:text="${totalSubjects}">12</div>
-                        <div class="stat-change"
-                            th:text="'+' + ${subjectsThisMonth} + ' this month'">+2
-                            this month</div>
+                        <div class="stat-title">Total Subjects</div>
+                        <div class="stat-value" id="total-subjects-count">-</div>
+                        <div class="stat-change" id="subjects-change">Loading...</div>
+                        <div class="scope-note">In your scope</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">Total Questions</div>
-                        <div class="stat-value"
-                            th:text="${totalQuestions}">2,506</div>
-                        <div class="stat-change"
-                            th:text="'+' + ${questionsThisMonth} + ' this month'">+123
-                            this month</div>
+                        <div class="stat-value" id="total-questions-count">-</div>
+                        <div class="stat-change" id="questions-change">Loading...</div>
+                        <div class="scope-note">From accessible departments</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">Duplicate Questions</div>
-                        <div class="stat-value"
-                            th:text="${duplicateQuestions}">14</div>
+                        <div class="stat-value" id="duplicate-questions-count">-</div>
                         <div class="stat-change">Needs review</div>
+                        <div class="scope-note">In your departments</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">Exams Created</div>
-                        <div class="stat-value"
-                            th:text="${examsCreated}">32</div>
-                        <div class="stat-change"
-                            th:text="'+' + ${examsThisMonth} + ' this month'">+8
-                            this month</div>
+                        <div class="stat-value" id="exams-created-count">-</div>
+                        <div class="stat-change" id="exams-change">Loading...</div>
+                        <div class="scope-note">This month</div>
                     </div>
                 </div>
                 <div class="charts-container">
@@ -206,6 +208,74 @@
                 plugins: { legend: { display: true, position: 'right' } }
             }
         });
+
+        // Staff-specific scope and data loading
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStaffScopeInfo();
+            loadStaffStatistics();
+        });
+
+        // Load staff scope information
+        function loadStaffScopeInfo() {
+            fetch('/api/staff/scope')
+                .then(response => response.json())
+                .then(data => {
+                    const scopeLabel = document.querySelector('.scope-label');
+                    const scopeDetails = document.querySelector('.scope-details');
+                    
+                    if (data.departments && data.departments.length > 0) {
+                        const deptNames = data.departments.map(d => d.departmentName).join(', ');
+                        scopeLabel.textContent = `Staff - Access to ${data.departments.length} department(s)`;
+                        scopeDetails.textContent = `Departments: ${deptNames}`;
+                    } else {
+                        scopeLabel.textContent = 'Staff - No department access';
+                        scopeDetails.textContent = 'Contact administrator for department assignment';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading staff scope:', error);
+                    document.querySelector('.scope-label').textContent = 'Error loading scope information';
+                });
+        }
+
+        // Load staff statistics with scope filtering
+        function loadStaffStatistics() {
+            fetch('/api/staff/statistics')
+                .then(response => response.json())
+                .then(data => {
+                    // Update stat cards
+                    document.getElementById('total-subjects-count').textContent = data.totalSubjects || '0';
+                    document.getElementById('total-questions-count').textContent = data.totalQuestions || '0';
+                    document.getElementById('duplicate-questions-count').textContent = data.duplicateQuestions || '0';
+                    document.getElementById('exams-created-count').textContent = data.examsCreated || '0';
+                    
+                    // Update change indicators
+                    updateStaffChangeIndicator('subjects-change', data.subjectsChange);
+                    updateStaffChangeIndicator('questions-change', data.questionsChange);
+                    updateStaffChangeIndicator('exams-change', data.examsChange);
+                })
+                .catch(error => {
+                    console.error('Error loading staff statistics:', error);
+                    // Set default values on error
+                    document.getElementById('total-subjects-count').textContent = '0';
+                    document.getElementById('total-questions-count').textContent = '0';
+                    document.getElementById('duplicate-questions-count').textContent = '0';
+                    document.getElementById('exams-created-count').textContent = '0';
+                });
+        }
+
+        // Helper function to update change indicators for staff
+        function updateStaffChangeIndicator(elementId, change) {
+            const element = document.getElementById(elementId);
+            if (change !== undefined && change !== null) {
+                const isPositive = change >= 0;
+                element.textContent = `${isPositive ? '+' : ''}${change}% from last month`;
+                element.style.color = isPositive ? '#28a745' : '#dc3545';
+            } else {
+                element.textContent = 'No change data';
+                element.style.color = '#6c757d';
+            }
+        }
     </script>
     </body>
 </html>

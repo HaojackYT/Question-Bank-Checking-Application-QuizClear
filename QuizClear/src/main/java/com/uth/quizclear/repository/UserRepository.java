@@ -125,5 +125,45 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // @Query("SELECT new com.uth.quizclear.model.dto.UserBasicDTO(u.userId, u.fullName, u.email, u.role.name()) FROM User u WHERE u.userId IN :userIds")
     // List<com.uth.quizclear.model.dto.UserBasicDTO> findUserBasicDTOsByIds(@Param("userIds") List<Long> userIds);
 
+    // New methods for department and subject-based queries
+    @Query("SELECT u FROM User u JOIN u.departmentAssignments da WHERE da.department.departmentId = :departmentId AND da.status = 'ACTIVE'")
+    List<User> findByDepartmentId(@Param("departmentId") Long departmentId);
+
+    @Query("SELECT u FROM User u JOIN u.subjectAssignments sa WHERE sa.subject.subjectId = :subjectId AND sa.status = 'ACTIVE'")
+    List<User> findBySubjectId(@Param("subjectId") Long subjectId);
+
+    @Query("SELECT u FROM User u JOIN u.departmentAssignments da WHERE da.department.departmentId = :departmentId AND da.role = :role AND da.status = 'ACTIVE'")
+    List<User> findByDepartmentIdAndRole(@Param("departmentId") Long departmentId, @Param("role") UserRole role);
+
+    @Query("SELECT u FROM User u JOIN u.subjectAssignments sa WHERE sa.subject.subjectId = :subjectId AND sa.role = :role AND sa.status = 'ACTIVE'")
+    List<User> findBySubjectIdAndRole(@Param("subjectId") Long subjectId, @Param("role") UserRole role);
+
+    // Find users who are heads of departments
+    @Query("SELECT u FROM User u JOIN u.headsOfDepartments d WHERE d.departmentId = :departmentId")
+    Optional<User> findHeadOfDepartment(@Param("departmentId") Long departmentId);
+
+    // Find users who are leaders of subjects
+    @Query("SELECT u FROM User u JOIN u.leadsSubjects s WHERE s.subjectId = :subjectId")
+    Optional<User> findSubjectLeader(@Param("subjectId") Long subjectId);
+
+    // Find all department assignments for a user
+    @Query("SELECT da.department FROM UserDepartmentAssignment da WHERE da.user.userId = :userId AND da.status = 'ACTIVE'")
+    List<Object> findUserDepartments(@Param("userId") Long userId);
+
+    // Find all subject assignments for a user
+    @Query("SELECT sa.subject FROM UserSubjectAssignment sa WHERE sa.user.userId = :userId AND sa.status = 'ACTIVE'")
+    List<Object> findUserSubjects(@Param("userId") Long userId);
+
+    // Enhanced queries for permission-based access
+    @Query("SELECT u FROM User u WHERE u.userId IN " +
+           "(SELECT da.user.userId FROM UserDepartmentAssignment da WHERE da.department.departmentId = :departmentId AND da.status = 'ACTIVE') " +
+           "AND u.role = :role AND u.status = 'ACTIVE' AND u.isLocked = false")
+    List<User> findActiveUsersByDepartmentAndRole(@Param("departmentId") Long departmentId, @Param("role") UserRole role);
+
+    @Query("SELECT u FROM User u WHERE u.userId IN " +
+           "(SELECT sa.user.userId FROM UserSubjectAssignment sa WHERE sa.subject.subjectId = :subjectId AND sa.status = 'ACTIVE') " +
+           "AND u.role = :role AND u.status = 'ACTIVE' AND u.isLocked = false")
+    List<User> findActiveUsersBySubjectAndRole(@Param("subjectId") Long subjectId, @Param("role") UserRole role);
+
     List<User> findByRoleAndStatus(UserRole role, Status status);
 }
