@@ -1,5 +1,6 @@
 package com.uth.quizclear.service;
 
+import com.uth.quizclear.model.dto.ExamCreateDTO;
 import com.uth.quizclear.model.dto.ExamDTO;
 import com.uth.quizclear.model.dto.ExamRevisionDTO;
 import com.uth.quizclear.model.entity.Exam;
@@ -428,6 +429,7 @@ public class ExamService {
         return dto;
     }
 
+
     /**
      * Get exam revision DTO with permission check
      */
@@ -649,5 +651,15 @@ public class ExamService {
                 .filter(exam -> exam.getExamStatus() == ExamStatus.SUBMITTED)
                 .collect(Collectors.toList());
     }
+
+
+    public Exam saveExam(ExamCreateDTO dto) {
+        Exam exam = new Exam();
+        exam.setExamTitle(dto.getExamTitle());
+        exam.setExamCode(dto.getExamCode());
+        // set các trường khác
+        return examRepository.save(exam);
+    }
+
 
 }

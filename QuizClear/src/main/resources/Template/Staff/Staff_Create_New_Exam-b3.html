@@ -1,226 +1,183 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../Static/fontawesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../header_user.html">
-    <link rel="stylesheet" href="../../Static/Menu-Staff.css">
-    <link rel="stylesheet" href="../../Static/css/staff/Staff_Create_New_Exam.css">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/staff/Staff_Create_New_Exam.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Staff_Create_New_Exam-b3</title>
+    <title>Create New Exam - Step 3</title>
 </head>
-
 <body>
-    <!--header-->
-    <div id="header-placeholder"></div>
-
-    <!-- body -->
+    <header class="header" th:insert="~{header_user :: header}"></header>
     <div id="Container-body">
-        <!-- Menu -->
-        <div id="menu-HTML"></div>
-
-        <!-- Main content -->
+        <div id="menu-HTML" th:insert="~{Menu-Staff :: menu}"></div>
         <div id="main">
-            <!-- noi dung duoc nhap trong day -->
-
-            <!-- khoi tieu de va quay lai -->
+            <!-- Step indicator -->
             <div style="display: flex; align-items: center; gap: 0.625rem;">
-                <a href="#!" style="color: black; width: 2.5rem; height: 2.5rem; font-size: 2.5rem;">
+                <a th:href="@{/staff/exams/create/step2}" style="color: black; width: 2.5rem; height: 2.5rem; font-size: 2.5rem;">
                     <i class="fa-solid fa-arrow-left"></i>
                 </a>
                 <p style="color: #120368; font-size: 2.25rem; font-weight: 600;">Create New Exam</p>
             </div>
-
-            <!-- khoi cac buoc -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                <!-- buoc 1 -->
                 <div class="Step-Container Step-Container_done">
                     <i class="fa-solid fa-check step Step_done"></i>
                     <p class="p_done">Basic info</p>
                 </div>
-
-                <!-- buoc 2 -->
                 <div class="Step-Container Step-Container_done">
                     <i class="fa-solid fa-check step Step_done"></i>
                     <p class="p_done">Structure</p>
                 </div>
-
-                <!-- buoc 3 -->
                 <div class="Step-Container Step-Container_continue">
                     <i class="fa-solid fa-3 step Step_continue"></i>
                     <p class="p_continue">Assignment</p>
                 </div>
-
-                <!-- buoc 4-->
                 <div class="Step-Container">
                     <i class="fa-solid fa-4 step"></i>
                     <p>Review</p>
                 </div>
             </div>
-
-            <!-- khoi noi dung -->
             <div id="content-container" style="display: flex; flex-direction: column; gap: 1.25rem;">
-                <!-- khoi tieu de -->
                 <div>
                     <p style="font-size: 1.0625rem; font-weight: 600;">Assignment & Notification</p>
                     <p style="font-size: 0.75rem; color: #6B7280;">Assign the exam creation task and set up notifications</p>
                 </div>
-
-                <!-- khoi noi dung -->
-                <div id="content" style="margin: 0;">
-                    <div>
-                        <p style="font-size: 0.875rem; font-weight: 400;">Assign To</p>
-                        <div class="Assign-Container">
-                            <div class="Assign-left">
-                                <i class="fa-regular fa-user"></i>
-                                <div class="Assign">
-                                    <p class="Assign-name">Department Head</p>
-                                    <p class="Assign-title">Will oversee the exam creation process</p>
+                <form th:action="@{/staff/exams/create/step3}" th:object="${examCreateDTO}" method="post">
+                    <div id="content" style="margin: 0;">
+                        <!-- Assignment -->
+                        <div>
+                            <p style="font-size: 0.875rem; font-weight: 400;">Assign To</p>
+                            <div class="Assign-Container">
+                                <div class="Assign-left">
+                                    <i class="fa-regular fa-user"></i>
+                                    <div class="Assign">
+                                        <p class="Assign-name">Department Head</p>
+                                        <p class="Assign-title">Will oversee the exam creation process</p>
+                                    </div>
                                 </div>
+                                <select th:field="*{departmentHeadId}">
+                                    <option value="">Select Department Head</option>
+                                    <option th:each="user : ${departmentHeads}" th:value="${user.id}" th:text="${user.name}"></option>
+                                </select>
                             </div>
-                            <select name="User-name" id="Department" title="User-name">
-                                <option value="Smith">Dr.Smith</option>
-                            </select>
+                            <div class="Assign-Container">
+                                <div class="Assign-left">
+                                    <i class="fa-regular fa-user"></i>
+                                    <div class="Assign">
+                                        <p class="Assign-name">Subject Expert</p>
+                                    </div>
+                                </div>
+                                <select th:field="*{subjectExpertId}">
+                                    <option value="">Select Subject Expert</option>
+                                    <option th:each="user : ${subjectExperts}" th:value="${user.id}" th:text="${user.name}"></option>
+                                </select>
+                            </div>
+                            <div class="Assign-Container">
+                                <div class="Assign-left">
+                                    <i class="fa-regular fa-user"></i>
+                                    <div class="Assign">
+                                        <p class="Assign-name">Reviewer</p>
+                                        <p class="Assign-title">Will review and approve the final exam</p>
+                                    </div>
+                                </div>
+                                <select th:field="*{reviewerId}">
+                                    <option value="">Select Reviewer</option>
+                                    <option th:each="user : ${reviewers}" th:value="${user.id}" th:text="${user.name}"></option>
+                                </select>
+                            </div>
                         </div>
-
-                        <div class="Assign-Container">
-                            <div class="Assign-left">
-                                <i class="fa-regular fa-user"></i>
-                                <div class="Assign">
-                                    <p class="Assign-name">Subject Expert</p>
-                                    <p class="Assign-title"></p>
+                        <!-- Deadlines -->
+                        <div>
+                            <p style="font-size: 0.875rem; font-weight: 450;">Task Deadlines</p>
+                            <div id="Deadline-Container">
+                                <div class="Deadlines">
+                                    <p>Question Creation Deadline</p>
+                                    <input type="date" th:field="*{questionCreationDeadline}" placeholder="Pick a date">
+                                </div>
+                                <div class="Deadlines">
+                                    <p>Review Deadline</p>
+                                    <input type="date" th:field="*{reviewDeadline}" placeholder="Pick a date">
                                 </div>
                             </div>
-                            <select name="User-name" id="Expert" title="User-name">
-                                <option value="Davis">Prof.Davis</option>
-                            </select>
+                            <div id="warning">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <div id="text">
+                                    <p style="font-size: 0.75rem; font-weight: 450; color: #854D0E;">Deadline Warning</p>
+                                    <p style="font-size: 0.75rem; font-weight: 450; color: #A16207; margin-top: 0.3125rem;">
+                                        Ensure all deadlines are set before the final exam date to allow sufficient time for review and approval.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="Assign-Container">
-                            <div class="Assign-left">
-                                <i class="fa-regular fa-user"></i>
-                                <div class="Assign">
-                                    <p class="Assign-name">Reviewer</p>
-                                    <p class="Assign-title">Will review and approve the final exam</p>
+                        <!-- Notification Settings -->
+                        <div>
+                            <p style="font-size: 0.875rem; font-weight: 450;">Notification Settings</p>
+                            <div id="Notification-Container">
+                                <div class="setting">
+                                    <div class="Text-Container">
+                                        <p class="text-Title">Email Notifications</p>
+                                        <p class="text-content">Send email notifications for task assignments and updates</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" th:field="*{notifyByEmail}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting">
+                                    <div class="Text-Container">
+                                        <p class="text-Title">Deadline Reminders</p>
+                                        <p class="text-content">Send reminders as the deadline approaches</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" th:field="*{notifyDeadlineReminders}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting">
+                                    <div class="Text-Container">
+                                        <p class="text-Title">Progress Updates</p>
+                                        <p class="text-content">Notify when significant progress is made</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" th:field="*{notifyProgressUpdates}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting">
+                                    <div class="Text-Container">
+                                        <p class="text-Title">Feedback Notifications</p>
+                                        <p class="text-content">Notify when feedback is provided on the exam</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" th:field="*{notifyFeedback}">
+                                        <span class="slider"></span>
+                                    </label>
                                 </div>
                             </div>
-                            <select name="User-name" id="Reviewer" title="User-name">
-                                <option value="Brown">Dr.Brown</option>
-                            </select>
+                            <div style="margin-top: 1.25rem;">
+                                <p style="font-size: 0.875rem; font-weight: 450;">Additional Instructions</p>
+                                <input type="text" th:field="*{additionalInstructions}"
+                                    placeholder="Enter any additional instructions or notes for the assignees"
+                                    style="width: 100%; margin-top: 0.625rem;">
+                            </div>
+                        </div>
+                        <!-- Buttons -->
+                        <div id="button-container">
+                            <a th:href="@{/staff/exams/create/step2}" class="btn btn-secondary" title="Previous">
+                                <i class="fa-solid fa-chevron-left"></i> Previous
+                            </a>
+                            <button type="submit" class="btn btn-primary" title="Next">
+                                Next <i class="fa-solid fa-chevron-right"></i>
+                            </button>
                         </div>
                     </div>
-                    <div>
-                        <p style="font-size: 0.875rem; font-weight: 450;">Task Deadlines</p>
-                        <div id="Deadline-Container">
-                            <div class="Deadlines">
-                                <p>Question Creation Deadline</p>
-                                <input type="date" title="Question-Creation-Deadline" id="Question-Creation-Deadline"
-                                    placeholder="Pick a date">
-                            </div>
-                            <div class="Deadlines">
-                                <p>Review Deadline</p>
-                                <input type="date" title="Review-Deadline" id="Review-Deadline"
-                                    placeholder="Pick a date">
-                            </div>
-                        </div>
-                        <div id="warning">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                            <div id="text">
-                                <p style="font-size: 0.75rem; font-weight: 450; color: #854D0E;">Deadline Warning</p>
-                                <p style="font-size: 0.75rem; font-weight: 450; color: #A16207; margin-top: 0.3125rem;">
-                                    Ensure all deadlines are set before the final exam date to allow sufficient time for
-                                    review and approval.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <p style="font-size: 0.875rem; font-weight: 450;">Notification Settings</p>
-                        <div id="Notification-Container">
-                            <div class="setting">
-                                <div class="Text-Container">
-                                    <p class="text-Title">Email Notifications</p>
-                                    <p class="text-content">Send email notifications for task assignments and updates</p>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting">
-                                <div class="Text-Container">
-                                    <p class="text-Title">Deadline Reminders</p>
-                                    <p class="text-content">Send reminders as the deadline approaches</p>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting">
-                                <div class="Text-Container">
-                                    <p class="text-Title">Progress Updates</p>
-                                    <p class="text-content">Notify when significant progress is made</p>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting">
-                                <div class="Text-Container">
-                                    <p class="text-Title">Feedback Notifications</p>
-                                    <p class="text-content">Notify when feedback is provided on the exam</p>
-                                </div>
-                                <label class="switch">
-                                    <input type="checkbox">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div style="margin-top: 1.25rem;">
-                            <p style="font-size: 0.875rem; font-weight: 450;">Additional Instructions</p>
-                            <input type="text"
-                                placeholder="Enter any additional instructions or notes for the assignees"
-                                style="width: 100%; margin-top: 0.625rem;">
-                        </div>
-                    </div>
-
-                    <!-- khoi nut -->
-                    <div id="button-container">
-                        <button title="Cancel">
-                            <i class="fa-solid fa-chevron-left"></i>
-                            Previous
-                        </button>
-                        <button title="Next">
-                            Next
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
-
-    <!-- ma nhung header vs menu -->
-    <script>
-        // Load header
-        fetch('../header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-
-        // Load menu
-        fetch('../Menu-Staff.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-            });
-    </script>
 </body>
-
 </html>
