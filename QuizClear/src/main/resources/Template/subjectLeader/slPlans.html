@@ -15,15 +15,18 @@
 
 <body>
     <!--header-->
-    <div id="header-placeholder"></div>
+     <!-- <header class="header" th:insert="~{header_user :: header}"></header> -->
+     <div id="header-placeholder" th:insert="~{header_user :: header}"></div>
+     <div id="header-placeholder"></div>
 
 
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
+        <!-- <div class="sidebar" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div> -->
+        <div id="menu-HTML" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
         <div id="menu-HTML"></div>
-
 
         <!-- Main content -->
         <div id="main">
@@ -61,24 +64,43 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>   <!-- Nội dung load ở đây -->
+                <tbody> <!-- Nội dung load ở đây -->
                     <tr th:each="plan : ${plans}">
-                        <td th:text="${plan.id}"></td>
-
-                    </tr>
-                        <td>DB202</td>
-                        <td>Database Systems</td>
-                        <td>50</td>
-                        <td>15 Reg
-                            20 Comp
-                            10 Bas App
-                            5 Adv App</td>
-                        <td>22/04/25</td>
+                        <td th:text="${plan.planId}">Plan ID</td>
+                        <td th:text="${plan.planName}">Plan Name</td>
+                        <td th:text="${plan.totalQuestions}">Total Questions</td>
                         <td>
-                            <div class="status-btn-acp">Accepted</div>
+                            <span th:text="'Reg: ' + ${plan.totalRecognition}"></span><br />
+                            <span th:text="'Comp: ' + ${plan.totalComprehension}"></span><br />
+                            <span th:text="'Bas App: ' + ${plan.totalBasicApplication}"></span><br />
+                            <span th:text="'Adv App: ' + ${plan.totalAdvancedApplication}"></span>
                         </td>
-                        <td></td>
+                        <td th:text="${#temporals.format(plan.dueDate, 'dd/MM/yy')}">Due Date</td>
+                        <td>
+                            <div th:switch="${plan.status}">
+                                <div th:case="'NEW'" class="status-btn-new">New</div>
+                                <div th:case="'ACCEPTED'" class="status-btn-acp">Accepted</div>
+                                <div th:case="*">Other</div>
+                            </div>
                         </td>
+                        <td>
+                            <!-- Ví dụ nút hành động -->
+                            <button>View</button>
+                        </td>
+                    </tr>
+                    <!-- <td>DB202</td>
+                    <td>Database Systems</td>
+                    <td>50</td>
+                    <td>15 Reg
+                        20 Comp
+                        10 Bas App
+                        5 Adv App</td>
+                    <td>22/04/25</td>
+                    <td>
+                        <div class="status-btn-acp">Accepted</div>
+                    </td>
+                    <td></td>
+                    </td>
                     </tr>
                     <tr>
                         <td>DB202</td>
@@ -160,7 +182,7 @@
                         <td>
                             <i class="fa-regular fa-circle-check" style="color: green"></i>
                         </td>
-                    </tr>
+                    </tr> -->
                 </tbody>
         </div>
 

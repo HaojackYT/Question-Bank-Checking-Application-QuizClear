@@ -3,6 +3,8 @@ package com.uth.quizclear.controller;
 import com.uth.quizclear.model.dto.QuestionFeedbackDTO;
 import com.uth.quizclear.model.dto.QuestionFeedbackDetailDTO;
 import com.uth.quizclear.service.SubjectLeaderFeedbackService;
+import com.uth.quizclear.model.dto.SL_PlanDTO;
+import com.uth.quizclear.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,9 @@ public class SubjectLeaderController {
     
     @Autowired
     private SubjectLeaderFeedbackService feedbackService;
+
+    @Autowired
+    private PlanService planService;
     
     // View pages
     @GetMapping("/dashboard")
@@ -34,6 +39,9 @@ public class SubjectLeaderController {
     @GetMapping("/plans")
     public String plansPage(HttpSession session, Model model) {
         Long userId = 3L;
+        // Load list of plans for the subject leader
+        List<SL_PlanDTO> plans = planService.getSLPlan();
+        model.addAttribute("plans", plans);
         model.addAttribute("userId", userId);
         return "subjectLeader/slPlans";
     }
