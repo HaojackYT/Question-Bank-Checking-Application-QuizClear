@@ -31,7 +31,6 @@ public class ProcessingLogService {
     public void saveProcessingLog(DuplicateDetection detection, DuplicateDetectionAction action, 
                                   String feedback, Long processorId) {
         try {
-            System.out.println("=== SAVING PROCESSING LOG (NEW TRANSACTION) ===");              // Lấy thông tin chi tiết câu hỏi mới (duplicate) để lưu log
             String newQuestionContent = "Unknown";
             String newCourseName = "Unknown";
             String newCreatorName = "Unknown";
@@ -54,7 +53,6 @@ public class ProcessingLogService {
                         newCreatorName = newQuestionInfo[2] != null ? newQuestionInfo[2].toString() : "Unknown";
                     }
                 }
-                  System.out.println("New question loaded: " + newQuestionContent.substring(0, Math.min(50, newQuestionContent.length())));
                 
             } catch (Exception e) {
                 System.err.println("Error getting new question details: " + e.getMessage());
@@ -89,8 +87,6 @@ public class ProcessingLogService {
             // Force flush to ensure data is written
             entityManager.flush();
             
-            System.out.println("Processing log saved successfully. Rows affected: " + rowsAffected);
-            System.out.println("Log message: " + logMessage);
             
         } catch (Exception e) {
             System.err.println("Error saving processing log: " + e.getMessage());

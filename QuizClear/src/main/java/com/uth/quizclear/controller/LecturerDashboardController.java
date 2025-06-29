@@ -77,33 +77,5 @@ public class LecturerDashboardController {
             return ResponseEntity.status(403).body("Access denied: Not lecturer or not logged in");
         }
         return ResponseEntity.ok("Welcome to Lecturer Dashboard! UserId: " + userId);
-    }
+    }}
 
-    // Temporary test endpoint for debugging
-    @GetMapping("/test-stats")
-    public ResponseEntity<LecturerDashboardStatsDTO> getTestStats() {
-        logger.info("Test stats API called (no session required)");
-        // Use hardcoded userId = 1 (Ash Abrahams - Lecturer)
-        LecturerDashboardStatsDTO stats = lecturerDashboardService.getStats(1L);
-        logger.info("Test stats retrieved: {}", stats);
-        return ResponseEntity.ok(stats);
-    }
-
-    @GetMapping("/test-tasks")
-    public ResponseEntity<List<LecturerDashboardTaskDTO>> getTestTasks() {
-        logger.info("Test tasks API called (no session required)");
-        // Use hardcoded userId = 1 (Ash Abrahams - Lecturer)
-        List<LecturerDashboardTaskDTO> tasks = lecturerDashboardService.getCurrentTasks(1L);
-        logger.info("Test tasks retrieved: {}", tasks);
-        return ResponseEntity.ok(tasks);
-    }
-
-    @GetMapping("/test-activities")
-    public ResponseEntity<List<LecturerDashboardActivityDTO>> getTestActivities() {
-        logger.info("Test activities API called (no session required)");
-        // Use hardcoded userId = 1 (Ash Abrahams - Lecturer)
-        List<LecturerDashboardActivityDTO> activities = lecturerDashboardService.getRecentActivities(1L);
-        logger.info("Test activities retrieved: {}", activities);
-        return ResponseEntity.ok(activities);
-    }
-}

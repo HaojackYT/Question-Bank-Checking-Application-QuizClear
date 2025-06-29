@@ -4,8 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>QuizClear - Login</title>
-        <link rel="stylesheet" href="../static/login.css">
-        <link rel="stylesheet" th:href="@{/static/login.css}">
+        <link rel="stylesheet" th:href="@{/Static/login.css}">
     </head>
     <body>
         <div class="container">
@@ -27,9 +26,13 @@
                     <h1 class="login-header">Login</h1>
                 </div>
 
-                <form class="login-form" id="loginForm">
+                <form class="login-form" id="loginForm" method="post" action="/login">
+                <!-- Hiển thị thông báo lỗi khi đăng nhập sai -->
+                <div id="login-error" style="display:none; color:red; text-align:center; margin-bottom:10px;">
+                    Đăng nhập thất bại. Vui lòng kiểm tra lại email và mật khẩu!
+                </div>
                     <div class="input-group">
-                        <input type="email" id="email" name="email"
+                        <input type="text" id="username" name="username"
                             placeholder="Enter email" class="input-field"
                             required>
                     </div>
@@ -60,8 +63,6 @@
                     </div>
                     <button type="submit" class="login-btn"
                         id="loginBtn">Login</button>
-                    <div id="errorMessage" class="error-message"
-                        style="display: none;"></div>
                     <div class="forgot">
                         Forgot your <a href="#"
                             class="password-link">password</a> ?
@@ -82,8 +83,7 @@
                     </span>
                 </div>
                 <div class="support">Support</div>
-            </div>
-        </div>
+            </div>        </div>
 
         <div id="forgot-modal-overlay" class="modal-overlay"></div>
         <div id="forgot-modal" class="modal">
@@ -127,6 +127,12 @@
         </div>
 
         <script>
+            // Hiển thị lỗi nếu có ?error=true trên URL
+            (function() {
+                if (window.location.search.includes('error=true')) {
+                    document.getElementById('login-error').style.display = 'block';
+                }
+            })();
             // Toggle password visibility
             const togglePassword = document.querySelector('.toggle-password');
             const passwordInput = document.querySelector('.password-input');
@@ -140,57 +146,8 @@
                 eyeOn.style.display = type === 'password' ? 'none' : 'block';
             });
 
-            // Login form submission
-            document.getElementById('loginForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                const loginBtn = document.getElementById('loginBtn');
-                const errorMessage = document.getElementById('errorMessage');
-                console.log('Login attempt:', { email, password });
-                loginBtn.textContent = 'Logging in...';
-                loginBtn.disabled = true;
-                errorMessage.style.display = 'none';
-
-                try {
-                    const response = await fetch('api/auth/login', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email, password }),
-                        credentials: 'include'
-                    });
-                    const data = await response.json();
-                    if (data.success) {
-                        localStorage.setItem('user', JSON.stringify(data.user));
-                        localStorage.setItem('isLoggedIn', 'true');
-                        loginBtn.textContent = 'Success! Redirecting...';
-                        loginBtn.style.backgroundColor = '#28a745';                        setTimeout(() => {
-                            let dashboardMap = {
-                                "/staff-dashboard": "/staff/dashboard",
-                                "/lecturer-dashboard": "/lecturer-dashboard",
-                                "/sl-dashboard": "/sl-dashboard",
-                                "/hed-dashboard": "/hed-dashboard",
-                                "/hoe-dashboard": "/hoe-dashboard"
-                            };
-                            let dashboardUrl = dashboardMap[data.redirectUrl] || "/login";
-                            window.location.href = dashboardUrl;
-                        }, 1000);
-                    } else {
-                        errorMessage.textContent = data.message;
-                        errorMessage.style.display = 'block';
-                    }
-                } catch (error) {
-                    console.error('Login error:', error);
-                    errorMessage.textContent = 'Network error. Please check your connection and try again.';
-                    errorMessage.style.display = 'block';
-                } finally {
-                    if (loginBtn.textContent !== 'Success! Redirecting...') {
-                        loginBtn.textContent = 'Login';
-                        loginBtn.disabled = false;
-                        loginBtn.style.backgroundColor = '';
-                    }
-                }
-            });
+            // Login form submission (AJAX) đã bị loại bỏ để dùng Spring Security form login chuẩn
+            // Nếu muốn xử lý lỗi login đẹp hơn, có thể dùng Thymeleaf để hiển thị lỗi từ server
 
             // Modal functionality
             const forgotLink = document.querySelector('.password-link');
@@ -340,30 +297,7 @@
                         submitBtn.textContent = newPasswordGroup.style.display === 'block' ? 'Xác nhận đặt lại' : 'Đặt lại mật khẩu';
                         submitBtn.disabled = false;
                     }
-                }
-            });
-
-            // Quick fill functionality
-            document.querySelectorAll('.test-accounts div').forEach(div => {
-                if (div.innerHTML.includes('@')) {
-                    div.style.cursor = 'pointer';
-                    div.title = 'Nhấp đúp để tự động điền';
-                    div.addEventListener('dblclick', function() {
-                        const text = this.textContent;
-                        const emailMatch = text.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-                        const passwordMatch = text.match(/(hash_[a-zA-Z0-9]+)/);
-                        
-                        if (emailMatch && passwordMatch) {
-                            document.getElementById('email').value = emailMatch[1];
-                            document.getElementById('password').value = passwordMatch[1];
-                            this.style.backgroundColor = '#d4edda';
-                            setTimeout(() => {
-                                this.style.backgroundColor = '';
-                            }, 1000);
-                        }
-                    });
-                }
-            });
+                }            });
         </script>
     </body>
 </html>

@@ -1,49 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Dữ liệu mẫu (thường sẽ được lấy từ API)
-    let assignmentsData = [
-        {
-            id: 1,
-            lecturer: "Nguyen Van A",
-            department: "IT",
-            subject: "Database",
-            totalQues: 20,
-            diffLevels: "Reg",
-            clos: "CLO1, CLO2",
-            assignDate: "2024-04-25",
-            dueDate: "2024-04-25",
-            progress: "100%",
-            status: "Completed",
-            notes: "Bài tập đã được hoàn thành đúng hạn."
-        },
-        {
-            id: 2,
-            lecturer: "Nguyen Van B",
-            department: "Business",
-            subject: "Web Development",
-            totalQues: 40,
-            diffLevels: "Comp",
-            clos: "CLO1",
-            assignDate: "2024-04-25",
-            dueDate: "2024-05-10",
-            progress: "50%",
-            status: "In Prog.",
-            notes: "Cần xem xét lại các câu hỏi khó."
-        },
-        {
-            id: 3,
-            lecturer: "Nguyen Van B",
-            department: "IT",
-            subject: "Basic Application",
-            totalQues: 50,
-            diffLevels: "Bas App",
-            clos: "CLO2",
-            assignDate: "2024-04-20",
-            dueDate: "2024-05-05",
-            progress: "0%",
-            status: "Not started",
-            notes: "Giảng viên chưa bắt đầu."
-        }
-    ];
+    // Global scope variables for user context
+    let currentUserScope = {
+        userId: null,
+        userRole: null,
+        accessibleDepartmentIds: [],
+        accessibleSubjectIds: [],
+        canAssignToAll: false
+    };
+
+    // Initialize user scope from backend
+    initializeUserScope();
+
+    // Enhanced assignments data structure for scope filtering
+    let assignmentsData = [];
 
     // Lấy các phần tử Modal và Nút đóng chung
     const modals = document.querySelectorAll('.modal');
@@ -227,13 +196,13 @@ function openModal(modalElement) {
     }
 
     // --- Hàm render bảng để cập nhật động dữ liệu ---
-    function renderAssignmentsTable() {
+    function renderAssignmentsTable(filteredData = assignmentsData) {
         const tableBody = document.querySelector('.assignment-table tbody');
         if (!tableBody) return;
 
         tableBody.innerHTML = ''; // Xóa nội dung hiện có
 
-        assignmentsData.forEach(assignment => {
+        filteredData.forEach(assignment => {
             const row = document.createElement('tr');
             row.dataset.id = assignment.id;
 
@@ -344,6 +313,239 @@ function openModal(modalElement) {
     }
 
 
-    // Khởi tạo bảng khi tải trang lần đầu
-    renderAssignmentsTable();
+    // Initialize user scope and load assignments
+    async function initializeUserScope() {
+        try {
+            const response = await fetch('/api/user/current-scope', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                currentUserScope = await response.json();
+                console.log('User scope initialized:', currentUserScope);
+                await loadAssignments();
+                await loadLecturersAndSubjects();
+            } else {
+                console.error('Failed to load user scope');
+                // Fallback to load all data without filtering
+                await loadAssignments();
+            }
+        } catch (error) {
+            console.error('Error initializing user scope:', error);
+            await loadAssignments();
+        }
+    }
+
+    // Enhanced load assignments with scope filtering
+    async function loadAssignments() {
+        try {
+            const params = new URLSearchParams();
+            
+            // Add scope filtering parameters
+            if (currentUserScope.accessibleDepartmentIds.length > 0) {
+                params.append('departmentIds', currentUserScope.accessibleDepartmentIds.join(','));
+            }
+            if (currentUserScope.accessibleSubjectIds.length > 0) {
+                params.append('subjectIds', currentUserScope.accessibleSubjectIds.join(','));
+            }
+            params.append('requestingUserId', currentUserScope.userId);
+            params.append('userRole', currentUserScope.userRole);
+
+            const response = await fetch(`/api/assignments/question-assignments?${params}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                assignmentsData = await response.json();
+                renderAssignmentsTable();
+            } else {
+                console.error('Failed to load assignments');
+                // Use fallback sample data if API fails
+                loadSampleData();
+            }
+        } catch (error) {
+            console.error('Error loading assignments:', error);
+            loadSampleData();
+        }
+    }
+
+    // Load lecturers and subjects filtered by scope
+    async function loadLecturersAndSubjects() {
+        try {
+            // Load lecturers within scope
+            const lecturersResponse = await fetch(`/api/users/lecturers?departmentIds=${currentUserScope.accessibleDepartmentIds.join(',')}&subjectIds=${currentUserScope.accessibleSubjectIds.join(',')}&requestingUserId=${currentUserScope.userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (lecturersResponse.ok) {
+                const lecturers = await lecturersResponse.json();
+                populateLecturerDropdowns(lecturers);
+            }
+
+            // Load subjects within scope
+            const subjectsResponse = await fetch(`/api/subjects?departmentIds=${currentUserScope.accessibleDepartmentIds.join(',')}&requestingUserId=${currentUserScope.userId}&userRole=${currentUserScope.userRole}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (subjectsResponse.ok) {
+                const subjects = await subjectsResponse.json();
+                populateSubjectDropdowns(subjects);
+            }
+        } catch (error) {
+            console.error('Error loading lecturers and subjects:', error);
+        }
+    }
+
+    // Populate lecturer dropdowns with scope-filtered data
+    function populateLecturerDropdowns(lecturers) {
+        const lecturerSelects = document.querySelectorAll('select[name="lecturer"], #editLecturer, #newAssignLecturer');
+        
+        lecturerSelects.forEach(select => {
+            // Clear existing options except the first one (placeholder)
+            while (select.children.length > 1) {
+                select.removeChild(select.lastChild);
+            }
+
+            lecturers.forEach(lecturer => {
+                // Only show lecturers within scope
+                if (isLecturerInScope(lecturer)) {
+                    const option = document.createElement('option');
+                    option.value = lecturer.userId;
+                    option.textContent = `${lecturer.fullName} (${lecturer.departmentName})`;
+                    option.dataset.departmentId = lecturer.departmentId;
+                    option.dataset.subjectIds = lecturer.subjectIds ? lecturer.subjectIds.join(',') : '';
+                    select.appendChild(option);
+                }
+            });
+        });
+    }
+
+    // Populate subject dropdowns with scope-filtered data
+    function populateSubjectDropdowns(subjects) {
+        const subjectSelects = document.querySelectorAll('select[name="subject"], #editSubject, #newAssignSubject');
+        
+        subjectSelects.forEach(select => {
+            // Clear existing options except the first one (placeholder)
+            while (select.children.length > 1) {
+                select.removeChild(select.lastChild);
+            }
+
+            subjects.forEach(subject => {
+                // Only show subjects within scope
+                if (isSubjectInScope(subject)) {
+                    const option = document.createElement('option');
+                    option.value = subject.subjectId;
+                    option.textContent = `${subject.subjectName} (${subject.subjectCode}) - ${subject.departmentName}`;
+                    option.dataset.departmentId = subject.departmentId;
+                    option.dataset.credits = subject.credits;
+                    select.appendChild(option);
+                }
+            });
+        });
+    }
+
+    // Check if lecturer is within current user scope
+    function isLecturerInScope(lecturer) {
+        if (currentUserScope.canAssignToAll) return true;
+        
+        // Check department scope
+        const hasDepartmentAccess = currentUserScope.accessibleDepartmentIds.length === 0 || 
+                                   currentUserScope.accessibleDepartmentIds.includes(lecturer.departmentId);
+        
+        // Check subject scope
+        const hasSubjectAccess = currentUserScope.accessibleSubjectIds.length === 0 ||
+                                lecturer.subjectIds.some(subjectId => 
+                                    currentUserScope.accessibleSubjectIds.includes(subjectId));
+        
+        return hasDepartmentAccess && hasSubjectAccess;
+    }
+
+    // Check if subject is within current user scope
+    function isSubjectInScope(subject) {
+        if (currentUserScope.canAssignToAll) return true;
+        
+        // Check department scope
+        const hasDepartmentAccess = currentUserScope.accessibleDepartmentIds.length === 0 || 
+                                   currentUserScope.accessibleDepartmentIds.includes(subject.departmentId);
+        
+        // Check subject scope
+        const hasSubjectAccess = currentUserScope.accessibleSubjectIds.length === 0 ||
+                                currentUserScope.accessibleSubjectIds.includes(subject.subjectId);
+        
+        return hasDepartmentAccess && hasSubjectAccess;
+    }
+
+    // Enhanced filter function with scope consideration
+    function filterAssignments() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const departmentFilter = document.getElementById('departmentFilter').value;
+        const statusFilter = document.getElementById('statusFilter').value;
+        
+        let filteredData = assignmentsData.filter(assignment => {
+            // Basic filters
+            const matchesSearch = assignment.lecturer.toLowerCase().includes(searchTerm) ||
+                                assignment.subject.toLowerCase().includes(searchTerm);
+            const matchesDepartment = !departmentFilter || assignment.departmentId == departmentFilter;
+            const matchesStatus = !statusFilter || assignment.status === statusFilter;
+            
+            // Scope filtering - ensure assignment is within user's scope
+            const withinScope = isAssignmentInScope(assignment);
+            
+            return matchesSearch && matchesDepartment && matchesStatus && withinScope;
+        });
+        
+        renderAssignmentsTable(filteredData);
+    }
+
+    // Check if assignment is within current user scope
+    function isAssignmentInScope(assignment) {
+        if (currentUserScope.canAssignToAll) return true;
+        
+        const hasDepartmentAccess = currentUserScope.accessibleDepartmentIds.length === 0 || 
+                                   currentUserScope.accessibleDepartmentIds.includes(assignment.departmentId);
+        
+        const hasSubjectAccess = currentUserScope.accessibleSubjectIds.length === 0 ||
+                                currentUserScope.accessibleSubjectIds.includes(assignment.subjectId);
+        
+        return hasDepartmentAccess && hasSubjectAccess;
+    }
+
+    // Fallback sample data for development/testing
+    function loadSampleData() {
+        assignmentsData = [
+            {
+                id: 1,
+                lecturer: "Nguyen Van A",
+                lecturerId: 1,
+                department: "IT",
+                departmentId: 1,
+                subject: "Database",
+                subjectId: 1,
+                totalQues: 20,
+                diffLevels: "Reg",
+                clos: "CLO1, CLO2",
+                assignDate: "2024-04-25",
+                dueDate: "2024-04-25",
+                progress: "100%",
+                status: "Completed",
+                notes: "Bài tập đã được hoàn thành đúng hạn.",
+                canEdit: true,
+                canDelete: false
+            },
+            // Add more sample data as needed
+        ];
+        renderAssignmentsTable();
+    }
 });

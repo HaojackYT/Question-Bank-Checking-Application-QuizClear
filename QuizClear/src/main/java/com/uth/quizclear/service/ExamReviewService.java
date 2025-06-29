@@ -85,7 +85,7 @@ public class ExamReviewService {
     } // HED methods for approval workflow
 
     public List<com.uth.quizclear.model.dto.ExamSummaryDTO> getPendingExamsForApproval() {
-        // Chỉ dùng database, không có mock data backup
+        // Database query only
         List<Exam> pendingExams = examRepository.findAll();
         List<com.uth.quizclear.model.dto.ExamSummaryDTO> result = new ArrayList<>();
         for (Exam exam : pendingExams) {

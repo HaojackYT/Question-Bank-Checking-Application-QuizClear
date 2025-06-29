@@ -48,3 +48,4 @@ public class ProfileController {
         return "HED_Profile";
     }
 }
+

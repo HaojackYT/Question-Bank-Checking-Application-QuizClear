@@ -20,33 +20,26 @@ public class HEDStaticRepository {
     private CourseRepository courseRepository;
     @Autowired
     private UserRepository userRepository;    public Map<String, Object> getStatisticsData() {
-        System.out.println("=== HEDStaticRepository.getStatisticsData called ===");
         Map<String, Object> data = new HashMap<>();
         
         // Tổng số câu hỏi trong bảng questions
         long totalQuestions = questionRepository.count();
-        System.out.println("Total questions from DB: " + totalQuestions);
         
         // Số câu hỏi đã chấp nhận (status = APPROVED)
         long approvedQuestions = questionRepository.findByStatus(QuestionStatus.APPROVED).size();
-        System.out.println("Approved questions from DB: " + approvedQuestions);
         
         // Số câu hỏi đã gửi (status = SUBMITTED) - Pending
         long pendingQuestions = questionRepository.findByStatus(QuestionStatus.SUBMITTED).size();
-        System.out.println("Pending questions from DB: " + pendingQuestions);
         
         // Số câu hỏi đã từ chối (status = REJECTED) - Reject  
         long rejectedQuestions = questionRepository.findByStatus(QuestionStatus.REJECTED).size();
-        System.out.println("Rejected questions from DB: " + rejectedQuestions);
         
         // Số câu hỏi được thêm vào trong tháng này
         LocalDateTime startOfMonth = java.time.LocalDate.now().withDayOfMonth(1).atStartOfDay();
         long questionChange = questionRepository.findByCreatedAtBetween(startOfMonth, LocalDateTime.now()).size();
-        System.out.println("Questions this month from DB: " + questionChange);
         
         // Tỉ lệ câu hỏi được chấp nhận trên tổng số câu hỏi
         double approvedPercentage = totalQuestions > 0 ? (approvedQuestions * 100.0 / totalQuestions) : 0;
-        System.out.println("Approved percentage calculated: " + approvedPercentage);
         
         data.put("totalQuestions", totalQuestions);
         data.put("approvedQuestions", approvedQuestions);

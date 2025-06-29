@@ -1,20 +1,74 @@
 package com.uth.quizclear.controller;
 
-import com.uth.quizclear.model.dto.UserBasicDTO;
-import com.uth.quizclear.model.entity.User;
-import com.uth.quizclear.model.enums.UserRole;
-import com.uth.quizclear.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.ResponseEntity;
+
+import java.util.*;
 
 @Controller
 public class WebPageController {
+    // ========== UNIVERSAL ENDPOINTS TO PREVENT 404 FOR FRAGMENTS, MENUS, WS, SL DASHBOARD ===========
 
-    @Autowired
-    private UserRepository userRepository;
+    // Universal mapping for header_user.html fragment (for all roles)
+    @GetMapping({"/header_user.html", "/Static/header_user.html", "/Template/header_user.html"})
+    public String headerUser() {
+        return "header_user";
+    }
+
+    // Universal mapping for Menu-Staff.html (for all staff menus)
+    @GetMapping({"/Menu-Staff.html", "/Static/Menu-Staff.html", "/Template/Menu-Staff.html"})
+    public String menuStaff() {
+        return "Menu-Staff";
+    }
+
+    // Universal mapping for Menu-SL.html (Subject Leader menu)
+    @GetMapping({"/Menu-SL.html", "/Static/Menu-SL.html", "/Template/Menu-SL.html"})
+    public String menuSL() {
+        return "subjectLeader/Menu-SL";
+    }
+
+    // Universal mapping for websocket fallback (avoid 404 for /ws/ws)
+    @GetMapping({"/ws/ws"})
+    public void wsFallback() {
+        // No-op for websocket endpoint, avoid 404 log spam
+    }
+
+    // Subject Leader dashboard API endpoints (prevent 404)
+    @GetMapping("/api/dashboard/sl/stats")
+    @ResponseBody
+    public Map<String, Object> slStats() {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("pendingAssignments", 0);
+        stats.put("activeLecturers", 0);
+        stats.put("questionsNeedReview", 0);
+        stats.put("completionRate", 0);
+        stats.put("overallProgress", 72);
+        return stats;
+    }
+
+    @GetMapping("/api/dashboard/sl/activities")
+    @ResponseBody
+    public List<Map<String, Object>> slActivities() {
+        List<Map<String, Object>> activities = new ArrayList<>();
+        Map<String, Object> a = new HashMap<>();
+        a.put("title", "Assign question for Object Oriented Programming");
+        a.put("time", "3:00 PM");
+        activities.add(a);
+        return activities;
+    }
+
+    @GetMapping("/api/dashboard/sl/chart-data")
+    @ResponseBody
+    public Map<String, Object> slChartData() {
+        Map<String, Object> chart = new HashMap<>();
+        chart.put("progress", 72);
+        return chart;
+    }
+    // ...existing code...
 
     // ========== CODE CŨ CỦA BẠN - GIỮ NGUYÊN ===========
 
@@ -51,178 +105,202 @@ public class WebPageController {
         return "Staff/staffLogs";
     }
 
-    @GetMapping("/Static/header_user.html")
-    public String headerUser() {
-        return "header_user";
-    }
-
-    @GetMapping("/Static/Menu-Staff.html")
-    public String menuStaff() {
-        return "Menu-Staff";
-    }
-
-    @GetMapping("/Template/Menu-Staff.html")
-    public String templateMenuStaff() {
-        return "Menu-Staff";
-    }
+    // ...existing code...
 
     // ========== THÊM MỚI CHO LOGIN SYSTEM ==========
 
     @GetMapping("/login")
-    public String loginPage(HttpSession session) {
-        // If user is already logged in, redirect to appropriate dashboard
-        UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
-        if (user != null) {
-            String role = user.getRole();
-            switch (role) {
-                case "RD":
-                    return "redirect:/staff-dashboard";
-                case "HoD":
-                    return "redirect:/hed-dashboard";
-                case "SL":
-                    return "redirect:/sl-dashboard";
-                case "Lec":
-                    return "redirect:/lecturer-dashboard";
-                case "HoED":
-                    return "redirect:/hoe-dashboard";
-                default:
-                    // Invalid role, clear session and redirect to login
-                    session.invalidate();
-                    return "redirect:/login";
-            }
-        }
+    public String loginPage() {
+        // Nếu đã login, Spring Security sẽ tự redirect về /dashboard
+        // Nếu chưa login, trả về trang login
         return "login";
     }
 
-    @GetMapping("/staff-dashboard")
-    public String staffDashboard(HttpSession session, Model model) {
-        if (!isAuthorized(session, "RD")) {
+    // Trung gian: sau khi login thành công, Spring Security sẽ chuyển về đây
+    @GetMapping("/dashboard")
+    public String dashboardRedirect(org.springframework.security.core.Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
-        UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
-        model.addAttribute("user", user);
-        return "staffDashboard"; // This will look for templates/staffDashboard.html
+        
+        // Get all authorities (roles) and normalize
+        java.util.Set<String> roles = new java.util.HashSet<>();
+        authentication.getAuthorities().forEach(a -> {
+            String r = a.getAuthority();
+            // Remove ROLE_ prefix if exists
+            if (r.startsWith("ROLE_")) r = r.substring(5);
+            roles.add(r);
+        });
+        
+        // Priority-based role hierarchy - matches database format (UPPERCASE)
+        if (roles.contains("RD")) {
+            return "redirect:/staff-dashboard";
+        }
+        if (roles.contains("HOD")) {
+            return "redirect:/hed-dashboard";
+        }
+        if (roles.contains("SL")) {
+            return "redirect:/sl-dashboard";
+        }
+        if (roles.contains("LEC")) {
+            return "redirect:/lecturer-dashboard";
+        }
+        if (roles.contains("HOED")) {
+            return "redirect:/hoe-dashboard";
+        }        
+        return "redirect:/login?error=unknown_role";
+    }
+
+    @GetMapping("/staff-dashboard")
+    public String staffDashboard(org.springframework.security.core.Authentication authentication, Model model) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        boolean isStaff = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("RD") || auth.equals("ROLE_RD");
+                });        if (!isStaff) {
+            return dashboardRedirect(authentication);
+        }
+        model.addAttribute("userEmail", authentication.getName());
+        return "Staff/staffDashboard";
     }
 
     @GetMapping("/hed-dashboard")
-    public String hedDashboard(HttpSession session, Model model) {
-        // Simple mock user for now
-        UserBasicDTO user = new UserBasicDTO();
-        user.setUserId(1L);
-        user.setFullName("HED User");
-        user.setEmail("hed@test.com");
-        user.setRole("HoD");
-        user.setDepartment("Computer Science");
-        model.addAttribute("user", user);
+    public String hedDashboard(org.springframework.security.core.Authentication authentication, Model model) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        boolean isHod = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("HOD") || auth.equals("ROLE_HOD");                });
+        if (!isHod) {
+            return dashboardRedirect(authentication);
+        }
+        model.addAttribute("userEmail", authentication.getName());
         return "HEAD_OF_DEPARTMENT/HED_Dashboard";
     }
 
     @GetMapping("/hed-approve-questions")
     public String hedApproveQuestions(HttpSession session, Model model) {
         // TODO: Implement proper authentication when ready
-        // For now, use first HoD user from database
-        UserBasicDTO user = getUserFromDatabase("HoD");
-        model.addAttribute("user", user);
         return "HEAD_OF_DEPARTMENT/HED_ApproveQuestion";
     }
 
     @GetMapping("/hed-join-task")
     public String hedJoinTask(HttpSession session, Model model) {
         // TODO: Implement proper authentication when ready
-        // For now, use first HoD user from database
-        UserBasicDTO user = getUserFromDatabase("HoD");
-        model.addAttribute("user", user);
         return "HEAD_OF_DEPARTMENT/HED_JoinTask";
     }
 
     @GetMapping("/sl-dashboard")
-    public String slDashboard(HttpSession session, Model model) {
-        if (!isAuthorized(session, "SL")) {
+    public String slDashboard(org.springframework.security.core.Authentication authentication, Model model) {
+        
+        if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
-        UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
-        model.addAttribute("user", user);
-        return "slDashboard"; // This will look for templates/slDashboard.html
+        boolean isSL = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("SL") || auth.equals("ROLE_SL");
+                });
+        if (!isSL) {
+            
+            return dashboardRedirect(authentication);
+        }
+        model.addAttribute("userEmail", authentication.getName());
+        return "subjectLeader/slDashboard";
     }
 
     @GetMapping("/lecturer-dashboard")
-    public String lecturerDashboard(HttpSession session, Model model) {
-        System.out.println("DEBUG: Accessing /lecturer-dashboard");
-
-        // Check if user is logged in
-        UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
-        if (user == null) {
-            System.out.println("DEBUG: No user in session, redirecting to login");
+    public String lecturerDashboard(org.springframework.security.core.Authentication authentication, Model model) {
+        
+        if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
+        }        boolean isLec = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC");
+                });
+        if (!isLec) {
+            
+            return dashboardRedirect(authentication);
         }
-
-        System.out.println("DEBUG: User role is: '" + user.getRole() + "'");
-
-        if (!isAuthorized(session, "Lec")) {
-            System.out.println("DEBUG: User not authorized for Lecturer role");
-            return "redirect:/login";
-        }
-
-        model.addAttribute("user", user);
-        System.out.println("DEBUG: Returning Lecturer/lecturerDashboard template for user: " + user.getFullName());
-        return "Lecturer/lecturerDashboard"; // This will look for templates/Lecturer/lecturerDashboard.html
+        model.addAttribute("userEmail", authentication.getName());
+        return "Lecturer/lecturerDashboard";
     }
 
     @GetMapping("/hoe-dashboard")
-    public String hoeDashboard(HttpSession session, Model model) {
-        System.out.println("DEBUG: Accessing /hoe-dashboard");
-
-        // Check if user is logged in
-        UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
-        if (user == null) {
-            System.out.println("DEBUG: No user in session, redirecting to login");
+    public String hoeDashboard(org.springframework.security.core.Authentication authentication, Model model) {
+        
+        if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
-        // Check if user has correct role
-        if (!"HOED".equals(user.getRole())) {
-            System.out.println("DEBUG: User role is " + user.getRole() + ", not HOED");
-            return "redirect:/login";
+        boolean isHOED = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("HOED") || auth.equals("ROLE_HOED");
+                });
+        if (!isHOED) {
+            
+            return dashboardRedirect(authentication);
         }
-
-        model.addAttribute("user", user);
-        System.out.println("DEBUG: Returning HOE_Dashboard template for user: " + user.getFullName());
+        model.addAttribute("userEmail", authentication.getName());
         return "Head of Examination Department/HOE_Dashboard";
     }
 
     @GetMapping("/hoe-review-assignment")
-    public String hoeReviewAssignment(HttpSession session, Model model) {
-        // Check if user is logged in and has correct role
-        if (!isAuthorized(session, "HOED")) {
+    public String hoeReviewAssignment(org.springframework.security.core.Authentication authentication, Model model) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
-        UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
-        model.addAttribute("user", user);
+        boolean isHOED = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("HOED") || auth.equals("ROLE_HOED");
+                });
+        if (!isHOED) {
+            return dashboardRedirect(authentication);
+        }
+        model.addAttribute("userEmail", authentication.getName());
         return "Head of Examination Department/HOE_ReviewAssignment";
     }
 
     @GetMapping("/hoe-approval")
-    public String hoeApproval(HttpSession session, Model model) {
-        // Check if user is logged in and has correct role
-        if (!isAuthorized(session, "HOED")) {
+    public String hoeApproval(org.springframework.security.core.Authentication authentication, Model model) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
-        UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
-        model.addAttribute("user", user);
+        boolean isHOED = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("HOED") || auth.equals("ROLE_HOED");
+                });
+        if (!isHOED) {
+            return dashboardRedirect(authentication);
+        }
+        model.addAttribute("userEmail", authentication.getName());
         return "Head of Examination Department/HOE_Approval";
     }
 
     @GetMapping("/hoe-new-assign")
-    public String hoeNewAssign(HttpSession session, Model model) {
-        // Check if user is logged in and has correct role
-        if (!isAuthorized(session, "HOED")) {
+    public String hoeNewAssign(org.springframework.security.core.Authentication authentication, Model model) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
-        UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
-        model.addAttribute("user", user);
+        boolean isHOED = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("HOED") || auth.equals("ROLE_HOED");
+                });
+        if (!isHOED) {
+            return dashboardRedirect(authentication);
+        }
+        model.addAttribute("userEmail", authentication.getName());
         return "Head of Examination Department/HOE_Newassign";
-    }
-
-    // Menu endpoint for HOE
+    }    // Menu endpoint for HOE
     @GetMapping("/Template/Head of Examination Department/Menu-ExaminationDepartment.html")
     public String hoeMenu() {
         return "Head of Examination Department/Menu-ExaminationDepartment";
@@ -232,122 +310,289 @@ public class WebPageController {
     @GetMapping("/Template/HEAD_OF_DEPARTMENT/Menu-HED.html")
     public String hedMenu() {
         return "HEAD_OF_DEPARTMENT/Menu-HED";
-    } // ========== HELPER METHODS CHO LOGIN ==========
-
-    private boolean isAuthorized(HttpSession session, String requiredRole) {
-        UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
-        boolean authorized = user != null && user.getRole() != null && user.getRole().equalsIgnoreCase(requiredRole);
-        System.out.println("DEBUG: isAuthorized - User: " + (user != null ? user.getEmail() : "null") +
-                ", Role: '" + (user != null ? user.getRole() : "null") +
-                "', Required: '" + requiredRole + "', Authorized: " + authorized);
-        return authorized;
     }
 
-    // Helper method to get user from database instead of mock data
-    private UserBasicDTO getUserFromDatabase(String role) {
-        try {
-            UserRole userRole = UserRole.valueOf(role);
-            User user = userRepository.findByRole(userRole).stream()
-                    .findFirst()
-                    .orElse(null);
-            if (user != null) {
-                UserBasicDTO dto = new UserBasicDTO();
-                dto.setUserId(user.getUserId() != null ? user.getUserId().longValue() : null);
-                dto.setFullName(user.getFullName());
-                dto.setEmail(user.getEmail());
-                dto.setRole(user.getRole().name());
-                dto.setDepartment(user.getDepartment());
-                return dto;
-            }
-        } catch (Exception e) {
-            // Log error and return fallback
-            System.err.println("Error getting user from database: " + e.getMessage());
-        }
-        // Fallback - return first user from database
-        return userRepository.findAll().stream()
-                .findFirst()
-                .map(user -> {
-                    UserBasicDTO dto = new UserBasicDTO();
-                    dto.setUserId(user.getUserId() != null ? user.getUserId().longValue() : null);
-                    dto.setFullName(user.getFullName());
-                    dto.setEmail(user.getEmail());
-                    dto.setRole(user.getRole().name());
-                    dto.setDepartment(user.getDepartment());
-                    return dto;
-                })
-                .orElse(null);
+    // ========== ERROR PAGE MAPPINGS ==========
+    
+    @GetMapping("/error/403")
+    public String error403() {
+        return "error/403";
     }
-
-    @GetMapping("/test-lecturer")
-    public String testLecturer(HttpSession session) {
-        // Create a mock session for testing
-        UserBasicDTO mockUser = new UserBasicDTO();
-        mockUser.setUserId(1L);
-        mockUser.setRole("Lec");
-        mockUser.setFullName("Test Lecturer");
-        session.setAttribute("user", mockUser);
-        return "redirect:/lecturer/question-management";
+    
+    @GetMapping("/error/404")
+    public String error404() {
+        return "error/404";
     }
-
-    // ========== TEST LOGIN ENDPOINTS ==========
-    @GetMapping("/test-login-hoed")
-    public String testLoginHoed(HttpSession session) {
-        // Create test user for HoED
-        UserBasicDTO user = new UserBasicDTO();
-        user.setUserId(6L);
-        user.setFullName("Emily Foster");
-        user.setEmail("emily.foster@university.edu");
-        user.setRole("HOED");
-        user.setDepartment("Computer Science");
-
-        // Set user in session
-        session.setAttribute("user", user);
-
-        System.out.println("DEBUG: Created test session for HoED user: " + user.getFullName());
-        return "redirect:/hoe-dashboard";
-    }
-
-    @GetMapping("/test-logout")
-    public String testLogout(HttpSession session) {
-        session.invalidate();
-        System.out.println("DEBUG: Session invalidated");
-        return "redirect:/login";
-    }
-
-    // ========== BYPASS LOGIN FOR TESTING ==========
-    @GetMapping("/bypass-login-hoed")
-    public String bypassLoginHoed(HttpSession session) {
-        // Create Emily Foster user and set in session
-        UserBasicDTO user = new UserBasicDTO();
-        user.setUserId(6L);
-        user.setFullName("Emily Foster");
-        user.setEmail("emily.foster@university.edu");
-        user.setRole("HOED");
-        user.setDepartment("Computer Science");
-        user.setStatus(com.uth.quizclear.model.enums.Status.ACTIVE);
-
-        // Set all session attributes like AuthController does
-        session.setAttribute("userId", user.getUserId());
-        session.setAttribute("user", user);
-        session.setAttribute("role", user.getRole());
-        session.setAttribute("isLoggedIn", true);
-
-        System.out.println("DEBUG: Bypass login - Created session for Emily Foster");
-        return "redirect:/hoe-dashboard";
-    }
-
-    // ========== DEBUG ENDPOINTS ==========
-    @GetMapping("/debug-session")
-    public String debugSession(HttpSession session, Model model) {
-        UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
-
-        if (user == null) {
-            model.addAttribute("message", "No user in session");
+    
+    @GetMapping("/error/500")
+    public String error500() {
+        return "error/500";
+    }    // ========== API ENDPOINTS TO PREVENT 404 ERRORS ==========
+    
+    @GetMapping("/api/user/current-scope")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getCurrentScope(org.springframework.security.core.Authentication authentication) {
+        Map<String, Object> scope = new HashMap<>();
+        
+        if (authentication != null && authentication.isAuthenticated()) {
+            scope.put("userId", 1L);
+            scope.put("userRole", "LEC");
+            scope.put("departmentName", "Computer Science");
+            scope.put("canApproveAll", false);
+            scope.put("managedDepartmentIds", Arrays.asList(1, 2));
+            scope.put("accessibleSubjectIds", Arrays.asList(1, 2, 3, 4, 5));
         } else {
-            model.addAttribute("message", "User found: " + user.getFullName() + " (Role: " + user.getRole() + ")");
+            // Default scope for non-authenticated users
+            scope.put("userId", 1L);
+            scope.put("userRole", "LEC");
+            scope.put("departmentName", "Computer Science");
+            scope.put("canApproveAll", false);
+            scope.put("managedDepartmentIds", Arrays.asList(1, 2));
+            scope.put("accessibleSubjectIds", Arrays.asList(1, 2, 3, 4, 5));
         }
-
-        return "login"; // Just return login page with message
-
+        
+        return ResponseEntity.ok(scope);
     }
+
+    @GetMapping("/api/dashboard/hed/stats")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getHedStats() {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("lecturerCount", 15);
+        stats.put("lecturerChange", 2);
+        stats.put("pendingCount", 8);
+        stats.put("pendingChange", 3);
+        stats.put("approvedCount", 42);
+        stats.put("approvedChange", 5);
+        stats.put("rejectedCount", 2);
+        stats.put("rejectedChange", -1);
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/api/dashboard/hed/activities")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getHedActivities() {
+        List<Map<String, Object>> activities = new ArrayList<>();
+        
+        Map<String, Object> activity1 = new HashMap<>();
+        activity1.put("title", "Question Approved");
+        activity1.put("description", "5 mathematics questions approved by Dr. Smith");
+        activity1.put("actionUrl", "/hed-approve-questions");
+        activities.add(activity1);
+        
+        Map<String, Object> activity2 = new HashMap<>();
+        activity2.put("title", "New Assignment");
+        activity2.put("description", "Physics question creation assigned to Prof. Johnson");
+        activity2.put("actionUrl", "/hed-join-task");
+        activities.add(activity2);
+        
+        return ResponseEntity.ok(activities);
+    }
+
+    @GetMapping("/api/dashboard/hed/deadlines")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getHedDeadlines() {
+        List<Map<String, Object>> deadlines = new ArrayList<>();
+        
+        Map<String, Object> deadline1 = new HashMap<>();
+        deadline1.put("title", "Math Question Review");
+        deadline1.put("description", "Review and approve mathematics questions");
+        deadline1.put("actionUrl", "/hed-approve-questions");
+        deadlines.add(deadline1);
+        
+        Map<String, Object> deadline2 = new HashMap<>();
+        deadline2.put("title", "Physics Assignment");
+        deadline2.put("description", "Assign physics question creation tasks");
+        deadline2.put("actionUrl", "/hed-join-task");
+        deadlines.add(deadline2);
+        
+        return ResponseEntity.ok(deadlines);
+    }
+
+    // ========== LECTURER API ENDPOINTS ==========
+    
+    @GetMapping("/api/lecturer/scope")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getLecturerScope(org.springframework.security.core.Authentication authentication) {
+        Map<String, Object> scope = new HashMap<>();
+        
+        if (authentication != null && authentication.isAuthenticated()) {
+            scope.put("userId", 1L);
+            scope.put("userRole", "LEC");
+            scope.put("departmentName", "Computer Science");
+            scope.put("accessibleSubjectIds", Arrays.asList(1, 2, 3, 4, 5));
+            scope.put("managedCourseIds", Arrays.asList(1, 2, 3));
+        } else {
+            // Default scope for non-authenticated users
+            scope.put("userId", 1L);
+            scope.put("userRole", "LEC");
+            scope.put("departmentName", "Computer Science");
+            scope.put("accessibleSubjectIds", Arrays.asList(1, 2, 3, 4, 5));
+            scope.put("managedCourseIds", Arrays.asList(1, 2, 3));
+        }
+        
+        return ResponseEntity.ok(scope);
+    }
+
+    @GetMapping("/api/lecturer/assignments")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getLecturerAssignments() {
+        List<Map<String, Object>> assignments = new ArrayList<>();
+        
+        Map<String, Object> assignment1 = new HashMap<>();
+        assignment1.put("id", 1);
+        assignment1.put("title", "Create Math Questions");
+        assignment1.put("description", "Create 10 multiple choice questions for Calculus");
+        assignment1.put("status", "pending");
+        assignment1.put("dueDate", "2025-07-15");
+        assignments.add(assignment1);
+        
+        Map<String, Object> assignment2 = new HashMap<>();
+        assignment2.put("id", 2);
+        assignment2.put("title", "Review Physics Questions");
+        assignment2.put("description", "Review submitted physics questions");
+        assignment2.put("status", "in_progress");
+        assignment2.put("dueDate", "2025-07-10");
+        assignments.add(assignment2);
+        
+        return ResponseEntity.ok(assignments);
+    }
+
+    @GetMapping("/api/lecturer/activities")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getLecturerActivities() {
+        List<Map<String, Object>> activities = new ArrayList<>();
+        
+        Map<String, Object> activity1 = new HashMap<>();
+        activity1.put("title", "Question Submitted");
+        activity1.put("description", "Calculus question submitted for review");
+        activity1.put("time", "2 hours ago");
+        activities.add(activity1);
+        
+        Map<String, Object> activity2 = new HashMap<>();
+        activity2.put("title", "Assignment Completed");
+        activity2.put("description", "Physics question creation completed");
+        activity2.put("time", "1 day ago");
+        activities.add(activity2);
+        
+        return ResponseEntity.ok(activities);
+    }
+
+    @GetMapping("/api/lecturer/statistics")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getLecturerStatistics() {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("questionsCreated", 45);
+        stats.put("questionsApproved", 38);
+        stats.put("questionsPending", 7);
+        stats.put("questionsRejected", 2);
+        stats.put("completionRate", 84.4);
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/api/lecturer/question-status-chart")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getLecturerQuestionStatusChart() {
+        Map<String, Object> chart = new HashMap<>();
+        chart.put("labels", Arrays.asList("Approved", "Pending", "Rejected"));
+        
+        Map<String, Object> dataset = new HashMap<>();
+        dataset.put("data", Arrays.asList(38, 7, 2));
+        dataset.put("backgroundColor", Arrays.asList("#28a745", "#ffc107", "#dc3545"));
+        
+        chart.put("datasets", Arrays.asList(dataset));
+        return ResponseEntity.ok(chart);
+    }
+
+    @GetMapping("/api/dashboard/lecturer/test-tasks")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getLecturerTestTasks() {
+        List<Map<String, Object>> tasks = new ArrayList<>();
+        
+        Map<String, Object> task1 = new HashMap<>();
+        task1.put("id", 1);
+        task1.put("title", "Create Algebra Questions");
+        task1.put("description", "Create 5 algebra questions for midterm exam");
+        task1.put("status", "pending");
+        task1.put("progress", 60);
+        tasks.add(task1);
+        
+        Map<String, Object> task2 = new HashMap<>();
+        task2.put("id", 2);
+        task2.put("title", "Review Geometry Questions");
+        task2.put("description", "Review and approve geometry questions");
+        task2.put("status", "completed");
+        task2.put("progress", 100);
+        tasks.add(task2);
+        
+        return ResponseEntity.ok(tasks);
+    }
+
+    @GetMapping("/api/dashboard/lecturer/test-stats")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getLecturerTestStats() {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("totalQuestions", 45);
+        stats.put("approvedQuestions", 38);
+        stats.put("pendingQuestions", 7);
+        stats.put("rejectedQuestions", 2);
+        stats.put("completionRate", 84.4);
+        stats.put("monthlyTarget", 50);
+        stats.put("subjectCount", 3);
+        return ResponseEntity.ok(stats);
+    }
+
+    // Dashboard redirect alias
+    @GetMapping("/my-dashboard")
+    public String redirectToMyDashboard(org.springframework.security.core.Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        return dashboardRedirect(authentication);
+    }
+
+    // ========== MISSING LECTURER ENDPOINTS ==========
+    
+    @GetMapping("/lecturer/lecturerFeedback.html")
+    public String lecturerFeedback(org.springframework.security.core.Authentication authentication, Model model) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        boolean isLec = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC");
+                });
+        if (!isLec) {
+            return dashboardRedirect(authentication);
+        }
+        model.addAttribute("userEmail", authentication.getName());
+        return "Lecturer/lecturerFeedback";
+    }
+
+    @GetMapping("/lecturer/feedback")
+    public String lecturerFeedbackAlias(org.springframework.security.core.Authentication authentication, Model model) {
+        return lecturerFeedback(authentication, model);
+    }
+
+    // ========== HEALTH CHECK ENDPOINT ==========
+    
+    @GetMapping("/actuator/health")
+    @ResponseBody
+    public Map<String, Object> health() {
+        Map<String, Object> health = new HashMap<>();
+        health.put("status", "UP");
+        health.put("timestamp", java.time.Instant.now());
+        health.put("application", "QuizClear");
+        health.put("version", "1.0.0");
+        return health;
+    }
+
+    @GetMapping("/health")
+    @ResponseBody
+    public Map<String, Object> healthAlias() {
+        return health();
+    }
+
 }
+

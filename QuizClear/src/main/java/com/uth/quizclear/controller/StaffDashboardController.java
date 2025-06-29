@@ -21,16 +21,13 @@ public class StaffDashboardController {
         Long userId = (Long) session.getAttribute("userId");
         String role = (String) session.getAttribute("role");
 
-        System.out.println("DEBUG: userId = " + userId + ", role = " + role);
 
         if (userId == null || role == null || !"RD".equalsIgnoreCase(role)) {
-            System.out.println("DEBUG: Redirecting to login - userId: " + userId + ", role: " + role);
             return "redirect:/login";
         }
 
         try {
             StaffDashboardDTO dashboard = staffDashboardService.getDashboardForStaff(userId);
-            System.out.println("DEBUG: Service called successfully");
             model.addAttribute("dashboard", dashboard);
             model.addAttribute("totalSubjects", dashboard.getTotalSubjects());
             model.addAttribute("totalQuestions", dashboard.getTotalQuestions());
@@ -45,7 +42,6 @@ public class StaffDashboardController {
             model.addAttribute("duplicateWarnings", dashboard.getDuplicateWarnings());
         } catch (Exception e) {
             // Log the error
-            System.out.println("DEBUG: Exception occurred: " + e.getMessage());
             e.printStackTrace();
 
             // Provide default values to prevent template errors
@@ -68,8 +64,8 @@ public class StaffDashboardController {
             model.addAttribute("recentTasks", new java.util.ArrayList<>());
             model.addAttribute("duplicateWarnings", new java.util.ArrayList<>());
         }
-        System.out.println("DEBUG: Returning Staff/staffDashboard template");
         return "Staff/staffDashboard";
     }
 
 }
+

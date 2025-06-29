@@ -2,8 +2,7 @@
 function setActiveMenu(title) {
   const menuItems = [
     { title: "Dashboard_L", link: "/lecturer/dashboard" },
-    { title: "QuestionManager", link: "/lecturer/question-management" },
-    { title: "FeedbackRevisions", link: "/lecturer/feedback" },
+    { title: "QuestionManager", link: "/lecturer/question-management" },    { title: "FeedbackRevisions", link: "/lecturer/feedback-revisions" },
     { title: "Task", link: "/lecturer/task" },
     { title: "Exam Evaluation", link: "/lecturer/exam-evaluation" },
     { title: "Dashboard_HOE", link: "/hoe/dashboard" },

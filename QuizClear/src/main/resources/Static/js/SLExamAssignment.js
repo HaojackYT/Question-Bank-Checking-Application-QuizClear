@@ -1,52 +1,64 @@
-// SL Exam Assignment JavaScript
+// SL Exam Assignment JavaScript with Subject Scope Filtering
 // Handles all frontend interactions for Subject Leader Exam Assignment functionality
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Initialize page
-    initializePage();
-    loadAssignments();
-    
-    // Modal elements
-    const modalOverlay = document.getElementById('newAssignModalOverlay');
-    const newAssignModal = document.getElementById('newAssignModal');
-    const detailsModal = document.getElementById('detailsModal');
-    const detailsModalOverlay = document.getElementById('detailsModalOverlay');
-    
-    // Buttons
-    const newAssignBtn = document.getElementById('newAssignBtn');
-    const assignButton = document.querySelector('.assign-button');
-    const closeModalButtons = document.querySelectorAll('.close-modal-btn');
-    const closeDetailsModalButtons = document.querySelectorAll('.close-details-modal-btn');
-    
-    // Search and filter
-    const searchInput = document.querySelector('.search-input');
-    const searchBtn = document.querySelector('.search-btn');
-    const statusFilter = document.getElementById('statusFilter');
+// Global scope variables for Subject Leader
+let subjectLeaderScope = {
+    userId: null,
+    userRole: 'SUBJECT_LEADER',
+    managedSubjectIds: [],
+    accessibleDepartmentIds: [],
+    assignableLecturerIds: [],
+    subjectName: '',
+    canAssignToAll: false
+};
 
-    // Event listeners
-    newAssignBtn?.addEventListener('click', openNewAssignModal);
-    assignButton?.addEventListener('click', createAssignment);
-    
-    closeModalButtons.forEach(btn => btn.addEventListener('click', closeNewAssignModal));
-    closeDetailsModalButtons.forEach(btn => btn.addEventListener('click', closeDetailsModal));
-    
-    // Close modals on overlay click
-    modalOverlay?.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) closeNewAssignModal();
-    });
-    
-    detailsModalOverlay?.addEventListener('click', (e) => {
-        if (e.target === detailsModalOverlay) closeDetailsModal();
-    });
-    
-    // Search functionality
-    searchBtn?.addEventListener('click', performSearch);
-    searchInput?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') performSearch();
-    });
-    
-    // Filter functionality
-    statusFilter?.addEventListener('change', loadAssignments);
+// Assignment data for filtering
+let allAssignmentsData = [];
+let availableLecturers = [];
+
+// Initialize page with subject scope awareness
+async function initializePageWithScope() {
+    try {
+        console.log('=== Initializing SL Exam Assignment with subject scope ===');
+        
+        // Load subject leader scope
+        await loadSubjectLeaderScope();
+        
+        // Load data filtered by subject scope
+        await loadDataWithSubjectScope();
+        
+        // Setup UI event listeners
+        setupEventListeners();
+        
+    } catch (error) {
+        console.error('Error initializing SL page:', error);
+        loadFallbackData();
+    }
+}
+
+// Load subject leader's scope (managed subjects)
+async function loadSubjectLeaderScope() {
+    try {
+        const response = await fetch('/api/user/current-scope', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            subjectLeaderScope = await response.json();
+            console.log('Subject Leader scope loaded:', subjectLeaderScope);
+            
+            // Update scope indicator
+            updateSubjectScopeIndicator();
+        } else {
+            console.error('Failed to load Subject Leader scope');
+        }
+    } catch (error) {
+        console.error('Error loading Subject Leader scope:', error);
+    }
+}
 
     // Close modals with ESC key
     document.addEventListener('keydown', (e) => {
@@ -393,7 +405,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error deleting assignment:', error);
             showNotification('Error deleting assignment', 'error');
         }
-    };    function showAssignmentDetails(assignment) {
+    };
+
+    // Define showAssignmentDetails function
+    window.showAssignmentDetails = function(assignment) {
         // Close any other open modals first
         closeAllModals();
         
@@ -407,8 +422,17 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('detailsDueDate').value = formatDate(assignment.deadline);
 
         // Show details modal
-        detailsModalOverlay.style.display = 'block';
-        detailsModal.style.display = 'block';
-        document.body.classList.add('modal-open');
-    }
+        const detailsModalOverlay = document.getElementById('detailsModalOverlay');
+        const detailsModal = document.getElementById('detailsModal');
+        if (detailsModalOverlay && detailsModal) {
+            detailsModalOverlay.style.display = 'block';
+            detailsModal.style.display = 'block';
+            document.body.classList.add('modal-open');
+        }
+    };
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize page with scope awareness
+    initializePageWithScope();
 });

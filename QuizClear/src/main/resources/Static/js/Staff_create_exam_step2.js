@@ -1,4 +1,3 @@
-
 // Lấy input tổng số câu hỏi
 const totalQuestionsInput = document.getElementById("total-questions");
 
@@ -119,7 +118,211 @@ totalQuestionsInput.addEventListener("input", () => {
     updateTotalPercentage();
 });
 
-// Khởi tạo giá trị ban đầu
-sliders.forEach(sliderObj => updateSliderValues(sliderObj, parseInt(totalQuestionsInput.value) || 0));
-updateTotalPercentage();
+// Subject scope filtering for exam creation
+let currentUserScope = {
+    userId: null,
+    userRole: null,
+    accessibleDepartmentIds: [],
+    accessibleSubjectIds: [],
+    selectedSubjectId: null,
+    availableQuestions: []
+};
+
+// Available questions data filtered by subject scope
+let questionsData = [];
+
+// Initialize subject scope for exam creation
+async function initializeSubjectScope() {
+    try {
+        // Get user scope from session or API
+        const response = await fetch('/api/user/current-scope', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            currentUserScope = await response.json();
+            console.log('Subject scope initialized for exam creation:', currentUserScope);
+            
+            // Get selected subject from previous step or URL params
+            const urlParams = new URLSearchParams(window.location.search);
+            currentUserScope.selectedSubjectId = urlParams.get('subjectId') || getSelectedSubjectFromStep1();
+            
+            if (currentUserScope.selectedSubjectId) {
+                await loadQuestionsForSubject(currentUserScope.selectedSubjectId);
+            }
+        } else {
+            console.error('Failed to load user scope for exam creation');
+        }
+    } catch (error) {
+        console.error('Error initializing subject scope:', error);
+    }
+}
+
+// Load questions filtered by subject scope
+async function loadQuestionsForSubject(subjectId) {
+    try {
+        const params = new URLSearchParams({
+            subjectId: subjectId,
+            requestingUserId: currentUserScope.userId,
+            userRole: currentUserScope.userRole,
+            status: 'APPROVED' // Only load approved questions for exam creation
+        });
+
+        const response = await fetch(`/api/questions/by-subject?${params}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            questionsData = await response.json();
+            console.log(`Loaded ${questionsData.length} questions for subject ${subjectId}`);
+            
+            // Update UI with available questions count by difficulty
+            updateAvailableQuestionCounts();
+            
+            // Validate if enough questions are available
+            validateQuestionAvailability();
+        } else {
+            console.error('Failed to load questions for subject');
+            questionsData = [];
+        }
+    } catch (error) {
+        console.error('Error loading questions for subject:', error);
+        questionsData = [];
+    }
+}
+
+// Update available question counts by difficulty level
+function updateAvailableQuestionCounts() {
+    const difficultyCounts = {
+        'BASIC': 0,
+        'INTERMEDIATE': 0,
+        'ADVANCED': 0,
+        'EXPERT': 0
+    };
+
+    questionsData.forEach(question => {
+        if (question.difficultyLevel && difficultyCounts.hasOwnProperty(question.difficultyLevel)) {
+            difficultyCounts[question.difficultyLevel]++;
+        }
+    });
+
+    // Update UI to show available counts
+    updateDifficultyLevelUI(difficultyCounts);
+}
+
+// Update difficulty level UI with available question counts
+function updateDifficultyLevelUI(counts) {
+    const difficultyMappings = [
+        { level: 'BASIC', elementId: 'Basic', maxElement: 'max-basic' },
+        { level: 'INTERMEDIATE', elementId: 'Intermediate', maxElement: 'max-intermediate' },
+        { level: 'ADVANCED', elementId: 'Advanced', maxElement: 'max-advanced' },
+        { level: 'EXPERT', elementId: 'Expert', maxElement: 'max-expert' }
+    ];
+
+    difficultyMappings.forEach(mapping => {
+        const availableCount = counts[mapping.level] || 0;
+        
+        // Update max attribute for sliders
+        const slider = document.getElementById(`range-${mapping.level.toLowerCase()}`);
+        if (slider) {
+            slider.max = availableCount;
+            slider.setAttribute('data-available', availableCount);
+        }
+        
+        // Update max display element
+        const maxElement = document.getElementById(mapping.maxElement);
+        if (maxElement) {
+            maxElement.textContent = availableCount;
+        }
+        
+        // Add availability indicator
+        const availabilityIndicator = document.querySelector(`#${mapping.elementId} .availability-indicator`);
+        if (availabilityIndicator) {
+            availabilityIndicator.textContent = `Available: ${availableCount}`;
+            availabilityIndicator.className = `availability-indicator ${availableCount > 0 ? 'available' : 'unavailable'}`;
+        } else {
+            // Create availability indicator if it doesn't exist
+            const indicator = document.createElement('div');
+            indicator.className = `availability-indicator ${availableCount > 0 ? 'available' : 'unavailable'}`;
+            indicator.textContent = `Available: ${availableCount}`;
+            const column = document.getElementById(mapping.elementId);
+            if (column) {
+                column.appendChild(indicator);
+            }
+        }
+    });
+}
+
+// Validate if enough questions are available for exam creation
+function validateQuestionAvailability() {
+    const totalAvailable = questionsData.length;
+    const totalRequested = parseInt(totalQuestionsInput.value) || 0;
+    
+    const validationMessage = document.getElementById('question-availability-message');
+    if (!validationMessage) {
+        const messageDiv = document.createElement('div');
+        messageDiv.id = 'question-availability-message';
+        messageDiv.className = 'validation-message';
+        totalQuestionsInput.parentNode.appendChild(messageDiv);
+    }
+    
+    const messageElement = document.getElementById('question-availability-message');
+    
+    if (totalAvailable < totalRequested) {
+        messageElement.textContent = `Warning: Only ${totalAvailable} questions available in this subject. Please adjust your requirements.`;
+        messageElement.className = 'validation-message error';
+        return false;
+    } else {
+        messageElement.textContent = `${totalAvailable} questions available for this subject.`;
+        messageElement.className = 'validation-message success';
+        return true;
+    }
+}
+
+// Enhanced slider validation with scope awareness
+function validateSliderValues() {
+    let isValid = true;
+    const totalQuestions = parseInt(totalQuestionsInput.value) || 0;
+    
+    sliders.forEach(slider => {
+        const requestedCount = parseInt(slider.range.value);
+        const availableCount = parseInt(slider.range.getAttribute('data-available')) || 0;
+        
+        if (requestedCount > availableCount) {
+            slider.range.style.borderColor = '#e53e3e';
+            isValid = false;
+        } else {
+            slider.range.style.borderColor = '';
+        }
+    });
+    
+    return isValid && validateQuestionAvailability();
+}
+
+// Get selected subject from step 1 (if stored in sessionStorage or form)
+function getSelectedSubjectFromStep1() {
+    // Try to get from sessionStorage first
+    let subjectId = sessionStorage.getItem('selectedSubjectId');
+    
+    if (!subjectId) {
+        // Try to get from a hidden input or form field
+        const subjectInput = document.getElementById('selected-subject-id');
+        if (subjectInput) {
+            subjectId = subjectInput.value;
+        }
+    }
+    
+    return subjectId;
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeSubjectScope();
+});
 

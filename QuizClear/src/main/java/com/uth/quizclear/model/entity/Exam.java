@@ -116,4 +116,177 @@ public class Exam {
     @Column(name = "hidden")
     private Boolean hidden = true;
     
+    // JPA lifecycle callbacks
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+        if (examStatus == null) {
+            examStatus = ExamStatus.DRAFT;
+        }
+        if (reviewStatus == null) {
+            reviewStatus = ExamReviewStatus.PENDING;
+        }
+        if (totalMarks == null) {
+            totalMarks = BigDecimal.valueOf(10.00);
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    // Business logic methods
+    public ExamStatus getStatus() {
+        return examStatus;
+    }
+
+    public void setStatus(ExamStatus status) {
+        this.examStatus = status;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public String getExamName() {
+        return examTitle;
+    }
+
+    public String getDescription() {
+        return instructions;
+    }
+
+    public Integer getDuration() {
+        return durationMinutes;
+    }
+
+    public void setTotalMarks(BigDecimal totalMarks) {
+        this.totalMarks = totalMarks;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public BigDecimal getPassingMarks() {
+        if (totalMarks != null) {
+            return totalMarks.multiply(BigDecimal.valueOf(0.5)); // 50% passing
+        }
+        return BigDecimal.ZERO;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void setExamDate(LocalDateTime examDate) {
+        this.examDate = examDate;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public LocalDateTime getStartTime() {
+        return examDate;
+    }
+
+    public LocalDateTime getEndTime() {
+        if (examDate != null && durationMinutes != null) {
+            return examDate.plusMinutes(durationMinutes);
+        }
+        return null;
+    }
+
+    public Subject getSubject() {
+        // For now, return null since Course doesn't have Subject relationship
+        // This will need to be implemented based on your Course-Subject relationship
+        return null;
+    }
+
+    // Status management methods
+    public void markAsPublished() {
+        this.examStatus = ExamStatus.FINALIZED;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void markAsCompleted() {
+        this.examStatus = ExamStatus.APPROVED;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void markAsCancelled() {
+        this.examStatus = ExamStatus.REJECTED;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public boolean isDraft() {
+        return ExamStatus.DRAFT.equals(examStatus);
+    }
+
+    public boolean isPublished() {
+        return ExamStatus.FINALIZED.equals(examStatus);
+    }
+
+    public boolean isCompleted() {
+        return ExamStatus.APPROVED.equals(examStatus);
+    }
+
+    public boolean isCancelled() {
+        return ExamStatus.REJECTED.equals(examStatus);
+    }
+
+    // Review management
+    public void submitForReview() {
+        this.reviewStatus = ExamReviewStatus.PENDING;
+        this.submittedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void approve(User approver) {
+        this.reviewStatus = ExamReviewStatus.APPROVED;
+        this.approvedBy = approver;
+        this.approvedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void reject(User reviewer, String feedback) {
+        this.reviewStatus = ExamReviewStatus.REJECTED;
+        this.reviewedBy = reviewer;
+        this.reviewedAt = LocalDateTime.now();
+        this.feedback = feedback;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // Utility methods
+    public String getDisplayName() {
+        return String.format("%s (%s)", examTitle, examCode != null ? examCode : "No Code");
+    }
+
+    public String getCourseName() {
+        return course != null ? course.getCourseName() : "No Course";
+    }
+
+    public String getCreatorName() {
+        return createdBy != null ? createdBy.getFullName() : "Unknown";
+    }
+
+    public String getApproverName() {
+        return approvedBy != null ? approvedBy.getFullName() : "Not Approved";
+    }
+
+    public boolean hasValidDuration() {
+        return durationMinutes != null && durationMinutes > 0 && durationMinutes <= 300; // Max 5 hours
+    }
+
+    public boolean isScheduled() {
+        return examDate != null && examDate.isAfter(LocalDateTime.now());
+    }
+
+    public boolean isActive() {
+        LocalDateTime now = LocalDateTime.now();
+        if (examDate == null || durationMinutes == null) {
+            return false;
+        }
+        return examDate.isBefore(now) && getEndTime().isAfter(now);
+    }
+
+    public boolean isPast() {
+        return getEndTime() != null && getEndTime().isBefore(LocalDateTime.now());
+    }
 }

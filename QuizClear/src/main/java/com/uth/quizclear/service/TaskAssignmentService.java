@@ -83,27 +83,23 @@ public class TaskAssignmentService {
 
     // // Phương thức sửa: Lấy task với tìm kiếm và lọc theo courseId
     // public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String status, String subject, int page, int size) {
-    //     System.out.println("Filtering tasks with: search=" + search + ", status=" + status + ", subject=" + subject);
     //     Long courseId = subject.isEmpty() ? null : Long.parseLong(subject);
     //     Pageable pageable = PageRequest.of(page, size);
     //     search = search == null ? "" : search;
     //     status = status == null ? "" : status;
     //     Page<Tasks> tasksPage = tasksRepository.findByTitleContainingIgnoreCaseAndStatusContainingIgnoreCaseAndCourseCourseId(
     //             search, status, courseId, pageable);
-    //     System.out.println("Raw tasks found: " + tasksPage.getContent().size());
     //     return tasksPage.map(this::convertToDTO);
     // }
 
     // Phương thức mới: Lấy task với tìm kiếm và lọc tối ưu
 public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String status, String subject, int page, int size) {
-    System.out.println("Filtering tasks with: search=" + search + ", status=" + status + ", subject=" + subject);
     Long courseId = subject.isEmpty() ? null : Long.parseLong(subject);
     TaskStatus taskStatus = status.isEmpty() ? null : TaskStatus.valueOf(status.toLowerCase());
     Pageable pageable = PageRequest.of(page, size);
     search = search == null ? "" : search;
     Page<Tasks> tasksPage = tasksRepository.findByTitleContainingIgnoreCaseAndStatusAndCourseCourseId(
             search, taskStatus, courseId, pageable);
-    System.out.println("Raw tasks found: " + tasksPage.getContent().size());
     return tasksPage.map(this::convertToDTO);
 }
 

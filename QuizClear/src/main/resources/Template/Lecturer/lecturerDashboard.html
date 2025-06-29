@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
     <head>
         <meta charset="UTF-8">
@@ -25,43 +25,268 @@
 
             <!-- Main content -->
             <div id="main">
+                <!-- Scope Indicator for Lecturer -->
+                <div id="lecturer-scope-indicator" class="scope-indicator-lecturer" style="margin-bottom: 20px; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; color: white; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                    <div class="scope-header" style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <i class="fas fa-user-graduate" style="font-size: 24px; margin-right: 12px; color: #ffd700;"></i>
+                        <h3 style="margin: 0; font-size: 18px; font-weight: 600;">Lecturer Scope</h3>
+                    </div>
+                    <div class="scope-info" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+                        <div class="scope-item">
+                            <span class="scope-label" style="font-weight: 500; color: #e8eaff;">Your Subjects:</span>
+                            <span class="scope-subjects" id="lecturer-subjects" style="font-weight: 600; margin-left: 8px;">Loading...</span>
+                        </div>
+                        <div class="scope-item">
+                            <span class="scope-label" style="font-weight: 500; color: #e8eaff;">Assigned Questions:</span>
+                            <span class="scope-questions" id="lecturer-question-count" style="font-weight: 600; margin-left: 8px; color: #ffd700;">-</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- noi dung duoc nhap trong day -->
                 <div class="main-content">
                     <div class="title">Dashboard</div>
                     <div class="subtitle">Welcome back, Lecturer. Let's make
-                        today productive!</div> <div class="stats-container">
+                        today productive!</div> 
+                    
+                    <div class="stats-container">
                         <div class="stat-card">
                             <div class="stat-title">Question Submitted</div>
-                            <div class="stat-value">0</div>
+                            <div class="stat-value" id="questions-submitted-count">-</div>
+                            <div class="stat-change" id="submitted-change">Loading...</div>
+                            <div class="scope-note">In your subjects</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-title">Question Approved</div>
-                            <div class="stat-value">0</div>
+                            <div class="stat-value" id="questions-approved-count">-</div>
+                            <div class="stat-change" id="approved-change">Loading...</div>
+                            <div class="scope-note">Total approved</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-title">Question Returned</div>
-                            <div class="stat-value">0</div>
+                            <div class="stat-value" id="questions-returned-count">-</div>
+                            <div class="stat-change" id="returned-change">Loading...</div>
+                            <div class="scope-note">Need revision</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">Pending Review</div>
+                            <div class="stat-value" id="questions-pending-count">-</div>
+                            <div class="stat-change">Under review</div>
+                            <div class="scope-note">Awaiting approval</div>
                         </div>
                     </div>
 
                     <div class="assignment-section">
                         <h2>Current Assignments</h2>
-                        <p class="subtitle">Monitor the progress of your task
-                            completion.</p>
-                        <!-- Tasks will be loaded by JavaScript -->
+                        <p class="subtitle">Monitor the progress of your task completion in assigned subjects.</p>
+                        <div id="lecturer-assignments-list" class="assignments-list">
+                            <!-- Assignment items will be loaded by JavaScript -->
+                            <div class="loading-placeholder">Loading assignments...</div>
+                        </div>
+                    </div>
+
+                    <div class="charts-section" style="margin-top: 30px;">
+                        <div class="chart-card" style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                            <div class="chart-title" style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">Question Status Distribution</div>
+                            <div class="chart-subtitle" style="color: #666; margin-bottom: 20px;">Your questions by status in assigned subjects</div>
+                            <div class="chart-wrapper" style="height: 300px;">
+                                <canvas id="lecturerStatusChart"></canvas>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="activity">
                         <h2>Recent Activities</h2>
-                        <p class="activities-subtitle">Latest updates in the
-                            system</p>
-                        <!-- Activities will be loaded by JavaScript --> </div>
+                        <p class="activities-subtitle">Latest updates in your assigned subjects</p>
+                        <div id="lecturer-activities-list" class="activities-list">
+                            <!-- Activities will be loaded by JavaScript -->
+                            <div class="loading-placeholder">Loading recent activities...</div>
+                        </div>
+                    </div>
                 </div>
             </div> <!-- End Main content -->
         </div> <!-- End Container-body -->
 
         <script th:src="@{/Static/js/L_activeMenu.js}"></script>
         <script th:src="@{/Static/js/lecturerDashboard.js}"></script>
+        
+        <!-- Lecturer-specific JavaScript for scope and data loading -->
+        <script>
+            // Initialize lecturer dashboard with scope-based data loading
+            document.addEventListener('DOMContentLoaded', function() {
+                loadLecturerScopeInfo();
+                loadLecturerStatistics();
+                loadLecturerAssignments();
+                loadLecturerActivities();
+                initializeLecturerCharts();
+            });
+
+            // Load lecturer scope information
+            function loadLecturerScopeInfo() {
+                fetch('/api/lecturer/scope')
+                    .then(response => response.json())
+                    .then(data => {
+                        const subjectsElement = document.getElementById('lecturer-subjects');
+                        const questionCountElement = document.getElementById('lecturer-question-count');
+                        
+                        if (data.subjects && data.subjects.length > 0) {
+                            const subjectNames = data.subjects.map(s => s.subjectName).join(', ');
+                            subjectsElement.textContent = subjectNames;
+                        } else {
+                            subjectsElement.textContent = 'No subjects assigned';
+                        }
+                        
+                        questionCountElement.textContent = data.totalQuestions || '0';
+                    })
+                    .catch(error => {
+                        console.error('Error loading lecturer scope:', error);
+                        document.getElementById('lecturer-subjects').textContent = 'Error loading data';
+                    });
+            }
+
+            // Load lecturer statistics
+            function loadLecturerStatistics() {
+                fetch('/api/lecturer/statistics')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('questions-submitted-count').textContent = data.submitted || '0';
+                        document.getElementById('questions-approved-count').textContent = data.approved || '0';
+                        document.getElementById('questions-returned-count').textContent = data.returned || '0';
+                        document.getElementById('questions-pending-count').textContent = data.pending || '0';
+                        
+                        // Update change indicators
+                        updateChangeIndicator('submitted-change', data.submittedChange);
+                        updateChangeIndicator('approved-change', data.approvedChange);
+                        updateChangeIndicator('returned-change', data.returnedChange);
+                    })
+                    .catch(error => {
+                        console.error('Error loading lecturer statistics:', error);
+                    });
+            }
+
+            // Load lecturer assignments
+            function loadLecturerAssignments() {
+                fetch('/api/lecturer/assignments')
+                    .then(response => response.json())
+                    .then(data => {
+                        const container = document.getElementById('lecturer-assignments-list');
+                        
+                        if (data.assignments && data.assignments.length > 0) {
+                            const assignmentsHtml = data.assignments.map(assignment => `
+                                <div class="assignment-item" style="padding: 15px; margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;">
+                                    <div class="assignment-header" style="display: flex; justify-content: between; align-items: center;">
+                                        <h4 style="margin: 0; color: #333;">${assignment.title}</h4>
+                                        <span class="assignment-status" style="padding: 4px 12px; border-radius: 15px; font-size: 12px; font-weight: 600; 
+                                            background: ${assignment.status === 'In Progress' ? '#fff3cd' : '#d1ecf1'}; 
+                                            color: ${assignment.status === 'In Progress' ? '#856404' : '#0c5460'};">
+                                            ${assignment.status}
+                                        </span>
+                                    </div>
+                                    <p style="margin: 8px 0; color: #666;">${assignment.description}</p>
+                                    <div class="assignment-meta" style="font-size: 14px; color: #888;">
+                                        <span>Subject: ${assignment.subjectName}</span>
+                                        ${assignment.dueDate ? ` • Due: ${new Date(assignment.dueDate).toLocaleDateString()}` : ''}
+                                    </div>
+                                </div>
+                            `).join('');
+                            container.innerHTML = assignmentsHtml;
+                        } else {
+                            container.innerHTML = '<div class="no-data">No assignments found</div>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading assignments:', error);
+                        document.getElementById('lecturer-assignments-list').innerHTML = '<div class="error">Error loading assignments</div>';
+                    });
+            }
+
+            // Load lecturer activities
+            function loadLecturerActivities() {
+                fetch('/api/lecturer/activities')
+                    .then(response => response.json())
+                    .then(data => {
+                        const container = document.getElementById('lecturer-activities-list');
+                        
+                        if (data.activities && data.activities.length > 0) {
+                            const activitiesHtml = data.activities.map(activity => `
+                                <div class="activity-item" style="padding: 12px; margin-bottom: 8px; background: white; border-radius: 6px; border: 1px solid #e9ecef;">
+                                    <div class="activity-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span class="activity-title" style="font-weight: 500; color: #333;">${activity.title}</span>
+                                        <span class="activity-time" style="font-size: 12px; color: #888;">${new Date(activity.timestamp).toLocaleDateString()}</span>
+                                    </div>
+                                    <p style="margin: 4px 0 0 0; font-size: 14px; color: #666;">${activity.description}</p>
+                                </div>
+                            `).join('');
+                            container.innerHTML = activitiesHtml;
+                        } else {
+                            container.innerHTML = '<div class="no-data">No recent activities</div>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading activities:', error);
+                        document.getElementById('lecturer-activities-list').innerHTML = '<div class="error">Error loading activities</div>';
+                    });
+            }
+
+            // Initialize lecturer-specific charts
+            function initializeLecturerCharts() {
+                fetch('/api/lecturer/question-status-chart')
+                    .then(response => response.json())
+                    .then(data => {
+                        const ctx = document.getElementById('lecturerStatusChart').getContext('2d');
+                        new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: data.labels || ['Submitted', 'Approved', 'Returned', 'Pending'],
+                                datasets: [{
+                                    data: data.data || [0, 0, 0, 0],
+                                    backgroundColor: ['#8979FF', '#28a745', '#dc3545', '#ffc107'],
+                                    borderWidth: 2,
+                                    borderColor: '#fff'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            padding: 20,
+                                            usePointStyle: true
+                                        }
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                                const percentage = total > 0 ? ((context.raw / total) * 100).toFixed(1) : 0;
+                                                return `${context.label}: ${context.raw} (${percentage}%)`;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error loading chart data:', error);
+                    });
+            }
+
+            // Helper function to update change indicators
+            function updateChangeIndicator(elementId, change) {
+                const element = document.getElementById(elementId);
+                if (change !== undefined && change !== null) {
+                    const isPositive = change >= 0;
+                    element.textContent = `${isPositive ? '+' : ''}${change}%`;
+                    element.style.color = isPositive ? '#28a745' : '#dc3545';
+                } else {
+                    element.textContent = 'No change data';
+                    element.style.color = '#6c757d';
+                }
+            }
+        </script>
     </body>
 
 </html>

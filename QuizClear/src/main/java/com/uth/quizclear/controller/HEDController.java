@@ -343,14 +343,13 @@ public class HEDController {    @Autowired
      */
     @GetMapping("/statistics-reports")
     public String statisticsReports(Model model) {
-        System.out.println("=== HEDController.statisticsReports called ===");
         hedStaticService.populateStatisticsModel(model);
         
         // Debug: In ra tất cả attributes trong model
         model.asMap().forEach((key, value) -> {
-            System.out.println("Model attribute: " + key + " = " + value);
         });
         
         return "HEAD_OF_DEPARTMENT/HED_Static-reports";
     }
 }
+

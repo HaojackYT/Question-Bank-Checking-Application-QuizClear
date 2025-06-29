@@ -27,27 +27,40 @@
             <!-- noi dung duoc nhap trong day -->
             <div class="dashboard-container">
                 <div class="title">Dashboard</div>
-                <div class=subtitle>Welcome back, Subject Leader. Let's make today productive!</div>
+                <div class="subtitle">Welcome back, Subject Leader. Let's make today productive!</div>
+                
+                <!-- Subject Scope Indicator -->
+                <div id="sl-scope-indicator" class="scope-indicator-sl" style="margin: 15px 0;">
+                    <div class="scope-info">
+                        <span class="scope-label">Loading subject information...</span>
+                        <span class="scope-details"></span>
+                    </div>
+                </div>
+                
                 <div class="stats-container">
                     <div class="stat-card">
                         <div class="stat-title">Pending Assignments</div>
-                        <div class="stat-value">25</div>
-                        <div class="stat-change">+6 this month</div>
+                        <div class="stat-value" id="pending-assignments">-</div>
+                        <div class="stat-change" id="assignments-change">Loading...</div>
+                        <div class="scope-note">For your subjects</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-title">Total Plans</div>
-                        <div class="stat-value">256</div>
-                        <div class="stat-change">+123 this month</div>
+                        <div class="stat-title">Active Lecturers</div>
+                        <div class="stat-value" id="active-lecturers">-</div>
+                        <div class="stat-change" id="lecturers-change">Loading...</div>
+                        <div class="scope-note">Assigned to your subjects</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-title">Need Approval</div>
-                        <div class="stat-value">14</div>
-                        <div class="stat-change">+1 this month</div>
+                        <div class="stat-title">Questions Need Review</div>
+                        <div class="stat-value" id="questions-review">-</div>
+                        <div class="stat-change" id="review-change">Loading...</div>
+                        <div class="scope-note">Awaiting your approval</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-title">Task Completion</div>
-                        <div class="stat-value">32</div>
-                        <div class="stat-change">+8 this month</div>
+                        <div class="stat-title">Completion Rate</div>
+                        <div class="stat-value" id="completion-rate">-</div>
+                        <div class="stat-change" id="completion-change">Loading...</div>
+                        <div class="scope-note">This month</div>
                     </div>
                 </div>
 
@@ -230,6 +243,302 @@
 
     </script>
     <script src="../../Static/js/L_activeMenu.js"></script>
+    <script>
+        // Subject Leader Dashboard Subject Scope Functionality
+        // Load subject-specific data and statistics
+        async function loadSLSubjectData() {
+            try {
+                // Get Subject Leader scope information
+                const scopeResponse = await fetch('/api/user/current-scope');
+                if (scopeResponse.ok) {
+                    const scope = await scopeResponse.json();
+                    updateSLScopeIndicator(scope);
+                    await loadSubjectStatistics(scope);
+                    await loadSubjectActivities(scope);
+                    await loadSubjectChartData(scope);
+                } else {
+                    console.error('Failed to load Subject Leader scope');
+                }
+            } catch (error) {
+                console.error('Error loading SL subject data:', error);
+            }
+        }
+
+        // Update scope indicator with subject information
+        function updateSLScopeIndicator(scope) {
+            const scopeIndicator = document.getElementById('sl-scope-indicator');
+            if (!scopeIndicator) return;
+
+            const subjCount = scope.managedSubjectIds ? scope.managedSubjectIds.length : 0;
+
+            if (scope.canAssignToAll) {
+                scopeIndicator.innerHTML = `
+                    <div class="scope-info all-subjects">
+                        <span class="scope-label">All Subjects Access</span>
+                        <span class="scope-details">You can manage all subjects</span>
+                    </div>
+                `;
+            } else if (subjCount > 0) {
+                scopeIndicator.innerHTML = `
+                    <div class="scope-info subject-scope">
+                        <span class="scope-label">Your Subjects:</span>
+                        <span class="scope-details">${scope.subjectName || subjCount + ' subjects'}</span>
+                    </div>
+                `;
+            } else {
+                scopeIndicator.innerHTML = `
+                    <div class="scope-info no-scope">
+                        <span class="scope-label">No Subjects Assigned</span>
+                        <span class="scope-details">Contact administrator for subject leader assignment</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Load subject-specific statistics
+        async function loadSubjectStatistics(scope) {
+            try {
+                const params = new URLSearchParams();
+                if (scope.managedSubjectIds && scope.managedSubjectIds.length > 0) {
+                    params.append('subjectIds', scope.managedSubjectIds.join(','));
+                }
+                params.append('requestingUserId', scope.userId);
+                params.append('userRole', scope.userRole);
+
+                const response = await fetch(`/api/dashboard/sl/stats?${params}`);
+                if (response.ok) {
+                    const stats = await response.json();
+                    updateSLStatistics(stats);
+                } else {
+                    console.error('Failed to load subject statistics');
+                    loadFallbackSLStats();
+                }
+            } catch (error) {
+                console.error('Error loading subject statistics:', error);
+                loadFallbackSLStats();
+            }
+        }
+
+        // Update SL statistics display
+        function updateSLStatistics(stats) {
+            // Update pending assignments
+            const pendingAssignments = document.getElementById('pending-assignments');
+            const assignmentsChange = document.getElementById('assignments-change');
+            if (pendingAssignments) pendingAssignments.textContent = stats.pendingAssignments || 0;
+            if (assignmentsChange) assignmentsChange.textContent = `+${stats.newAssignments || 0} this month`;
+
+            // Update active lecturers
+            const activeLecturers = document.getElementById('active-lecturers');
+            const lecturersChange = document.getElementById('lecturers-change');
+            if (activeLecturers) activeLecturers.textContent = stats.activeLecturers || 0;
+            if (lecturersChange) lecturersChange.textContent = `${stats.totalLecturersAssigned || 0} total assigned`;
+
+            // Update questions needing review
+            const questionsReview = document.getElementById('questions-review');
+            const reviewChange = document.getElementById('review-change');
+            if (questionsReview) questionsReview.textContent = stats.questionsNeedingReview || 0;
+            if (reviewChange) reviewChange.textContent = `+${stats.newReviews || 0} this week`;
+
+            // Update completion rate
+            const completionRate = document.getElementById('completion-rate');
+            const completionChange = document.getElementById('completion-change');
+            if (completionRate) completionRate.textContent = `${stats.completionRate || 0}%`;
+            if (completionChange) completionChange.textContent = `${stats.completionTrend || '+0'}% from last month`;
+        }
+
+        // Load subject activities
+        async function loadSubjectActivities(scope) {
+            try {
+                const params = new URLSearchParams();
+                if (scope.managedSubjectIds && scope.managedSubjectIds.length > 0) {
+                    params.append('subjectIds', scope.managedSubjectIds.join(','));
+                }
+                params.append('limit', '10');
+
+                const response = await fetch(`/api/dashboard/sl/activities?${params}`);
+                if (response.ok) {
+                    const activities = await response.json();
+                    updateSLActivitiesList(activities);
+                }
+            } catch (error) {
+                console.error('Error loading subject activities:', error);
+            }
+        }
+
+        // Load subject chart data
+        async function loadSubjectChartData(scope) {
+            try {
+                const params = new URLSearchParams();
+                if (scope.managedSubjectIds && scope.managedSubjectIds.length > 0) {
+                    params.append('subjectIds', scope.managedSubjectIds.join(','));
+                }
+
+                const response = await fetch(`/api/dashboard/sl/chart-data?${params}`);
+                if (response.ok) {
+                    const chartData = await response.json();
+                    updateProgressChart(chartData.progressData);
+                    updateOverallChart(chartData.overallProgress);
+                }
+            } catch (error) {
+                console.error('Error loading subject chart data:', error);
+            }
+        }
+
+        // Update activities list
+        function updateSLActivitiesList(activities) {
+            const activitiesList = document.querySelector('.activity-list');
+            if (!activitiesList) return;
+
+            if (activities.length === 0) {
+                activitiesList.innerHTML = '<p class="no-activities">No recent activities for your subjects</p>';
+                return;
+            }
+
+            activitiesList.innerHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-content">
+                        <span class="bullet">•</span>
+                        <span class="activity-text">${activity.description}</span>
+                    </div>
+                    <div class="activity-meta">
+                        <span class="activity-time">${formatActivityTime(activity.timestamp)}</span>
+                        ${activity.progress ? `
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${activity.progress}%;"></div>
+                            </div>
+                        ` : ''}
+                    </div>
+                    ${activity.subjectName ? `<small class="activity-subject">${activity.subjectName}</small>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Update progress chart with subject data
+        function updateProgressChart(progressData) {
+            if (!progressData) return;
+
+            const progressCtx = document.getElementById('progressChart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (window.subjectProgressChart) {
+                window.subjectProgressChart.destroy();
+            }
+
+            window.subjectProgressChart = new Chart(progressCtx, {
+                type: 'bar',
+                data: {
+                    labels: progressData.subjects || [],
+                    datasets: [{
+                        label: 'Created',
+                        data: progressData.created || [],
+                        backgroundColor: '#00C9A7'
+                    }, {
+                        label: 'Target',
+                        data: progressData.targets || [],
+                        backgroundColor: '#E8F4FD'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: progressData.subjects && progressData.subjects.length === 0,
+                            text: 'No subject data available'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update overall chart with subject completion data
+        function updateOverallChart(overallData) {
+            if (!overallData) return;
+
+            const overallCtx = document.getElementById('overallChart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (window.subjectOverallChart) {
+                window.subjectOverallChart.destroy();
+            }
+
+            const completionRate = overallData.completionRate || 0;
+            
+            window.subjectOverallChart = new Chart(overallCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Remaining'],
+                    datasets: [{
+                        data: [completionRate, 100 - completionRate],
+                        backgroundColor: ['#00C9A7', '#e5e5e5'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    cutout: '70%',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function (context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    return `${label}: ${value}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Update chart subtitle with actual percentage
+            const chartSubtitle = document.querySelector('#chart-overall .chart-subtitle');
+            if (chartSubtitle) {
+                chartSubtitle.textContent = `${completionRate}% Completed`;
+            }
+        }
+
+        // Helper functions
+        function formatActivityTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+        }
+
+        function loadFallbackSLStats() {
+            updateSLStatistics({
+                pendingAssignments: 0,
+                newAssignments: 0,
+                activeLecturers: 0,
+                totalLecturersAssigned: 0,
+                questionsNeedingReview: 0,
+                newReviews: 0,
+                completionRate: 0,
+                completionTrend: 0
+            });
+        }
+
+        // Initialize SL subject data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSLSubjectData();
+        });
+    </script>
 </body>
 
 </html>

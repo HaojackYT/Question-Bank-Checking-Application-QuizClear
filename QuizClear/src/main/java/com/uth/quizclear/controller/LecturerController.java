@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
@@ -39,13 +40,34 @@ public class LecturerController {
     private CLORepository cloRepository;
       @Autowired
     private UserRepository userRepository;    @Autowired
-    private AIService aiService;
-
-    /**
+    private AIService aiService;    /**
      * Lecturer Question Management page
      */
     @GetMapping("/question-management")
-    public String questionManagement(Model model, HttpSession session) {
+    public String questionManagement(Model model, HttpSession session, Authentication authentication) {
+        // Check authentication
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        
+        // Check if user has lecturer permissions (allow higher roles too)
+        boolean hasAccess = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC") ||
+                           auth.equals("Lec") || auth.equals("ROLE_Lec") ||
+                           auth.equals("SL") || auth.equals("ROLE_SL") ||
+                           auth.equals("HOD") || auth.equals("ROLE_HOD") ||
+                           auth.equals("HoD") || auth.equals("ROLE_HoD") ||
+                           auth.equals("HOED") || auth.equals("ROLE_HOED") ||
+                           auth.equals("HoED") || auth.equals("ROLE_HoED") ||
+                           auth.equals("RD") || auth.equals("ROLE_RD");
+                });
+        
+        if (!hasAccess) {
+            return "error/403";
+        }
+        
         // Get user from session
         Object userObj = session.getAttribute("user");
         Long lecturerId = 1L; // Default fallback
@@ -54,10 +76,17 @@ public class LecturerController {
             lecturerId = user.getUserId();
         }
         
+        // Alternative: get from currentUserId set by ScopeInterceptor
+        Object currentUserId = session.getAttribute("currentUserId");
+        if (currentUserId != null && currentUserId instanceof Long) {
+            lecturerId = (Long) currentUserId;
+        }
+        
         // Thêm các filter options từ database
         List<Course> courses = courseRepository.findAll();
         model.addAttribute("courses", courses);
         model.addAttribute("lecturerId", lecturerId);
+        model.addAttribute("userEmail", authentication.getName());
         
         return "Lecturer/lectureQuesManagement";
     }
@@ -287,16 +316,12 @@ public class LecturerController {
         model.addAttribute("difficultyLevels", DifficultyLevel.values());
           // If questionId is provided, load the question data for editing
         if (questionId != null) {
-            System.out.println("Loading question with ID: " + questionId);
             Question question = questionRepository.findById(questionId).orElse(null);
             if (question != null) {
-                System.out.println("Found question: " + question.getContent());
                 model.addAttribute("question", question);
             } else {
-                System.out.println("Question not found with ID: " + questionId);
             }
         } else {
-            System.out.println("No questionId provided");
         }
         
         return "Lecturer/L_QManager_editQuestion";
@@ -309,7 +334,6 @@ public class LecturerController {
             @RequestBody Map<String, Object> questionData, 
             HttpSession session) {
         try {
-            System.out.println("Received question data: " + questionData);
             
             // Get user from session
             Object userObj = session.getAttribute("user");
@@ -329,11 +353,9 @@ public class LecturerController {
                 try {
                     questionId = Long.parseLong(questionIdObj.toString());
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid questionId format: " + questionIdObj);
                 }
             }
                   if (questionId != null) {
-                System.out.println("Updating existing question with ID: " + questionId);
                 question = questionRepository.findById(questionId)
                     .orElseThrow(() -> new RuntimeException("Question not found"));
                     
@@ -342,7 +364,6 @@ public class LecturerController {
                 //     throw new RuntimeException("Unauthorized access to question");
                 // }
             } else {
-                System.out.println("Creating new question");
                 question = new Question();
                 
                 // Set required fields for new question
@@ -424,7 +445,6 @@ public class LecturerController {
             String action = questionData.get("action") != null ? 
                 questionData.get("action").toString() : "draft";
             
-            System.out.println("Action: " + action);
             
             if ("submit".equals(action)) {
                 question.setStatus(QuestionStatus.SUBMITTED);
@@ -433,7 +453,6 @@ public class LecturerController {
             }
             
             Question savedQuestion = questionRepository.save(question);
-            System.out.println("Question saved with ID: " + savedQuestion.getQuestionId() + ", Status: " + savedQuestion.getStatus());
             
             Map<String, Object> response = new HashMap<>();
             response.put("message", action.equals("submit") ? "Question submitted successfully" : "Question saved as draft successfully");
@@ -455,14 +474,11 @@ public class LecturerController {
     @PostMapping("/api/check-duplicate")
     @ResponseBody    public ResponseEntity<Map<String, Object>> checkDuplicate(@RequestBody Map<String, Object> questionData, HttpSession session) {
         try {
-            System.out.println("=== DUPLICATE CHECK REQUEST ===");
-            System.out.println("Request data: " + questionData);
             
             Map<String, Object> response = new HashMap<>();
               // Get question data
             String questionTitle = (String) questionData.get("questionTitle");
             
-            System.out.println("Question title: " + questionTitle);
             
             if (questionTitle == null || questionTitle.trim().isEmpty()) {
                 response.put("error", "Question title is required");
@@ -495,12 +511,9 @@ public class LecturerController {
                     response.put("message", "AI service temporarily unavailable");
                     response.put("debug", "AI service error: " + aiResponse.get("error"));                } else {
                     // Process AI response
-                    System.out.println("AI Response: " + aiResponse.toString());
                     int duplicatesFound = (Integer) aiResponse.getOrDefault("duplicates_found", 0);
                     List<?> similarQuestions = (List<?>) aiResponse.getOrDefault("similar_questions", new ArrayList<>());
                     
-                    System.out.println("Duplicates found: " + duplicatesFound);
-                    System.out.println("Similar questions count: " + similarQuestions.size());
                     
                     // Calculate percentage - if any duplicates found, show percentage
                     int duplicatePercent = 0;
@@ -509,20 +522,14 @@ public class LecturerController {
                         if (similarQuestions.get(0) instanceof Map) {
                             Map<?, ?> firstResult = (Map<?, ?>) similarQuestions.get(0);
                             Object scoreObj = firstResult.get("similarity_score");
-                            System.out.println("First result: " + firstResult.toString());
-                            System.out.println("Score object: " + scoreObj);
                             if (scoreObj != null) {
                                 double score = ((Number) scoreObj).doubleValue();
                                 duplicatePercent = (int) Math.round(score * 100);
-                                System.out.println("Calculated duplicate percent: " + duplicatePercent);
                             } else {
-                                System.out.println("Score object is null!");
                             }
                         } else {
-                            System.out.println("First result is not a Map: " + similarQuestions.get(0).getClass());
                         }
                     } else {
-                        System.out.println("Condition failed: duplicatesFound=" + duplicatesFound + ", similarQuestions.isEmpty()=" + similarQuestions.isEmpty());
                     }
                     
                     response.put("duplicatePercent", duplicatePercent);
@@ -548,4 +555,149 @@ public class LecturerController {
             return ResponseEntity.status(500).body(errorResponse);
         }
     }
+
+    /**
+     * Lecturer Feedback & Revisions page
+     */
+    @GetMapping("/feedback-revisions")
+    public String feedbackRevisions(Model model, HttpSession session, Authentication authentication) {
+        // Check authentication
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        
+        // Check if user has lecturer permissions (allow higher roles too)
+        boolean hasAccess = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC") ||
+                           auth.equals("Lec") || auth.equals("ROLE_Lec") ||
+                           auth.equals("SL") || auth.equals("ROLE_SL") ||
+                           auth.equals("HOD") || auth.equals("ROLE_HOD") ||
+                           auth.equals("HoD") || auth.equals("ROLE_HoD") ||
+                           auth.equals("HOED") || auth.equals("ROLE_HOED") ||
+                           auth.equals("HoED") || auth.equals("ROLE_HoED") ||
+                           auth.equals("RD") || auth.equals("ROLE_RD");
+                });
+        
+        if (!hasAccess) {
+            return "error/403";
+        }
+        
+        // Get user from session
+        Object userObj = session.getAttribute("user");
+        Long lecturerId = 1L; // Default fallback
+        if (userObj != null && userObj instanceof UserBasicDTO) {
+            UserBasicDTO user = (UserBasicDTO) userObj;
+            lecturerId = user.getUserId();
+        }
+        
+        // Alternative: get from currentUserId set by ScopeInterceptor
+        Object currentUserId = session.getAttribute("currentUserId");
+        if (currentUserId != null && currentUserId instanceof Long) {
+            lecturerId = (Long) currentUserId;
+        }
+        
+        model.addAttribute("lecturerId", lecturerId);
+        model.addAttribute("userEmail", authentication.getName());
+        
+        return "Lecturer/lecturerFeedback";
+    }
+    
+    /**
+     * Lecturer Task page
+     */
+    @GetMapping("/task")
+    public String lecturerTask(Model model, HttpSession session, Authentication authentication) {
+        // Check authentication
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        
+        // Check if user has lecturer permissions (allow higher roles too)
+        boolean hasAccess = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC") ||
+                           auth.equals("Lec") || auth.equals("ROLE_Lec") ||
+                           auth.equals("SL") || auth.equals("ROLE_SL") ||
+                           auth.equals("HOD") || auth.equals("ROLE_HOD") ||
+                           auth.equals("HoD") || auth.equals("ROLE_HoD") ||
+                           auth.equals("HOED") || auth.equals("ROLE_HOED") ||
+                           auth.equals("HoED") || auth.equals("ROLE_HoED") ||
+                           auth.equals("RD") || auth.equals("ROLE_RD");
+                });
+        
+        if (!hasAccess) {
+            return "error/403";
+        }
+        
+        // Get user from session
+        Object userObj = session.getAttribute("user");
+        Long lecturerId = 1L; // Default fallback
+        if (userObj != null && userObj instanceof UserBasicDTO) {
+            UserBasicDTO user = (UserBasicDTO) userObj;
+            lecturerId = user.getUserId();
+        }
+        
+        // Alternative: get from currentUserId set by ScopeInterceptor
+        Object currentUserId = session.getAttribute("currentUserId");
+        if (currentUserId != null && currentUserId instanceof Long) {
+            lecturerId = (Long) currentUserId;
+        }
+        
+        model.addAttribute("lecturerId", lecturerId);
+        model.addAttribute("userEmail", authentication.getName());
+        
+        return "Lecturer/lecturerTask";
+    }
+
+    /**
+     * Lecturer Exam Evaluation page
+     */
+    @GetMapping("/exam-evaluation")
+    public String lecturerExamEvaluation(Model model, HttpSession session, Authentication authentication) {
+        // Check authentication
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        
+        // Check if user has lecturer permissions (allow higher roles too)
+        boolean hasAccess = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC") ||
+                           auth.equals("Lec") || auth.equals("ROLE_Lec") ||
+                           auth.equals("SL") || auth.equals("ROLE_SL") ||
+                           auth.equals("HOD") || auth.equals("ROLE_HOD") ||
+                           auth.equals("HoD") || auth.equals("ROLE_HoD") ||
+                           auth.equals("HOED") || auth.equals("ROLE_HOED") ||
+                           auth.equals("HoED") || auth.equals("ROLE_HoED") ||
+                           auth.equals("RD") || auth.equals("ROLE_RD");
+                });
+        
+        if (!hasAccess) {
+            return "error/403";
+        }
+        
+        // Get user from session
+        Object userObj = session.getAttribute("user");
+        Long lecturerId = 1L; // Default fallback
+        if (userObj != null && userObj instanceof UserBasicDTO) {
+            UserBasicDTO user = (UserBasicDTO) userObj;
+            lecturerId = user.getUserId();
+        }
+        
+        // Alternative: get from currentUserId set by ScopeInterceptor
+        Object currentUserId = session.getAttribute("currentUserId");
+        if (currentUserId != null && currentUserId instanceof Long) {
+            lecturerId = (Long) currentUserId;
+        }
+        
+        model.addAttribute("lecturerId", lecturerId);
+        model.addAttribute("userEmail", authentication.getName());
+        
+        return "Lecturer/lecturerEETaskExam";
+    }
 }
+
