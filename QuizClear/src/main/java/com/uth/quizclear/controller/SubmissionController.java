@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/question-management")
+@RequestMapping("/submission-management")
 public class SubmissionController {
 
     @Autowired
@@ -36,8 +36,7 @@ public class SubmissionController {
 
     // Xử lý action Approve
     @PostMapping("/submissions/{id}/approve")
-    public String approveSubmission(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-        try {
+    public String approveSubmission(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {        try {
             // Tạm thời hardcode ID người duyệt là 1. Sau này sẽ lấy từ user đang đăng nhập
             Long currentUserId = 1L; 
             questionService.approveQuestion(id, currentUserId);
@@ -45,13 +44,12 @@ public class SubmissionController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
         }
-        return "redirect:/question-management/submissions";
+        return "redirect:/submission-management/submissions";
     }
 
     // Xử lý action Reject
     @PostMapping("/submissions/{id}/reject")
-    public String rejectSubmission(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-        try {
+    public String rejectSubmission(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {        try {
             // Tạm thời hardcode ID người duyệt là 1. Sau này sẽ lấy từ user đang đăng nhập
             Long currentUserId = 1L;
             questionService.rejectQuestion(id, currentUserId);
@@ -59,7 +57,7 @@ public class SubmissionController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
         }
-        return "redirect:/question-management/submissions";
+        return "redirect:/submission-management/submissions";
     }
 }
 

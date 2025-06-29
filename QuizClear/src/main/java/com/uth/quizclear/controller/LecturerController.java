@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
@@ -39,13 +40,34 @@ public class LecturerController {
     private CLORepository cloRepository;
       @Autowired
     private UserRepository userRepository;    @Autowired
-    private AIService aiService;
-
-    /**
+    private AIService aiService;    /**
      * Lecturer Question Management page
      */
     @GetMapping("/question-management")
-    public String questionManagement(Model model, HttpSession session) {
+    public String questionManagement(Model model, HttpSession session, Authentication authentication) {
+        // Check authentication
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        
+        // Check if user has lecturer permissions (allow higher roles too)
+        boolean hasAccess = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC") ||
+                           auth.equals("Lec") || auth.equals("ROLE_Lec") ||
+                           auth.equals("SL") || auth.equals("ROLE_SL") ||
+                           auth.equals("HOD") || auth.equals("ROLE_HOD") ||
+                           auth.equals("HoD") || auth.equals("ROLE_HoD") ||
+                           auth.equals("HOED") || auth.equals("ROLE_HOED") ||
+                           auth.equals("HoED") || auth.equals("ROLE_HoED") ||
+                           auth.equals("RD") || auth.equals("ROLE_RD");
+                });
+        
+        if (!hasAccess) {
+            return "error/403";
+        }
+        
         // Get user from session
         Object userObj = session.getAttribute("user");
         Long lecturerId = 1L; // Default fallback
@@ -54,10 +76,17 @@ public class LecturerController {
             lecturerId = user.getUserId();
         }
         
+        // Alternative: get from currentUserId set by ScopeInterceptor
+        Object currentUserId = session.getAttribute("currentUserId");
+        if (currentUserId != null && currentUserId instanceof Long) {
+            lecturerId = (Long) currentUserId;
+        }
+        
         // Thêm các filter options từ database
         List<Course> courses = courseRepository.findAll();
         model.addAttribute("courses", courses);
         model.addAttribute("lecturerId", lecturerId);
+        model.addAttribute("userEmail", authentication.getName());
         
         return "Lecturer/lectureQuesManagement";
     }

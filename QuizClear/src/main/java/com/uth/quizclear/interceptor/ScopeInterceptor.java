@@ -88,41 +88,41 @@ public class ScopeInterceptor extends OncePerRequestFilter {
         session.setAttribute("currentUserId", user.getUserId());
         session.setAttribute("currentUserRole", user.getRole());
         session.setAttribute("currentUsername", user.getEmail()); // Using email as username
-        
-        // Set scope-based access information
+          // Set scope-based access information
         try {
             UserRole userRole = user.getRole();
             
-            // Use role name comparison since enum values may differ
-            String roleStr = userRole.name();
+            // Use both role name and value for compatibility
+            String roleStr = userRole.name(); // "LEC", "HOD", etc.
+            String roleValue = userRole.getValue(); // "Lec", "HoD", etc.
             
-            if ("RD".equals(roleStr)) {
+            if ("RD".equals(roleStr) || "RD".equals(roleValue)) {
                 // RD has system-wide access
                 session.setAttribute("hasSystemAccess", true);
                 session.setAttribute("accessibleDepartmentIds", scopeService.getAllDepartmentIds());
                 session.setAttribute("accessibleSubjectIds", scopeService.getAllSubjectIds());
                 
-            } else if ("HoED".equals(roleStr)) {
+            } else if ("HOED".equals(roleStr) || "HoED".equals(roleValue)) {
                 // HoED has examination-wide access
                 session.setAttribute("hasExaminationAccess", true);
                 session.setAttribute("accessibleDepartmentIds", scopeService.getAllDepartmentIds());
                 session.setAttribute("accessibleSubjectIds", scopeService.getAllSubjectIds());
                 
-            } else if ("HoD".equals(roleStr)) {
+            } else if ("HOD".equals(roleStr) || "HoD".equals(roleValue)) {
                 // HoD has department-specific access
                 List<Long> hodDepartmentIds = scopeService.getUserDepartmentIds(user.getUserId().longValue());
                 List<Long> hodSubjectIds = scopeService.getSubjectIdsByDepartments(hodDepartmentIds);
                 session.setAttribute("accessibleDepartmentIds", hodDepartmentIds);
                 session.setAttribute("accessibleSubjectIds", hodSubjectIds);
                 
-            } else if ("SL".equals(roleStr)) {
+            } else if ("SL".equals(roleStr) || "SL".equals(roleValue)) {
                 // SL has subject-specific access
                 List<Long> slSubjectIds = scopeService.getUserSubjectIds(user.getUserId().longValue());
                 List<Long> slDepartmentIds = scopeService.getDepartmentIdsBySubjects(slSubjectIds);
                 session.setAttribute("accessibleDepartmentIds", slDepartmentIds);
                 session.setAttribute("accessibleSubjectIds", slSubjectIds);
                 
-            } else if ("Lec".equals(roleStr)) {
+            } else if ("LEC".equals(roleStr) || "Lec".equals(roleValue)) {
                 // Lecturer has personal + assigned subject access
                 List<Long> lecturerSubjectIds = scopeService.getUserSubjectIds(user.getUserId().longValue());
                 List<Long> lecturerDepartmentIds = scopeService.getDepartmentIdsBySubjects(lecturerSubjectIds);
@@ -174,19 +174,19 @@ public class ScopeInterceptor extends OncePerRequestFilter {
             logger.error("Error checking authorization: " + e.getMessage(), e);
             return false; // Deny access on error
         }
-    }
-
-    /**
+    }    /**
      * Check authorization for API endpoints
      */
     private boolean checkApiAuthorization(String requestUri, String method, User user, 
                                         String departmentId, String subjectId, String targetUserId) {
         
         UserRole userRole = user.getRole();
-        String roleStr = userRole.name();
+        String roleStr = userRole.name(); // "LEC", "HOD", etc.
+        String roleValue = userRole.getValue(); // "Lec", "HoD", etc.
         
         // System-wide access roles
-        if ("RD".equals(roleStr) || "HoED".equals(roleStr)) {
+        if ("RD".equals(roleStr) || "RD".equals(roleValue) || 
+            "HOED".equals(roleStr) || "HoED".equals(roleValue)) {
             return true;
         }
         
@@ -217,9 +217,8 @@ public class ScopeInterceptor extends OncePerRequestFilter {
                 return false;
             }
         }
-        
-        // User-specific access (for personal data)
-        if (targetUserId != null && "Lec".equals(roleStr)) {
+          // User-specific access (for personal data)
+        if (targetUserId != null && ("LEC".equals(roleStr) || "Lec".equals(roleValue))) {
             try {
                 Long targetId = Long.parseLong(targetUserId);
                 return targetId.equals(user.getUserId()); // Lecturers can only access their own data
@@ -229,53 +228,61 @@ public class ScopeInterceptor extends OncePerRequestFilter {
         }
         
         return true;
-    }
-
-    /**
+    }    /**
      * Check authorization for dashboard endpoints
      */
     private boolean checkDashboardAuthorization(String requestUri, User user) {
         UserRole userRole = user.getRole();
-        String roleStr = userRole.name();
+        String roleStr = userRole.name(); // "LEC", "HOD", etc.
+        String roleValue = userRole.getValue(); // "Lec", "HoD", etc.
         
         // Map dashboard URLs to required roles
         if (requestUri.contains("/research-director")) {
-            return "RD".equals(roleStr);
+            return "RD".equals(roleStr) || "RD".equals(roleValue);
         } else if (requestUri.contains("/hed")) {
-            return "HoED".equals(roleStr);
+            return "HOED".equals(roleStr) || "HoED".equals(roleValue);
         } else if (requestUri.contains("/hod")) {
-            return "HoD".equals(roleStr);
+            return "HOD".equals(roleStr) || "HoD".equals(roleValue);
         } else if (requestUri.contains("/subject-leader")) {
-            return "SL".equals(roleStr);
+            return "SL".equals(roleStr) || "SL".equals(roleValue);
         } else if (requestUri.contains("/lecturer")) {
-            return "Lec".equals(roleStr);
+            return "LEC".equals(roleStr) || "Lec".equals(roleValue) ||
+                   "SL".equals(roleStr) || "SL".equals(roleValue) ||
+                   "HOD".equals(roleStr) || "HoD".equals(roleValue) ||
+                   "HOED".equals(roleStr) || "HoED".equals(roleValue) ||
+                   "RD".equals(roleStr) || "RD".equals(roleValue);
         } else if (requestUri.contains("/staff")) {
             // Staff dashboard can be accessed by multiple roles
-            return "HoD".equals(roleStr) || "SL".equals(roleStr);
+            return "HOD".equals(roleStr) || "HoD".equals(roleValue) || 
+                   "SL".equals(roleStr) || "SL".equals(roleValue);
         }
         
         // General dashboard access for authenticated users
         return true;
-    }
-
-    /**
+    }/**
      * Check role-based authorization for specific endpoints
      */
     private boolean checkRoleBasedAuthorization(String requestUri, User user) {
         UserRole userRole = user.getRole();
-        String roleStr = userRole.name();
+        String roleStr = userRole.name(); // This returns "LEC", "HOD", etc.
+        String roleValue = userRole.getValue(); // This returns "Lec", "HoD", etc.
         
         // Role-specific endpoint patterns
         if (requestUri.startsWith("/research-director/")) {
-            return "RD".equals(roleStr);
+            return "RD".equals(roleStr) || "RD".equals(roleValue);
         } else if (requestUri.startsWith("/head-examination/")) {
-            return "HoED".equals(roleStr);
+            return "HOED".equals(roleStr) || "HoED".equals(roleValue);
         } else if (requestUri.startsWith("/head-department/")) {
-            return "HoD".equals(roleStr);
+            return "HOD".equals(roleStr) || "HoD".equals(roleValue);
         } else if (requestUri.startsWith("/subject-leader/")) {
-            return "SL".equals(roleStr);
+            return "SL".equals(roleStr) || "SL".equals(roleValue);
         } else if (requestUri.startsWith("/lecturer/")) {
-            return "Lec".equals(roleStr);
+            // Allow lecturer, subject leader, and higher roles to access lecturer endpoints
+            return "LEC".equals(roleStr) || "Lec".equals(roleValue) ||
+                   "SL".equals(roleStr) || "SL".equals(roleValue) ||
+                   "HOD".equals(roleStr) || "HoD".equals(roleValue) ||
+                   "HOED".equals(roleStr) || "HoED".equals(roleValue) ||
+                   "RD".equals(roleStr) || "RD".equals(roleValue);
         }
         
         return true; // Allow access to other endpoints

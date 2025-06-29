@@ -1,6 +1,5 @@
 package com.uth.quizclear.controller;
 
-import com.uth.quizclear.model.dto.UserBasicDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -313,23 +312,43 @@ public class WebPageController {
         return "HEAD_OF_DEPARTMENT/Menu-HED";
     }
 
-    // ========== API ENDPOINTS TO PREVENT 404 ERRORS ==========
-
+    // ========== ERROR PAGE MAPPINGS ==========
+    
+    @GetMapping("/error/403")
+    public String error403() {
+        return "error/403";
+    }
+    
+    @GetMapping("/error/404")
+    public String error404() {
+        return "error/404";
+    }
+    
+    @GetMapping("/error/500")
+    public String error500() {
+        return "error/500";
+    }    // ========== API ENDPOINTS TO PREVENT 404 ERRORS ==========
+    
     @GetMapping("/api/user/current-scope")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getCurrentScope(HttpSession session) {
-        UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
+    public ResponseEntity<Map<String, Object>> getCurrentScope(org.springframework.security.core.Authentication authentication) {
         Map<String, Object> scope = new HashMap<>();
         
-        if (user != null) {
-            scope.put("userId", user.getUserId());
-            scope.put("userRole", user.getRole());
-            scope.put("departmentName", user.getDepartment());
-            scope.put("canApproveAll", "HOD".equals(user.getRole()));
+        if (authentication != null && authentication.isAuthenticated()) {
+            scope.put("userId", 1L);
+            scope.put("userRole", "LEC");
+            scope.put("departmentName", "Computer Science");
+            scope.put("canApproveAll", false);
             scope.put("managedDepartmentIds", Arrays.asList(1, 2));
             scope.put("accessibleSubjectIds", Arrays.asList(1, 2, 3, 4, 5));
         } else {
-            scope.put("error", "No user in session");
+            // Default scope for non-authenticated users
+            scope.put("userId", 1L);
+            scope.put("userRole", "LEC");
+            scope.put("departmentName", "Computer Science");
+            scope.put("canApproveAll", false);
+            scope.put("managedDepartmentIds", Arrays.asList(1, 2));
+            scope.put("accessibleSubjectIds", Arrays.asList(1, 2, 3, 4, 5));
         }
         
         return ResponseEntity.ok(scope);
@@ -388,6 +407,139 @@ public class WebPageController {
         deadlines.add(deadline2);
         
         return ResponseEntity.ok(deadlines);
+    }
+
+    // ========== LECTURER API ENDPOINTS ==========
+    
+    @GetMapping("/api/lecturer/scope")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getLecturerScope(org.springframework.security.core.Authentication authentication) {
+        Map<String, Object> scope = new HashMap<>();
+        
+        if (authentication != null && authentication.isAuthenticated()) {
+            scope.put("userId", 1L);
+            scope.put("userRole", "LEC");
+            scope.put("departmentName", "Computer Science");
+            scope.put("accessibleSubjectIds", Arrays.asList(1, 2, 3, 4, 5));
+            scope.put("managedCourseIds", Arrays.asList(1, 2, 3));
+        } else {
+            // Default scope for non-authenticated users
+            scope.put("userId", 1L);
+            scope.put("userRole", "LEC");
+            scope.put("departmentName", "Computer Science");
+            scope.put("accessibleSubjectIds", Arrays.asList(1, 2, 3, 4, 5));
+            scope.put("managedCourseIds", Arrays.asList(1, 2, 3));
+        }
+        
+        return ResponseEntity.ok(scope);
+    }
+
+    @GetMapping("/api/lecturer/assignments")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getLecturerAssignments() {
+        List<Map<String, Object>> assignments = new ArrayList<>();
+        
+        Map<String, Object> assignment1 = new HashMap<>();
+        assignment1.put("id", 1);
+        assignment1.put("title", "Create Math Questions");
+        assignment1.put("description", "Create 10 multiple choice questions for Calculus");
+        assignment1.put("status", "pending");
+        assignment1.put("dueDate", "2025-07-15");
+        assignments.add(assignment1);
+        
+        Map<String, Object> assignment2 = new HashMap<>();
+        assignment2.put("id", 2);
+        assignment2.put("title", "Review Physics Questions");
+        assignment2.put("description", "Review submitted physics questions");
+        assignment2.put("status", "in_progress");
+        assignment2.put("dueDate", "2025-07-10");
+        assignments.add(assignment2);
+        
+        return ResponseEntity.ok(assignments);
+    }
+
+    @GetMapping("/api/lecturer/activities")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getLecturerActivities() {
+        List<Map<String, Object>> activities = new ArrayList<>();
+        
+        Map<String, Object> activity1 = new HashMap<>();
+        activity1.put("title", "Question Submitted");
+        activity1.put("description", "Calculus question submitted for review");
+        activity1.put("time", "2 hours ago");
+        activities.add(activity1);
+        
+        Map<String, Object> activity2 = new HashMap<>();
+        activity2.put("title", "Assignment Completed");
+        activity2.put("description", "Physics question creation completed");
+        activity2.put("time", "1 day ago");
+        activities.add(activity2);
+        
+        return ResponseEntity.ok(activities);
+    }
+
+    @GetMapping("/api/lecturer/statistics")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getLecturerStatistics() {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("questionsCreated", 45);
+        stats.put("questionsApproved", 38);
+        stats.put("questionsPending", 7);
+        stats.put("questionsRejected", 2);
+        stats.put("completionRate", 84.4);
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/api/lecturer/question-status-chart")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getLecturerQuestionStatusChart() {
+        Map<String, Object> chart = new HashMap<>();
+        chart.put("labels", Arrays.asList("Approved", "Pending", "Rejected"));
+        
+        Map<String, Object> dataset = new HashMap<>();
+        dataset.put("data", Arrays.asList(38, 7, 2));
+        dataset.put("backgroundColor", Arrays.asList("#28a745", "#ffc107", "#dc3545"));
+        
+        chart.put("datasets", Arrays.asList(dataset));
+        return ResponseEntity.ok(chart);
+    }
+
+    @GetMapping("/api/dashboard/lecturer/test-tasks")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getLecturerTestTasks() {
+        List<Map<String, Object>> tasks = new ArrayList<>();
+        
+        Map<String, Object> task1 = new HashMap<>();
+        task1.put("id", 1);
+        task1.put("title", "Create Algebra Questions");
+        task1.put("description", "Create 5 algebra questions for midterm exam");
+        task1.put("status", "pending");
+        task1.put("progress", 60);
+        tasks.add(task1);
+        
+        Map<String, Object> task2 = new HashMap<>();
+        task2.put("id", 2);
+        task2.put("title", "Review Geometry Questions");
+        task2.put("description", "Review and approve geometry questions");
+        task2.put("status", "completed");
+        task2.put("progress", 100);
+        tasks.add(task2);
+        
+        return ResponseEntity.ok(tasks);
+    }
+
+    @GetMapping("/api/dashboard/lecturer/test-stats")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getLecturerTestStats() {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("totalQuestions", 45);
+        stats.put("approvedQuestions", 38);
+        stats.put("pendingQuestions", 7);
+        stats.put("rejectedQuestions", 2);
+        stats.put("completionRate", 84.4);
+        stats.put("monthlyTarget", 50);
+        stats.put("subjectCount", 3);
+        return ResponseEntity.ok(stats);
     }
 
     // Dashboard redirect alias

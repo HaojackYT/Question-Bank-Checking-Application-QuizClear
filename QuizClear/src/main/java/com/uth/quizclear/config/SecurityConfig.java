@@ -33,14 +33,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, ScopeInterceptor scopeInterceptor) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authz -> authz
+                .csrf(csrf -> csrf.disable())                .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/Static/**", "/css/**", "/js/**", "/img/**", "/fonts/**").permitAll()
                         .requestMatchers("/", "/login", "/logout", "/error").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/health", "/actuator/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/dashboard/**").authenticated()
+                        .requestMatchers("/lecturer/**").authenticated()
                         .requestMatchers("/hed-dashboard", "/staff-dashboard", "/sl-dashboard", "/lecturer-dashboard", "/hoe-dashboard").authenticated()
                         .requestMatchers("/test-login-**", "/bypass-login-**", "/debug-session").permitAll()
                         .anyRequest().authenticated()
