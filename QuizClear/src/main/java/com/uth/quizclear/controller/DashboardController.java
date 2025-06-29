@@ -236,3 +236,4 @@ public class DashboardController {
         model.addAttribute("isLecturer", true);
     }
 }
+

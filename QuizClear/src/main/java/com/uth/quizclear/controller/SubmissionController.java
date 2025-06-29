@@ -62,3 +62,4 @@ public class SubmissionController {
         return "redirect:/question-management/submissions";
     }
 }
+

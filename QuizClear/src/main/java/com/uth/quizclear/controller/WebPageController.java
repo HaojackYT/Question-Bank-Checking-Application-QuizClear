@@ -1,4 +1,3 @@
-
 package com.uth.quizclear.controller;
 
 import com.uth.quizclear.model.dto.UserBasicDTO;
@@ -124,33 +123,46 @@ public class WebPageController {
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
-        // Lấy tất cả authorities (role)
+        
+        // Get all authorities (roles) and normalize
         java.util.Set<String> roles = new java.util.HashSet<>();
         authentication.getAuthorities().forEach(a -> {
             String r = a.getAuthority();
+            // Remove ROLE_ prefix if exists
             if (r.startsWith("ROLE_")) r = r.substring(5);
             roles.add(r);
         });
-        // Ưu tiên đúng thứ tự role
-        if (roles.contains("RD")) return "redirect:/staff-dashboard";
-        if (roles.contains("HoD")) return "redirect:/hed-dashboard";
-        if (roles.contains("SL")) return "redirect:/sl-dashboard";
-        if (roles.contains("Lec")) return "redirect:/lecturer-dashboard";
-        if (roles.contains("HOED")) return "redirect:/hoe-dashboard";
+        
+        // Priority-based role hierarchy - matches database format (UPPERCASE)
+        if (roles.contains("RD")) {
+            return "redirect:/staff-dashboard";
+        }
+        if (roles.contains("HOD")) {
+            return "redirect:/hed-dashboard";
+        }
+        if (roles.contains("SL")) {
+            return "redirect:/sl-dashboard";
+        }
+        if (roles.contains("LEC")) {
+            return "redirect:/lecturer-dashboard";
+        }
+        if (roles.contains("HOED")) {
+            return "redirect:/hoe-dashboard";
+        }        
         return "redirect:/login?error=unknown_role";
     }
 
     @GetMapping("/staff-dashboard")
     public String staffDashboard(org.springframework.security.core.Authentication authentication, Model model) {
-        System.out.println("DEBUG: Accessing /staff-dashboard");
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
         boolean isStaff = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("RD") || a.getAuthority().equals("ROLE_RD"));
-        if (!isStaff) {
-            System.out.println("DEBUG: User not authorized for RD role, redirecting to login");
-            return "redirect:/login";
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("RD") || auth.equals("ROLE_RD");
+                });        if (!isStaff) {
+            return dashboardRedirect(authentication);
         }
         model.addAttribute("userEmail", authentication.getName());
         return "Staff/staffDashboard";
@@ -158,17 +170,16 @@ public class WebPageController {
 
     @GetMapping("/hed-dashboard")
     public String hedDashboard(org.springframework.security.core.Authentication authentication, Model model) {
-        System.out.println("DEBUG: Accessing /hed-dashboard");
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
         boolean isHod = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("HoD") || a.getAuthority().equals("ROLE_HoD"));
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("HOD") || auth.equals("ROLE_HOD");                });
         if (!isHod) {
-            System.out.println("DEBUG: User not authorized for HoD role, redirecting to login");
-            return "redirect:/login";
+            return dashboardRedirect(authentication);
         }
-        // Nếu cần, lấy username: authentication.getName()
         model.addAttribute("userEmail", authentication.getName());
         return "HEAD_OF_DEPARTMENT/HED_Dashboard";
     }
@@ -176,32 +187,29 @@ public class WebPageController {
     @GetMapping("/hed-approve-questions")
     public String hedApproveQuestions(HttpSession session, Model model) {
         // TODO: Implement proper authentication when ready
-        // For now, use first HoD user from database
-        UserBasicDTO user = getUserFromDatabase("HoD");
-        model.addAttribute("user", user);
         return "HEAD_OF_DEPARTMENT/HED_ApproveQuestion";
     }
 
     @GetMapping("/hed-join-task")
     public String hedJoinTask(HttpSession session, Model model) {
         // TODO: Implement proper authentication when ready
-        // For now, use first HoD user from database
-        UserBasicDTO user = getUserFromDatabase("HoD");
-        model.addAttribute("user", user);
         return "HEAD_OF_DEPARTMENT/HED_JoinTask";
     }
 
     @GetMapping("/sl-dashboard")
     public String slDashboard(org.springframework.security.core.Authentication authentication, Model model) {
-        System.out.println("DEBUG: Accessing /sl-dashboard");
+        
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
         boolean isSL = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("SL") || a.getAuthority().equals("ROLE_SL"));
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("SL") || auth.equals("ROLE_SL");
+                });
         if (!isSL) {
-            System.out.println("DEBUG: User not authorized for SL role, redirecting to login");
-            return "redirect:/login";
+            
+            return dashboardRedirect(authentication);
         }
         model.addAttribute("userEmail", authentication.getName());
         return "subjectLeader/slDashboard";
@@ -209,15 +217,17 @@ public class WebPageController {
 
     @GetMapping("/lecturer-dashboard")
     public String lecturerDashboard(org.springframework.security.core.Authentication authentication, Model model) {
-        System.out.println("DEBUG: Accessing /lecturer-dashboard");
+        
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
-        }
-        boolean isLec = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("Lec") || a.getAuthority().equals("ROLE_Lec"));
+        }        boolean isLec = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC");
+                });
         if (!isLec) {
-            System.out.println("DEBUG: User not authorized for Lecturer role");
-            return "redirect:/login";
+            
+            return dashboardRedirect(authentication);
         }
         model.addAttribute("userEmail", authentication.getName());
         return "Lecturer/lecturerDashboard";
@@ -225,20 +235,22 @@ public class WebPageController {
 
     @GetMapping("/hoe-dashboard")
     public String hoeDashboard(org.springframework.security.core.Authentication authentication, Model model) {
-        System.out.println("DEBUG: Accessing /hoe-dashboard");
+        
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
         boolean isHOED = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("HOED") || a.getAuthority().equals("ROLE_HOED"));
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("HOED") || auth.equals("ROLE_HOED");
+                });
         if (!isHOED) {
-            System.out.println("DEBUG: User not authorized for HOED role");
-            return "redirect:/login";
+            
+            return dashboardRedirect(authentication);
         }
         model.addAttribute("userEmail", authentication.getName());
         return "Head of Examination Department/HOE_Dashboard";
     }
-
 
     @GetMapping("/hoe-review-assignment")
     public String hoeReviewAssignment(org.springframework.security.core.Authentication authentication, Model model) {
@@ -246,14 +258,16 @@ public class WebPageController {
             return "redirect:/login";
         }
         boolean isHOED = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("HOED") || a.getAuthority().equals("ROLE_HOED"));
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("HOED") || auth.equals("ROLE_HOED");
+                });
         if (!isHOED) {
-            return "redirect:/login";
+            return dashboardRedirect(authentication);
         }
         model.addAttribute("userEmail", authentication.getName());
         return "Head of Examination Department/HOE_ReviewAssignment";
     }
-
 
     @GetMapping("/hoe-approval")
     public String hoeApproval(org.springframework.security.core.Authentication authentication, Model model) {
@@ -261,14 +275,16 @@ public class WebPageController {
             return "redirect:/login";
         }
         boolean isHOED = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("HOED") || a.getAuthority().equals("ROLE_HOED"));
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("HOED") || auth.equals("ROLE_HOED");
+                });
         if (!isHOED) {
-            return "redirect:/login";
+            return dashboardRedirect(authentication);
         }
         model.addAttribute("userEmail", authentication.getName());
         return "Head of Examination Department/HOE_Approval";
     }
-
 
     @GetMapping("/hoe-new-assign")
     public String hoeNewAssign(org.springframework.security.core.Authentication authentication, Model model) {
@@ -276,15 +292,16 @@ public class WebPageController {
             return "redirect:/login";
         }
         boolean isHOED = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("HOED") || a.getAuthority().equals("ROLE_HOED"));
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("HOED") || auth.equals("ROLE_HOED");
+                });
         if (!isHOED) {
-            return "redirect:/login";
+            return dashboardRedirect(authentication);
         }
         model.addAttribute("userEmail", authentication.getName());
         return "Head of Examination Department/HOE_Newassign";
-    }
-
-    // Menu endpoint for HOE
+    }    // Menu endpoint for HOE
     @GetMapping("/Template/Head of Examination Department/Menu-ExaminationDepartment.html")
     public String hoeMenu() {
         return "Head of Examination Department/Menu-ExaminationDepartment";
@@ -294,153 +311,6 @@ public class WebPageController {
     @GetMapping("/Template/HEAD_OF_DEPARTMENT/Menu-HED.html")
     public String hedMenu() {
         return "HEAD_OF_DEPARTMENT/Menu-HED";
-    } // ========== HELPER METHODS CHO LOGIN ==========
-
-    // Removed unused isAuthorized method after refactor to Spring Security Authentication
-
-    // Helper method to get user from database instead of mock data
-    private UserBasicDTO getUserFromDatabase(String role) {
-        // Temporarily return mock data until database is connected
-        UserBasicDTO mockUser = new UserBasicDTO();
-        mockUser.setUserId(1L);
-        mockUser.setFullName("Mock " + role + " User");
-        mockUser.setEmail("mock." + role.toLowerCase() + "@university.edu");
-        mockUser.setRole(role);
-        mockUser.setDepartment("Computer Science");
-        
-        System.out.println("DEBUG: Returning mock user for role: " + role);
-        return mockUser;
-        
-        /* TODO: Uncomment when database is ready
-        try {
-            UserRole userRole = UserRole.valueOf(role);
-            User user = userRepository.findByRole(userRole).stream()
-                    .findFirst()
-                    .orElse(null);
-            if (user != null) {
-                UserBasicDTO dto = new UserBasicDTO();
-                dto.setUserId(user.getUserId() != null ? user.getUserId().longValue() : null);
-                dto.setFullName(user.getFullName());
-                dto.setEmail(user.getEmail());
-                dto.setRole(user.getRole().name());
-                dto.setDepartment(user.getDepartment());
-                return dto;
-            }
-        } catch (Exception e) {
-            System.err.println("Error getting user from database: " + e.getMessage());
-        }
-        return null;
-        */
-    }
-
-    @GetMapping("/test-lecturer")
-    public String testLecturer(HttpSession session) {
-        // Create a mock session for testing
-        UserBasicDTO mockUser = new UserBasicDTO();
-        mockUser.setUserId(1L);
-        mockUser.setRole("Lec");
-        mockUser.setFullName("Test Lecturer");
-        session.setAttribute("user", mockUser);
-        return "redirect:/lecturer/question-management";
-    }
-
-    // ========== TEST LOGIN ENDPOINTS ==========
-    @GetMapping("/test-login-hod")
-    public String testLoginHod(HttpSession session) {
-        // Create test user for HoD
-        UserBasicDTO user = new UserBasicDTO();
-        user.setUserId(2L);
-        user.setFullName("Test Head of Department");
-        user.setEmail("test.hod@university.edu");
-        user.setRole("HoD");
-        user.setDepartment("Computer Science");
-
-        // Set user in session
-        session.setAttribute("user", user);
-        session.setAttribute("isLoggedIn", true);
-
-        System.out.println("DEBUG: Created test session for HoD user: " + user.getFullName());
-        return "redirect:/hed-dashboard";
-    }
-
-    @GetMapping("/test-login-staff")
-    public String testLoginStaff(HttpSession session) {
-        // Create test user for Staff (RD)
-        UserBasicDTO user = new UserBasicDTO();
-        user.setUserId(3L);
-        user.setFullName("Test Staff Member");
-        user.setEmail("test.staff@university.edu");
-        user.setRole("RD");
-        user.setDepartment("Computer Science");
-
-        // Set user in session
-        session.setAttribute("user", user);
-        session.setAttribute("isLoggedIn", true);
-
-        System.out.println("DEBUG: Created test session for Staff user: " + user.getFullName());
-        return "redirect:/staff-dashboard";
-    }
-
-    @GetMapping("/test-login-hoed")
-    public String testLoginHoed(HttpSession session) {
-        // Create test user for HoED
-        UserBasicDTO user = new UserBasicDTO();
-        user.setUserId(6L);
-        user.setFullName("Emily Foster");
-        user.setEmail("emily.foster@university.edu");
-        user.setRole("HOED");
-        user.setDepartment("Computer Science");
-
-        // Set user in session
-        session.setAttribute("user", user);
-        session.setAttribute("isLoggedIn", true);
-
-        System.out.println("DEBUG: Created test session for HoED user: " + user.getFullName());
-        return "redirect:/hoe-dashboard";
-    }
-
-    @GetMapping("/test-logout")
-    public String testLogout(HttpSession session) {
-        session.invalidate();
-        System.out.println("DEBUG: Session invalidated");
-        return "redirect:/login";
-    }
-
-    // ========== BYPASS LOGIN FOR TESTING ==========
-    @GetMapping("/bypass-login-hoed")
-    public String bypassLoginHoed(HttpSession session) {
-        // Create Emily Foster user and set in session
-        UserBasicDTO user = new UserBasicDTO();
-        user.setUserId(6L);
-        user.setFullName("Emily Foster");
-        user.setEmail("emily.foster@university.edu");
-        user.setRole("HOED");
-        user.setDepartment("Computer Science");
-        user.setStatus(com.uth.quizclear.model.enums.Status.ACTIVE);
-
-        // Set all session attributes like AuthController does
-        session.setAttribute("userId", user.getUserId());
-        session.setAttribute("user", user);
-        session.setAttribute("role", user.getRole());
-        session.setAttribute("isLoggedIn", true);
-
-        System.out.println("DEBUG: Bypass login - Created session for Emily Foster");
-        return "redirect:/hoe-dashboard";
-    }
-
-    // ========== DEBUG ENDPOINTS ==========
-    @GetMapping("/debug-session")
-    public String debugSession(HttpSession session, Model model) {
-        UserBasicDTO user = (UserBasicDTO) session.getAttribute("user");
-
-        if (user == null) {
-            model.addAttribute("message", "No user in session");
-        } else {
-            model.addAttribute("message", "User found: " + user.getFullName() + " (Role: " + user.getRole() + ")");
-        }
-
-        return "login"; // Just return login page with message
-
     }
 
     // ========== API ENDPOINTS TO PREVENT 404 ERRORS ==========
@@ -455,7 +325,7 @@ public class WebPageController {
             scope.put("userId", user.getUserId());
             scope.put("userRole", user.getRole());
             scope.put("departmentName", user.getDepartment());
-            scope.put("canApproveAll", "HoD".equals(user.getRole()));
+            scope.put("canApproveAll", "HOD".equals(user.getRole()));
             scope.put("managedDepartmentIds", Arrays.asList(1, 2));
             scope.put("accessibleSubjectIds", Arrays.asList(1, 2, 3, 4, 5));
         } else {
@@ -520,15 +390,14 @@ public class WebPageController {
         return ResponseEntity.ok(deadlines);
     }
 
-    // Alias mapping cho các đường dẫn /hoe/dashboard, /hoe/review-assignment, /hoe/approvals
-    @GetMapping("/hoe/dashboard")
-    public String hoeDashboardAlias(org.springframework.security.core.Authentication authentication, Model model) {
-        return hoeDashboard(authentication, model);
-    }
-
-    @GetMapping("/hoe/review-assignment")
-    public String hoeReviewAssignmentAlias(org.springframework.security.core.Authentication authentication, Model model) {
-        return hoeReviewAssignment(authentication, model);
+    // Dashboard redirect alias
+    @GetMapping("/my-dashboard")
+    public String redirectToMyDashboard(org.springframework.security.core.Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        return dashboardRedirect(authentication);
     }
 
 }
+

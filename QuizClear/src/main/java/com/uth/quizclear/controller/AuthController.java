@@ -20,11 +20,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequest, HttpSession session) {
         try {
-            System.out.println("=== DEBUG AuthController: Login request received for email: " + loginRequest.getEmail());
             LoginResponseDTO response = authService.authenticate(loginRequest);
             
             if (response.isSuccess()) {
-                System.out.println("=== DEBUG AuthController: Login successful for: " + loginRequest.getEmail());
                 // Store user information in session
                 session.setAttribute("userId", response.getUser().getUserId());
                 session.setAttribute("user", response.getUser());
@@ -66,3 +64,4 @@ public class AuthController {
         }
     }
 }
+

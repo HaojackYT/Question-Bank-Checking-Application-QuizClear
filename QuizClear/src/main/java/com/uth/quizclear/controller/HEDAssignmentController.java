@@ -60,9 +60,7 @@ public class HEDAssignmentController {
             @RequestParam(defaultValue = "") String subject,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
-        System.out.println("Received parameters: search=" + search + ", status=" + status + ", subject=" + subject);
         Page<TaskAssignmentDTO> result = taskAssignmentService.getAllTaskAssignments(search, status, subject, page, size);
-        System.out.println("Tasks found: " + result.getContent().size() + ", Content: " + result.getContent());
         return result;
     }
 
@@ -156,3 +154,4 @@ public class HEDAssignmentController {
         return ResponseEntity.ok(courses);
     }
 }
+

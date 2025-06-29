@@ -83,8 +83,7 @@
                     </span>
                 </div>
                 <div class="support">Support</div>
-            </div>
-        </div>
+            </div>        </div>
 
         <div id="forgot-modal-overlay" class="modal-overlay"></div>
         <div id="forgot-modal" class="modal">
@@ -298,30 +297,7 @@
                         submitBtn.textContent = newPasswordGroup.style.display === 'block' ? 'Xác nhận đặt lại' : 'Đặt lại mật khẩu';
                         submitBtn.disabled = false;
                     }
-                }
-            });
-
-            // Quick fill functionality
-            document.querySelectorAll('.test-accounts div').forEach(div => {
-                if (div.innerHTML.includes('@')) {
-                    div.style.cursor = 'pointer';
-                    div.title = 'Nhấp đúp để tự động điền';
-                    div.addEventListener('dblclick', function() {
-                        const text = this.textContent;
-                        const emailMatch = text.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-                        const passwordMatch = text.match(/(hash_[a-zA-Z0-9]+)/);
-                        
-                        if (emailMatch && passwordMatch) {
-                            document.getElementById('email').value = emailMatch[1];
-                            document.getElementById('password').value = passwordMatch[1];
-                            this.style.backgroundColor = '#d4edda';
-                            setTimeout(() => {
-                                this.style.backgroundColor = '';
-                            }, 1000);
-                        }
-                    });
-                }
-            });
+                }            });
         </script>
     </body>
 </html>

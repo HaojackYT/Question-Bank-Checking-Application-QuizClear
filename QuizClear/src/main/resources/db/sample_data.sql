@@ -3,8 +3,7 @@
 -- All duplicate_detections reference valid question IDs only
 
 -- 1. Users data (core academic staff)
--- Đã chỉnh: thêm cột is_locked và password là '123456' cho tất cả user
--- Đã chỉnh: thêm cột is_locked, giữ nguyên mật khẩu gốc cho từng user
+-- Keeping original password hashes as requested by user
 INSERT INTO users (
     full_name, email, password_hash, role, status, department,
     gender, date_of_birth, nation, phone_number, created_at,
@@ -468,4 +467,41 @@ INSERT INTO question_access_permissions (question_id, department_id, subject_id,
 (42, 5, 12, 'approve', 6, 'Mendelian genetics - Genetics'),
 (43, 5, 11, 'write', 6, 'Plant cell biology - Cell biology'),
 (48, 5, 12, 'approve', 6, 'Advanced population genetics - Genetics');
+
+-- ========== LOGIN TESTING GUIDE ==========
+-- All users have their original password hashes
+-- 
+-- TEST ACCOUNTS FOR DIFFERENT ROLES:
+-- 
+-- 1. LECTURER (Lec):
+--    Email: ash.abrahams@university.edu
+--    Password: hash_ab001
+--    Should redirect to: /lecturer-dashboard
+--
+-- 2. HEAD OF DEPARTMENT (HoD):
+--    Email: alex.brooks@university.edu  
+--    Password: hash_ab002
+--    Should redirect to: /hed-dashboard
+--
+-- 3. SUBJECT LEADER (SL):
+--    Email: brian.carter@university.edu
+--    Password: hash_bc003
+--    Should redirect to: /sl-dashboard
+--
+-- 4. RESEARCH & DEVELOPMENT (RD):
+--    Email: catherine.davis@university.edu
+--    Password: hash_cd004
+--    Should redirect to: /staff-dashboard
+--
+-- 5. HEAD OF EXAMINATION DEPT (HoED):
+--    Email: emily.foster@university.edu
+--    Password: hash_ef006
+--    Should redirect to: /hoe-dashboard
+--
+-- ROLE MAPPING:
+-- RD -> staff-dashboard (Catherine Davis)
+-- HoD -> hed-dashboard (Alexander Brooks, Henry Johnson, Isabella King) 
+-- SL -> sl-dashboard (Brian Carter, Grace Harris)
+-- Lec -> lecturer-dashboard (Ash Abrahams, Daniel Evans, Frank Green)
+-- HoED -> hoe-dashboard (Emily Foster)
 

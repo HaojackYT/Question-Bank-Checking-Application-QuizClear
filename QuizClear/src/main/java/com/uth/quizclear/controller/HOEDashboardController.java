@@ -19,3 +19,4 @@ public class HOEDashboardController {
         return ResponseEntity.ok("Welcome to HOE Department Dashboard! UserId: " + userId);
     }
 }
+

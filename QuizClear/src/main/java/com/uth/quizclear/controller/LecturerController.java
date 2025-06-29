@@ -287,16 +287,12 @@ public class LecturerController {
         model.addAttribute("difficultyLevels", DifficultyLevel.values());
           // If questionId is provided, load the question data for editing
         if (questionId != null) {
-            System.out.println("Loading question with ID: " + questionId);
             Question question = questionRepository.findById(questionId).orElse(null);
             if (question != null) {
-                System.out.println("Found question: " + question.getContent());
                 model.addAttribute("question", question);
             } else {
-                System.out.println("Question not found with ID: " + questionId);
             }
         } else {
-            System.out.println("No questionId provided");
         }
         
         return "Lecturer/L_QManager_editQuestion";
@@ -309,7 +305,6 @@ public class LecturerController {
             @RequestBody Map<String, Object> questionData, 
             HttpSession session) {
         try {
-            System.out.println("Received question data: " + questionData);
             
             // Get user from session
             Object userObj = session.getAttribute("user");
@@ -329,11 +324,9 @@ public class LecturerController {
                 try {
                     questionId = Long.parseLong(questionIdObj.toString());
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid questionId format: " + questionIdObj);
                 }
             }
                   if (questionId != null) {
-                System.out.println("Updating existing question with ID: " + questionId);
                 question = questionRepository.findById(questionId)
                     .orElseThrow(() -> new RuntimeException("Question not found"));
                     
@@ -342,7 +335,6 @@ public class LecturerController {
                 //     throw new RuntimeException("Unauthorized access to question");
                 // }
             } else {
-                System.out.println("Creating new question");
                 question = new Question();
                 
                 // Set required fields for new question
@@ -424,7 +416,6 @@ public class LecturerController {
             String action = questionData.get("action") != null ? 
                 questionData.get("action").toString() : "draft";
             
-            System.out.println("Action: " + action);
             
             if ("submit".equals(action)) {
                 question.setStatus(QuestionStatus.SUBMITTED);
@@ -433,7 +424,6 @@ public class LecturerController {
             }
             
             Question savedQuestion = questionRepository.save(question);
-            System.out.println("Question saved with ID: " + savedQuestion.getQuestionId() + ", Status: " + savedQuestion.getStatus());
             
             Map<String, Object> response = new HashMap<>();
             response.put("message", action.equals("submit") ? "Question submitted successfully" : "Question saved as draft successfully");
@@ -455,14 +445,11 @@ public class LecturerController {
     @PostMapping("/api/check-duplicate")
     @ResponseBody    public ResponseEntity<Map<String, Object>> checkDuplicate(@RequestBody Map<String, Object> questionData, HttpSession session) {
         try {
-            System.out.println("=== DUPLICATE CHECK REQUEST ===");
-            System.out.println("Request data: " + questionData);
             
             Map<String, Object> response = new HashMap<>();
               // Get question data
             String questionTitle = (String) questionData.get("questionTitle");
             
-            System.out.println("Question title: " + questionTitle);
             
             if (questionTitle == null || questionTitle.trim().isEmpty()) {
                 response.put("error", "Question title is required");
@@ -495,12 +482,9 @@ public class LecturerController {
                     response.put("message", "AI service temporarily unavailable");
                     response.put("debug", "AI service error: " + aiResponse.get("error"));                } else {
                     // Process AI response
-                    System.out.println("AI Response: " + aiResponse.toString());
                     int duplicatesFound = (Integer) aiResponse.getOrDefault("duplicates_found", 0);
                     List<?> similarQuestions = (List<?>) aiResponse.getOrDefault("similar_questions", new ArrayList<>());
                     
-                    System.out.println("Duplicates found: " + duplicatesFound);
-                    System.out.println("Similar questions count: " + similarQuestions.size());
                     
                     // Calculate percentage - if any duplicates found, show percentage
                     int duplicatePercent = 0;
@@ -509,20 +493,14 @@ public class LecturerController {
                         if (similarQuestions.get(0) instanceof Map) {
                             Map<?, ?> firstResult = (Map<?, ?>) similarQuestions.get(0);
                             Object scoreObj = firstResult.get("similarity_score");
-                            System.out.println("First result: " + firstResult.toString());
-                            System.out.println("Score object: " + scoreObj);
                             if (scoreObj != null) {
                                 double score = ((Number) scoreObj).doubleValue();
                                 duplicatePercent = (int) Math.round(score * 100);
-                                System.out.println("Calculated duplicate percent: " + duplicatePercent);
                             } else {
-                                System.out.println("Score object is null!");
                             }
                         } else {
-                            System.out.println("First result is not a Map: " + similarQuestions.get(0).getClass());
                         }
                     } else {
-                        System.out.println("Condition failed: duplicatesFound=" + duplicatesFound + ", similarQuestions.isEmpty()=" + similarQuestions.isEmpty());
                     }
                     
                     response.put("duplicatePercent", duplicatePercent);
@@ -549,3 +527,4 @@ public class LecturerController {
         }
     }
 }
+

@@ -10,3 +10,4 @@ import org.springframework.web.bind.annotation.GetMapping;
             return "HEAD_OF_DEPARTMENT/HED_Dashboard"; 
         }
     }
+
