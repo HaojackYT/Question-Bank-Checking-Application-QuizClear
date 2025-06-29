@@ -146,25 +146,13 @@
 </script>
 
 
-    <!-- ma nhung header vs menu -->
-    <script>
-        // Load header
-        fetch('../../Template/header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-
-        // Load menu
-        fetch('Menu-Lecturer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-                setActiveMenu(document.title);
-            });
-
+    <!-- ma nhung header vs menu -->    <script>
+        // Set active menu based on current page
+        document.addEventListener('DOMContentLoaded', function() {
+            setActiveMenu(document.title);
+        });
     </script>
-    <script src="../../Static/js/L_activeMenu.js"></script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
 </html>

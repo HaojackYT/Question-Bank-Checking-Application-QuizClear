@@ -555,5 +555,149 @@ public class LecturerController {
             return ResponseEntity.status(500).body(errorResponse);
         }
     }
+
+    /**
+     * Lecturer Feedback & Revisions page
+     */
+    @GetMapping("/feedback-revisions")
+    public String feedbackRevisions(Model model, HttpSession session, Authentication authentication) {
+        // Check authentication
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        
+        // Check if user has lecturer permissions (allow higher roles too)
+        boolean hasAccess = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC") ||
+                           auth.equals("Lec") || auth.equals("ROLE_Lec") ||
+                           auth.equals("SL") || auth.equals("ROLE_SL") ||
+                           auth.equals("HOD") || auth.equals("ROLE_HOD") ||
+                           auth.equals("HoD") || auth.equals("ROLE_HoD") ||
+                           auth.equals("HOED") || auth.equals("ROLE_HOED") ||
+                           auth.equals("HoED") || auth.equals("ROLE_HoED") ||
+                           auth.equals("RD") || auth.equals("ROLE_RD");
+                });
+        
+        if (!hasAccess) {
+            return "error/403";
+        }
+        
+        // Get user from session
+        Object userObj = session.getAttribute("user");
+        Long lecturerId = 1L; // Default fallback
+        if (userObj != null && userObj instanceof UserBasicDTO) {
+            UserBasicDTO user = (UserBasicDTO) userObj;
+            lecturerId = user.getUserId();
+        }
+        
+        // Alternative: get from currentUserId set by ScopeInterceptor
+        Object currentUserId = session.getAttribute("currentUserId");
+        if (currentUserId != null && currentUserId instanceof Long) {
+            lecturerId = (Long) currentUserId;
+        }
+        
+        model.addAttribute("lecturerId", lecturerId);
+        model.addAttribute("userEmail", authentication.getName());
+        
+        return "Lecturer/lecturerFeedback";
+    }
+    
+    /**
+     * Lecturer Task page
+     */
+    @GetMapping("/task")
+    public String lecturerTask(Model model, HttpSession session, Authentication authentication) {
+        // Check authentication
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        
+        // Check if user has lecturer permissions (allow higher roles too)
+        boolean hasAccess = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC") ||
+                           auth.equals("Lec") || auth.equals("ROLE_Lec") ||
+                           auth.equals("SL") || auth.equals("ROLE_SL") ||
+                           auth.equals("HOD") || auth.equals("ROLE_HOD") ||
+                           auth.equals("HoD") || auth.equals("ROLE_HoD") ||
+                           auth.equals("HOED") || auth.equals("ROLE_HOED") ||
+                           auth.equals("HoED") || auth.equals("ROLE_HoED") ||
+                           auth.equals("RD") || auth.equals("ROLE_RD");
+                });
+        
+        if (!hasAccess) {
+            return "error/403";
+        }
+        
+        // Get user from session
+        Object userObj = session.getAttribute("user");
+        Long lecturerId = 1L; // Default fallback
+        if (userObj != null && userObj instanceof UserBasicDTO) {
+            UserBasicDTO user = (UserBasicDTO) userObj;
+            lecturerId = user.getUserId();
+        }
+        
+        // Alternative: get from currentUserId set by ScopeInterceptor
+        Object currentUserId = session.getAttribute("currentUserId");
+        if (currentUserId != null && currentUserId instanceof Long) {
+            lecturerId = (Long) currentUserId;
+        }
+        
+        model.addAttribute("lecturerId", lecturerId);
+        model.addAttribute("userEmail", authentication.getName());
+        
+        return "Lecturer/lecturerTask";
+    }
+
+    /**
+     * Lecturer Exam Evaluation page
+     */
+    @GetMapping("/exam-evaluation")
+    public String lecturerExamEvaluation(Model model, HttpSession session, Authentication authentication) {
+        // Check authentication
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        
+        // Check if user has lecturer permissions (allow higher roles too)
+        boolean hasAccess = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC") ||
+                           auth.equals("Lec") || auth.equals("ROLE_Lec") ||
+                           auth.equals("SL") || auth.equals("ROLE_SL") ||
+                           auth.equals("HOD") || auth.equals("ROLE_HOD") ||
+                           auth.equals("HoD") || auth.equals("ROLE_HoD") ||
+                           auth.equals("HOED") || auth.equals("ROLE_HOED") ||
+                           auth.equals("HoED") || auth.equals("ROLE_HoED") ||
+                           auth.equals("RD") || auth.equals("ROLE_RD");
+                });
+        
+        if (!hasAccess) {
+            return "error/403";
+        }
+        
+        // Get user from session
+        Object userObj = session.getAttribute("user");
+        Long lecturerId = 1L; // Default fallback
+        if (userObj != null && userObj instanceof UserBasicDTO) {
+            UserBasicDTO user = (UserBasicDTO) userObj;
+            lecturerId = user.getUserId();
+        }
+        
+        // Alternative: get from currentUserId set by ScopeInterceptor
+        Object currentUserId = session.getAttribute("currentUserId");
+        if (currentUserId != null && currentUserId instanceof Long) {
+            lecturerId = (Long) currentUserId;
+        }
+        
+        model.addAttribute("lecturerId", lecturerId);
+        model.addAttribute("userEmail", authentication.getName());
+        
+        return "Lecturer/lecturerEETaskExam";
+    }
 }
 

@@ -551,5 +551,48 @@ public class WebPageController {
         return dashboardRedirect(authentication);
     }
 
+    // ========== MISSING LECTURER ENDPOINTS ==========
+    
+    @GetMapping("/lecturer/lecturerFeedback.html")
+    public String lecturerFeedback(org.springframework.security.core.Authentication authentication, Model model) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        boolean isLec = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC");
+                });
+        if (!isLec) {
+            return dashboardRedirect(authentication);
+        }
+        model.addAttribute("userEmail", authentication.getName());
+        return "Lecturer/lecturerFeedback";
+    }
+
+    @GetMapping("/lecturer/feedback")
+    public String lecturerFeedbackAlias(org.springframework.security.core.Authentication authentication, Model model) {
+        return lecturerFeedback(authentication, model);
+    }
+
+    // ========== HEALTH CHECK ENDPOINT ==========
+    
+    @GetMapping("/actuator/health")
+    @ResponseBody
+    public Map<String, Object> health() {
+        Map<String, Object> health = new HashMap<>();
+        health.put("status", "UP");
+        health.put("timestamp", java.time.Instant.now());
+        health.put("application", "QuizClear");
+        health.put("version", "1.0.0");
+        return health;
+    }
+
+    @GetMapping("/health")
+    @ResponseBody
+    public Map<String, Object> healthAlias() {
+        return health();
+    }
+
 }
 
