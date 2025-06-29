@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/fontawesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../static/css/subjectLeader/slPlans.css">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/static/css/subjectLeader/slPlans.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Plans</title>
 </head>
@@ -31,133 +32,136 @@
                 <div class="title">Plans</div>
                 <div class="subtitle">Access and confirm assigned question development tasks</div>
             </div>
-                <div class="search-filter-bar">
-                    <div class="search-box">
-                        <input type="text" placeholder="Enter search content ..." class="search-input">
-                        <button class="search-btn">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                    <div class="filter-dropdown">
-                        <select class="filter-select">
-                            <option>All Status</option>
-                            <option>Pending</option>
-                            <option>Accepted</option>
-                            <option>New</option>
-                        </select>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
+            <div class="search-filter-bar">
+                <div class="search-box">
+                    <input type="text" placeholder="Enter search content ..." class="search-input">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
-                <table class="course-table">
-                    <thead>
-                        <tr>
-                            <th>Plans ID</th>
-                            <th>Plans Name</th>
-                            <th>No. of Ques</th>
-                            <th>Difficulty Levels</th>
-                            <th>Due Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>DB202</td>
-                            <td>Database Systems</td>
-                            <td>50</td>
-                            <td>15 Reg
-                                20 Comp
-                                10 Bas App
-                                5 Adv App</td>
-                            <td>22/04/25</td>
-                            <td>
-                                <div class="status-btn-acp">Accepted</div>
-                            </td>
-                            <td></td>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>DB202</td>
-                            <td>Database Systems</td>
-                            <td>50</td>
-                            <td>15 Reg
-                                20 Comp
-                                10 Bas App
-                                5 Adv App</td>
-                            <td>22/04/25</td>
-                            <td>
-                                <div class="status-btn-new">New</div>
-                            </td>
-                            <td>
-                               <i class="fa-regular fa-circle-check" style ="color: green"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                           <tr>
-                            <td>DB202</td>
-                            <td>Database Systems</td>
-                            <td>50</td>
-                            <td>15 Reg
-                                20 Comp
-                                10 Bas App
-                                5 Adv App</td>
-                            <td>22/04/25</td>
-                            <td>
-                                <div class="status-btn-new">New</div>
-                            </td>
-                            <td>
-                               <i class="fa-regular fa-circle-check" style ="color: green"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>DB202</td>
-                            <td>Database Systems</td>
-                            <td>50</td>
-                            <td>15 Reg
-                                20 Comp
-                                10 Bas App
-                                5 Adv App</td>
-                            <td>22/04/25</td>
-                            <td>
-                                <div class="status-btn-new">New</div>
-                            </td>
-                            <td>
-                               <i class="fa-regular fa-circle-check" style ="color: green"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>DB202</td>
-                            <td>Database Systems</td>
-                            <td>50</td>
-                            <td>15 Reg
-                                20 Comp
-                                10 Bas App
-                                5 Adv App</td>
-                            <td>22/04/25</td>
-                            <td>
-                                <div class="status-btn-new">New</div>
-                            </td>
-                            <td>
-                               <i class="fa-regular fa-circle-check" style ="color: green"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>DB202</td>
-                            <td>Database Systems</td>
-                            <td>50</td>
-                            <td>15 Reg
-                                20 Comp
-                                10 Bas App
-                                5 Adv App</td>
-                            <td>22/04/25</td>
-                            <td>
-                                <div class="status-btn-new">New</div>
-                            </td>
-                            <td>
-                               <i class="fa-regular fa-circle-check" style ="color: green"></i>
-                            </td>
-                        </tr>
-                    </tbody>
+                <div class="filter-dropdown">
+                    <select class="filter-select">
+                        <option>All Status</option>
+                        <option>Pending</option>
+                        <option>Accepted</option>
+                        <option>New</option>
+                    </select>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+            <table class="course-table">
+                <thead>
+                    <tr>
+                        <th>Plans ID</th>
+                        <th>Plans Name</th>
+                        <th>No. of Ques</th>
+                        <th>Difficulty Levels</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>   <!-- Nội dung load ở đây -->
+                    <tr th:each="plan : ${plans}">
+                        <td th:text="${plan.id}"></td>
+
+                    </tr>
+                        <td>DB202</td>
+                        <td>Database Systems</td>
+                        <td>50</td>
+                        <td>15 Reg
+                            20 Comp
+                            10 Bas App
+                            5 Adv App</td>
+                        <td>22/04/25</td>
+                        <td>
+                            <div class="status-btn-acp">Accepted</div>
+                        </td>
+                        <td></td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>DB202</td>
+                        <td>Database Systems</td>
+                        <td>50</td>
+                        <td>15 Reg
+                            20 Comp
+                            10 Bas App
+                            5 Adv App</td>
+                        <td>22/04/25</td>
+                        <td>
+                            <div class="status-btn-in_progress">In Progress</div>
+                        </td>
+                        <td>
+                            <i class="fa-regular fa-circle-check" style="color: green"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                    <tr>
+                        <td>DB202</td>
+                        <td>Database Systems</td>
+                        <td>50</td>
+                        <td>15 Reg
+                            20 Comp
+                            10 Bas App
+                            5 Adv App</td>
+                        <td>22/04/25</td>
+                        <td>
+                            <div class="status-btn-new">New</div>
+                        </td>
+                        <td>
+                            <i class="fa-regular fa-circle-check" style="color: green"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>DB202</td>
+                        <td>Database Systems</td>
+                        <td>50</td>
+                        <td>15 Reg
+                            20 Comp
+                            10 Bas App
+                            5 Adv App</td>
+                        <td>22/04/25</td>
+                        <td>
+                            <div class="status-btn-new">New</div>
+                        </td>
+                        <td>
+                            <i class="fa-regular fa-circle-check" style="color: green"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>DB202</td>
+                        <td>Database Systems</td>
+                        <td>50</td>
+                        <td>15 Reg
+                            20 Comp
+                            10 Bas App
+                            5 Adv App</td>
+                        <td>22/04/25</td>
+                        <td>
+                            <div class="status-btn-new">New</div>
+                        </td>
+                        <td>
+                            <i class="fa-regular fa-circle-check" style="color: green"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>DB202</td>
+                        <td>Database Systems</td>
+                        <td>50</td>
+                        <td>15 Reg
+                            20 Comp
+                            10 Bas App
+                            5 Adv App</td>
+                        <td>22/04/25</td>
+                        <td>
+                            <div class="status-btn-new">New</div>
+                        </td>
+                        <td>
+                            <i class="fa-regular fa-circle-check" style="color: green"></i>
+                        </td>
+                    </tr>
+                </tbody>
         </div>
 
 
@@ -180,7 +184,7 @@
                 });
 
         </script>
-        <script src="../../Static/js/L_activeMenu.js"></script>
+        <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
 </html>
