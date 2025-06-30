@@ -12,10 +12,8 @@ import com.uth.quizclear.model.entity.Plan;
 import com.uth.quizclear.model.entity.Plan.PlanStatus;
 
 @Repository
-public interface PlanRepository extends JpaRepository<Plan, Long> {
-
-    // Lấy danh sách plans cho SL
-    @Query("SELECT new com.uth.quizclear.model.dto.SL_PlanDTO(p.id, p.name, p.totalQuestions, p.totalRecognition, "
+public interface PlanRepository extends JpaRepository<Plan, Long> {    // Lấy danh sách plans cho SL
+    @Query("SELECT new com.uth.quizclear.model.dto.SL_PlanDTO(p.planId, p.planTitle, p.totalQuestions, p.totalRecognition, "
             + "p.totalComprehension, p.totalBasicApplication, p.totalAdvancedApplication, p.dueDate, p.status) "
             + "FROM Plan p "
             + "WHERE p.status IN :statuses "
