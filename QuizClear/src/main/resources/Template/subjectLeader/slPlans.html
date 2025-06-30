@@ -15,18 +15,18 @@
 
 <body>
     <!--header-->
-     <!-- <header class="header" th:insert="~{header_user :: header}"></header> -->
-     <div id="header-placeholder" th:insert="~{header_user :: header}"></div>
-     <div id="header-placeholder"></div>
+     <header class="header" th:insert="~{header_user :: header}"></header>
+     <!-- <div id="header-placeholder" th:insert="~{header_user :: header}"></div>
+     <div id="header-placeholder"></div> -->
 
 
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <!-- <div class="sidebar" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div> -->
-        <div id="menu-HTML" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
-        <div id="menu-HTML"></div>
+        <div class="sidebar" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
+        <!-- <div id="menu-HTML" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
+        <div id="menu-HTML"></div> -->
 
         <!-- Main content -->
         <div id="main">
@@ -189,7 +189,7 @@
 
 
         <!-- ma nhung header vs menu -->
-        <script>
+        <!-- <script>
             // Load header
             fetch('../header_user.html')
                 .then(response => response.text())
@@ -205,7 +205,7 @@
                     setActiveMenu(document.title);
                 });
 
-        </script>
+        </script> -->
         <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
