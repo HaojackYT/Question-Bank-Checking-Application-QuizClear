@@ -149,9 +149,7 @@ public class WebPageController {
             return "redirect:/hoe-dashboard";
         }        
         return "redirect:/login?error=unknown_role";
-    }
-
-    @GetMapping("/staff-dashboard")
+    }    @GetMapping("/staff-dashboard")
     public String staffDashboard(org.springframework.security.core.Authentication authentication, Model model) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
@@ -160,10 +158,19 @@ public class WebPageController {
                 .anyMatch(a -> {
                     String auth = a.getAuthority();
                     return auth.equals("RD") || auth.equals("ROLE_RD");
-                });        if (!isStaff) {
+                });
+        
+        if (!isStaff) {
             return dashboardRedirect(authentication);
         }
+        
+        // Add required attributes for the template
         model.addAttribute("userEmail", authentication.getName());
+        model.addAttribute("recentTasks", new java.util.ArrayList<>());
+        model.addAttribute("totalProjects", 12);
+        model.addAttribute("activeResearch", 8);
+        model.addAttribute("completedTasks", 45);
+        
         return "Staff/staffDashboard";
     }
 
@@ -573,6 +580,163 @@ public class WebPageController {
     @GetMapping("/lecturer/feedback")
     public String lecturerFeedbackAlias(org.springframework.security.core.Authentication authentication, Model model) {
         return lecturerFeedback(authentication, model);
+    }    // ========== STAFF API ENDPOINTS ==========
+    
+    @GetMapping("/api/staff/scope")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getStaffScope(org.springframework.security.core.Authentication authentication) {
+        Map<String, Object> scope = new HashMap<>();
+        
+        if (authentication != null && authentication.isAuthenticated()) {
+            scope.put("userId", 2L);
+            scope.put("userRole", "STAFF");
+            scope.put("departmentName", "Academic Affairs");
+            scope.put("managedQuestionBanks", Arrays.asList("Mathematics", "Physics", "Chemistry", "Biology"));
+            scope.put("totalQuestions", 850);
+        } else {
+            // Default scope for non-authenticated users
+            scope.put("userId", 2L);
+            scope.put("userRole", "STAFF");
+            scope.put("departmentName", "Academic Affairs");
+            scope.put("managedQuestionBanks", Arrays.asList("Mathematics", "Physics", "Chemistry", "Biology"));
+            scope.put("totalQuestions", 850);
+        }
+        
+        return ResponseEntity.ok(scope);
+    }
+
+    @GetMapping("/api/staff/statistics")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getStaffStatistics() {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("totalQuestions", 850);
+        stats.put("approvedQuestions", 720);
+        stats.put("pendingReview", 95);
+        stats.put("rejectedQuestions", 35);
+        stats.put("duplicatesFound", 12);
+        stats.put("approvalRate", 84.7);
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/api/staff/assignments")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getStaffAssignments() {
+        List<Map<String, Object>> assignments = new ArrayList<>();
+        
+        Map<String, Object> assignment1 = new HashMap<>();
+        assignment1.put("id", 1);
+        assignment1.put("title", "Review Mathematics Questions");
+        assignment1.put("description", "Review 25 pending calculus questions");
+        assignment1.put("status", "in_progress");
+        assignment1.put("dueDate", "2025-01-20");
+        assignment1.put("priority", "high");
+        assignments.add(assignment1);
+        
+        Map<String, Object> assignment2 = new HashMap<>();
+        assignment2.put("id", 2);
+        assignment2.put("title", "Quality Check Physics Bank");
+        assignment2.put("description", "Perform quality check on physics question bank");
+        assignment2.put("status", "pending");
+        assignment2.put("dueDate", "2025-01-25");
+        assignment2.put("priority", "medium");
+        assignments.add(assignment2);
+        
+        Map<String, Object> assignment3 = new HashMap<>();
+        assignment3.put("id", 3);
+        assignment3.put("title", "Update Question Categories");
+        assignment3.put("description", "Update categorization for chemistry questions");
+        assignment3.put("status", "completed");
+        assignment3.put("dueDate", "2025-01-10");
+        assignment3.put("priority", "low");
+        assignments.add(assignment3);
+        
+        return ResponseEntity.ok(assignments);
+    }
+
+    @GetMapping("/api/staff/warnings")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getStaffWarnings() {
+        List<Map<String, Object>> warnings = new ArrayList<>();
+        
+        Map<String, Object> warning1 = new HashMap<>();
+        warning1.put("type", "duplicate");
+        warning1.put("title", "Potential Duplicates Detected");
+        warning1.put("message", "12 questions may be duplicates in Mathematics bank");
+        warning1.put("action", "Review duplicates");
+        warning1.put("severity", "medium");
+        warnings.add(warning1);
+        
+        Map<String, Object> warning2 = new HashMap<>();
+        warning2.put("type", "deadline");
+        warning2.put("title", "Review Deadline Approaching");
+        warning2.put("message", "25 questions need review by Jan 20th");
+        warning2.put("action", "Review pending questions");
+        warning2.put("severity", "high");
+        warnings.add(warning2);
+        
+        Map<String, Object> warning3 = new HashMap<>();
+        warning3.put("type", "quality");
+        warning3.put("title", "Quality Score Below Threshold");
+        warning3.put("message", "Biology question bank quality score: 75%");
+        warning3.put("action", "Improve question quality");
+        warning3.put("severity", "low");
+        warnings.add(warning3);
+        
+        return ResponseEntity.ok(warnings);
+    }
+
+    @GetMapping("/api/staff/activities")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getStaffActivities() {
+        List<Map<String, Object>> activities = new ArrayList<>();
+        
+        Map<String, Object> activity1 = new HashMap<>();
+        activity1.put("title", "Questions Reviewed");
+        activity1.put("description", "Reviewed 15 mathematics questions");
+        activity1.put("time", "1 hour ago");
+        activities.add(activity1);
+        
+        Map<String, Object> activity2 = new HashMap<>();
+        activity2.put("title", "Duplicates Identified");
+        activity2.put("description", "Found 3 potential duplicates in physics bank");
+        activity2.put("time", "3 hours ago");
+        activities.add(activity2);
+        
+        Map<String, Object> activity3 = new HashMap<>();
+        activity3.put("title", "Quality Check Completed");
+        activity3.put("description", "Completed quality check for chemistry questions");
+        activity3.put("time", "1 day ago");
+        activities.add(activity3);
+        
+        return ResponseEntity.ok(activities);
+    }
+
+    @GetMapping("/api/staff/question-status-chart")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getStaffQuestionStatusChart() {
+        Map<String, Object> chart = new HashMap<>();
+        chart.put("labels", Arrays.asList("Approved", "Pending", "Rejected", "Duplicates"));
+        
+        Map<String, Object> dataset = new HashMap<>();
+        dataset.put("data", Arrays.asList(720, 95, 35, 12));
+        dataset.put("backgroundColor", Arrays.asList("#28a745", "#ffc107", "#dc3545", "#6c757d"));
+        
+        chart.put("datasets", Arrays.asList(dataset));
+        return ResponseEntity.ok(chart);
+    }
+
+    @GetMapping("/api/staff/subject-distribution-chart")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getStaffSubjectDistributionChart() {
+        Map<String, Object> chart = new HashMap<>();
+        chart.put("labels", Arrays.asList("Mathematics", "Physics", "Chemistry", "Biology"));
+        
+        Map<String, Object> dataset = new HashMap<>();
+        dataset.put("data", Arrays.asList(280, 220, 190, 160));
+        dataset.put("backgroundColor", Arrays.asList("#007bff", "#28a745", "#ffc107", "#dc3545"));
+        
+        chart.put("datasets", Arrays.asList(dataset));
+        return ResponseEntity.ok(chart);
     }
 
     // ========== HEALTH CHECK ENDPOINT ==========

@@ -6,30 +6,28 @@
 </head>
 <body>
 <div id="Menu-Staff" th:fragment="menu">
-    <div style="padding: 1rem;">
-        <div class="elements active">
+    <div style="padding: 1rem;">        <div class="elements active">
             <i class="fa-solid fa-house"></i>
-            <a href="#">Dashboard</a>
+            <a th:href="@{/staff-dashboard}">Dashboard</a>
         </div>
         <div class="elements">
             <i class="fa-solid fa-book"></i>
-            <a href="staffSMCourseList.html">Subject Management</a>
-        </div>
-        <div class="elements">
+            <a th:href="@{/subject-management}">Subject Management</a>
+        </div>        <div class="elements">
             <i class="fa-solid fa-file-circle-question"></i>
-            <a href="staffQMQuestionBank.html">Question Management</a>
+            <a th:href="@{/staff/question-management}">Question Management</a>
         </div>
         <div class="elements">
             <i class="fa-solid fa-copy"></i>
-            <a href="staffDuplicationCheck.html">Duplication</a>
+            <a th:href="@{/staff/duplications}">Duplication</a>
         </div>
         <div class="elements">
             <i class="fa-solid fa-file"></i>
-            <a href="staffExamManager.html">Exam Management</a>
+            <a th:href="@{/staff/exams/all-exams}">Exam Management</a>
         </div>
         <div class="elements">
             <i class="fa-solid fa-chart-simple"></i>
-            <a href="staffStatReport.html">Statics & Reporting</a>
+            <a th:href="@{/staff/logs}">Statistics & Reporting</a>
         </div>
     </div>
 </div>

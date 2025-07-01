@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/subject-management")
-public class CourseController {
-
-    @Autowired
+public class CourseController {    @Autowired
     private CourseService courseService;
+
+    @GetMapping
+    public String subjectManagementHome() {
+        return "redirect:/subject-management/courses";
+    }
 
     @GetMapping("/courses")
     public String showCourseListPage(Model model,
@@ -24,10 +27,8 @@ public class CourseController {
     @RequestParam(defaultValue = "15") int size) {
 
         // Sửa ở đây: gọi đúng tên phương thức trong CourseService
-        Page<CourseDTO> coursePage = courseService.findCoursesForListPage(PageRequest.of(page, size));
-
-        model.addAttribute("coursePage", coursePage);
-        return "staff/staffSMCourseList"; // Tên file view HTML
+        Page<CourseDTO> coursePage = courseService.findCoursesForListPage(PageRequest.of(page, size));        model.addAttribute("coursePage", coursePage);
+        return "Staff/staffSMCourseList"; // Tên file view HTML
     }
 }
 
