@@ -6,23 +6,41 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+
 
 import com.uth.quizclear.model.entity.ExamReview;
 import com.uth.quizclear.service.ExamReviewService;
 
 import jakarta.servlet.http.HttpSession;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/hoe")
-public class HOEApprovalController {
+public class HOEController {
 
     @Autowired
     private ExamReviewService examReviewService;
+
+    /**
+     * Show HOE Dashboard page (view)
+     */
+    @GetMapping("/dashboard")
+    public String showDashboard(Model model) {
+        // Add any dashboard data if needed
+        model.addAttribute("pageTitle", "Dashboard");
+        return "Head of Examination Department/HOE_Dashboard";
+    }
+
+    /**
+     * Show HOE Review Assignment page (view)
+     */
+    @GetMapping("/review-assignment")
+    public String showReviewAssignment(Model model) {
+        // Add any assignment data if needed
+        model.addAttribute("pageTitle", "Review Assignment");
+        return "Head of Examination Department/HOE_ReviewAssignment";
+    }
 
     /**
      * Hiển thị trang Approvals cho Head of Examination Department
@@ -32,17 +50,8 @@ public class HOEApprovalController {
             @RequestParam(value = "filter", defaultValue = "all") String filter,
             @RequestParam(value = "search", required = false) String searchTerm,
             Model model,
-            HttpSession session) { // Kiểm tra quyền truy cập (optional - có thể bỏ nếu đã có security)
-        // TODO: Uncomment this when session/security is properly configured
-        /*
-         * String role = (String) session.getAttribute("role");
-         * if (role != null && !"HoED".equalsIgnoreCase(role)) {
-         * return "redirect:/login"; // Hoặc trang lỗi 403
-         * }
-         */
-
+            HttpSession session) {
         List<ExamReview> approvals;
-
         // Xử lý tìm kiếm
         if (searchTerm != null && !searchTerm.trim().isEmpty()) {
             approvals = examReviewService.searchReviewsByExamTitle(searchTerm.trim());
@@ -125,5 +134,5 @@ public class HOEApprovalController {
 
         // Trả về fragment Thymeleaf cho AJAX update
         return "Head of Examination Department/HOE_Approval :: approvals-table";
-    }}
-
+    }
+}
