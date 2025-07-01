@@ -47,18 +47,23 @@ INSERT INTO clos (course_id, clo_code, difficulty_level, weight, clo_description
 (10, 'CLO10.1', 'comprehension', 30.00, 'Understand genetic inheritance patterns');
 
 -- 4. Thêm 10 bản ghi vào bảng plans - LUỒNG: RD -> HoD hoặc HoED (nếu không có HoD)
-INSERT INTO plans (course_id, plan_title, plan_description, total_questions, total_recognition, total_comprehension, total_basic_application, total_advanced_application, assigned_to, assigned_by, status, created_at) VALUES
+INSERT INTO plans (
+    course_id, plan_title, plan_description, total_questions, 
+    total_recognition, total_comprehension, total_basic_application, 
+    total_advanced_application, assigned_to, assigned_by, status, 
+    created_at, due_date
+) VALUES
 -- RD (Catherine Davis) assign plans cho HoDs khi có, HoED khi không có HoD
-(1, 'CS101 Question Bank Development', 'Create comprehensive question bank for Introduction to Computer Science', 50, 15, 15, 15, 5, 6, 4, 'completed', '2025-01-01 10:00:00'),  -- RD assigns to HoED (CS không có HoD)
-(2, 'MATH201 Assessment Plan', 'Develop assessment materials for Calculus II', 40, 10, 15, 10, 5, 2, 4, 'in_progress', '2025-01-02 10:00:00'),  -- RD assigns to HoD Math (Alexander)
-(3, 'PHYS301 Exam Preparation', 'Prepare examination questions for Classical Mechanics', 35, 8, 12, 10, 5, 6, 4, 'new', '2025-01-03 10:00:00'),  -- RD assigns to HoED (Physics không có HoD)
-(4, 'CHEM101 Quiz Development', 'Create quiz questions for General Chemistry', 30, 10, 10, 8, 2, 9, 4, 'accepted', '2025-01-04 10:00:00'),  -- RD assigns to HoD Chemistry (Henry)
-(5, 'BIO201 Test Bank', 'Build test question bank for Cell Biology', 45, 15, 15, 10, 5, 10, 4, 'completed', '2025-01-05 10:00:00'),  -- RD assigns to HoD Biology (Isabella)
-(6, 'CS201 Practice Questions', 'Develop practice questions for Data Structures', 40, 8, 12, 15, 5, 6, 4, 'in_progress', '2025-01-06 10:00:00'),  -- RD assigns to HoED (CS không có HoD)
-(7, 'MATH301 Problem Set', 'Create problem sets for Linear Algebra', 25, 5, 8, 10, 2, 2, 4, 'new', '2025-01-07 10:00:00'),  -- RD assigns to HoD Math (Alexander)
-(8, 'PHYS201 Assessment Materials', 'Develop assessment for Electricity and Magnetism', 50, 12, 18, 15, 5, 6, 4, 'accepted', '2025-01-08 10:00:00'),  -- RD assigns to HoED (Physics không có HoD)
-(9, 'CHEM201 Question Collection', 'Collect questions for Organic Chemistry', 35, 8, 12, 12, 3, 9, 4, 'completed', '2025-01-09 10:00:00'),  -- RD assigns to HoD Chemistry (Henry)
-(10, 'BIO301 Exam Questions', 'Prepare exam questions for Genetics', 30, 10, 10, 8, 2, 10, 4, 'in_progress', '2025-01-10 10:00:00');  -- RD assigns to HoD Biology (Isabella)
+(1, 'CS101 Question Bank Development', 'Create comprehensive question bank for Introduction to Computer Science', 50, 15, 15, 15, 5, 6, 4, 'completed', '2025-01-01 10:00:00', '2025-01-31 10:00:00'),  -- RD assigns to HoED (CS không có HoD)
+(2, 'MATH201 Assessment Plan', 'Develop assessment materials for Calculus II', 40, 10, 15, 10, 5, 2, 4, 'in_progress', '2025-01-02 10:00:00', '2025-02-01 10:00:00'),  -- RD assigns to HoD Math (Alexander)
+(3, 'PHYS301 Exam Preparation', 'Prepare examination questions for Classical Mechanics', 35, 8, 12, 10, 5, 6, 4, 'new', '2025-01-03 10:00:00', '2025-02-02 10:00:00'),  -- RD assigns to HoED (Physics không có HoD)
+(4, 'CHEM101 Quiz Development', 'Create quiz questions for General Chemistry', 30, 10, 10, 8, 2, 9, 4, 'accepted', '2025-01-04 10:00:00', '2025-02-03 10:00:00'),  -- RD assigns to HoD Chemistry (Henry)
+(5, 'BIO201 Test Bank', 'Build test question bank for Cell Biology', 45, 15, 15, 10, 5, 10, 4, 'completed', '2025-01-05 10:00:00', '2025-02-04 10:00:00'),  -- RD assigns to HoD Biology (Isabella)
+(6, 'CS201 Practice Questions', 'Develop practice questions for Data Structures', 40, 8, 12, 15, 5, 6, 4, 'in_progress', '2025-01-06 10:00:00', '2025-02-05 10:00:00'),  -- RD assigns to HoED (CS không có HoD)
+(7, 'MATH301 Problem Set', 'Create problem sets for Linear Algebra', 25, 5, 8, 10, 2, 2, 4, 'new', '2025-01-07 10:00:00', '2025-02-06 10:00:00'),  -- RD assigns to HoD Math (Alexander)
+(8, 'PHYS201 Assessment Materials', 'Develop assessment for Electricity and Magnetism', 50, 12, 18, 15, 5, 6, 4, 'accepted', '2025-01-08 10:00:00', '2025-02-07 10:00:00'),  -- RD assigns to HoED (Physics không có HoD)
+(9, 'CHEM201 Question Collection', 'Collect questions for Organic Chemistry', 35, 8, 12, 12, 3, 9, 4, 'completed', '2025-01-09 10:00:00', '2025-02-08 10:00:00'),  -- RD assigns to HoD Chemistry (Henry)
+(10, 'BIO301 Exam Questions', 'Prepare exam questions for Genetics', 30, 10, 10, 8, 2, 10, 4, 'in_progress', '2025-01-10 10:00:00', '2025-02-09 10:00:00');  -- RD assigns to HoD Biology (Isabella)
 
 -- 5. Thêm 10 bản ghi vào bảng tasks - LUỒNG ĐÚNG: HoD/HoED -> SL -> Lecturer
 INSERT INTO tasks (course_id, plan_id, title, description, task_type, total_questions, assigned_to, assigned_by, status, created_at, due_date) VALUES
