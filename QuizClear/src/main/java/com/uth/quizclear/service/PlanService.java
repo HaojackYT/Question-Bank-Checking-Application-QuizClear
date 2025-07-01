@@ -1,6 +1,7 @@
 package com.uth.quizclear.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -26,5 +27,17 @@ public class PlanService {
     public List<SL_PlanDTO> getSLPlan() {
         return planRepository.findSLPlans(List.of(Plan.PlanStatus.NEW, Plan.PlanStatus.ACCEPTED));
     }
-}
 
+    // Cập nhật trạng thái của plan
+    public boolean updatePlanStatus(Long planId, Plan.PlanStatus newStatus) {
+        Optional<Plan> planOpt = planRepository.findById(planId);
+        if (planOpt.isPresent()) {
+            Plan plan = planOpt.get();
+            plan.setStatus(newStatus);
+            planRepository.save(plan);
+            return true;
+        }
+        return false;
+    }
+
+}

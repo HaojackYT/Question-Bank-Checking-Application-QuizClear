@@ -160,6 +160,14 @@ public class Plan {
         return totalRecognition + totalComprehension + totalBasicApplication + totalAdvancedApplication;
     }
 
+    public PlanStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PlanStatus status) {
+        this.status = status;
+    }
+
     // Enums
     public enum PlanStatus {
         NEW("new"),

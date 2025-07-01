@@ -80,10 +80,10 @@
                             </div>
                         </td>
                         <td>
-                            <i class="fa-regular fa-circle-check" style="color: green"
-                                th:if="${plan.status.name() == 'NEW'}"></i>
+                            <i class="fa-regular fa-circle-check btn-accept" style="color: green; cursor: pointer;"
+                                th:if="${plan.status.name() == 'NEW'}" th:attr="data-planid=${plan.planId}"
+                                title="Accept Plan">
                             </i>
-
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(plans)}">
@@ -94,23 +94,8 @@
 
         <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 
-        <!-- <script>  // FILTER FUNCTIONALITY
-            document.querySelector('.filter-select').addEventListener('change', function () {
-                const selectedStatus = this.value;
-                const rows = document.querySelectorAll('tbody tr[data-status]');
-
-                rows.forEach(row => {
-                    const rowStatus = row.getAttribute('data-status');
-                    if (!selectedStatus || selectedStatus === rowStatus) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-        </script> -->
-
         <script>
+            // JavaScript for search and filter functionality
             const searchInput = document.querySelector('.search-input');
             const filterSelect = document.querySelector('.filter-select');
 
@@ -138,12 +123,41 @@
             searchInput.addEventListener('input', filterPlans);
             filterSelect.addEventListener('change', filterPlans);
 
-            // Optional: hide actions for non-NEW rows at start (if icon is in DOM)
             document.querySelectorAll('.action-icon').forEach(icon => {
                 const status = icon.getAttribute('data-status');
                 if (status !== 'NEW') {
                     icon.style.display = 'none';
                 }
+            });
+
+            // Click event for accept action
+            document.querySelectorAll('.btn-accept').forEach(icon => {
+                icon.addEventListener('click', () => {
+                    const planId = icon.getAttribute('data-planid');
+
+                    fetch(`/subject-leader/api/plans/${planId}/accept`, {
+                        method: 'POST'
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Cập nhật status trên UI
+                                const row = icon.closest('tr');
+                                const statusCell = row.querySelector('td:nth-child(6) > div');
+                                statusCell.className = 'status-btn-acp';
+                                statusCell.innerText = 'Accepted';
+
+                                // Ẩn nút accept
+                                icon.style.display = 'none';
+
+                                // Cập nhật lại data-status để filter hoạt động chính xác
+                                row.setAttribute('data-status', 'ACCEPTED');
+                            } else {
+                                alert('Failed to update status: ' + (data.message || 'Unknown error'));
+                            }
+                        })
+                        .catch(err => alert('Error: ' + err));
+                });
             });
         </script>
 

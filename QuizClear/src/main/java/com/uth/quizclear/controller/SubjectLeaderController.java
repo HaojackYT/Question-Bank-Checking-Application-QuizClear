@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.uth.quizclear.model.dto.QuestionFeedbackDTO;
 import com.uth.quizclear.model.dto.QuestionFeedbackDetailDTO;
 import com.uth.quizclear.model.dto.SL_PlanDTO;
+import com.uth.quizclear.model.entity.Plan;
 import com.uth.quizclear.service.PlanService;
 import com.uth.quizclear.service.SubjectLeaderFeedbackService;
 
@@ -294,6 +295,23 @@ public class SubjectLeaderController {
         model.addAttribute("userId", userId);
         return "subjectLeader/SL_SummaryReport";
     }
+
+    // Accept plan API endpoint
+    @PostMapping("/api/plans/{planId}/accept")
+    @ResponseBody
+    public ResponseEntity<?> acceptPlan(@PathVariable Long planId) {
+        try {
+            boolean updated = planService.updatePlanStatus(planId, Plan.PlanStatus.ACCEPTED);
+            if (updated) {
+                return ResponseEntity.ok().body(Map.of("success", true));
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Plan not found or cannot be updated"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
+
     
     // API endpoints for serving template fragments
     @GetMapping("/api/template/header")
