@@ -14,12 +14,12 @@
 
 <body>
     <!--header-->
-    <div th:replace="header_user"></div>
+    <div th:replace="~{header_user :: header}"></div>
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div th:replace="Lecturer/Menu-Lecturer"></div>
+        <div th:replace="~{Lecturer/Menu-Lecturer :: menu}"></div>
 
         <!-- Main content -->
         <div id="main">
@@ -55,7 +55,7 @@
             <!-- Action Buttons -->
             <div class="action-controls time">
                 <span id="countdown">10</span>
-                <a href="L-EXE_FeedbackExam_OneQuestion.html""><button class="action-button draft"> Skip the exercise</button></a>
+                <a href="/lecturer/L-EXE_FeedbackExam_OneQuestion"><button class="action-button draft"> Skip the exercise</button></a>
             </div>
             <!-- Question Content -->
             <div class="question-container">
@@ -139,7 +139,7 @@
                         if (totalSeconds <= 0) {
                             clearInterval(countdown);
                             // Chuyển sang trang khác
-                            window.location.href = "L-EXE_FeedbackExam_OneQuestion.html"; // Thay đường dẫn bạn muốn
+                            window.location.href = "L-EXE_FeedbackExam_OneQuestion"; // Thay đường dẫn bạn muốn
                         }
                     }, 1000);
                 }

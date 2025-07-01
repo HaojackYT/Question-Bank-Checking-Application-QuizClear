@@ -4,26 +4,23 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/Static/fontawesome/css/all.css">
-        <link rel="stylesheet" href="/Static/header.css">
-        <link rel="stylesheet" href="/Static/web_styles.css">
-        <link rel="stylesheet" href="/Static/Menu-Staff.css">
-        <link rel="stylesheet"
-            href="/Static/css/subjectLeader/SLExamAssignment.css">
-        <link
-            href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
-            rel="stylesheet">
+        <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+        <link rel="stylesheet" th:href="@{/Static/header.css}">
+        <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+        <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+        <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/SLExamAssignment.css}">
+        <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
         <title>ExamAssignment</title>
     </head>
 
     <body>
         <!--header-->
-        <div id="header-placeholder"></div>
+        <header class="header" th:insert="~{header_user :: header}"></header>
 
         <!-- body -->
         <div id="Container-body">
             <!-- Menu -->
-            <div id="menu-HTML"></div>
+            <div class="sidebar" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
 
             <div id="newAssignModalOverlay" class="modal-overlay"></div>
 
@@ -287,24 +284,8 @@
                     </div>
                 </div>
             </div>
-        </div> <script src="/Static/js/SLExamAssignment.js"></script>
-
-        <!-- ma nhung header vs menu -->
-        <script>        // Load header
-        fetch('/Template/header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });// Load menu
-        fetch('/Template/subjectLeader/Menu-SL.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-                setActiveMenu(document.title);
-            });
-
-    </script>
-        <script src="/Static/js/L_activeMenu.js"></script>
+        <script th:src="@{/Static/js/SLExamAssignment.js}"></script>
+        <script th:src="@{/Static/js/L_activeMenu.js}"></script>
     </body>
 
 </html>

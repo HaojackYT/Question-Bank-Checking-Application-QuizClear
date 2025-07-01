@@ -32,6 +32,71 @@ public class LecturerController {
 
     @Autowired
     private QuestionRepository questionRepository;
+    // Dynamic mapping for lecturer exam creation page - clean URLs only
+    @GetMapping("/lectureEETaskExamCreateExam")
+    public String lectureEETaskExamCreateExam(Model model, HttpSession session, Authentication authentication) {
+        // Add dynamic data from database here
+        // Example: model.addAttribute("examData", examService.getExamData());
+        return "Lecturer/lectureEETaskExamCreateExam";
+    }
+
+    // Dynamic mapping for lecturer exam task page - clean URLs only
+    @GetMapping("/lecturerEETaskExam")
+    public String lecturerEETaskExam(Model model, HttpSession session, Authentication authentication) {
+        // Add dynamic data from database here
+        // Example: model.addAttribute("tasks", taskService.getTasks());
+        return "Lecturer/lecturerEETaskExam";
+    }
+
+    // Dynamic mapping for lecturer test exam page - clean URLs only
+    @GetMapping("/L_testExam")
+    public String lTestExam(Model model, HttpSession session, Authentication authentication) {
+        // Add dynamic data from database here
+        // Example: model.addAttribute("testData", testService.getTestData());
+        return "Lecturer/L_testExam";
+    }
+
+    // Dynamic mapping for lecturer exam evaluation - clean URLs only
+    @GetMapping("/leturer_ExamEvaluation")
+    public String leturerExamEvaluation(Model model, HttpSession session, Authentication authentication) {
+        // Add dynamic data from database here
+        // Example: model.addAttribute("evaluationData", evaluationService.getData());
+        return "Lecturer/lecturerEETaskExam";
+    }
+
+    // Dynamic mapping for lecturer exam last review page - clean URLs only
+    @GetMapping("/lectureEETaskExamLastReview")
+    public String lectureEETaskExamLastReview(Model model, HttpSession session, Authentication authentication) {
+        // Add dynamic data from database here
+        // Example: model.addAttribute("reviewData", reviewService.getReviewData());
+        return "Lecturer/lectureEETaskExamLastReview";
+    }
+
+    // Dynamic mapping for lecturer test repository page - clean URLs only
+    @GetMapping("/lecturerEETestRepository")
+    public String lecturerEETestRepository(Model model, HttpSession session, Authentication authentication) {
+        // Add dynamic data from database here
+        // Example: model.addAttribute("repositories", repositoryService.getRepositories());
+        return "Lecturer/lecturerEETestRepository";
+    }
+
+    // Dynamic mapping for lecturer test feedback page - clean URLs only
+    @GetMapping("/lecturerEETestFeedback")
+    public String lecturerEETestFeedback(Model model, HttpSession session, Authentication authentication) {
+        // Add dynamic data from database here
+        // Example: model.addAttribute("feedbacks", feedbackService.getFeedbacks());
+        return "Lecturer/lecturerEETestFeedback";
+    }
+
+    // Dynamic mapping for lecturer new question page - clean URLs only
+    @GetMapping("/lecturerQMNewQuestion")
+    public String lecturerQMNewQuestion(Model model, HttpSession session, Authentication authentication) {
+        // Add dynamic data from database here
+        List<Course> courses = courseRepository.findAll();
+        model.addAttribute("courses", courses);
+        model.addAttribute("difficultyLevels", DifficultyLevel.values());
+        return "Lecturer/lecturerQMNewQuestion";
+    }
     
     @Autowired
     private CourseRepository courseRepository;
@@ -653,6 +718,15 @@ public class LecturerController {
     }
 
     /**
+     * Lecturer Task page (alternative URL mapping)
+     */
+    @GetMapping("/lecturerTask")
+    public String lecturerTaskAlternative(Model model, HttpSession session, Authentication authentication) {
+        // Redirect to the main task page
+        return lecturerTask(model, session, authentication);
+    }
+
+    /**
      * Lecturer Exam Evaluation page
      */
     @GetMapping("/exam-evaluation")
@@ -698,6 +772,49 @@ public class LecturerController {
         model.addAttribute("userEmail", authentication.getName());
         
         return "Lecturer/lecturerEETaskExam";
+    }
+
+    // Dynamic mapping for lecturer feedback & revision edit question page - clean URLs only
+    @GetMapping("/lecturerFREditQuestion")
+    public String lecturerFREditQuestion(Model model, HttpSession session, Authentication authentication) {
+        // Add dynamic data from database here
+        List<Course> courses = courseRepository.findAll();
+        model.addAttribute("courses", courses);
+        model.addAttribute("difficultyLevels", DifficultyLevel.values());
+        return "Lecturer/lecturerFREditQuestion";
+    }
+
+    // Dynamic mapping for lecturer send task page - clean URLs only
+    @GetMapping("/lecturerTFromSendTask")
+    public String lecturerTFromSendTask(Model model, HttpSession session, Authentication authentication) {
+        // Add dynamic data from database here
+        // Example: model.addAttribute("tasks", taskService.getSendTasks());
+        return "Lecturer/lecturerTFromSendTask";
+    }
+
+    // Additional mappings for exam evaluation related pages
+    @GetMapping("/L-EXE_SubmittededitscClosed")
+    public String lExeSubmittededitscClosed(Model model, HttpSession session, Authentication authentication) {
+        // Add dynamic data from database here
+        return "Lecturer/L-EXE_SubmittededitscClosed";
+    }
+
+    @GetMapping("/L-EXE_FeedbackExam_OneQuestion")
+    public String lExeFeedbackExamOneQuestion(Model model, HttpSession session, Authentication authentication) {
+        // Add dynamic data from database here
+        return "Lecturer/L-EXE_FeedbackExam_OneQuestion";
+    }
+
+    @GetMapping("/L-EXE_Feedbacksent")
+    public String lExeFeedbacksent(Model model, HttpSession session, Authentication authentication) {
+        // Add dynamic data from database here
+        return "Lecturer/L-EXE_Feedbacksent";
+    }
+
+    @GetMapping("/L-EXE_FeedbackEXam")
+    public String lExeFeedbackEXam(Model model, HttpSession session, Authentication authentication) {
+        // Add dynamic data from database here
+        return "Lecturer/L-EXE_FeedbackEXam";
     }
 }
 

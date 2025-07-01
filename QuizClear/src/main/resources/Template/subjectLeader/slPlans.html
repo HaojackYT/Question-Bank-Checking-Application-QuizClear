@@ -15,14 +15,14 @@
 
 <body>
     <!--header-->
-    <div id="header-placeholder" th:insert="~{header_user :: header}"></div>
+    <header class="header" th:insert="~{header_user :: header}"></header>
 
 
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div id="menu-HTML" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
+        <div th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
 
 
         <!-- Main content -->

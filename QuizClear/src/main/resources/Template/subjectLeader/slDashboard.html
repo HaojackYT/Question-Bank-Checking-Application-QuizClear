@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -16,15 +16,12 @@
 
 <body>
     <!--header-->
-    <!-- <div id="header-placeholder"></div> -->
-     <div id="header-placeholder" th:insert="~{header_user :: header}"></div>
+    <header class="header" th:insert="~{header_user :: header}"></header>
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <!-- <div id="menu-HTML"></div> -->
-        <div id="menu-HTML" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
-        
+        <div th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
 
         <!-- Main content -->
         <div id="main">
@@ -157,8 +154,8 @@
         </div>
     </div>
 
-    <!-- JavaScript for loading header and menu -->
-     <script>
+    <!-- JavaScript for charts -->
+    <script>
         // JavaScript for charts
         // Vẽ biểu đồ cột (Question Progress by Subject)
         const ctxBar = document.getElementById('progressChart').getContext('2d');
@@ -526,9 +523,14 @@
             });
         }
 
+    </script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
+    <script>
         // Initialize SL subject data on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadSLSubjectData();
+            // Set active menu for dashboard
+            setActiveMenu(document.title);
         });
     </script>
 </body>
