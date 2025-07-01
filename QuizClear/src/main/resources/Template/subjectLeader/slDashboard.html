@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Static/fontawesome/css/all.css">
-    <link rel="stylesheet" href="../../Static/header.css">
-    <link rel="stylesheet" href="../../Static/web_styles.css">
-    <link rel="stylesheet" href="../../static/css/subjectLeader/slDashboard.css">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/slDashboard.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Dashboard_sl</title>
@@ -15,12 +16,12 @@
 
 <body>
     <!--header-->
-    <div id="header-placeholder"></div>
+    <header class="header" th:insert="~{header_user :: header}"></header>
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div id="menu-HTML"></div>
+        <div th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
 
         <!-- Main content -->
         <div id="main">
@@ -153,20 +154,8 @@
         </div>
     </div>
 
-    <!-- JavaScript for loading header and menu -->
+    <!-- JavaScript for charts -->
     <script>
-        fetch('../header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            });
-
-        fetch('Menu-SL.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-                setActiveMenu(document.title);
-            });
         // JavaScript for charts
         // Vẽ biểu đồ cột (Question Progress by Subject)
         const ctxBar = document.getElementById('progressChart').getContext('2d');
@@ -534,9 +523,14 @@
             });
         }
 
+    </script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
+    <script>
         // Initialize SL subject data on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadSLSubjectData();
+            // Set active menu for dashboard
+            setActiveMenu(document.title);
         });
     </script>
 </body>

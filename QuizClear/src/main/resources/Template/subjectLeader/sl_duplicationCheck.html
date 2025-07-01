@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../../Static/fontawesome/css/all.css" />
-    <link rel="stylesheet" href="../../Static/header.css" />
-    <link rel="stylesheet" href="../../Static/web_styles.css" />
-    <link rel="stylesheet" href="../../Static/css/staff/staffDup.css" />
-    <link rel="stylesheet" href="../../Static/Menu-Staff.css" />
-    <link rel="stylesheet" href="../../Static/css/subjectLeader/sl_duplicationCheck.css">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}" />
+    <link rel="stylesheet" th:href="@{/Static/header.css}" />
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
+    <link rel="stylesheet" th:href="@{/Static/css/staff/staffDup.css}" />
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
+    <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/sl_duplicationCheck.css}">
     <!-- Thêm style riêng -->
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet" />
     <title>DuplicationCheck</title>
@@ -17,12 +17,12 @@
 
 <body>
     <!-- Header -->
-    <div id="header-placeholder"></div>
+    <header class="header" th:insert="~{header_user :: header}"></header>
 
     <!-- Body -->
     <div id="Container-body">
         <!-- Sidebar/Menu -->
-        <div id="menu-HTML"></div>
+        <div class="sidebar" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
 
         <!-- Main content -->
         <div id="main">
@@ -83,22 +83,7 @@
         </div>
     </div>
 
-    <!-- Tải header và menu -->
-    <script>
-        fetch("../header_user.html")
-            .then((response) => response.text())
-            .then((data) => {
-                document.getElementById("header-placeholder").innerHTML = data;
-            });
-
-        fetch("Menu-SL.html")
-            .then((response) => response.text())
-            .then((data) => {
-                document.getElementById("menu-HTML").innerHTML = data;
-                setActiveMenu(document.title);
-            });
-    </script>
-    <script src="../../Static/js/L_activeMenu.js"></script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 
 </body>
 

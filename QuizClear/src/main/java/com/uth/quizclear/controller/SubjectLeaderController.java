@@ -57,25 +57,11 @@ public class SubjectLeaderController {
         return "subjectLeader/slPlans";
     }
     
-    @GetMapping("/question-assignment")
-    public String questionAssignmentPage(HttpSession session, Model model) {
-        Long userId = 3L;
-        model.addAttribute("userId", userId);
-        return "subjectLeader/slQuestionAssignment";
-    }
-    
     @GetMapping("/exam-assignment")
     public String examAssignmentPage(HttpSession session, Model model) {
         Long userId = 3L;
         model.addAttribute("userId", userId);
-        return "subjectLeader/slExamAssignment";
-    }
-    
-    @GetMapping("/duplication-check")
-    public String duplicationCheckPage(HttpSession session, Model model) {
-        Long userId = 3L;
-        model.addAttribute("userId", userId);
-        return "subjectLeader/slDuplicationCheck";
+        return "subjectLeader/SLExamAssignment";
     }
     
     @GetMapping("/review-approval")
