@@ -30,9 +30,9 @@
                 <!-- Tab Navigation -->
                 <div class="tab-search-wrapper">
                     <div class="nav-tabs">
-                        <a href="lecturerEETaskExam.html"><button class="tab-btn">Task Exams</button></a>
-                        <a href="lecturerEETestFeedback.html"><button class="tab-btn ">Test & Feedback</button></a>
-                        <a href="lecturerEETestRepository.html"><button class="tab-btn active">Test
+                        <a href="lecturerEETaskExam"><button class="tab-btn">Task Exams</button></a>
+                        <a href="lecturerEETestFeedback"><button class="tab-btn ">Test & Feedback</button></a>
+                        <a href="lecturerEETestRepository"><button class="tab-btn active">Test
                                 Repository</button></a>
                     </div>
 
@@ -252,15 +252,15 @@
                 // Kiểm tra Title và Status để gắn link phù hợp
                 if (title === 'Create Exam') {
                     if (status === 'Draft') {
-                        viewButton.parentElement.innerHTML = '<a href="lectureEETaskExamLastReview.html"><button class="action-btn view-btn"><i class="fas fa-eye"></i></button></a>';
+                        viewButton.parentElement.innerHTML = '<a href="lectureEETaskExamLastReview"><button class="action-btn view-btn"><i class="fas fa-eye"></i></button></a>';
                     } else if (status === 'Submitted') {
-                        viewButton.parentElement.innerHTML = '<a href="L-EXE_SubmittededitscClosed.html"><button class="action-btn view-btn"><i class="fas fa-eye"></i></button></a>';
+                        viewButton.parentElement.innerHTML = '<a href="L-EXE_SubmittededitscClosed"><button class="action-btn view-btn"><i class="fas fa-eye"></i></button></a>';
                     }
                 } else if (title === 'Feedback Exam') {
                     if (status === 'Draft') {
-                        viewButton.parentElement.innerHTML = '<a href="L-EXE_FeedbackExam_OneQuestion.html"><button class="action-btn view-btn"><i class="fas fa-eye"></i></button></a>';
+                        viewButton.parentElement.innerHTML = '<a href="L-EXE_FeedbackExam_OneQuestion"><button class="action-btn view-btn"><i class="fas fa-eye"></i></button></a>';
                     } else if (status === 'Submitted') {
-                        viewButton.parentElement.innerHTML = '<a href="L-EXE_Feedbacksent.html"><button class="action-btn view-btn"><i class="fas fa-eye"></i></button></a>';
+                        viewButton.parentElement.innerHTML = '<a href="L-EXE_Feedbacksent"><button class="action-btn view-btn"><i class="fas fa-eye"></i></button></a>';
                     }
                 }
             });

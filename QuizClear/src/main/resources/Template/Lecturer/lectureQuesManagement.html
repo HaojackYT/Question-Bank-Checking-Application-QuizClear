@@ -13,7 +13,7 @@
     <title>QuestionManager</title>
 </head>
 
-<body>
+<body class="question-management-page">
     <div id="header-placeholder"></div>
 
     <div id="Container-body">
@@ -410,6 +410,23 @@
                 if (typeof setActiveMenu === 'function') {
                     setActiveMenu(document.title);
                 }
+                
+                // Force menu height after loading
+                setTimeout(() => {
+                    const menuStaff = document.getElementById('Menu-Staff');
+                    if (menuStaff) {
+                        menuStaff.style.minHeight = '100vh';
+                        menuStaff.style.display = 'flex';
+                        menuStaff.style.flexDirection = 'column';
+                        menuStaff.style.backgroundColor = '#E0EAFA';
+                        
+                        // Set container height only if needed
+                        const containerBody = document.getElementById('Container-body');
+                        if (containerBody) {
+                            containerBody.style.minHeight = '100vh';
+                        }
+                    }
+                }, 100);
             })
             .catch(error => {
                 console.log('Menu not found, using fallback menu');
