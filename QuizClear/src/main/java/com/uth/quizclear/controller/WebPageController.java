@@ -1,16 +1,28 @@
 package com.uth.quizclear.controller;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.http.ResponseEntity;
 
+import com.uth.quizclear.service.StaffDashboardService;
+import com.uth.quizclear.service.UserService;
+import com.uth.quizclear.model.dto.StaffDashboardDTO;
+import com.uth.quizclear.model.entity.User;
+
 import java.util.*;
 
 @Controller
 public class WebPageController {
+    
+    @Autowired
+    private StaffDashboardService staffDashboardService;
+    
+    @Autowired
+    private UserService userService;
     // ========== UNIVERSAL ENDPOINTS TO PREVENT 404 FOR FRAGMENTS, MENUS, WS, SL DASHBOARD ===========
 
     // Universal mapping for header_user.html fragment (for all roles)
@@ -151,25 +163,87 @@ public class WebPageController {
         return "redirect:/login?error=unknown_role";
     }    @GetMapping("/staff-dashboard")
     public String staffDashboard(org.springframework.security.core.Authentication authentication, Model model) {
+        System.out.println("=== ACCESSING STAFF DASHBOARD ===");
+        System.out.println("Authentication: " + authentication);
+        
         if (authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("Not authenticated, redirecting to login");
             return "redirect:/login";
         }
+        
+        System.out.println("User: " + authentication.getName());
+        System.out.println("Authorities: " + authentication.getAuthorities());
+        
         boolean isStaff = authentication.getAuthorities().stream()
                 .anyMatch(a -> {
                     String auth = a.getAuthority();
+                    System.out.println("Checking authority: " + auth);
                     return auth.equals("RD") || auth.equals("ROLE_RD");
                 });
         
+        System.out.println("Is staff: " + isStaff);
+        
         if (!isStaff) {
+            System.out.println("Not staff, redirecting");
             return dashboardRedirect(authentication);
         }
         
+        // Get user ID from authentication
+        String userEmail = authentication.getName();
+        User user = userService.findByEmail(userEmail).orElse(null);
+        Long userId = user != null ? user.getUserId().longValue() : null;
+        
+        System.out.println("=== USER DEBUG ===");
+        System.out.println("Email: " + userEmail);
+        System.out.println("User found: " + (user != null));
+        System.out.println("User ID: " + userId);
+        
+        if (userId == null) {
+            return "redirect:/login?error=user_not_found";
+        }
+        
         // Add required attributes for the template
-        model.addAttribute("userEmail", authentication.getName());
-        model.addAttribute("recentTasks", new java.util.ArrayList<>());
-        model.addAttribute("totalProjects", 12);
-        model.addAttribute("activeResearch", 8);
-        model.addAttribute("completedTasks", 45);
+        model.addAttribute("userEmail", userEmail);
+        
+        try {
+            System.out.println("Calling StaffDashboardService for userId: " + userId);
+            // Call the service to get actual data
+            StaffDashboardDTO dashboard = staffDashboardService.getDashboardForStaff(userId);
+            
+            if (dashboard != null) {
+                System.out.println("Dashboard data received: totalSubjects=" + dashboard.getTotalSubjects() + 
+                                 ", totalQuestions=" + dashboard.getTotalQuestions() +
+                                 ", duplicateQuestions=" + dashboard.getDuplicateQuestions());
+                
+                model.addAttribute("dashboard", dashboard);
+                
+                // Set actual values
+                model.addAttribute("totalSubjects", dashboard.getTotalSubjects());
+                model.addAttribute("totalQuestions", dashboard.getTotalQuestions());
+                model.addAttribute("duplicateQuestions", dashboard.getDuplicateQuestions());
+                model.addAttribute("examsCreated", dashboard.getExamsCreated());
+                model.addAttribute("subjectsThisMonth", dashboard.getSubjectsThisMonth());
+                model.addAttribute("questionsThisMonth", dashboard.getQuestionsThisMonth());
+                model.addAttribute("examsThisMonth", dashboard.getExamsThisMonth());
+                
+                // Chart data
+                model.addAttribute("barChart", dashboard.getBarChart() != null ? dashboard.getBarChart() : createEmptyChart());
+                model.addAttribute("pieChart", dashboard.getPieChart() != null ? dashboard.getPieChart() : createEmptyChart());
+                
+                // Lists
+                model.addAttribute("recentTasks", dashboard.getRecentTasks() != null ? dashboard.getRecentTasks() : new java.util.ArrayList<>());
+                model.addAttribute("duplicateWarnings", dashboard.getDuplicateWarnings() != null ? dashboard.getDuplicateWarnings() : new java.util.ArrayList<>());
+                model.addAttribute("totalDuplicateWarnings", dashboard.getDuplicateWarnings() != null ? dashboard.getDuplicateWarnings().size() : 0);
+            } else {
+                System.out.println("Dashboard data is null, using defaults");
+                setDefaultDashboardValues(model);
+            }
+        } catch (Exception e) {
+            // Log the error
+            System.err.println("Error loading staff dashboard: " + e.getMessage());
+            e.printStackTrace();
+            setDefaultDashboardValues(model);
+        }
         
         return "Staff/staffDashboard";
     }
@@ -758,5 +832,27 @@ public class WebPageController {
         return health();
     }
 
+    // Helper method to create empty chart data
+    private com.uth.quizclear.model.dto.ChartDataDTO createEmptyChart() {
+        com.uth.quizclear.model.dto.ChartDataDTO emptyChart = new com.uth.quizclear.model.dto.ChartDataDTO();
+        emptyChart.setLabels(new java.util.ArrayList<>());
+        emptyChart.setDatasets(new java.util.ArrayList<>());
+        return emptyChart;
+    }
+    
+    // Helper method to set default dashboard values
+    private void setDefaultDashboardValues(Model model) {
+        model.addAttribute("totalSubjects", 0);
+        model.addAttribute("subjectsThisMonth", 0);
+        model.addAttribute("totalQuestions", 0);
+        model.addAttribute("questionsThisMonth", 0);
+        model.addAttribute("duplicateQuestions", 0);
+        model.addAttribute("examsCreated", 0);
+        model.addAttribute("examsThisMonth", 0);
+        model.addAttribute("recentTasks", new java.util.ArrayList<>());
+        model.addAttribute("duplicateWarnings", new java.util.ArrayList<>());
+        model.addAttribute("totalDuplicateWarnings", 0);
+        model.addAttribute("barChart", createEmptyChart());
+        model.addAttribute("pieChart", createEmptyChart());
+    }
 }
-

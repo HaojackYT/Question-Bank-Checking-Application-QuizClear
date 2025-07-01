@@ -14,12 +14,15 @@ public class ChartDataDTO {
     public static class ChartDatasetDTO {
         private String label;
         private String backgroundColor;
+        private List<String> backgroundColors; // For multiple colors (pie chart)
         private List<Number> data;
 
         public String getLabel() { return label; }
         public void setLabel(String label) { this.label = label; }
         public String getBackgroundColor() { return backgroundColor; }
         public void setBackgroundColor(String backgroundColor) { this.backgroundColor = backgroundColor; }
+        public List<String> getBackgroundColors() { return backgroundColors; }
+        public void setBackgroundColors(List<String> backgroundColors) { this.backgroundColors = backgroundColors; }
         public List<Number> getData() { return data; }
         public void setData(List<Number> data) { this.data = data; }
     }

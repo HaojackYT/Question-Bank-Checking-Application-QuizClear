@@ -158,6 +158,11 @@
   border-radius: 0.9375rem;
   display: flex;
   align-items: center;
+  margin-top: 7rem; /* Converted from 112px to rem */
+}
+
+.task-item.task-hidden {
+  display: none;
 }
 
 .task-item:nth-child(3) {
@@ -222,11 +227,11 @@
 }
 
 .task-status.pending {
-  background-color: #ffa500;
+  background-color: #ffae4c;
 }
 
 .task-status.completed {
-  background-color: #28a745;
+  background-color: #34c759;
 }
 
 .task-status.cancelled {
