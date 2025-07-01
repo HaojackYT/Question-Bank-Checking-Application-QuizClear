@@ -1,19 +1,27 @@
 package com.uth.quizclear.controller;
 
-import com.uth.quizclear.model.dto.QuestionFeedbackDTO;
-import com.uth.quizclear.model.dto.QuestionFeedbackDetailDTO;
-import com.uth.quizclear.service.SubjectLeaderFeedbackService;
-import com.uth.quizclear.model.dto.SL_PlanDTO;
-import com.uth.quizclear.service.PlanService;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.uth.quizclear.model.dto.QuestionFeedbackDTO;
+import com.uth.quizclear.model.dto.QuestionFeedbackDetailDTO;
+import com.uth.quizclear.model.dto.SL_PlanDTO;
+import com.uth.quizclear.service.PlanService;
+import com.uth.quizclear.service.SubjectLeaderFeedbackService;
 
 import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/subject-leader")
@@ -41,6 +49,9 @@ public class SubjectLeaderController {
         Long userId = 3L;
         // Load list of plans for the subject leader
         List<SL_PlanDTO> plans = planService.getSLPlan();
+        if (plans == null || plans.isEmpty()) {
+            model.addAttribute("message", "No plans available for the subject leader.");
+        }
         model.addAttribute("plans", plans);
         model.addAttribute("userId", userId);
         return "subjectLeader/slPlans";
@@ -289,7 +300,7 @@ public class SubjectLeaderController {
     @ResponseBody
     public String getHeaderTemplate() {
         return """
-            <div id="header-user>
+            <div id="header-user">
                 <p id="LOGO" style="font-family: 'RocknRoll One', serif; font-weight: 500;">QuizClear</p>
                 <div id="element">
                     <!-- Bell icon -->

@@ -177,4 +177,13 @@ public class Plan {
         public String getValue() {
             return value;
         }
+
+        public static PlanStatus fromValue(String value) {
+            for (PlanStatus status : values()) {
+                if (status.value.equalsIgnoreCase(value)) {
+                    return status;
+                }
+            }
+            throw new IllegalArgumentException("Unknown PlanStatus: " + value);
     }}
+}

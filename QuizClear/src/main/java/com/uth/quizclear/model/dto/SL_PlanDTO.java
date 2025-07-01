@@ -4,16 +4,16 @@ import java.time.LocalDateTime;
 
 import com.uth.quizclear.model.entity.Plan.PlanStatus;
 
-
 public class SL_PlanDTO {
 
     private Long planId;
-    private String planName;
+    private String planTitle;
     private Integer totalQuestions;
     private Integer totalRecognition = 0;
     private Integer totalComprehension = 0;
     private Integer totalBasicApplication = 0;
     private Integer totalAdvancedApplication = 0;
+    private LocalDateTime createdAt;
     private LocalDateTime dueDate;
     private PlanStatus status;
 
@@ -26,12 +26,12 @@ public class SL_PlanDTO {
         this.planId = planId;
     }
 
-    public String getPlanName() {
-        return planName;
+    public String getPlanTitle() {
+        return planTitle;
     }
 
-    public void setPlanName(String planName) {
-        this.planName = planName;
+    public void setPlanTitle(String planTitle) {
+        this.planTitle = planTitle;
     }
 
     public Integer getTotalQuestions() {
@@ -74,6 +74,14 @@ public class SL_PlanDTO {
         this.totalAdvancedApplication = totalAdvancedApplication;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public LocalDateTime getDueDate() {
         return dueDate;
     }
@@ -91,45 +99,45 @@ public class SL_PlanDTO {
     }
 
     // Constructor
-    public SL_PlanDTO(Long planId, String planName, Integer totalQuestions, Integer totalRecognition,
-            Integer totalComprehension, Integer totalBasicApplication, Integer totalAdvancedApplication,
-            LocalDateTime dueDate, PlanStatus status) {
-        this.planId = planId;
-        this.planName = planName;
-        this.totalQuestions = totalQuestions;
-        this.totalRecognition = totalRecognition;
-        this.totalComprehension = totalComprehension;
-        this.totalBasicApplication = totalBasicApplication;
-        this.totalAdvancedApplication = totalAdvancedApplication;
-        this.dueDate = dueDate;
-        this.status = status;
-    }
-
     public SL_PlanDTO() {
     }
 
-    
-
-    public SL_PlanDTO(String planName, Integer totalQuestions, Integer totalRecognition, Integer totalComprehension,
-            Integer totalBasicApplication, Integer totalAdvancedApplication, LocalDateTime dueDate, PlanStatus status) {
-        this.planName = planName;
+    public SL_PlanDTO(Long planId, String planTitle, Integer totalQuestions, Integer totalRecognition,
+            Integer totalComprehension, Integer totalBasicApplication, Integer totalAdvancedApplication,
+            LocalDateTime createdAt, LocalDateTime dueDate, PlanStatus status) {
+        this.planId = planId;
+        this.planTitle = planTitle;
         this.totalQuestions = totalQuestions;
         this.totalRecognition = totalRecognition;
         this.totalComprehension = totalComprehension;
         this.totalBasicApplication = totalBasicApplication;
         this.totalAdvancedApplication = totalAdvancedApplication;
+        this.createdAt = createdAt;
         this.dueDate = dueDate;
         this.status = status;
     }
 
-    // toString
-    @Override
-    public String toString() {
-        return "SL_PlanDTO [planId=" + planId + ", planName=" + planName + ", totalQuestions=" + totalQuestions
-                + ", totalRecognition=" + totalRecognition + ", totalComprehension=" + totalComprehension
-                + ", totalBasicApplication=" + totalBasicApplication + ", totalAdvancedApplication="
-                + totalAdvancedApplication + ", dueDate=" + dueDate + ", status=" + status + "]";
+    public SL_PlanDTO(String planTitle, Integer totalQuestions, Integer totalRecognition, Integer totalComprehension,
+            Integer totalBasicApplication, Integer totalAdvancedApplication, LocalDateTime createdAt,
+            LocalDateTime dueDate, PlanStatus status) {
+        this.planTitle = planTitle;
+        this.totalQuestions = totalQuestions;
+        this.totalRecognition = totalRecognition;
+        this.totalComprehension = totalComprehension;
+        this.totalBasicApplication = totalBasicApplication;
+        this.totalAdvancedApplication = totalAdvancedApplication;
+        this.createdAt = createdAt;
+        this.dueDate = dueDate;
+        this.status = status;
     }
 
-    
+    // toString method
+    @Override
+    public String toString() {
+        return "SL_PlanDTO [planId=" + planId + ", planTitle=" + planTitle + ", totalQuestions=" + totalQuestions
+                + ", totalRecognition=" + totalRecognition + ", totalComprehension=" + totalComprehension
+                + ", totalBasicApplication=" + totalBasicApplication + ", totalAdvancedApplication="
+                + totalAdvancedApplication + ", createdAt=" + createdAt + ", dueDate=" + dueDate + ", status=" + status
+                + "]";
+    }
 }

@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
     <link rel="stylesheet" th:href="@{/Static/header.css}">
     <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
-    <link rel="stylesheet" th:href="@{/static/css/subjectLeader/slPlans.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/slPlans.css}">
     <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Plans</title>
@@ -15,18 +15,15 @@
 
 <body>
     <!--header-->
-     <header class="header" th:insert="~{header_user :: header}"></header>
-     <!-- <div id="header-placeholder" th:insert="~{header_user :: header}"></div>
-     <div id="header-placeholder"></div> -->
+    <div id="header-placeholder" th:insert="~{header_user :: header}"></div>
 
 
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div class="sidebar" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
-        <!-- <div id="menu-HTML" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
-        <div id="menu-HTML"></div> -->
+        <div id="menu-HTML" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
+
 
         <!-- Main content -->
         <div id="main">
@@ -44,10 +41,9 @@
                 </div>
                 <div class="filter-dropdown">
                     <select class="filter-select">
-                        <option>All Status</option>
-                        <option>Pending</option>
-                        <option>Accepted</option>
-                        <option>New</option>
+                        <option value="">All Status</option>
+                        <option value="ACCEPTED">Accepted</option>
+                        <option value="NEW">New</option>
                     </select>
                     <i class="fas fa-chevron-down"></i>
                 </div>
@@ -65,9 +61,9 @@
                     </tr>
                 </thead>
                 <tbody> <!-- Nội dung load ở đây -->
-                    <tr th:each="plan : ${plans}">
+                    <tr th:each="plan : ${plans}" th:attr="data-status=${plan.status.name()}">
                         <td th:text="${plan.planId}">Plan ID</td>
-                        <td th:text="${plan.planName}">Plan Name</td>
+                        <td th:text="${plan.planTitle}">Plan Name</td>
                         <td th:text="${plan.totalQuestions}">Total Questions</td>
                         <td>
                             <span th:text="'Reg: ' + ${plan.totalRecognition}"></span><br />
@@ -77,136 +73,81 @@
                         </td>
                         <td th:text="${#temporals.format(plan.dueDate, 'dd/MM/yy')}">Due Date</td>
                         <td>
-                            <div th:switch="${plan.status}">
+                            <div th:switch="${plan.status.name()}">
                                 <div th:case="'NEW'" class="status-btn-new">New</div>
                                 <div th:case="'ACCEPTED'" class="status-btn-acp">Accepted</div>
-                                <div th:case="*">Other</div>
+                                <div th:case="*">Other</div> <!-- NULL -->
                             </div>
                         </td>
                         <td>
-                            <!-- Ví dụ nút hành động -->
-                            <button>View</button>
+                            <i class="fa-regular fa-circle-check" style="color: green"
+                                th:if="${plan.status.name() == 'NEW'}"></i>
+                            </i>
+
                         </td>
                     </tr>
-                    <!-- <td>DB202</td>
-                    <td>Database Systems</td>
-                    <td>50</td>
-                    <td>15 Reg
-                        20 Comp
-                        10 Bas App
-                        5 Adv App</td>
-                    <td>22/04/25</td>
-                    <td>
-                        <div class="status-btn-acp">Accepted</div>
-                    </td>
-                    <td></td>
-                    </td>
+                    <tr th:if="${#lists.isEmpty(plans)}">
+                        <td colspan="7" class="no-data">No plans available</td>
                     </tr>
-                    <tr>
-                        <td>DB202</td>
-                        <td>Database Systems</td>
-                        <td>50</td>
-                        <td>15 Reg
-                            20 Comp
-                            10 Bas App
-                            5 Adv App</td>
-                        <td>22/04/25</td>
-                        <td>
-                            <div class="status-btn-in_progress">In Progress</div>
-                        </td>
-                        <td>
-                            <i class="fa-regular fa-circle-check" style="color: green"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                    <tr>
-                        <td>DB202</td>
-                        <td>Database Systems</td>
-                        <td>50</td>
-                        <td>15 Reg
-                            20 Comp
-                            10 Bas App
-                            5 Adv App</td>
-                        <td>22/04/25</td>
-                        <td>
-                            <div class="status-btn-new">New</div>
-                        </td>
-                        <td>
-                            <i class="fa-regular fa-circle-check" style="color: green"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>DB202</td>
-                        <td>Database Systems</td>
-                        <td>50</td>
-                        <td>15 Reg
-                            20 Comp
-                            10 Bas App
-                            5 Adv App</td>
-                        <td>22/04/25</td>
-                        <td>
-                            <div class="status-btn-new">New</div>
-                        </td>
-                        <td>
-                            <i class="fa-regular fa-circle-check" style="color: green"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>DB202</td>
-                        <td>Database Systems</td>
-                        <td>50</td>
-                        <td>15 Reg
-                            20 Comp
-                            10 Bas App
-                            5 Adv App</td>
-                        <td>22/04/25</td>
-                        <td>
-                            <div class="status-btn-new">New</div>
-                        </td>
-                        <td>
-                            <i class="fa-regular fa-circle-check" style="color: green"></i>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>DB202</td>
-                        <td>Database Systems</td>
-                        <td>50</td>
-                        <td>15 Reg
-                            20 Comp
-                            10 Bas App
-                            5 Adv App</td>
-                        <td>22/04/25</td>
-                        <td>
-                            <div class="status-btn-new">New</div>
-                        </td>
-                        <td>
-                            <i class="fa-regular fa-circle-check" style="color: green"></i>
-                        </td>
-                    </tr> -->
                 </tbody>
         </div>
 
-
-
-        <!-- ma nhung header vs menu -->
-        <!-- <script>
-            // Load header
-            fetch('../header_user.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('header-placeholder').innerHTML = data;
-                });
-
-            // Load menu
-            fetch('Menu-SL.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('menu-HTML').innerHTML = data;
-                    setActiveMenu(document.title);
-                });
-
-        </script> -->
         <script th:src="@{/Static/js/L_activeMenu.js}"></script>
+
+        <!-- <script>  // FILTER FUNCTIONALITY
+            document.querySelector('.filter-select').addEventListener('change', function () {
+                const selectedStatus = this.value;
+                const rows = document.querySelectorAll('tbody tr[data-status]');
+
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute('data-status');
+                    if (!selectedStatus || selectedStatus === rowStatus) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        </script> -->
+
+        <script>
+            const searchInput = document.querySelector('.search-input');
+            const filterSelect = document.querySelector('.filter-select');
+
+            function filterPlans() {
+                const keyword = searchInput.value.toLowerCase().trim();
+                const selectedStatus = filterSelect.value;
+                const rows = document.querySelectorAll('tbody tr[data-status]');
+
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute('data-status');
+                    const textContent = row.textContent.toLowerCase();
+
+                    const matchesSearch = textContent.includes(keyword);
+                    const matchesStatus = !selectedStatus || rowStatus === selectedStatus;
+
+                    if (matchesSearch && matchesStatus) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+
+            // Event listeners
+            searchInput.addEventListener('input', filterPlans);
+            filterSelect.addEventListener('change', filterPlans);
+
+            // Optional: hide actions for non-NEW rows at start (if icon is in DOM)
+            document.querySelectorAll('.action-icon').forEach(icon => {
+                const status = icon.getAttribute('data-status');
+                if (status !== 'NEW') {
+                    icon.style.display = 'none';
+                }
+            });
+        </script>
+
+
 </body>
 
 </html>
