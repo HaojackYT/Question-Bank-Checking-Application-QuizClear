@@ -1,12 +1,13 @@
 package com.uth.quizclear.model.entity;
 
-import com.uth.quizclear.model.base.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Arrays;
 
 /**
  * Department entity representing organizational units
@@ -24,7 +25,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"users", "courses", "userDepartmentAssignments", "subjects"})
-public class Department extends BaseEntity {
+public class Department {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,11 +47,16 @@ public class Department extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "head_of_department_id", foreignKey = @ForeignKey(name = "fk_department_head"))
-    private User headOfDepartment;
-
-    @Column(name = "is_active", nullable = false)
+    private User headOfDepartment;    @Column(name = "status", nullable = false, length = 20)
+    @Convert(converter = DepartmentStatusConverter.class)
     @Builder.Default
-    private Boolean isActive = true;
+    private DepartmentStatus status = DepartmentStatus.ACTIVE;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     // Relationships
     @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -66,7 +72,18 @@ public class Department extends BaseEntity {
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Subject> subjects;
 
-    @Override
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
     public Long getId() {
         return departmentId;
     }
@@ -82,5 +99,42 @@ public class Department extends BaseEntity {
 
     public String getHeadName() {
         return headOfDepartment != null ? headOfDepartment.getFullName() : "No Head Assigned";
+    }    public boolean isActive() {
+        return status == DepartmentStatus.ACTIVE;
+    }
+
+    public enum DepartmentStatus {
+        ACTIVE("active"),
+        INACTIVE("inactive");
+
+        private final String value;
+
+        DepartmentStatus(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public static DepartmentStatus fromValue(String value) {
+            return Arrays.stream(values())
+                    .filter(status -> status.getValue().equalsIgnoreCase(value))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Unknown status: " + value));
+        }
+    }
+
+    @Converter(autoApply = true)
+    public static class DepartmentStatusConverter implements AttributeConverter<DepartmentStatus, String> {
+        @Override
+        public String convertToDatabaseColumn(DepartmentStatus status) {
+            return status != null ? status.getValue() : null;
+        }
+
+        @Override
+        public DepartmentStatus convertToEntityAttribute(String dbData) {
+            return dbData != null ? DepartmentStatus.fromValue(dbData) : null;
+        }
     }
 }

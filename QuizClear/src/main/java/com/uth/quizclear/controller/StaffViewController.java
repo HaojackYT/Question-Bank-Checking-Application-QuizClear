@@ -10,11 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class StaffViewController {    @Autowired
-    private DuplicationStaffService duplicationStaffService;
-
-    @GetMapping("/staff/duplications")
+    private DuplicationStaffService duplicationStaffService;    @GetMapping("/staff/duplications")
     public String staffDuplications() {
-        return "Staff/staffDuplications";
+        return "Staff/staffDuplicationCheck";
     }
 
     @GetMapping("/staff/profile")
@@ -43,6 +41,11 @@ public class StaffViewController {    @Autowired
             model.addAttribute("error", "Error loading detection details");
             return "Staff/staffDupDetails :: root";
         }
+    }
+
+    @GetMapping("/staff/question-management")
+    public String staffQuestionManagement() {
+        return "Staff/staffQMQuestionBank";
     }
 
     @GetMapping("/staff/help")

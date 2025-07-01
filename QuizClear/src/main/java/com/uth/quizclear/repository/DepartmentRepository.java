@@ -16,9 +16,8 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     Optional<Department> findByDepartmentName(String departmentName);
     
     Optional<Department> findByDepartmentCode(String departmentCode);
-    
-    // Find active departments
-    @Query("SELECT d FROM Department d WHERE d.isActive = true ORDER BY d.departmentName")
+      // Find active departments
+    @Query("SELECT d FROM Department d WHERE d.status = 'ACTIVE' ORDER BY d.departmentName")
     List<Department> findActiveDepartments();
     
     // Find departments by head
@@ -36,9 +35,8 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     // Find departments by name pattern
     @Query("SELECT d FROM Department d WHERE LOWER(d.departmentName) LIKE LOWER(CONCAT('%', :name, '%'))")
     List<Department> findByDepartmentNameContaining(@Param("name") String name);
-    
-    // Statistics queries
-    @Query("SELECT COUNT(d) FROM Department d WHERE d.isActive = true")
+      // Statistics queries
+    @Query("SELECT COUNT(d) FROM Department d WHERE d.status = 'ACTIVE'")
     long countActiveDepartments();
     
     @Query("SELECT COUNT(d) FROM Department d WHERE d.headOfDepartment IS NOT NULL")
@@ -66,12 +64,11 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     // Find departments with subjects
     @Query("SELECT DISTINCT d FROM Department d JOIN d.subjects s WHERE s.status = 'ACTIVE'")
     List<Department> findDepartmentsWithSubjects();
-    
-    // Search departments by multiple criteria
+      // Search departments by multiple criteria
     @Query("SELECT d FROM Department d WHERE " +
            "(:name IS NULL OR LOWER(d.departmentName) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
            "(:code IS NULL OR LOWER(d.departmentCode) LIKE LOWER(CONCAT('%', :code, '%'))) AND " +
-           "(:active IS NULL OR d.isActive = :active)")
+           "(:active IS NULL OR (CASE WHEN :active = true THEN d.status = 'ACTIVE' ELSE d.status = 'INACTIVE' END))")
     List<Department> findDepartmentsByCriteria(@Param("name") String name, 
                                              @Param("code") String code, 
                                              @Param("active") Boolean active);
