@@ -1,6 +1,8 @@
 package com.uth.quizclear.repository;
 
 import com.uth.quizclear.model.entity.DuplicateDetection;
+import com.uth.quizclear.model.enums.DuplicateDetectionStatus;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -59,9 +61,12 @@ public interface DuplicateDetectionRepository extends JpaRepository<DuplicateDet
     List<DuplicateDetection> findDetectionsNeedingReview();
 
     // Statistics queries
-    @Query("SELECT d.statusString as status, COUNT(d) as count FROM DuplicateDetection d GROUP BY d.statusString")
-    List<Object[]> getStatusStatistics();
+    // @Query("SELECT d.statusString as status, COUNT(d) as count FROM DuplicateDetection d GROUP BY d.statusString")
+    // List<Object[]> getStatusStatistics();
 
     @Query("SELECT DATE(d.detectedAt) as date, COUNT(d) as count FROM DuplicateDetection d WHERE d.detectedAt >= :since GROUP BY DATE(d.detectedAt) ORDER BY DATE(d.detectedAt)")
     List<Object[]> getDailyDetectionCounts(@Param("since") LocalDateTime since);
+
+    @Query("SELECT d FROM DuplicateDetection d WHERE d.statusString = :status")
+    List<DuplicateDetection> findByStatus(@Param("status") String status);
 }

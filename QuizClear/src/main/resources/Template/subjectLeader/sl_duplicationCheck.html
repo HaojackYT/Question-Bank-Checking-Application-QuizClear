@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,81 +9,65 @@
     <link rel="stylesheet" th:href="@{/Static/css/staff/staffDup.css}" />
     <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
     <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/sl_duplicationCheck.css}">
-    <!-- Thêm style riêng -->
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet" />
     <title>DuplicationCheck</title>
 </head>
-
 <body>
-    <!-- Header -->
     <header class="header" th:insert="~{header_user :: header}"></header>
-
-    <!-- Body -->
     <div id="Container-body">
-        <!-- Sidebar/Menu -->
         <div class="sidebar" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
-
-        <!-- Main content -->
         <div id="main">
             <div class="duplication-check">
                 <h1>Duplication Check</h1>
                 <p>Detect duplicate questions automatically</p>
                 <div class="automatic-duplication-detection">
                     <h3>Automatic Duplication Detection</h3>
-                     <p style="color:#555; font-size: 13px; margin-top: 4px;" ;>Review questions our AI system has flagged as potential duplicates</p>
+                    <p style="color:#555; font-size: 13px; margin-top: 4px;">Review questions our AI system has flagged as potential duplicates</p>
                     <table>
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th><span id="questionContext">Question Context</span></th>
-                                <th><span id="similarityTo">Similarity To</span></th>
-                                <th><span id="similarity">Similarity</span></th>
-                                <th><span id="submitter">Submitter</span></th>
-                                <th><span id="action">Action</span></th>
+                                <th>Question Context</th>
+                                <th>Similarity To</th>
+                                <th>Similarity</th>
+                                <th>Submitter</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><span id="id1">S1001</span></td>
-                                <td><span id="question1">What are the key differences between procedural and
-                                        object-oriented programming paradigms?</span></td>
-                                <td><span id="similarTo1">Q1045: Explain the main procedural programming and
-                                        programming.</span></td>
-                                <td><span id="similarity1" class="high">High (92%)</span></td>
-                                <td><span id="submitter1">Dr. Nguyen</span></td>
-                                <td><span id="action1"><button><i class="fa-solid fa-check"></i></button> <button><i
-                                                class="fa-solid fa-xmark"></i></button></span></td>
-                            </tr>
-                            <tr>
-                                <td><span id="id2">S1008</span></td>
-                                <td><span id="question2">Describe the process of ph plants and its importance.</span>
-                                </td>
-                                <td><span id="similarTo2">Q1078: Explain how photo why it is essential for plant
-                                        life.</span></td>
-                                <td><span id="similarity2" class="high">High (88%)</span></td>
-                                <td><span id="submitter2">Dr. Pham</span></td>
-                                <td><span id="action2"><button><i class="fa-solid fa-check"></i></button> <button><i
-                                                class="fa-solid fa-xmark"></i></button></span></td>
-                            </tr>
-                            <tr>
-                                <td><span id="id3">S1012</span></td>
-                                <td><span id="question3">What is the role of DNS in computer networks?</span></td>
-                                <td><span id="similarTo3">Q1034: Explain the function of internet architecture.</span>
-                                </td>
-                                <td><span id="similarity3" class="medium">Medium (60%)</span></td>
-                                <td><span id="submitter3">Dr. Le</span></td>
-                                <td><span id="action3"><button><i class="fa-solid fa-check"></i></button> <button><i
-                                                class="fa-solid fa-xmark"></i></button></span></td>
-                            </tr>
+                        <tr th:each="dup : ${duplications}">
+                            <td th:text="'Q' + ${dup.newQuestionId}"></td>
+                            <td th:text="${dup.newQuestionContent}"></td>
+                            <td>
+                                <span th:text="'Q' + ${dup.similarQuestionId} + ': ' + ${dup.similarQuestionContent}"></span>
+                            </td>
+                            <td>
+                                <span th:class="${dup.similarityScore >= 0.8 ? 'high' : 'medium'}"
+                                      th:text="${dup.similarityScore >= 0.8 ? 'High (' : 'Medium ('} + ${#numbers.formatDecimal(dup.similarityScore * 100, 0, 0)} + '%)'"></span>
+                            </td>
+                            <td th:text="${dup.submitterName}"></td>
+                            <td>
+                                <span>
+                                    <form th:action="@{/subject-leader/duplication-check/accept}" method="post" style="display:inline;">
+                                        <input type="hidden" name="detectionId" th:value="${dup.detectionId}" />
+                                        <button type="submit" title="Accept"><i class="fa-solid fa-check"></i></button>
+                                    </form>
+                                    <form th:action="@{/subject-leader/duplication-check/reject}" method="post" style="display:inline;">
+                                        <input type="hidden" name="detectionId" th:value="${dup.detectionId}" />
+                                        <button type="submit" title="Reject"><i class="fa-solid fa-xmark"></i></button>
+                                    </form>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(duplications)}">
+                            <td colspan="6" style="text-align:center;">No duplicate detections found.</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-
     <script th:src="@{/Static/js/L_activeMenu.js}"></script>
-
 </body>
-
 </html>

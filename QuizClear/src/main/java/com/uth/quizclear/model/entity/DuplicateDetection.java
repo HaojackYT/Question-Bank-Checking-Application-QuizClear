@@ -44,6 +44,11 @@ public class DuplicateDetection {
 
     @Column(name = "ai_check_id")
     private Long aiCheckId; // Core duplicate detection fields
+
+    // @Enumerated(EnumType.STRING)
+    // @Column(name = "status", nullable = false)
+    // private DuplicateDetectionStatus status;
+
     @Column(name = "similarity_score", precision = 5, scale = 4)
     @DecimalMin(value = "0.0", message = "Similarity score must be at least 0.0")
     @DecimalMax(value = "1.0", message = "Similarity score must be at most 1.0")
@@ -143,12 +148,12 @@ public class DuplicateDetection {
         this.updatedAt = LocalDateTime.now();
         if (action != null) {
             switch (action) {
-                case ACCEPT -> setStatus(DuplicateDetectionStatus.ACCEPTED);
-                case REJECT -> setStatus(DuplicateDetectionStatus.REJECTED);
-                case MERGE -> setStatus(DuplicateDetectionStatus.MERGED);
-                case SEND_BACK -> setStatus(DuplicateDetectionStatus.SENT_BACK);
-                case KEEP_BOTH -> setStatus(DuplicateDetectionStatus.ACCEPTED);
-                case REMOVE_NEW -> setStatus(DuplicateDetectionStatus.ACCEPTED);
+                case ACCEPT -> setStatus(DuplicateDetectionStatus.ACCEPTED.getValue());
+                case REJECT -> setStatus(DuplicateDetectionStatus.REJECTED.getValue());
+                case MERGE -> setStatus(DuplicateDetectionStatus.MERGED.getValue());
+                case SEND_BACK -> setStatus(DuplicateDetectionStatus.SENT_BACK.getValue());
+                case KEEP_BOTH -> setStatus(DuplicateDetectionStatus.ACCEPTED.getValue());
+                case REMOVE_NEW -> setStatus(DuplicateDetectionStatus.ACCEPTED.getValue());
             }
         }
     }
@@ -158,8 +163,8 @@ public class DuplicateDetection {
         return convertStringToStatus(statusString);
     }
 
-    public void setStatus(DuplicateDetectionStatus status) {
-        this.statusString = status != null ? status.getValue() : null;
+    public void setStatus(String statusString) {
+        this.statusString = statusString;
     }
 
     public DuplicateDetectionAction getAction() {

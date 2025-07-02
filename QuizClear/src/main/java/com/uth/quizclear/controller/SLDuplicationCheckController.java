@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import com.uth.quizclear.service.DuplicateDetectionService;
+
 import jakarta.servlet.http.HttpSession;
 import java.util.*;
 
@@ -18,6 +20,8 @@ import java.util.*;
 @RequiredArgsConstructor
 @Slf4j
 public class SLDuplicationCheckController {
+
+    private final DuplicateDetectionService duplicateDetectionService;
 
     /**
      * Display the duplication check page
@@ -211,5 +215,23 @@ public class SLDuplicationCheckController {
             errorResponse.put("message", "Unable to run duplication detection");
             return ResponseEntity.internalServerError().body(errorResponse);
         }
+    }
+
+    // @GetMapping
+    // public String showDuplicationCheck(Model model) {
+    //     model.addAttribute("duplications", duplicateDetectionService.getPendingDetections());
+    //     return "subjectLeader/sl_duplicationCheck";
+    // }
+
+    @PostMapping("/accept")
+    public String accept(@RequestParam Long detectionId) {
+        duplicateDetectionService.acceptDetection(detectionId);
+        return "redirect:/subject-leader/duplication-check";
+    }
+
+    @PostMapping("/reject")
+    public String reject(@RequestParam Long detectionId) {
+        duplicateDetectionService.rejectDetection(detectionId);
+        return "redirect:/subject-leader/duplication-check";
     }
 }
