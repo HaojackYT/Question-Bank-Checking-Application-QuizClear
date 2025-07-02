@@ -38,6 +38,18 @@ public class ActivityLog {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     
+    // Constructors
+    public ActivityLog() {}
+    
+    public ActivityLog(User user, String action, String activity, String entityType, Long entityId) {
+        this.user = user;
+        this.action = action;
+        this.activity = activity;
+        this.entityType = entityType;
+        this.entityId = entityId != null ? entityId.intValue() : null;
+        this.createdAt = LocalDateTime.now();
+    }
+    
     // Getters and Setters
     public Integer getId() {
         return id;

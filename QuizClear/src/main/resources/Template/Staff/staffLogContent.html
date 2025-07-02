@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>    <link rel="stylesheet" th:href="@{/Static/css/staff/staffLogs.css}">
     <link rel="stylesheet" th:href="@{/Static/css/staff/staffLogsDetails.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/staff/staffLogsModal.css}">
 </head>
 <body>
     <div class="search-export">
@@ -38,5 +39,140 @@
             </table>
         </div>
     </div>
+
+    <!-- Simple Modal for Log Details -->
+    <div id="logDetailsModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Processing Log Details</h3>
+                <button class="close-btn" onclick="closeLogModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-row">
+                    <label>Log ID:</label>
+                    <span id="modal-log-id">-</span>
+                </div>
+                <div class="detail-row">
+                    <label>Action:</label>
+                    <span id="modal-action" class="action-badge">-</span>
+                </div>
+                <div class="detail-row">
+                    <label>Processor:</label>
+                    <span id="modal-processor">-</span>
+                </div>
+                <div class="detail-row">
+                    <label>Date:</label>
+                    <span id="modal-date">-</span>
+                </div>
+                <div class="detail-row">
+                    <label>Similarity:</label>
+                    <span id="modal-similarity" class="similarity-score">-</span>
+                </div>
+                <div class="detail-row full-width">
+                    <label>New Question:</label>
+                    <div id="modal-new-question" class="question-content">-</div>
+                </div>
+                <div class="detail-row full-width">
+                    <label>Similar Question:</label>
+                    <div id="modal-similar-question" class="question-content">-</div>
+                </div>
+                <div class="detail-row full-width">
+                    <label>Feedback:</label>
+                    <div id="modal-feedback" class="feedback-content">-</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeLogModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple modal functions for processing logs
+        async function showLogDetails(logId) {
+            try {
+                console.log('Loading log details for ID:', logId);
+                
+                // Fetch log details from API
+                const response = await fetch(`/api/staff/duplications/processing-logs/${logId}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to load log details: ${response.status}`);
+                }
+                
+                const log = await response.json();
+                
+                // Populate modal with log data
+                populateModal(log);
+                
+                // Show modal
+                document.getElementById('logDetailsModal').style.display = 'flex';
+                
+            } catch (error) {
+                console.error('Error loading log details:', error);
+                alert('Failed to load log details: ' + error.message);
+            }
+        }
+        
+        function populateModal(log) {
+            // Basic info
+            document.getElementById('modal-log-id').textContent = log.logId || 'N/A';
+            
+            // Action with badge styling
+            const actionElement = document.getElementById('modal-action');
+            const action = log.action || 'UNKNOWN';
+            actionElement.textContent = action;
+            actionElement.className = 'action-badge ' + action.toLowerCase();
+            
+            document.getElementById('modal-processor').textContent = log.processorName || 'Unknown';
+            document.getElementById('modal-date').textContent = formatDateTime(log.processedAt);
+            document.getElementById('modal-similarity').textContent = log.similarity || 'N/A';
+            
+            // Questions content
+            document.getElementById('modal-new-question').textContent = log.newQuestion || 'No content available';
+            document.getElementById('modal-similar-question').textContent = log.similarQuestion || 'No content available';
+            document.getElementById('modal-feedback').textContent = log.feedback || 'No feedback provided';
+        }
+        
+        function closeLogModal() {
+            document.getElementById('logDetailsModal').style.display = 'none';
+        }
+        
+        // Make functions available globally
+        window.populateModal = populateModal;
+        window.closeLogModal = closeLogModal;
+        
+        function formatDateTime(dateTimeStr) {
+            if (!dateTimeStr) return 'N/A';
+            
+            try {
+                const date = new Date(dateTimeStr);
+                return date.toLocaleString('en-CA', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                }).replace(',', '');
+            } catch (e) {
+                return dateTimeStr;
+            }
+        }
+        
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('logDetailsModal');
+            if (event.target === modal) {
+                closeLogModal();
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeLogModal();
+            }
+        });
+    </script>
 </body>
 </html>

@@ -221,8 +221,9 @@ INSERT INTO notifications (user_id, type, title, message, priority, created_at) 
 (4, 'comment_added', 'Response Required', 'Your question received feedback requiring response', 'high', '2025-03-09 14:00:00'),
 (5, 'duplicate_found', 'Similarity Alert', 'High similarity detected between questions', 'medium', '2025-03-10 14:00:00');
 
--- 15. Thêm 10 bản ghi vào bảng activity_logs
+-- 15. Thêm dữ liệu vào bảng activity_logs (bao gồm cả processing logs)
 INSERT INTO activity_logs (user_id, action, activity, entity_type, entity_id, created_at) VALUES
+-- Regular activity logs
 (1, 'CREATE', 'Created new question for CS101', 'question', 1, '2025-03-01 15:00:00'),
 (2, 'REVIEW', 'Reviewed mathematics exam', 'exam', 2, '2025-03-02 15:00:00'),
 (3, 'UPDATE', 'Updated physics question content', 'question', 3, '2025-03-03 15:00:00'),
@@ -232,7 +233,30 @@ INSERT INTO activity_logs (user_id, action, activity, entity_type, entity_id, cr
 (2, 'ASSIGN', 'Assigned task to lecturer', 'task', 2, '2025-03-07 15:00:00'),
 (3, 'SUBMIT', 'Submitted exam for approval', 'exam', 3, '2025-03-08 15:00:00'),
 (4, 'COMMENT', 'Added comment to question', 'question', 4, '2025-03-09 15:00:00'),
-(5, 'EXPORT', 'Exported question bank', 'plan', 1, '2025-03-10 15:00:00');
+(5, 'EXPORT', 'Exported question bank', 'plan', 1, '2025-03-10 15:00:00'),
+
+-- Processing logs for duplicate detection history
+(6, 'DUPLICATE_PROCESSING_ACCEPTED', 'Detection ID: 1001 | Action: ACCEPTED | Similarity: 88.0% | New Question: What is the time complexity of searching in a balanced binary search tree? (Data Structures, created by Ash Abrahams) | Similar Question: What does HTTP stand for? (Web Development, created by Brian Carter) | Feedback: Questions are contextually different despite similarity', 'duplicate_detection', 1001, '2025-07-02 18:35:00'),
+
+(6, 'DUPLICATE_PROCESSING_REJECTED', 'Detection ID: 1002 | Action: REJECTED | Similarity: 85.0% | New Question: Define what is a variable in programming (Introduction to Computer Science, created by Ash Abrahams) | Similar Question: What is a variable in computer programming? (Data Structures, created by Brian Carter) | Feedback: Too similar to existing question - duplicate content', 'duplicate_detection', 1002, '2025-07-01 14:15:00'),
+
+(6, 'DUPLICATE_PROCESSING_SEND_BACK', 'Detection ID: 1003 | Action: SEND_BACK | Similarity: 78.0% | New Question: How does DNA replication work? (Cell Biology, created by Daniel Evans) | Similar Question: Describe the process of DNA replication (Genetics, created by Isabella King) | Feedback: Please rephrase to avoid similarity and add more specific context', 'duplicate_detection', 1003, '2025-07-02 09:45:00'),
+
+(6, 'DUPLICATE_PROCESSING_REJECTED', 'Detection ID: 1004 | Action: REJECTED | Similarity: 94.0% | New Question: Calculate the derivative of x^2 + 3x + 1 (Calculus II, created by Frank Green) | Similar Question: Find the derivative of the function f(x) = x^2 + 3x + 1 (Linear Algebra, created by Grace Harris) | Feedback: Nearly identical to existing question - content overlap too high', 'duplicate_detection', 1004, '2025-07-02 16:20:00'),
+
+(6, 'DUPLICATE_PROCESSING_ACCEPTED', 'Detection ID: 1005 | Action: ACCEPTED | Similarity: 73.0% | New Question: What are the properties of alkenes? (Organic Chemistry, created by Henry Johnson) | Similar Question: List the main characteristics of alkene compounds (General Chemistry, created by Henry Johnson) | Feedback: Approved after review - questions target different learning outcomes', 'duplicate_detection', 1005, '2025-07-03 11:10:00'),
+
+(6, 'DUPLICATE_PROCESSING_SEND_BACK', 'Detection ID: 1006 | Action: SEND_BACK | Similarity: 88.0% | New Question: Explain the concept of inheritance in OOP (Data Structures, created by Brian Carter) | Similar Question: What is inheritance in object-oriented programming? (Introduction to Computer Science, created by Ash Abrahams) | Feedback: Good question but needs more specificity. Please add context about application domain', 'duplicate_detection', 1006, '2025-07-03 13:30:00'),
+
+(6, 'DUPLICATE_PROCESSING_ACCEPTED', 'Detection ID: 1007 | Action: ACCEPTED | Similarity: 81.0% | New Question: What is mitosis? (Cell Biology, created by Daniel Evans) | Similar Question: Describe the stages of cell division (mitosis) (Genetics, created by Isabella King) | Feedback: Different difficulty levels and contexts - both questions serve different purposes', 'duplicate_detection', 1007, '2025-07-04 08:45:00'),
+
+(6, 'DUPLICATE_PROCESSING_REJECTED', 'Detection ID: 1008 | Action: REJECTED | Similarity: 95.0% | New Question: What is Ohm''s law? (Electricity and Magnetism, created by Emily Foster) | Similar Question: State Ohm''s law (Electricity and Magnetism, created by Emily Foster) | Feedback: Exact duplicate - same content and context', 'duplicate_detection', 1008, '2025-07-04 15:25:00'),
+
+(6, 'DUPLICATE_PROCESSING_ACCEPTED', 'Detection ID: 1009 | Action: ACCEPTED | Similarity: 76.0% | New Question: How do enzymes work in biological systems? (Cell Biology, created by Daniel Evans) | Similar Question: What is the role of enzymes in metabolism? (Cell Biology, created by Daniel Evans) | Feedback: Similar topics but different focus areas - complementary questions', 'duplicate_detection', 1009, '2025-07-05 10:15:00'),
+
+(6, 'DUPLICATE_PROCESSING_SEND_BACK', 'Detection ID: 1010 | Action: SEND_BACK | Similarity: 89.0% | New Question: What are the applications of integration? (Calculus II, created by Frank Green) | Similar Question: List practical uses of integral calculus (Calculus II, created by Frank Green) | Feedback: Please add more specific examples and clarify the scope of the question', 'duplicate_detection', 1010, '2025-07-05 14:40:00'),
+
+(6, 'DUPLICATE_PROCESSING_REJECTED', 'Detection ID: 1011 | Action: REJECTED | Similarity: 83.0% | New Question: What is polymorphism in Java? (Data Structures, created by Brian Carter) | Similar Question: Explain polymorphism in object-oriented programming (Introduction to Computer Science, created by Ash Abrahams) | Feedback: Redundant question - covers same material as existing question', 'duplicate_detection', 1011, '2025-07-06 09:20:00');
 
 -- 16. Thêm 10 bản ghi vào bảng exam_submissions
 INSERT INTO exam_submissions (submitted_by, course_id, status, submitted_at) VALUES
@@ -302,7 +326,7 @@ INSERT INTO duplicate_detections (new_question_id, similar_question_id, similari
 (26, 41, 0.7400, NULL, 'pending', NULL, 1, NULL, '2025-06-26 08:00:00', NULL, 'Math geometry vs Chemistry formulas', NULL),
 (32, 42, 0.7700, NULL, 'pending', NULL, 2, NULL, '2025-06-26 09:00:00', NULL, 'Physics relativity vs Biology ecology', NULL),
 (23, 37, 0.7500, NULL, 'pending', NULL, 3, NULL, '2025-06-26 10:00:00', NULL, 'Database concepts vs Gas laws', NULL),
-(28, 48, 0.7600, NULL, 'pending', NULL, 4, NULL, '2025-06-26 11:00:00', NULL, 'Linear algebra vs Population genetics', NULL);
+(28, 48, 0.7600, NULL, 'pending', NULL, 4, NULL, '2025-06-26 11:00:00', NULL, '
 
 -- =================================================================
 -- PHẦN BỔ SUNG: DỮ LIỆU MẪU CHO HỆ THỐNG PHÂN QUYỀN
@@ -525,3 +549,97 @@ INSERT INTO ai_duplicate_checks (
 -- Lec -> lecturer-dashboard (Ash Abrahams, Daniel Evans, Frank Green)
 -- HoED -> hoe-dashboard (Emily Foster)
 
+-- Processing logs sample data for duplicate detection history
+INSERT INTO processing_logs (
+    detection_id, new_question_id, similar_question_id, similarity_score, action, 
+    feedback, processed_by, processed_at, new_question_content, similar_question_content,
+    new_question_course, similar_question_course, new_question_creator, similar_question_creator
+) VALUES
+(1001, 11, 16, 0.92, 'ACCEPTED', 'Questions are contextually different despite similarity', 6, '2024-07-01 10:30:00', 
+ 'What is the fundamental theorem of calculus?', 'Explain the fundamental theorem of calculus in detail',
+ 'Calculus II', 'Calculus II', 'Frank Green', 'Grace Harris'),
+
+(1002, 12, 18, 0.85, 'REJECTED', 'Too similar to existing question - duplicate content', 2, '2024-07-01 14:15:00',
+ 'Define what is a variable in programming', 'What is a variable in computer programming?',
+ 'Introduction to Computer Science', 'Introduction to Computer Science', 'Ash Abrahams', 'Brian Carter'),
+
+(1003, 13, 20, 0.78, 'SEND_BACK', 'Please rephrase to avoid similarity and add more specific context', 8, '2024-07-02 09:45:00',
+ 'How does DNA replication work?', 'Describe the process of DNA replication',
+ 'Cell Biology', 'Genetics', 'Daniel Evans', 'Isabella King'),
+
+(1004, 14, 22, 0.94, 'REJECTED', 'Nearly identical to existing question - content overlap too high', 6, '2024-07-02 16:20:00',
+ 'Calculate the derivative of x^2 + 3x + 1', 'Find the derivative of the function f(x) = x^2 + 3x + 1',
+ 'Calculus II', 'Linear Algebra', 'Frank Green', 'Grace Harris'),
+
+(1005, 15, 19, 0.73, 'ACCEPTED', 'Approved after review - questions target different learning outcomes', 9, '2024-07-03 11:10:00',
+ 'What are the properties of alkenes?', 'List the main characteristics of alkene compounds',
+ 'Organic Chemistry', 'General Chemistry', 'Henry Johnson', 'Henry Johnson'),
+
+(1006, 21, 17, 0.88, 'SEND_BACK', 'Good question but needs more specificity. Please add context about application domain', 3, '2024-07-03 13:30:00',
+ 'Explain the concept of inheritance in OOP', 'What is inheritance in object-oriented programming?',
+ 'Data Structures', 'Introduction to Computer Science', 'Brian Carter', 'Ash Abrahams'),
+
+(1007, 23, 24, 0.81, 'ACCEPTED', 'Different difficulty levels and contexts - both questions serve different purposes', 10, '2024-07-04 08:45:00',
+ 'What is mitosis?', 'Describe the stages of cell division (mitosis)',
+ 'Cell Biology', 'Genetics', 'Daniel Evans', 'Isabella King'),
+
+(1008, 25, 26, 0.95, 'REJECTED', 'Exact duplicate - same content and context', 2, '2024-07-04 15:25:00',
+ 'What is Ohm''s law?', 'State Ohm''s law',
+ 'Electricity and Magnetism', 'Electricity and Magnetism', 'Emily Foster', 'Emily Foster'),
+
+(1009, 27, 28, 0.76, 'ACCEPTED', 'Similar topics but different focus areas - complementary questions', 8, '2024-07-05 10:15:00',
+ 'How do enzymes work in biological systems?', 'What is the role of enzymes in metabolism?',
+ 'Cell Biology', 'Cell Biology', 'Daniel Evans', 'Daniel Evans'),
+
+(1010, 29, 30, 0.89, 'SEND_BACK', 'Please add more specific examples and clarify the scope of the question', 7, '2024-07-05 14:40:00',
+ 'What are the applications of integration?', 'List practical uses of integral calculus',
+ 'Calculus II', 'Calculus II', 'Frank Green', 'Frank Green');
+
+-- Additional processing logs for more comprehensive data
+INSERT INTO processing_logs (
+    detection_id, new_question_id, similar_question_id, similarity_score, action, 
+    feedback, processed_by, processed_at, new_question_content, similar_question_content,
+    new_question_course, similar_question_course, new_question_creator, similar_question_creator
+) VALUES
+(1011, 31, 32, 0.83, 'REJECTED', 'Redundant question - covers same material as existing question', 3, '2024-07-06 09:20:00',
+ 'What is polymorphism in Java?', 'Explain polymorphism in object-oriented programming',
+ 'Data Structures', 'Introduction to Computer Science', 'Brian Carter', 'Ash Abrahams'),
+
+(1012, 33, 34, 0.91, 'ACCEPTED', 'Different context and application - both questions valid for curriculum', 9, '2024-07-06 16:30:00',
+ 'Balance the equation: HCl + NaOH → ?', 'What products are formed when HCl reacts with NaOH?',
+ 'General Chemistry', 'Organic Chemistry', 'Henry Johnson', 'Henry Johnson'),
+
+(1013, 35, 36, 0.77, 'SEND_BACK', 'Question needs restructuring to focus on specific learning outcome', 10, '2024-07-07 11:45:00',
+ 'What is natural selection?', 'How does natural selection work in evolution?',
+ 'Genetics', 'Cell Biology', 'Isabella King', 'Daniel Evans'),
+
+(1014, 37, 38, 0.86, 'REJECTED', 'Content overlap significant - existing question covers this topic adequately', 6, '2024-07-07 13:15:00',
+ 'What is the limit of (sin x)/x as x approaches 0?', 'Calculate lim(x→0) (sin x)/x',
+ 'Calculus II', 'Linear Algebra', 'Frank Green', 'Grace Harris'),
+
+(1015, 39, 40, 0.79, 'ACCEPTED', 'Different emphasis and depth - suitable for different assessment levels', 2, '2024-07-08 10:30:00',
+ 'What is Newton''s first law?', 'State and explain Newton''s first law of motion',
+ 'Classical Mechanics', 'Electricity and Magnetism', 'Emily Foster', 'Emily Foster');
+
+
+-- Sample data for activity_logs (Processing History for Duplicate Detections)
+INSERT INTO activity_logs (user_id, action, activity, entity_type, entity_id, created_at) VALUES
+(1, 'DUPLICATE_PROCESSING_ACCEPTED', 'Detection ID: 1001 | Action: ACCEPTED | Similarity: 85.0% | New Question: What is an algorithm? (Introduction to Computer Science, created by Ash Abrahams) | Similar Question: How would you define an algorithm? (Data Structures, created by Ash Abrahams) | Feedback: Both questions are valuable for different course contexts', 'duplicate_detection', 1001, '2024-07-01 08:15:00'),
+
+(3, 'DUPLICATE_PROCESSING_REJECTED', 'Detection ID: 1002 | Action: REJECTED | Similarity: 92.0% | New Question: What is a variable in programming? (Introduction to Computer Science, created by Ash Abrahams) | Similar Question: Define what a variable is in programming (Introduction to Computer Science, created by Ash Abrahams) | Feedback: Too similar - existing question covers this adequately', 'duplicate_detection', 1002, '2024-07-01 14:22:00'),
+
+(6, 'DUPLICATE_PROCESSING_SEND_BACK', 'Detection ID: 1003 | Action: SEND_BACK | Similarity: 78.0% | New Question: Solve for x: 2x + 5 = 15 (Calculus II, created by Frank Green) | Similar Question: Find x when 2x + 5 = 15 (Linear Algebra, created by Grace Harris) | Feedback: Please rephrase to emphasize calculus application rather than basic algebra', 'duplicate_detection', 1003, '2024-07-02 10:45:00'),
+
+(2, 'DUPLICATE_PROCESSING_ACCEPTED', 'Detection ID: 1004 | Action: ACCEPTED | Similarity: 81.0% | New Question: What is force in physics? (Classical Mechanics, created by Emily Foster) | Similar Question: How do you define force? (Electricity and Magnetism, created by Emily Foster) | Feedback: Different physics contexts justify having both questions', 'duplicate_detection', 1004, '2024-07-02 16:30:00'),
+
+(9, 'DUPLICATE_PROCESSING_REJECTED', 'Detection ID: 1005 | Action: REJECTED | Similarity: 94.0% | New Question: What is H2O? (General Chemistry, created by Henry Johnson) | Similar Question: What is the chemical formula for water? (Organic Chemistry, created by Henry Johnson) | Feedback: Completely redundant - existing question is sufficient', 'duplicate_detection', 1005, '2024-07-03 09:20:00'),
+
+(5, 'DUPLICATE_PROCESSING_ACCEPTED', 'Detection ID: 1006 | Action: ACCEPTED | Similarity: 75.0% | New Question: What is mitosis? (Cell Biology, created by Daniel Evans) | Similar Question: Describe the process of mitosis (Genetics, created by Isabella King) | Feedback: Different course contexts and detail levels warrant both questions', 'duplicate_detection', 1006, '2024-07-03 13:15:00'),
+
+(1, 'DUPLICATE_PROCESSING_SEND_BACK', 'Detection ID: 1007 | Action: SEND_BACK | Similarity: 88.0% | New Question: Write a for loop in Java (Data Structures, created by Ash Abrahams) | Similar Question: How do you create a for loop in Java? (Introduction to Computer Science, created by Ash Abrahams) | Feedback: Please add specific data structure implementation requirements', 'duplicate_detection', 1007, '2024-07-04 11:30:00'),
+
+(7, 'DUPLICATE_PROCESSING_REJECTED', 'Detection ID: 1008 | Action: REJECTED | Similarity: 90.0% | New Question: What is a matrix? (Linear Algebra, created by Grace Harris) | Similar Question: Define matrix in mathematics (Calculus II, created by Frank Green) | Feedback: Core concept already covered - no need for duplication', 'duplicate_detection', 1008, '2024-07-04 15:45:00'),
+
+(6, 'DUPLICATE_PROCESSING_ACCEPTED', 'Detection ID: 1009 | Action: ACCEPTED | Similarity: 73.0% | New Question: What is an electric field? (Electricity and Magnetism, created by Emily Foster) | Similar Question: How do electric fields work? (Classical Mechanics, created by Emily Foster) | Feedback: Physics concepts overlap but serve different learning objectives', 'duplicate_detection', 1009, '2024-07-05 12:00:00'),
+
+(3, 'DUPLICATE_PROCESSING_REJECTED', 'Detection ID: 1010 | Action: REJECTED | Similarity: 89.0% | New Question: What is polymorphism in Java? (Data Structures, created by Brian Carter) | Similar Question: Explain polymorphism in object-oriented programming (Introduction to Computer Science, created by Ash Abrahams) | Feedback: Redundant question - covers same material as existing question', 'duplicate_detection', 1010, '2024-07-06 09:20:00');
