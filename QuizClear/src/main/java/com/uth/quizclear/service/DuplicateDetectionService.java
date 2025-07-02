@@ -3,7 +3,6 @@ package com.uth.quizclear.service;
 import com.uth.quizclear.model.dto.DuplicateDetectionDTO2;
 import com.uth.quizclear.model.entity.DuplicateDetection;
 import com.uth.quizclear.model.entity.Question;
-import com.uth.quizclear.model.enums.DuplicateDetectionStatus;
 import com.uth.quizclear.repository.DuplicateDetectionRepository;
 import com.uth.quizclear.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +17,8 @@ public class DuplicateDetectionService {
     private final DuplicateDetectionRepository duplicateDetectionRepository;
     private final QuestionRepository questionRepository;
 
-    public List<DuplicateDetectionDTO2> getPendingDetections() {
-        List<DuplicateDetection> detections = duplicateDetectionRepository.findByStatus("pending");
+    public List<DuplicateDetectionDTO2> getAllDetections() {
+        List<DuplicateDetection> detections = duplicateDetectionRepository.findAll();
         return detections.stream().map(det -> {
             Question newQ = questionRepository.findById(det.getNewQuestionId()).orElse(null);
             Question simQ = questionRepository.findById(det.getSimilarQuestionId()).orElse(null);

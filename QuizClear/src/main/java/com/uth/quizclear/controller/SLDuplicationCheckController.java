@@ -29,14 +29,11 @@ public class SLDuplicationCheckController {
     @GetMapping
     public String duplicationCheckPage(Model model, HttpSession session) {
         try {
-            // For testing purpose, use hardcoded user ID
             Long userId = 3L;
-            
             model.addAttribute("userId", userId);
-            
+            model.addAttribute("duplications", duplicateDetectionService.getAllDetections());
             log.info("Displaying duplication check page for user: {}", userId);
             return "subjectLeader/sl_duplicationCheck";
-            
         } catch (Exception e) {
             log.error("Error displaying duplication check page", e);
             model.addAttribute("error", "Unable to load duplication check page");
