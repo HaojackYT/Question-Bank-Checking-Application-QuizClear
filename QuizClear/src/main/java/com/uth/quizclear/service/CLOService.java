@@ -1,11 +1,14 @@
 package com.uth.quizclear.service;
 
+import com.uth.quizclear.model.dto.CLODTO;
 import com.uth.quizclear.model.entity.CLO;
 import com.uth.quizclear.repository.CLORepository;
+import com.uth.quizclear.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -14,7 +17,44 @@ public class CLOService {
     
     @Autowired
     private CLORepository cloRepository;
-      // Method được gọi từ CLOController.getCLOs()
+    
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @Transactional(readOnly = true)
+    public Page<CLODTO> findCLOsForListPage(Pageable pageable) {
+        Page<CLO> cloPage = cloRepository.findAll(pageable);
+        return cloPage.map(this::convertToCLODTO);
+    }
+
+    private CLODTO convertToCLODTO(CLO clo) {
+        // Get question count for this CLO
+        long questionCount = questionRepository.countByClo_CloId(clo.getCloId());
+        
+        String courseName = "N/A";
+        String courseCode = "N/A";
+        Long courseId = null;
+        
+        if (clo.getCourse() != null) {
+            courseName = clo.getCourse().getCourseName();
+            courseCode = clo.getCourse().getCourseCode();
+            courseId = clo.getCourse().getCourseId();
+        }
+
+        return new CLODTO(
+            clo.getCloId(),
+            clo.getCloCode(),
+            clo.getCloDescription(),
+            clo.getDifficultyLevel().toString(),
+            courseName,
+            courseCode,
+            courseId,
+            questionCount,
+            clo.getWeight().doubleValue()
+        );
+    }
+    
+    // Method được gọi từ CLOController.getCLOs()
     public Page<CLO> getCLOs(String keyword, String department, String difficultyLevel, Pageable pageable) {
         // Tạm thời return all, bạn có thể implement filter logic sau
         return cloRepository.findAll(pageable);

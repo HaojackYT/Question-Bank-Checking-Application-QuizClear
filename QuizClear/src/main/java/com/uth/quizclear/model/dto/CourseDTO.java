@@ -4,7 +4,7 @@ public class CourseDTO {
     private Long courseId;
     private String courseCode;
     private String courseName;
-
+    private String description;
     private int credits;
     private String departmentName;
     private long cloCount;
@@ -23,6 +23,17 @@ public class CourseDTO {
         this.courseId = courseId;
         this.courseCode = courseCode;
         this.courseName = courseName;
+        this.credits = credits;
+        this.departmentName = departmentName;
+        this.cloCount = cloCount;
+        this.questionCount = questionCount;
+    }
+
+    public CourseDTO(Long courseId, String courseCode, String courseName, String description, int credits, String departmentName, long cloCount, long questionCount) {
+        this.courseId = courseId;
+        this.courseCode = courseCode;
+        this.courseName = courseName;
+        this.description = description;
         this.credits = credits;
         this.departmentName = departmentName;
         this.cloCount = cloCount;
@@ -82,5 +93,13 @@ public class CourseDTO {
 
     public void setQuestionCount(long questionCount) {
         this.questionCount = questionCount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
