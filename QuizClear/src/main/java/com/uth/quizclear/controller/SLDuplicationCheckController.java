@@ -23,22 +23,29 @@ public class SLDuplicationCheckController {
 
     private final DuplicateDetectionService duplicateDetectionService;
 
+    private Long getCurrentUserId(HttpSession session) {
+        Object userIdObj = session.getAttribute("userId");
+        if (userIdObj instanceof Long) {
+            return (Long) userIdObj;
+        }
+        if (userIdObj instanceof Integer) {
+            return ((Integer) userIdObj).longValue();
+        }
+        return null;
+    }
+
     /**
      * Display the duplication check page
      */
     @GetMapping
     public String duplicationCheckPage(Model model, HttpSession session) {
-        try {
-            Long userId = 3L;
-            model.addAttribute("userId", userId);
-            model.addAttribute("duplications", duplicateDetectionService.getAllDetections());
-            log.info("Displaying duplication check page for user: {}", userId);
-            return "subjectLeader/sl_duplicationCheck";
-        } catch (Exception e) {
-            log.error("Error displaying duplication check page", e);
-            model.addAttribute("error", "Unable to load duplication check page");
-            return "error/500";
+        Long userId = getCurrentUserId(session);
+        if (userId == null) {
+            // Xử lý trường hợp chưa đăng nhập
+            return "redirect:/login";
         }
+        model.addAttribute("duplications", duplicateDetectionService.getAllDetectionsForSubjectLeader(userId));
+        return "subjectLeader/sl_duplicationCheck";
     }
 
     /**

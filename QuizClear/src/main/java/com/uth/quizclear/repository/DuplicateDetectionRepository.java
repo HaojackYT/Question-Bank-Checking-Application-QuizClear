@@ -67,6 +67,13 @@ public interface DuplicateDetectionRepository extends JpaRepository<DuplicateDet
     @Query("SELECT DATE(d.detectedAt) as date, COUNT(d) as count FROM DuplicateDetection d WHERE d.detectedAt >= :since GROUP BY DATE(d.detectedAt) ORDER BY DATE(d.detectedAt)")
     List<Object[]> getDailyDetectionCounts(@Param("since") LocalDateTime since);
 
-    @Query("SELECT d FROM DuplicateDetection d WHERE d.statusString = :status")
-    List<DuplicateDetection> findByStatus(@Param("status") String status);
+    // @Query("SELECT d FROM DuplicateDetection d WHERE d.statusString = :status")
+    // List<DuplicateDetection> findByStatus(@Param("status") String status);
+
+    // QuestionRepository
+    // @Query("SELECT q.questionId FROM Question q WHERE q.subjectId IN :subjectIds")
+    // List<Long> findQuestionIdsBySubjectIds(@Param("subjectIds") List<Long> subjectIds);
+
+    // DuplicateDetectionRepository
+    List<DuplicateDetection> findByNewQuestionIdInOrSimilarQuestionIdIn(List<Long> newIds, List<Long> similarIds);
 }
