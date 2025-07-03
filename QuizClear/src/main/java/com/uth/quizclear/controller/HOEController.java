@@ -4,12 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
+import com.uth.quizclear.model.dto.HoEDReviewExamDTO;
+import com.uth.quizclear.model.entity.Exam;
 import com.uth.quizclear.model.entity.ExamReview;
 import com.uth.quizclear.service.ExamReviewService;
+import com.uth.quizclear.service.HoEDReviewExService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -21,6 +24,9 @@ public class HOEController {
 
     @Autowired
     private ExamReviewService examReviewService;
+
+    @Autowired
+    private HoEDReviewExService hoeDReviewExService;
 
     /**
      * Show HOE Dashboard page (view)
@@ -37,9 +43,20 @@ public class HOEController {
      */
     @GetMapping("/review-assignment")
     public String showReviewAssignment(Model model) {
-        // Add any assignment data if needed
+        List<HoEDReviewExamDTO> reviews = hoeDReviewExService.getReviewsByLecturer();
+        model.addAttribute("reviews", reviews);
         model.addAttribute("pageTitle", "Review Assignment");
         return "Head of Examination Department/HOE_ReviewAssignment";
+    }
+
+    @GetMapping("/exam/edit/{id}")
+    public String editExam(@PathVariable("id") Long examId, Model model) {
+        // Lấy thông tin exam từ DB
+        Exam exam = examService.getExamById(examId); // hoặc repository
+        model.addAttribute("exam", exam);
+
+        // Trả về tên view
+        return "Head of Examination Department/HOE_ActionForm";
     }
 
     /**

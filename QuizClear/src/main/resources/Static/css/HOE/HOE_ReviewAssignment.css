@@ -149,12 +149,16 @@ tr:hover {
     color: white;
 }
 
-.status.completed {
+.status.approved{
     background: #43A047;
 }
 
-.status.in-progress {
+.status.needs-revision {
     background: #1E88E5;
+}
+
+.status.pending{
+    background: #FBC02D;
 }
 
 .actions {

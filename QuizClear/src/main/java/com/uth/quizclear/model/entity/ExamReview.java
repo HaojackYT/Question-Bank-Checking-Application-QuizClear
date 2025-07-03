@@ -31,6 +31,7 @@ public class ExamReview {
     @ManyToOne
     @JoinColumn(name = "reviewer_id", nullable = false)
     private User reviewer;
+
     @Convert(converter = ReviewTypeConverter.class)
     @Column(name = "review_type", nullable = false)
     private ReviewType reviewType;
@@ -41,6 +42,10 @@ public class ExamReview {
 
     @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "due_date")
+    private LocalDateTime dueDate;
 }
