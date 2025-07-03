@@ -5,20 +5,20 @@
 -- 1. Users data (core academic staff)
 -- Keeping original password hashes as requested by user
 INSERT INTO users (
-    full_name, email, password_hash, role, status, department,
+    user_id, full_name, email, password_hash, role, status, department,
     gender, date_of_birth, nation, phone_number, created_at,
     hometown, contact_address, start, end, work_place, qualification, is_locked
 ) VALUES
-('Ash Abrahams', 'ash.abrahams@university.edu', 'hash_ab001', 'Lec', 'active', 'Computer Science', 'male', '1986-03-15', 'USA', '1234567101', '2025-01-01 09:00:00', 'Boston', '101 Elm St, Boston', '2020-01-01', '2030-01-01', 'University of Transport and Communications, Campus 3', 'MS in Information Technology - University of Transport and Communications, Vietnam - 2012', false),
-('Alexander Brooks', 'alex.brooks@university.edu', 'hash_ab002', 'HoD', 'active', 'Mathematics', 'male', '1975-09-20', 'UK', '1234567102', '2025-01-02 09:00:00', 'London', '22 Baker St, London', '2020-02-01', '2030-02-01', 'UTC - Faculty of Science, Campus 1', 'MSc in Computer Science - University of Transport and Communications - 2013', false),
-('Brian Carter', 'brian.carter@university.edu', 'hash_bc003', 'SL', 'active', 'Computer Science', 'male', '1982-11-12', 'Canada', '1234567103', '2025-01-03 09:00:00', 'Toronto', '33 Queen St, Toronto', '2020-03-01', '2030-03-01', 'UTC, Campus 2', 'PhD in Computer Science - University of Transport and Communications, Vietnam - 2008', false),
-('Catherine Davis', 'catherine.davis@university.edu', 'hash_cd004', 'RD', 'active', 'Research & Development', 'female', '1980-07-05', 'Australia', '1234567104', '2025-01-04 09:00:00', 'Sydney', '44 George St, Sydney', '2020-04-01', '2030-04-01', 'UTC - Department of Chemistry, Campus 1', 'PhD in Chemistry - University of Transport and Communications, Vietnam - 2005', false),
-('Daniel Evans', 'daniel.evans@university.edu', 'hash_de005', 'Lec', 'active', 'Biology', 'male', '1988-01-18', 'New Zealand', '1234567105', '2025-01-05 09:00:00', 'Auckland', '55 Karangahape Rd, Auckland', '2020-05-01', '2030-05-01', 'UTC - Biology Department, Campus 2', 'MSc in Biology - University of Transport and Communications, Vietnam - 2015', false),
-('Emily Foster', 'emily.foster@university.edu', 'hash_ef006', 'HoED', 'active', 'Head of Examination Department', 'female', '1979-04-22', 'Ireland', '1234567106', '2025-01-06 09:00:00', 'Dublin', '66 Grafton St, Dublin', '2020-06-01', '2030-06-01', 'UTC - Head of Examination Department', 'PhD in Computer Science - University of Transport and Communications, Vietnam - 2004', false),
-('Frank Green', 'frank.green@university.edu', 'hash_fg007', 'Lec', 'active', 'Mathematics', 'male', '1985-12-30', 'South Africa', '1234567107', '2025-01-07 09:00:00', 'Cape Town', '77 Long St, Cape Town', '2020-07-01', '2030-07-01', 'UTC - Mathematics Faculty, Campus 1', 'MSc in Mathematics - University of Transport and Communications, Vietnam - 2011', false),
-('Grace Harris', 'grace.harris@university.edu', 'hash_gh008', 'SL', 'active', 'Mathematics', 'female', '1983-06-14', 'Germany', '1234567108', '2025-01-08 09:00:00', 'Berlin', '88 Unter den Linden, Berlin', '2020-08-01', '2030-08-01', 'UTC - Mathematics Department, Campus 2', 'PhD in Mathematics - University of Transport and Communications, Vietnam - 2009', false),
-('Henry Johnson', 'henry.johnson@university.edu', 'hash_hj009', 'HoD', 'active', 'Chemistry', 'male', '1981-10-08', 'France', '1234567109', '2025-01-09 09:00:00', 'Paris', '99 Champs-Élysées, Paris', '2020-09-01', '2030-09-01', 'UTC - Chemistry Research Lab, Campus 1', 'PhD in Chemistry - University of Transport and Communications, Vietnam - 2006', false),
-('Isabella King', 'isabella.king@university.edu', 'hash_ik010', 'HoD', 'active', 'Biology', 'female', '1977-02-25', 'Spain', '1234567110', '2025-01-10 09:00:00', 'Madrid', '111 Gran Vía, Madrid', '2020-10-01', '2030-10-01', 'UTC - Head of Biology Department, Campus 2', 'PhD in Biology - University of Transport and Communications, Vietnam - 2003', false);
+(1, 'Ash Abrahams', 'ash.abrahams@university.edu', 'hash_ab001', 'Lec', 'active', 'Computer Science', 'male', '1986-03-15', 'USA', '1234567101', '2025-01-01 09:00:00', 'Boston', '101 Elm St, Boston', '2020-01-01', '2030-01-01', 'University of Transport and Communications, Campus 3', 'MS in Information Technology - University of Transport and Communications, Vietnam - 2012', false),
+(2, 'Alexander Brooks', 'alex.brooks@university.edu', 'hash_ab002', 'HoD', 'active', 'Mathematics', 'male', '1975-09-20', 'UK', '1234567102', '2025-01-02 09:00:00', 'London', '22 Baker St, London', '2020-02-01', '2030-02-01', 'UTC - Faculty of Science, Campus 1', 'MSc in Computer Science - University of Transport and Communications - 2013', false),
+(3, 'Brian Carter', 'brian.carter@university.edu', 'hash_bc003', 'SL', 'active', 'Computer Science', 'male', '1982-11-12', 'Canada', '1234567103', '2025-01-03 09:00:00', 'Toronto', '33 Queen St, Toronto', '2020-03-01', '2030-03-01', 'UTC, Campus 2', 'PhD in Computer Science - University of Transport and Communications, Vietnam - 2008', false),
+(4, 'Catherine Davis', 'catherine.davis@university.edu', 'hash_cd004', 'RD', 'active', 'Research & Development', 'female', '1980-07-05', 'Australia', '1234567104', '2025-01-04 09:00:00', 'Sydney', '44 George St, Sydney', '2020-04-01', '2030-04-01', 'UTC - Department of Chemistry, Campus 1', 'PhD in Chemistry - University of Transport and Communications, Vietnam - 2005', false),
+(5, 'Daniel Evans', 'daniel.evans@university.edu', 'hash_de005', 'Lec', 'active', 'Biology', 'male', '1988-01-18', 'New Zealand', '1234567105', '2025-01-05 09:00:00', 'Auckland', '55 Karangahape Rd, Auckland', '2020-05-01', '2030-05-01', 'UTC - Biology Department, Campus 2', 'MSc in Biology - University of Transport and Communications, Vietnam - 2015', false),
+(6, 'Emily Foster', 'emily.foster@university.edu', 'hash_ef006', 'HoED', 'active', 'Head of Examination Department', 'female', '1979-04-22', 'Ireland', '1234567106', '2025-01-06 09:00:00', 'Dublin', '66 Grafton St, Dublin', '2020-06-01', '2030-06-01', 'UTC - Head of Examination Department', 'PhD in Computer Science - University of Transport and Communications, Vietnam - 2004', false),
+(7, 'Frank Green', 'frank.green@university.edu', 'hash_fg007', 'Lec', 'active', 'Mathematics', 'male', '1985-12-30', 'South Africa', '1234567107', '2025-01-07 09:00:00', 'Cape Town', '77 Long St, Cape Town', '2020-07-01', '2030-07-01', 'UTC - Mathematics Faculty, Campus 1', 'MSc in Mathematics - University of Transport and Communications, Vietnam - 2011', false),
+(8, 'Grace Harris', 'grace.harris@university.edu', 'hash_gh008', 'SL', 'active', 'Mathematics', 'female', '1983-06-14', 'Germany', '1234567108', '2025-01-08 09:00:00', 'Berlin', '88 Unter den Linden, Berlin', '2020-08-01', '2030-08-01', 'UTC - Mathematics Department, Campus 2', 'PhD in Mathematics - University of Transport and Communications, Vietnam - 2009', false),
+(9, 'Henry Johnson', 'henry.johnson@university.edu', 'hash_hj009', 'HoD', 'active', 'Chemistry', 'male', '1981-10-08', 'France', '1234567109', '2025-01-09 09:00:00', 'Paris', '99 Champs-Élysées, Paris', '2020-09-01', '2030-09-01', 'UTC - Chemistry Research Lab, Campus 1', 'PhD in Chemistry - University of Transport and Communications, Vietnam - 2006', false),
+(10, 'Isabella King', 'isabella.king@university.edu', 'hash_ik010', 'HoD', 'active', 'Biology', 'female', '1977-02-25', 'Spain', '1234567110', '2025-01-10 09:00:00', 'Madrid', '111 Gran Vía, Madrid', '2020-10-01', '2030-10-01', 'UTC - Head of Biology Department, Campus 2', 'PhD in Biology - University of Transport and Communications, Vietnam - 2003', false);
 
 -- 2. Thêm 10 bản ghi vào bảng courses  
 INSERT INTO courses (course_code, course_name, credits, department, description, created_by, semester, academic_year) VALUES
@@ -326,7 +326,7 @@ INSERT INTO duplicate_detections (new_question_id, similar_question_id, similari
 (26, 41, 0.7400, NULL, 'pending', NULL, 1, NULL, '2025-06-26 08:00:00', NULL, 'Math geometry vs Chemistry formulas', NULL),
 (32, 42, 0.7700, NULL, 'pending', NULL, 2, NULL, '2025-06-26 09:00:00', NULL, 'Physics relativity vs Biology ecology', NULL),
 (23, 37, 0.7500, NULL, 'pending', NULL, 3, NULL, '2025-06-26 10:00:00', NULL, 'Database concepts vs Gas laws', NULL),
-(28, 48, 0.7600, NULL, 'pending', NULL, 4, NULL, '2025-06-26 11:00:00', NULL, '
+(28, 48, 0.7600, NULL, 'pending', NULL, 4, NULL, '2025-06-26 11:00:00', NULL, 'Java vs population genetics comparison', NULL),
 
 -- =================================================================
 -- PHẦN BỔ SUNG: DỮ LIỆU MẪU CHO HỆ THỐNG PHÂN QUYỀN
@@ -498,19 +498,19 @@ INSERT INTO question_access_permissions (question_id, department_id, subject_id,
 (48, 5, 12, 'approve', 6, 'Advanced population genetics - Genetics');
 
 -- IN PROGRESS
-INSERT INTO ai_duplicate_checks (
-    question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, analysis_text, recommendation_text, checked_by, checked_at, status
-) VALUES
-('Java primitive data types question', 1, 0.75, 0.85, TRUE, 'all-MiniLM-L6-v2', 'Similar Java programming concepts detected', 'Review for content overlap', 1, '2025-03-01 10:00:00', 'completed'),
-('Calculus derivative question', 2, 0.75, 0.92, TRUE, 'all-MiniLM-L6-v2', 'High similarity in mathematical concepts', 'Consider consolidation or revision', 2, '2025-03-02 10:00:00', 'completed'),
-('Physics Newton laws question', 3, 0.75, 0.83, TRUE, 'all-MiniLM-L6-v2', 'Physics principles show moderate similarity', 'Manual review recommended', 3, '2025-03-03 10:00:00', 'completed'),
-('General Chemistry overlap', 4, 0.80, 0.78, FALSE, 'all-MiniLM-L6-v2', 'No significant overlap found', 'No action needed', 9, '2025-03-04 10:00:00', 'completed'),
-('Cell Biology similarity', 5, 0.75, 0.81, TRUE, 'all-MiniLM-L6-v2', 'Cell structure questions are similar', 'Suggest merging questions', 10, '2025-03-05 10:00:00', 'completed'),
-('Data Structures duplicate', 1, 0.80, 0.88, TRUE, 'all-MiniLM-L6-v2', 'Duplicate found in data structure questions', 'Revise question wording', 3, '2025-03-06 10:00:00', 'completed'),
-('Linear Algebra overlap', 2, 0.75, 0.79, FALSE, 'all-MiniLM-L6-v2', 'Minor similarity in matrix questions', 'No action needed', 8, '2025-03-07 10:00:00', 'completed'),
-('Physics kinematics check', 3, 0.75, 0.76, FALSE, 'all-MiniLM-L6-v2', 'Kinematics questions are unique', 'No action needed', 6, '2025-03-08 10:00:00', 'completed'),
-('Organic Chemistry duplicate', 4, 0.75, 0.91, TRUE, 'all-MiniLM-L6-v2', 'High similarity in organic chemistry', 'Review for possible merge', 9, '2025-03-09 10:00:00', 'completed'),
-('Genetics question overlap', 5, 0.75, 0.82, TRUE, 'all-MiniLM-L6-v2', 'Genetics questions flagged as similar', 'Manual review required', 10, '2025-03-10 10:00:00', 'completed');
+-- INSERT INTO ai_duplicate_checks (
+--     question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, analysis_text, recommendation_text, checked_by, checked_at, status
+-- ) VALUES
+-- ('Java primitive data types question', 1, 0.75, 0.85, TRUE, 'all-MiniLM-L6-v2', 'Similar Java programming concepts detected', 'Review for content overlap', 1, '2025-03-01 10:00:00', 'completed'),
+-- ('Calculus derivative question', 2, 0.75, 0.92, TRUE, 'all-MiniLM-L6-v2', 'High similarity in mathematical concepts', 'Consider consolidation or revision', 2, '2025-03-02 10:00:00', 'completed'),
+-- ('Physics Newton laws question', 3, 0.75, 0.83, TRUE, 'all-MiniLM-L6-v2', 'Physics principles show moderate similarity', 'Manual review recommended', 3, '2025-03-03 10:00:00', 'completed'),
+-- ('General Chemistry overlap', 4, 0.80, 0.78, FALSE, 'all-MiniLM-L6-v2', 'No significant overlap found', 'No action needed', 9, '2025-03-04 10:00:00', 'completed'),
+-- ('Cell Biology similarity', 5, 0.75, 0.81, TRUE, 'all-MiniLM-L6-v2', 'Cell structure questions are similar', 'Suggest merging questions', 10, '2025-03-05 10:00:00', 'completed'),
+-- ('Data Structures duplicate', 1, 0.80, 0.88, TRUE, 'all-MiniLM-L6-v2', 'Duplicate found in data structure questions', 'Revise question wording', 3, '2025-03-06 10:00:00', 'completed'),
+-- ('Linear Algebra overlap', 2, 0.75, 0.79, FALSE, 'all-MiniLM-L6-v2', 'Minor similarity in matrix questions', 'No action needed', 8, '2025-03-07 10:00:00', 'completed'),
+-- ('Physics kinematics check', 3, 0.75, 0.76, FALSE, 'all-MiniLM-L6-v2', 'Kinematics questions are unique', 'No action needed', 6, '2025-03-08 10:00:00', 'completed'),
+-- ('Organic Chemistry duplicate', 4, 0.75, 0.91, TRUE, 'all-MiniLM-L6-v2', 'High similarity in organic chemistry', 'Review for possible merge', 9, '2025-03-09 10:00:00', 'completed'),
+-- ('Genetics question overlap', 5, 0.75, 0.82, TRUE, 'all-MiniLM-L6-v2', 'Genetics questions flagged as similar', 'Manual review required', 10, '2025-03-10 10:00:00', 'completed');
 
 -- ========== LOGIN TESTING GUIDE ==========
 -- All users have their original password hashes
@@ -643,3 +643,139 @@ INSERT INTO activity_logs (user_id, action, activity, entity_type, entity_id, cr
 (6, 'DUPLICATE_PROCESSING_ACCEPTED', 'Detection ID: 1009 | Action: ACCEPTED | Similarity: 73.0% | New Question: What is an electric field? (Electricity and Magnetism, created by Emily Foster) | Similar Question: How do electric fields work? (Classical Mechanics, created by Emily Foster) | Feedback: Physics concepts overlap but serve different learning objectives', 'duplicate_detection', 1009, '2024-07-05 12:00:00'),
 
 (3, 'DUPLICATE_PROCESSING_REJECTED', 'Detection ID: 1010 | Action: REJECTED | Similarity: 89.0% | New Question: What is polymorphism in Java? (Data Structures, created by Brian Carter) | Similar Question: Explain polymorphism in object-oriented programming (Introduction to Computer Science, created by Ash Abrahams) | Feedback: Redundant question - covers same material as existing question', 'duplicate_detection', 1010, '2024-07-06 09:20:00');
+
+-- =================================================================
+-- SUBJECT LEADER DASHBOARD SPECIFIC DATA
+-- =================================================================
+
+-- 1. Subject Question Targets for Dashboard Charts
+INSERT INTO subject_question_targets (
+    subject_id, target_questions, academic_year, semester,
+    difficulty_target_recognition, difficulty_target_comprehension, 
+    difficulty_target_basic_application, difficulty_target_advanced_application,
+    set_by
+) VALUES
+-- Brian Carter (SL) manages CS subjects
+(1, 120, '2024-2025', '1', 30, 35, 35, 20, 3),  -- Programming Fundamentals
+(2, 100, '2024-2025', '1', 25, 30, 30, 15, 3),  -- Data Structures
+
+-- Grace Harris (SL) manages Math subjects  
+(3, 80, '2024-2025', '1', 20, 25, 25, 10, 8),   -- Calculus
+(4, 90, '2024-2025', '1', 22, 28, 28, 12, 8),   -- Linear Algebra
+(5, 70, '2024-2025', '1', 18, 22, 20, 10, 8),   -- Statistics
+
+-- Physics subjects (no SL, targets set by HoED)
+(6, 85, '2024-2025', '1', 21, 26, 26, 12, 6),   -- Classical Mechanics
+(7, 95, '2024-2025', '1', 24, 29, 29, 13, 6),   -- Electromagnetism
+
+-- Chemistry subjects (no SL, targets set by HoD)
+(8, 75, '2024-2025', '1', 19, 23, 23, 10, 9),   -- General Chemistry
+(9, 85, '2024-2025', '1', 21, 26, 26, 12, 9),   -- Organic Chemistry
+
+-- Biology subjects (no SL, targets set by HoD)
+(10, 90, '2024-2025', '1', 23, 27, 27, 13, 10), -- Cell Biology
+(11, 80, '2024-2025', '1', 20, 24, 24, 12, 10); -- Genetics
+
+-- 2. Additional Activity Logs for SL Dashboard Recent Activities
+INSERT INTO activity_logs (user_id, action, activity, entity_type, entity_id, created_at) VALUES
+-- Recent activities in last 7 days for Brian Carter's CS subjects
+(1, 'QUESTION_SUBMITTED', 'Ash Abrahams submitted new question "Java Inheritance Concepts" for Programming Fundamentals course', 'question', 1, '2025-06-28 10:15:00'),
+(3, 'QUESTION_APPROVED', 'Brian Carter approved question "Object-Oriented Design Patterns" by Ash Abrahams', 'question', 2, '2025-06-28 14:30:00'),
+(1, 'QUESTION_SUBMITTED', 'Ash Abrahams submitted new question "Binary Search Tree Implementation" for Data Structures course', 'question', 3, '2025-06-29 09:20:00'),
+(3, 'TASK_ASSIGNED', 'Brian Carter assigned task "Create Sorting Algorithm Questions" to Ash Abrahams', 'task', 1, '2025-06-29 16:45:00'),
+(1, 'TASK_COMPLETED', 'Ash Abrahams completed task "Database Design Questions" for Programming Fundamentals', 'task', 2, '2025-06-30 11:30:00'),
+(3, 'QUESTION_REJECTED', 'Brian Carter rejected question "Basic Loop Syntax" - feedback: Too elementary for course level', 'question', 4, '2025-07-01 08:45:00'),
+(1, 'QUESTION_SUBMITTED', 'Ash Abrahams submitted new question "Advanced Data Structure Analysis" for Data Structures course', 'question', 5, '2025-07-01 15:20:00'),
+(3, 'PLAN_REVIEWED', 'Brian Carter reviewed and approved plan "CS Advanced Programming Module" for next semester', 'plan', 1, '2025-07-02 10:10:00'),
+(1, 'QUESTION_SUBMITTED', 'Ash Abrahams submitted new question "Algorithm Complexity Analysis" for Data Structures course', 'question', 6, '2025-07-02 14:35:00'),
+(3, 'TASK_ASSIGNED', 'Brian Carter assigned task "Review Mid-term Exam Questions" to Ash Abrahams', 'task', 3, '2025-07-03 09:00:00'),
+
+-- Recent activities for Grace Harris's Math subjects
+(7, 'QUESTION_SUBMITTED', 'Frank Green submitted new question "Derivative Applications" for Calculus course', 'question', 7, '2025-06-28 11:00:00'),
+(8, 'QUESTION_APPROVED', 'Grace Harris approved question "Matrix Eigenvalues" by Frank Green', 'question', 8, '2025-06-28 15:15:00'),
+(7, 'QUESTION_SUBMITTED', 'Frank Green submitted new question "Integration by Parts" for Calculus course', 'question', 9, '2025-06-29 10:30:00'),
+(8, 'TASK_ASSIGNED', 'Grace Harris assigned task "Create Statistics Problem Set" to Frank Green', 'task', 4, '2025-06-29 17:20:00'),
+(7, 'TASK_COMPLETED', 'Frank Green completed task "Linear Algebra Quiz Questions" for Linear Algebra', 'task', 5, '2025-06-30 12:45:00'),
+(8, 'QUESTION_REJECTED', 'Grace Harris rejected question "Basic Addition" - feedback: Below course level expectations', 'question', 10, '2025-07-01 09:30:00'),
+(7, 'QUESTION_SUBMITTED', 'Frank Green submitted new question "Probability Distributions" for Statistics course', 'question', 11, '2025-07-01 16:10:00'),
+(8, 'PLAN_REVIEWED', 'Grace Harris reviewed plan "Advanced Mathematics Assessment Strategy" for department', 'plan', 2, '2025-07-02 11:25:00'),
+(7, 'QUESTION_SUBMITTED', 'Frank Green submitted new question "Vector Space Properties" for Linear Algebra course', 'question', 12, '2025-07-02 15:40:00'),
+(8, 'TASK_ASSIGNED', 'Grace Harris assigned task "Prepare Final Exam Questions" to Frank Green', 'task', 6, '2025-07-03 08:30:00'),
+
+-- Cross-department activities involving SLs
+(3, 'COLLABORATION_MEETING', 'Brian Carter attended inter-department meeting on "Programming in Mathematics Education"', 'meeting', 1, '2025-06-30 14:00:00'),
+(8, 'COLLABORATION_MEETING', 'Grace Harris participated in "Mathematics Applications in Computer Science" workshop', 'meeting', 1, '2025-06-30 14:00:00'),
+(3, 'REVIEW_COMPLETED', 'Brian Carter completed review of Data Science curriculum proposal', 'curriculum', 1, '2025-07-01 16:30:00'),
+(8, 'REVIEW_COMPLETED', 'Grace Harris finished review of Statistical Computing course outline', 'curriculum', 2, '2025-07-01 17:15:00'),
+
+-- Lecturer activities in SL-managed subjects
+(1, 'EXAM_DRAFT_CREATED', 'Ash Abrahams created draft exam "Programming Fundamentals Midterm 2025" for review', 'exam', 1, '2025-07-02 13:20:00'),
+(7, 'EXAM_DRAFT_CREATED', 'Frank Green created draft exam "Calculus II Final 2025" for review', 'exam', 2, '2025-07-02 16:50:00'),
+
+-- System activities related to SL dashboard
+(3, 'DASHBOARD_ACCESSED', 'Brian Carter accessed Subject Leader Dashboard for performance review', 'dashboard', 1, '2025-07-03 08:00:00'),
+(8, 'DASHBOARD_ACCESSED', 'Grace Harris viewed Subject Leader Dashboard analytics', 'dashboard', 1, '2025-07-03 08:15:00'),
+(3, 'REPORT_GENERATED', 'Brian Carter generated monthly progress report for Computer Science subjects', 'report', 1, '2025-07-03 09:30:00'),
+(8, 'REPORT_GENERATED', 'Grace Harris generated quarterly assessment report for Mathematics subjects', 'report', 2, '2025-07-03 10:00:00');
+
+-- 3. Additional Tasks with realistic progression for dashboard stats
+INSERT INTO tasks (
+    course_id, plan_id, title, description, task_type, total_questions,
+    assigned_to, assigned_by, status, priority, due_date, assigned_at, 
+    accepted_at, completed_at, notes
+) VALUES
+-- Brian Carter (SL CS) assigns tasks to his lecturers
+(1, 1, 'Advanced OOP Question Development', 'Create 20 advanced object-oriented programming questions', 'create_questions', 20, 1, 3, 'in_progress', 'high', '2025-07-10 23:59:00', '2025-06-25 09:00:00', '2025-06-26 10:30:00', NULL, 'Focus on inheritance, polymorphism, and encapsulation'),
+(6, 6, 'Data Structure Algorithm Questions', 'Develop 15 algorithm analysis questions', 'create_questions', 15, 1, 3, 'pending', 'medium', '2025-07-15 23:59:00', '2025-07-01 14:00:00', NULL, NULL, 'Include time complexity analysis'),
+(1, 1, 'Programming Fundamentals Review', 'Review and approve 25 basic programming questions', 'review_questions', 25, 3, 6, 'completed', 'high', '2025-06-30 23:59:00', '2025-06-20 08:00:00', '2025-06-21 09:15:00', '2025-06-28 16:45:00', 'All questions approved with minor feedback'),
+(6, 6, 'CS Midterm Exam Creation', 'Create comprehensive midterm exam for Data Structures', 'create_exam', 30, 1, 3, 'in_progress', 'high', '2025-07-20 23:59:00', '2025-06-28 11:00:00', '2025-06-29 08:30:00', NULL, 'Include both theory and practical problems'),
+
+-- Grace Harris (SL Math) assigns tasks to her lecturers  
+(2, 2, 'Calculus Application Problems', 'Create 18 real-world calculus application questions', 'create_questions', 18, 7, 8, 'completed', 'high', '2025-06-25 23:59:00', '2025-06-15 10:00:00', '2025-06-16 11:20:00', '2025-06-23 14:30:00', 'Excellent variety of applications provided'),
+(7, 7, 'Linear Algebra Theory Questions', 'Develop 22 theoretical linear algebra questions', 'create_questions', 22, 7, 8, 'in_progress', 'medium', '2025-07-12 23:59:00', '2025-06-30 09:30:00', '2025-07-01 10:45:00', NULL, 'Focus on vector spaces and transformations'),
+(2, 2, 'Statistics Problem Review', 'Review and validate 20 statistics problems', 'review_questions', 20, 8, 2, 'pending', 'medium', '2025-07-08 23:59:00', '2025-07-02 15:00:00', NULL, NULL, 'Ensure problems match course difficulty'),
+(7, 7, 'Math Final Exam Development', 'Create comprehensive final exam for Linear Algebra', 'create_exam', 35, 7, 8, 'pending', 'high', '2025-07-25 23:59:00', '2025-07-03 08:00:00', NULL, NULL, 'Cover all major topics from semester'),
+
+-- Tasks assigned by HoDs (no SL involvement)
+(4, 4, 'Chemistry Lab Questions', 'Create 15 laboratory-based chemistry questions', 'create_questions', 15, 5, 9, 'completed', 'medium', '2025-06-20 23:59:00', '2025-06-10 12:00:00', '2025-06-11 09:00:00', '2025-06-18 15:20:00', 'Lab safety protocols included'),
+(5, 5, 'Biology Concept Review', 'Review 25 cell biology conceptual questions', 'review_questions', 25, 10, 5, 'in_progress', 'low', '2025-07-05 23:59:00', '2025-06-28 13:00:00', '2025-06-29 14:15:00', NULL, 'Focus on cellular processes'),
+
+-- Tasks for current month to show recent activity trends
+(1, 1, 'Programming Quiz Questions', 'Create quick assessment questions for weekly quiz', 'create_questions', 10, 1, 3, 'completed', 'medium', '2025-07-01 23:59:00', '2025-06-26 16:00:00', '2025-06-27 08:00:00', '2025-06-30 12:30:00', 'Good variety for quick assessment'),
+(6, 6, 'Algorithm Complexity Review', 'Review Big-O notation questions', 'review_questions', 12, 3, 6, 'completed', 'high', '2025-06-28 23:59:00', '2025-06-24 10:00:00', '2025-06-25 11:30:00', '2025-06-27 16:00:00', 'Clear explanations provided'),
+(2, 2, 'Derivative Practice Set', 'Create practice problems for derivative applications', 'create_questions', 16, 7, 8, 'completed', 'medium', '2025-06-29 23:59:00', '2025-06-22 14:00:00', '2025-06-23 09:45:00', '2025-06-28 17:15:00', 'Comprehensive coverage of derivative rules');
+
+-- 4. Enhanced Questions with proper status distribution for SL review workflow
+INSERT INTO questions (
+    course_id, clo_id, task_id, plan_id, difficulty_level, content, answer_key, 
+    answer_f1, answer_f2, answer_f3, explanation, created_by, status, feedback,
+    submitted_at, reviewed_at, reviewed_by, approved_at, approved_by, created_at
+) VALUES
+-- Questions submitted to Brian Carter (SL CS) for review - PENDING REVIEW
+(1, 1, 11, 1, 'comprehension', 'What is the main difference between abstract class and interface in Java?', 'Abstract class can have concrete methods, interface cannot (prior to Java 8)', 'Both are exactly the same', 'Interface can have concrete methods, abstract class cannot', 'Only abstract class can be instantiated', 'Abstract classes can contain implementation details while interfaces define contracts', 1, 'submitted', NULL, '2025-07-01 10:30:00', NULL, NULL, NULL, NULL, '2025-07-01 10:30:00'),
+
+(6, 6, 12, 6, 'Basic Application', 'Implement a method to find the maximum element in a binary search tree. What is the time complexity?', 'O(h) where h is height of tree', 'O(n)', 'O(log n) always', 'O(1)', 'In BST, maximum element is rightmost node, so we traverse right until leaf', 1, 'submitted', NULL, '2025-07-02 09:15:00', NULL, NULL, NULL, NULL, '2025-07-02 09:15:00'),
+
+(1, 1, 11, 1, 'Advanced Application', 'Design a caching mechanism using Factory and Singleton patterns. Explain the trade-offs.', 'Combine Factory for cache creation and Singleton for global access with proper synchronization', 'Use only Factory pattern', 'Use only Singleton pattern', 'Use Prototype pattern instead', 'Factory handles object creation logic while Singleton ensures single cache instance', 1, 'submitted', NULL, '2025-07-02 14:20:00', NULL, NULL, NULL, NULL, '2025-07-02 14:20:00'),
+
+-- Questions submitted to Grace Harris (SL Math) for review - PENDING REVIEW  
+(2, 2, 13, 2, 'comprehension', 'When is a function differentiable at a point?', 'When limit of difference quotient exists at that point', 'When function is continuous at that point', 'When function is defined at that point', 'When function has no sharp corners', 'Differentiability requires existence of derivative limit at the point', 7, 'submitted', NULL, '2025-07-01 11:45:00', NULL, NULL, NULL, NULL, '2025-07-01 11:45:00'),
+
+(7, 7, 14, 7, 'Basic Application', 'Find the rank of matrix [[1,2,3],[2,4,6],[1,1,2]]', '2', '1', '3', '0', 'Second row is twice the first row, so rank is 2 due to linear dependence', 7, 'submitted', NULL, '2025-07-02 08:30:00', NULL, NULL, NULL, NULL, '2025-07-02 08:30:00'),
+
+(2, 2, 13, 2, 'Advanced Application', 'Prove that the function f(x) = x³ - 3x has exactly two critical points. Find their nature.', 'f\'(x) = 3x² - 3 = 0 gives x = ±1; x=1 is local min, x=-1 is local max', 'One critical point at x=0', 'Three critical points', 'No critical points', 'Critical points occur where derivative equals zero; second derivative test determines nature', 7, 'submitted', NULL, '2025-07-02 16:10:00', NULL, NULL, NULL, NULL, '2025-07-02 16:10:00'),
+
+-- Questions REVIEWED by SL but awaiting further approval
+(1, 1, 11, 1, 'recognition', 'Which Java keyword is used to prevent inheritance?', 'final', 'static', 'private', 'protected', 'The final keyword prevents class inheritance and method overriding', 1, 'approved', 'Good basic question - approved by SL', '2025-06-30 09:00:00', '2025-07-01 10:15:00', 3, '2025-07-01 15:30:00', 3, '2025-06-30 09:00:00'),
+
+(2, 2, 13, 2, 'recognition', 'What is the derivative of x²?', '2x', 'x', '2x²', 'x²', 'Using power rule: d/dx(x^n) = n*x^(n-1)', 7, 'approved', 'Fundamental concept - approved by SL', '2025-06-29 14:30:00', '2025-06-30 11:20:00', 8, '2025-06-30 16:45:00', 8, '2025-06-29 14:30:00'),
+
+-- Questions REJECTED by SL with feedback
+(6, 6, 12, 6, 'recognition', 'What is a variable?', 'A storage location with a name', 'A function', 'A constant', 'A loop', 'Variables store data values that can be referenced and modified', 1, 'rejected', 'SL Brian feedback: Too basic for Data Structures course level. Please create more advanced questions on data structure concepts.', '2025-06-28 10:00:00', '2025-06-29 14:30:00', 3, NULL, NULL, '2025-06-28 10:00:00'),
+
+(7, 7, 14, 7, 'recognition', 'What is 2 + 2?', '4', '3', '5', '6', 'Basic arithmetic addition', 7, 'rejected', 'SL Grace feedback: This is far below university mathematics level. Please focus on linear algebra concepts as specified in the task.', '2025-06-27 15:00:00', '2025-06-28 09:45:00', 8, NULL, NULL, '2025-06-27 15:00:00'),
+
+-- Recently APPROVED questions by SL showing successful workflow
+(1, 1, 11, 1, 'comprehension', 'Explain the concept of method overloading in Java with an example.', 'Multiple methods with same name but different parameters in same class', 'Methods with same name in different classes', 'Methods that override parent class methods', 'Methods that are called repeatedly', 'Method overloading allows multiple method definitions with different parameter lists', 1, 'approved', 'Excellent explanation and example provided - approved by SL', '2025-06-26 11:30:00', '2025-06-27 13:45:00', 3, '2025-06-27 17:20:00', 3, '2025-06-26 11:30:00'),
+
+(2, 2, 13, 2, 'Basic Application', 'Find the equation of tangent line to y = x³ at point (2, 8)', 'y = 12x - 16', 'y = 3x + 2', 'y = 6x - 4', 'y = x + 6', 'Derivative at x=2 is 12, so tangent line: y - 8 = 12(x - 2)', 7, 'approved', 'Clear solution process - approved by SL', '2025-06-25 16:20:00', '2025-06-26 10:30:00', 8, '2025-06-26 14:15:00', 8, '2025-06-25 16:20:00');
