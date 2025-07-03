@@ -13,4 +13,5 @@ public class LecturerDashboardStatsDTO {
     private long questionSubmitted;
     private long questionApproved;
     private long questionReturned;
+    private long questionPending;
 }

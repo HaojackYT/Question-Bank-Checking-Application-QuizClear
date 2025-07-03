@@ -94,19 +94,25 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 
   List<Question> findTop10ByCreatedByOrderByCreatedAtDesc(com.uth.quizclear.model.entity.User createdBy);
 
+  // Additional method for lecturer scope
+  long countByCreatedBy(com.uth.quizclear.model.entity.User createdBy);
+
   // New methods for department and subject scope filtering
   @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department = :departmentName")
   List<Question> findByDepartmentScope(@Param("departmentName") String departmentName);
 
-  // Note: No direct relation between Course and Subject, so we query by subject code/name in course department
+  // Note: No direct relation between Course and Subject, so we query by subject
+  // code/name in course department
   @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department LIKE CONCAT('%', :subjectName, '%')")
   List<Question> findBySubjectScope(@Param("subjectName") String subjectName);
 
   @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department = :departmentName AND q.status = :status")
-  List<Question> findByDepartmentScopeAndStatus(@Param("departmentName") String departmentName, @Param("status") QuestionStatus status);
+  List<Question> findByDepartmentScopeAndStatus(@Param("departmentName") String departmentName,
+      @Param("status") QuestionStatus status);
 
   @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department LIKE CONCAT('%', :subjectName, '%') AND q.status = :status")
-  List<Question> findBySubjectScopeAndStatus(@Param("subjectName") String subjectName, @Param("status") QuestionStatus status);
+  List<Question> findBySubjectScopeAndStatus(@Param("subjectName") String subjectName,
+      @Param("status") QuestionStatus status);
 
   // Enhanced queries for permission-based access using department name
   @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department = :departmentName")
@@ -117,10 +123,12 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 
   // Duplicate check scope queries
   @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department = :departmentName AND q.questionId != :excludeId AND q.status = 'APPROVED'")
-  List<Question> findQuestionsForDepartmentDuplicateCheck(@Param("departmentName") String departmentName, @Param("excludeId") Long excludeId);
+  List<Question> findQuestionsForDepartmentDuplicateCheck(@Param("departmentName") String departmentName,
+      @Param("excludeId") Long excludeId);
 
   @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department LIKE CONCAT('%', :subjectName, '%') AND q.questionId != :excludeId AND q.status = 'APPROVED'")
-  List<Question> findQuestionsForSubjectDuplicateCheck(@Param("subjectName") String subjectName, @Param("excludeId") Long excludeId);
+  List<Question> findQuestionsForSubjectDuplicateCheck(@Param("subjectName") String subjectName,
+      @Param("excludeId") Long excludeId);
 
   // Global duplicate check (all approved questions)
   @Query("SELECT q FROM Question q WHERE q.questionId != :excludeId AND q.status = 'APPROVED'")
@@ -135,10 +143,15 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 
   // Find questions by difficulty level within scope
   @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department = :departmentName AND q.difficultyLevel = :difficulty")
-  List<Question> findByDepartmentScopeAndDifficulty(@Param("departmentName") String departmentName, @Param("difficulty") DifficultyLevel difficulty);
+  List<Question> findByDepartmentScopeAndDifficulty(@Param("departmentName") String departmentName,
+      @Param("difficulty") DifficultyLevel difficulty);
 
   @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department LIKE CONCAT('%', :subjectName, '%') AND q.difficultyLevel = :difficulty")
-  List<Question> findBySubjectScopeAndDifficulty(@Param("subjectName") String subjectName, @Param("difficulty") DifficultyLevel difficulty);
+  List<Question> findBySubjectScopeAndDifficulty(@Param("subjectName") String subjectName,
+      @Param("difficulty") DifficultyLevel difficulty);
 
   long countByTaskIdAndStatus(Integer taskId, QuestionStatus status);
+
+  @Query("SELECT q.questionId FROM Question q WHERE q.course.courseId IN :courseIds")
+  List<Long> findQuestionIdsByCourseIds(@Param("courseIds") List<Long> courseIds);
 }

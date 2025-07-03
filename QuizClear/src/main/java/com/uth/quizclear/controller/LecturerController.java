@@ -12,12 +12,14 @@ import com.uth.quizclear.repository.CLORepository;
 import com.uth.quizclear.repository.UserRepository;
 import com.uth.quizclear.model.dto.UserBasicDTO;
 import com.uth.quizclear.service.AIService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+
 import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
@@ -25,6 +27,9 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+
+import com.uth.quizclear.model.dto.LecTaskDTO;
+import com.uth.quizclear.service.TaskService;
 
 @Controller
 @RequestMapping("/lecturer")
@@ -698,6 +703,8 @@ public class LecturerController {
     /**
      * Lecturer Task page
      */
+    @Autowired
+    private TaskService taskService;
     @GetMapping("/task")
     public String lecturerTask(Model model, HttpSession session, Authentication authentication) {
         // Check authentication
@@ -736,11 +743,22 @@ public class LecturerController {
         if (currentUserId != null && currentUserId instanceof Long) {
             lecturerId = (Long) currentUserId;
         }
-        
+        // Load tasks for the lecturer
+        List<LecTaskDTO> tasks = taskService.getAllTasksWithPlan();
+
+        model.addAttribute("tasks", tasks);
         model.addAttribute("lecturerId", lecturerId);
         model.addAttribute("userEmail", authentication.getName());
         
         return "Lecturer/lecturerTask";
+    }
+
+    // Get task details by ID
+    @GetMapping("/api/task/{taskId}")
+    @ResponseBody
+    public LecTaskDTO getTaskDetail(@PathVariable("taskId") Integer taskId) {
+        System.out.println("Received taskId: " + taskId);
+        return taskService.getTaskDetailById(taskId);
     }
 
     /**

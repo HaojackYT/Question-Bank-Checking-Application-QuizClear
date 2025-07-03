@@ -275,6 +275,7 @@ CREATE TABLE IF NOT EXISTS exam_reviews (
   status ENUM('pending', 'approved', 'rejected', 'needs_revision') DEFAULT 'pending',
   comments TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  due_date DATETIME DEFAULT NULL,
   FOREIGN KEY (exam_id) REFERENCES exams(exam_id),
   FOREIGN KEY (reviewer_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
@@ -491,10 +492,26 @@ CREATE TABLE IF NOT EXISTS duplicate_check_scopes (
   INDEX idx_dup_scope_subject (subject_id)
 ) ENGINE=InnoDB;
 
--- Thêm foreign key constraints cho liên kết departments và subjects với bảng courses hiện có
--- (Tùy chọn: có thể thêm sau nếu muốn liên kết chặt chẽ)
--- ALTER TABLE courses ADD COLUMN department_id_new INT DEFAULT NULL;
--- ALTER TABLE courses ADD FOREIGN KEY (department_id_new) REFERENCES departments(department_id);
-
 -- Bật lại kiểm tra khóa ngoại cuối cùng
 SET FOREIGN_KEY_CHECKS=1;
+
+-- 24. Subject Question Targets (Mục tiêu số câu hỏi cho mỗi subject)
+CREATE TABLE IF NOT EXISTS subject_question_targets (
+  target_id INT AUTO_INCREMENT PRIMARY KEY,
+  subject_id INT NOT NULL,
+  target_questions INT DEFAULT 100,
+  academic_year VARCHAR(10) DEFAULT '2024-2025',
+  semester ENUM('1', '2', 'summer') DEFAULT '1',
+  difficulty_target_recognition INT DEFAULT 25,
+  difficulty_target_comprehension INT DEFAULT 30,
+  difficulty_target_basic_application INT DEFAULT 30,
+  difficulty_target_advanced_application INT DEFAULT 15,
+  set_by INT DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE,
+  FOREIGN KEY (set_by) REFERENCES users(user_id),
+  UNIQUE KEY unique_subject_year_semester (subject_id, academic_year, semester),
+  INDEX idx_target_subject (subject_id),
+  INDEX idx_target_year (academic_year, semester)
+) ENGINE=InnoDB;
