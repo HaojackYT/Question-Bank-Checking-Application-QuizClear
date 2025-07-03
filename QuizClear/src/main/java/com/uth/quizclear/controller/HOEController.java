@@ -12,6 +12,7 @@ import com.uth.quizclear.model.dto.HoEDReviewExamDTO;
 import com.uth.quizclear.model.entity.Exam;
 import com.uth.quizclear.model.entity.ExamReview;
 import com.uth.quizclear.service.ExamReviewService;
+import com.uth.quizclear.service.ExamService;
 import com.uth.quizclear.service.HoEDReviewExService;
 
 import jakarta.servlet.http.HttpSession;
@@ -20,13 +21,14 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/hoe")
-public class HOEController {
-
-    @Autowired
+public class HOEController {    @Autowired
     private ExamReviewService examReviewService;
 
     @Autowired
     private HoEDReviewExService hoeDReviewExService;
+
+    @Autowired
+    private ExamService examService;
 
     /**
      * Show HOE Dashboard page (view)

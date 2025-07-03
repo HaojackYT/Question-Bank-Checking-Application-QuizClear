@@ -661,5 +661,12 @@ public class ExamService {
         return examRepository.save(exam);
     }
 
+    /**
+     * Get exam by ID
+     */
+    @Transactional(readOnly = true)
+    public Exam getExamById(Long examId) {
+        return examRepository.findById(examId).orElse(null);
+    }
 
 }

@@ -58,14 +58,8 @@ public class Course {
     private Status status = Status.active;
 
     @Column(name = "semester")
-    private String semester;
-
-    @Column(name = "academic_year")
+    private String semester;    @Column(name = "academic_year")
     private String academicYear;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "subject_id")
-    private Subject subject;
 
     public enum Status {
         active, inactive

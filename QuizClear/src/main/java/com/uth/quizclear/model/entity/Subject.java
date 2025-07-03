@@ -68,17 +68,8 @@ public class Subject {
 
     @Builder.Default
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(name = "updated_at")
+    private LocalDateTime createdAt = LocalDateTime.now();    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "subject")
-    private List<Course> courses;
-
-    public List<Course> getCourses() {
-        return courses;
-    }
 
     // Bidirectional relationships
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
