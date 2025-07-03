@@ -3,8 +3,11 @@ package com.uth.quizclear.service;
 import com.uth.quizclear.model.dto.DuplicateDetectionDTO2;
 import com.uth.quizclear.model.entity.DuplicateDetection;
 import com.uth.quizclear.model.entity.Question;
+import com.uth.quizclear.model.enums.UserRole;
 import com.uth.quizclear.repository.DuplicateDetectionRepository;
 import com.uth.quizclear.repository.QuestionRepository;
+import com.uth.quizclear.repository.SubjectRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +17,30 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DuplicateDetectionService {
+    private final SubjectRepository subjectRepository;
     private final DuplicateDetectionRepository duplicateDetectionRepository;
     private final QuestionRepository questionRepository;
 
-    public List<DuplicateDetectionDTO2> getAllDetections() {
-        List<DuplicateDetection> detections = duplicateDetectionRepository.findAll();
+    public List<DuplicateDetectionDTO2> getAllDetectionsForSubjectLeader(Long subjectLeaderId) {
+        // 1. Lấy danh sách subjectId mà SL phụ trách
+        List<Long> subjectIds = subjectRepository.findSubjectIdsByUserIdAndRole(subjectLeaderId, UserRole.SL);
+        if (subjectIds.isEmpty()) return List.of();
+
+        // 2. Lấy danh sách courseId thuộc các subject đó
+        List<Long> courseIds = subjectRepository.findAllById(subjectIds)
+            .stream().flatMap(s -> s.getCourses().stream())
+            .map(c -> c.getCourseId())
+            .distinct()
+            .toList();
+        if (courseIds.isEmpty()) return List.of();
+
+        // 3. Lấy danh sách questionId thuộc các course đó
+        List<Long> questionIds = questionRepository.findQuestionIdsByCourseIds(courseIds);
+        if (questionIds.isEmpty()) return List.of();
+
+        // 4. Lấy duplicate detections liên quan
+        List<DuplicateDetection> detections = duplicateDetectionRepository.findByNewQuestionIdInOrSimilarQuestionIdIn(questionIds, questionIds);
+
         return detections.stream().map(det -> {
             Question newQ = questionRepository.findById(det.getNewQuestionId()).orElse(null);
             Question simQ = questionRepository.findById(det.getSimilarQuestionId()).orElse(null);

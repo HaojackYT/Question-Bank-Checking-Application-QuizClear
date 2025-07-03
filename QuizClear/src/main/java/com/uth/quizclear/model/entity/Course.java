@@ -63,10 +63,13 @@ public class Course {
     @Column(name = "academic_year")
     private String academicYear;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
+
     public enum Status {
         active, inactive
     }
-
 
     public Long getCourseId() {
         return courseId;
