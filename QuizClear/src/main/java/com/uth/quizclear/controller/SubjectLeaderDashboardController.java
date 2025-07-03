@@ -51,8 +51,9 @@ public class SubjectLeaderDashboardController {
             if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
                 logger.warn("ACCESS DENIED - userId: {}, role: {}", userId, role);
                 // For demo purposes, use a default SL user if not authenticated
-                userId = 4L; // Brian Carter - Subject Leader (user_id=4)
-                logger.warn("Using demo userId for testing: {}", userId);
+                // userId = 4L; // Brian Carter - Subject Leader (user_id=4) - COMMENTED OUT
+                // logger.warn("Using demo userId for testing: {}", userId);
+                return ResponseEntity.status(403).body("Access denied: Not subject leader or not logged in");
             }
             
             logger.info("Getting SL dashboard stats for user: {}", userId);
@@ -79,8 +80,10 @@ public class SubjectLeaderDashboardController {
             
             // TEMPORARY: Use hardcoded userId for testing DB data
             if (userId == null) {
-                userId = 4L; // Brian Carter - Subject Leader (user_id=4)
-                logger.warn("Using hardcoded userId for testing: {}", userId);
+                // userId = 4L; // Brian Carter - Subject Leader (user_id=4) - COMMENTED OUT
+                // logger.warn("Using hardcoded userId for testing: {}", userId);
+                logger.warn("User not authenticated - userId is null");
+                return ResponseEntity.status(403).body("Access denied: Not logged in");
             }
             
             logger.info("Getting SL chart data for user: {}", userId);
@@ -108,8 +111,10 @@ public class SubjectLeaderDashboardController {
             
             // TEMPORARY: Use hardcoded userId for testing DB data
             if (userId == null) {
-                userId = 4L; // Brian Carter - Subject Leader (user_id=4)
-                logger.warn("Using hardcoded userId for testing: {}", userId);
+                // userId = 4L; // Brian Carter - Subject Leader (user_id=4) - COMMENTED OUT
+                // logger.warn("Using hardcoded userId for testing: {}", userId);
+                logger.warn("User not authenticated - userId is null");
+                return ResponseEntity.status(403).body("Access denied: Not logged in");
             }
             
             logger.info("Getting SL activities for user: {}, limit: {}", userId, limit);
