@@ -37,8 +37,13 @@ public class SubjectLeaderController {
     // View pages
     @GetMapping("/dashboard")
     public String dashboardPage(HttpSession session, Model model) {
-        // For testing purpose, use hardcoded user ID
-        Long userId = 3L;
+        // Get user ID from session
+        Long userId = (Long) session.getAttribute("userId");
+        
+        if (userId == null) {
+            // If no session, redirect to login
+            return "redirect:/login";
+        }
         
         model.addAttribute("userId", userId);
         

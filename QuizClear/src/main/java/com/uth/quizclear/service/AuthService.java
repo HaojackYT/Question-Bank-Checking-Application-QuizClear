@@ -19,40 +19,69 @@ public class AuthService {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;    public LoginResponseDTO authenticate(LoginRequestDTO loginRequest) {
+    private PasswordEncoder passwordEncoder;
+
+    public LoginResponseDTO authenticate(LoginRequestDTO loginRequest) {
         try {
+            System.out.println("=== LOGIN ATTEMPT ===");
+            System.out.println("Email: " + loginRequest.getEmail());
+            System.out.println("Password: " + loginRequest.getPassword());
+            
             // Find user by email
             Optional<User> userOpt = userRepository.findByEmail(loginRequest.getEmail());
             
             if (userOpt.isEmpty()) {
+                System.out.println("User not found with email: " + loginRequest.getEmail());
                 return LoginResponseDTO.failure("Invalid email or password");
             }            User user = userOpt.get();
+            System.out.println("Found user: " + user.getFullName());
+            System.out.println("User ID: " + user.getUserId());
+            System.out.println("User password hash in DB: " + user.getPasswordHash());
+            System.out.println("User role: " + user.getRole());
+            System.out.println("User status: " + user.getStatus());
+            System.out.println("User is locked: " + user.getIsLocked());
+            System.out.println("User login attempts: " + user.getLoginAttempts());
+            System.out.println("User canLogin(): " + user.canLogin());
 
             // Check if account is locked or inactive
             if (!user.canLogin()) {
+                System.out.println("User cannot login - locked or inactive");
                 if (user.getIsLocked()) {
                     return LoginResponseDTO.failure("Account is locked due to multiple failed login attempts");
                 }
                 return LoginResponseDTO.failure("Account is inactive");
             }            // Verify password - support both BCrypt and plain text
             boolean passwordMatches = false;
+            System.out.println("Checking password...");
+            System.out.println("Input password: '" + loginRequest.getPassword() + "'");
+            System.out.println("Stored password hash: '" + user.getPasswordHash() + "'");
             
-            // First try BCrypt matching (for production)
-            if (passwordEncoder.matches(loginRequest.getPassword(), user.getPasswordHash())) {
+            // First try plain text comparison (for test data with hash_xxx format)
+            boolean plainTextMatches = loginRequest.getPassword().equals(user.getPasswordHash());
+            System.out.println("Plain text matches: " + plainTextMatches);
+            if (plainTextMatches) {
                 passwordMatches = true;
             }
-            // Fallback to plain text comparison (for test data)
-            else if (loginRequest.getPassword().equals(user.getPasswordHash())) {
-                passwordMatches = true;
+            // Fallback to BCrypt matching (for production)
+            else {
+                boolean bcryptMatches = passwordEncoder.matches(loginRequest.getPassword(), user.getPasswordHash());
+                System.out.println("BCrypt matches: " + bcryptMatches);
+                if (bcryptMatches) {
+                    passwordMatches = true;
+                }
             }
+            
+            System.out.println("Final password matches: " + passwordMatches);
             
             if (!passwordMatches) {
+                System.out.println("Password verification failed!");
                 // Increment failed login attempts
                 user.incrementLoginAttempts();
                 userRepository.save(user);
                 return LoginResponseDTO.failure("Invalid email or password");
             }
 
+            System.out.println("Password verification successful!");
             // Reset login attempts on successful login
             user.resetLoginAttempts();
             userRepository.save(user);            // Create UserBasicDTO
@@ -93,7 +122,7 @@ public class AuthService {
             case HOD: // Head of Department
                 return "/hed-dashboard";
             case SL:  // Subject Leader
-                return "/sl-dashboard";
+                return "/subject-leader/dashboard";
             case LEC: // Lecturer
                 return "/lecturer-dashboard";
             case HOED: // Head of Examination Department
@@ -101,5 +130,13 @@ public class AuthService {
             default:
                 return "/dashboard";
         }
+    }
+
+    public Optional<User> findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 }
