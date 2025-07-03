@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -17,7 +17,7 @@
     <!--header-->
     <div th:replace="header_user"></div>
 
-    <div id="overlay">
+    <div id="overlay"> <!-- Modal Detail -->
         <div class="modal">
             <div class="modal-header">
                 <h2>Details</h2>
@@ -95,138 +95,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Database System</td>
-                            <td>Middle exam</td>
-                            <td>20</td>
-                            <td>20/05/2025</td>
+                        <tr th:each="task : ${tasks}">
+                            <td th:text="${task.cousres}">Subject Name</td>
+                            <td th:text="${task.description}">Description</td>
+                            <td th:text="${task.totalQuestions}">20</td>
+                            <td th:text="${#temporals.format(task.dueDate, 'dd/MM/yyyy')}">20/05/2025</td>
                             <td>
-                                <div class="status status-n">Not Received</div>
+                                <div class="status" th:switch="${task.status.name()}">
+                                    <div th:case="'pending'" class="status status-n">Pending</div>
+                                    <div th:case="'in_progress'" class="status status-i">In Progress</div>
+                                    <div th:case="'completed'" class="status status-s">Completed</div>
+                                    <div th:case="'cancelled'" class="status status-c">Cancelled</div>
+                                    <div th:case="*" class="status status-i">Unknown</div>
+                                </div>
                             </td>
                             <td>
-                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
-                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"
-                                    onclick="goToSendTask();"></i>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Database System</td>
-                            <td>Middle exam</td>
-                            <td>20</td>
-                            <td>20/05/2025</td>
-                            <td>
-                                <div class="status status-i">In Progress</div>
-                            </td>
-                            <td>
-                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
-                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"
-                                    onclick="goToSendTask();"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Database System</td>
-                            <td>Middle exam</td>
-                            <td>20</td>
-                            <td>20/05/2025</td>
-                            <td>
-                                <div class="status status-s">Submitted</div>
-                            </td>
-                            <td>
-                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
-                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"
-                                    onclick="goToSendTask();"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Database System</td>
-                            <td>Middle exam</td>
-                            <td>20</td>
-                            <td>20/05/2025</td>
-                            <td>
-                                <div class="status status-n">Not Received</div>
-                            </td>
-                            <td>
-                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
-                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"
-                                    onclick="goToSendTask();"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Database System</td>
-                            <td>Middle exam</td>
-                            <td>20</td>
-                            <td>20/05/2025</td>
-                            <td>
-                                <div class="status status-i">In Progress</div>
-                            </td>
-                            <td>
-                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
-                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"
-                                    onclick="goToSendTask();"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Database System</td>
-                            <td>Middle exam</td>
-                            <td>20</td>
-                            <td>20/05/2025</td>
-                            <td>
-                                <div class="status status-s">Submitted</div>
-                            </td>
-                            <td>
-                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
-                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"
-                                    onclick="goToSendTask();"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Database System</td>
-                            <td>Middle exam</td>
-                            <td>20</td>
-                            <td>20/05/2025</td>
-                            <td>
-                                <div class="status status-n">Not Received</div>
-                            </td>
-                            <td>
-                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
-                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"
-                                    onclick="goToSendTask();"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Database System</td>
-                            <td>Middle exam</td>
-                            <td>20</td>
-                            <td>20/05/2025</td>
-                            <td>
-                                <div class="status status-i">In Progress</div>
-                            </td>
-                            <td>
-                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
-                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"
-                                    onclick="goToSendTask();"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Database System</td>
-                            <td>Middle exam</td>
-                            <td>20</td>
-                            <td>20/05/2025</td>
-                            <td>
-                                <div class="status status-s">Submitted</div>
-                            </td>
-                            <td>
-                                <i class="fa-solid fa-eye" style="margin-right: 20px; cursor: pointer;"
-                                    onclick="openModal();"></i>
+                                <i class="fa-solid fa-eye view-task" th:attr="data-task-id=${task.taskId}"
+                                    style="margin-right: 50px; cursor: pointer;"></i>
                                 <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"
                                     onclick="goToSendTask();"></i>
                             </td>
@@ -238,182 +123,223 @@
 </body>
 <!-- ma nhung header vs menu -->
 <script>
-    // Load header
-    fetch('../header_user.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('header-placeholder').innerHTML = data;
-        });
-
-    // Load menu
-    fetch('Menu-Lecturer.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('menu-HTML').innerHTML = data;
-            setActiveMenu(document.title);
-        });
-
     document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.querySelector('#search');
-    const statusSelect = document.getElementById('subject-select');
-    const overlay = document.getElementById('overlay');
-    const closeButton = document.querySelector('.modal .close');
-    const acceptButton = document.querySelector('.modal .button-group button');
-    const rows = document.querySelectorAll('.course-table tbody tr');
-    let currentRow = null;
+        const searchInput = document.querySelector('#search');
+        const statusSelect = document.getElementById('subject-select');
+        const overlay = document.getElementById('overlay');
+        const closeButton = document.querySelector('.modal .close');
+        const acceptButton = document.querySelector('.modal .button-group button');
+        const rows = document.querySelectorAll('.course-table tbody tr');
+        let currentRow = null;
 
-    // Kiểm tra các phần tử cần thiết
-    if (!overlay) {
-        console.error('Element with id "overlay" not found.');
-        return;
-    }
-    if (!closeButton) {
-        console.warn('Close button not found.');
-    }
-    if (!acceptButton) {
-        console.warn('Accept button not found.');
-    }
-    if (!searchInput) {
-        console.warn('Search input not found.');
-    }
-    if (!statusSelect) {
-        console.warn('Status select not found.');
-    }
-
-    // Hàm mở modal
-    function openModal() {
-        overlay.style.display = 'flex';
-    }
-
-    // Hàm đóng modal
-    function closeModal() {
-        overlay.style.display = 'none';
-    }
-
-    // Hàm chuyển hướng đến trang gửi task
-    function goToSendTask() {
-        window.location.href = 'lecturerTFromSendTask';
-    }
-
-    // Xử lý icon paper-plane và nút View
-    rows.forEach(row => {
-        const statusDiv = row.querySelector('.status');
-        const statusText = statusDiv ? statusDiv.textContent.trim().toLowerCase() : '';
-        const paperPlaneIcon = row.querySelector('.fa-paper-plane');
-        const viewIcon = row.querySelector('.fa-eye');
-
-        // Vô hiệu hóa paper-plane nếu trạng thái là Not Received
-        if (statusText === 'not received') {
-            paperPlaneIcon.style.opacity = '0.5';
-            paperPlaneIcon.style.cursor = 'not-allowed';
-            paperPlaneIcon.removeAttribute('onclick');
-        } else {
-            paperPlaneIcon.style.opacity = '1';
-            paperPlaneIcon.style.cursor = 'pointer';
-            paperPlaneIcon.onclick = goToSendTask;
+        // Kiểm tra các phần tử cần thiết
+        if (!overlay) {
+            console.error('Element with id "overlay" not found.');
+            return;
+        }
+        if (!closeButton) {
+            console.warn('Close button not found.');
+        }
+        if (!acceptButton) {
+            console.warn('Accept button not found.');
+        }
+        if (!searchInput) {
+            console.warn('Search input not found.');
+        }
+        if (!statusSelect) {
+            console.warn('Status select not found.');
         }
 
-        // Thêm sự kiện cho nút View
-        if (viewIcon) {
-            viewIcon.addEventListener('click', () => {
-                currentRow = row;
-                const statusText = currentRow.querySelector('.status').textContent.trim().toLowerCase();
-                const modalStatus = document.querySelector('.modal .status');
-                
-                // Cập nhật trạng thái trong modal
-                if (modalStatus) {
-                    modalStatus.textContent = statusText.replace(/(^\w|\s\w)/g, letter => letter.toUpperCase());
-                    modalStatus.className = `status status-${statusText.charAt(0)}`;
-                }
+        // Hàm mở modal
+        function openModal() {
+            overlay.style.display = 'flex';
+        }
 
-                // Vô hiệu hóa và làm mờ nút Accept nếu không phải Not Received
-                if (acceptButton) {
-                    acceptButton.classList.remove('faded');
-                    acceptButton.disabled = false;
-                    if (statusText !== 'not received') {
-                        acceptButton.classList.add('faded');
-                        acceptButton.disabled = true;
+        // Hàm đóng modal
+        function closeModal() {
+            overlay.style.display = 'none';
+        }
+
+        // Hàm chuyển hướng đến trang gửi task
+        function goToSendTask() {
+            window.location.href = 'lecturerTFromSendTask';
+        }
+
+        // Xử lý icon paper-plane và nút View
+        rows.forEach(row => {
+            const statusDiv = row.querySelector('.status');
+            const statusText = statusDiv ? statusDiv.textContent.trim().toLowerCase() : '';
+            const paperPlaneIcon = row.querySelector('.fa-paper-plane');
+            const viewIcon = row.querySelector('.fa-eye');
+
+            // Vô hiệu hóa paper-plane nếu trạng thái là Not Received
+            if (statusText === 'not received') {
+                paperPlaneIcon.style.opacity = '0.5';
+                paperPlaneIcon.style.cursor = 'not-allowed';
+                paperPlaneIcon.removeAttribute('onclick');
+            } else {
+                paperPlaneIcon.style.opacity = '1';
+                paperPlaneIcon.style.cursor = 'pointer';
+                paperPlaneIcon.onclick = goToSendTask;
+            }
+
+            // Thêm sự kiện cho nút View
+            if (viewIcon) {
+                viewIcon.addEventListener('click', () => {
+                    currentRow = row;
+                    const statusText = currentRow.querySelector('.status').textContent.trim().toLowerCase();
+                    const modalStatus = document.querySelector('.modal .status');
+
+                    // Cập nhật trạng thái trong modal
+                    if (modalStatus) {
+                        modalStatus.textContent = statusText.replace(/(^\w|\s\w)/g, letter => letter.toUpperCase());
+                        modalStatus.className = `status status-${statusText.charAt(0)}`;
                     }
-                }
 
-                openModal();
-            });
-        }
-    });
+                    // Vô hiệu hóa và làm mờ nút Accept nếu không phải Not Received
+                    if (acceptButton) {
+                        acceptButton.classList.remove('faded');
+                        acceptButton.disabled = false;
+                        if (statusText !== 'not received') {
+                            acceptButton.classList.add('faded');
+                            acceptButton.disabled = true;
+                        }
+                    }
 
-    // Xử lý nút Accept
-    if (acceptButton) {
-        acceptButton.addEventListener('click', () => {
-            if (currentRow) {
-                const statusDiv = currentRow.querySelector('.status');
-                const paperPlaneIcon = currentRow.querySelector('.fa-paper-plane');
-                const modalStatus = document.querySelector('.modal .status');
-
-                // Cập nhật trạng thái thành In Progress
-                statusDiv.textContent = 'In Progress';
-                statusDiv.className = 'status status-i';
-                if (modalStatus) {
-                    modalStatus.textContent = 'In Progress';
-                    modalStatus.className = 'status status-i';
-                }
-
-                // Làm mờ và vô hiệu hóa nút Accept
-                acceptButton.classList.add('faded');
-                acceptButton.disabled = true;
-
-                // Kích hoạt paper-plane
-                if (paperPlaneIcon) {
-                    paperPlaneIcon.style.opacity = '1';
-                    paperPlaneIcon.style.cursor = 'pointer';
-                    paperPlaneIcon.onclick = goToSendTask;
-                }
-
-                closeModal();
+                    openModal();
+                });
             }
         });
-    }
 
-    // Xử lý tìm kiếm
-    if (searchInput) {
-        searchInput.addEventListener('input', () => {
-            const searchText = searchInput.value.trim().toLowerCase();
+        // Xử lý nút Accept
+        if (acceptButton) {
+            acceptButton.addEventListener('click', () => {
+                if (currentRow) {
+                    const statusDiv = currentRow.querySelector('.status');
+                    const paperPlaneIcon = currentRow.querySelector('.fa-paper-plane');
+                    const modalStatus = document.querySelector('.modal .status');
 
-            rows.forEach(row => {
-                const subject = row.querySelector('td:nth-child(1)').textContent.trim().toLowerCase();
-                const description = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+                    // Cập nhật trạng thái thành In Progress
+                    statusDiv.textContent = 'In Progress';
+                    statusDiv.className = 'status status-i';
+                    if (modalStatus) {
+                        modalStatus.textContent = 'In Progress';
+                        modalStatus.className = 'status status-i';
+                    }
 
-                if (subject.includes(searchText) || description.includes(searchText)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
+                    // Làm mờ và vô hiệu hóa nút Accept
+                    acceptButton.classList.add('faded');
+                    acceptButton.disabled = true;
+
+                    // Kích hoạt paper-plane
+                    if (paperPlaneIcon) {
+                        paperPlaneIcon.style.opacity = '1';
+                        paperPlaneIcon.style.cursor = 'pointer';
+                        paperPlaneIcon.onclick = goToSendTask;
+                    }
+
+                    closeModal();
                 }
             });
-        });
-    }
+        }
 
-    // Xử lý lọc trạng thái
-    if (statusSelect) {
-        statusSelect.addEventListener('change', () => {
-            const selectedStatus = statusSelect.value.toLowerCase();
+        // Xử lý tìm kiếm
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                const searchText = searchInput.value.trim().toLowerCase();
 
-            rows.forEach(row => {
-                const statusText = row.querySelector('.status').textContent.trim().toLowerCase();
+                rows.forEach(row => {
+                    const subject = row.querySelector('td:nth-child(1)').textContent.trim().toLowerCase();
+                    const description = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
 
-                if (selectedStatus === 'all' || statusText === selectedStatus) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+                    if (subject.includes(searchText) || description.includes(searchText)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
             });
-        });
+        }
+
+        // Xử lý lọc trạng thái
+        if (statusSelect) {
+            statusSelect.addEventListener('change', () => {
+                const selectedStatus = statusSelect.value.toLowerCase();
+
+                rows.forEach(row => {
+                    const statusText = row.querySelector('.status').textContent.trim().toLowerCase();
+
+                    if (selectedStatus === 'all' || statusText === selectedStatus) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Xử lý nút Close
+        if (closeButton) {
+            closeButton.addEventListener('click', closeModal);
+        }
+    });
+    
+    // Xử lý load detail task
+    function formatStatus(status) {
+        if (!status) return '';
+        const statusLower = status.toLowerCase();
+        let className = 'status-i'; // default class
+
+        switch (statusLower) {
+            case 'pending':
+                className = 'status-n';
+                break;
+            case 'in_progress':
+                className = 'status-i';
+                break;
+            case 'completed':
+                className = 'status-s';
+                break;
+            case 'cancelled':
+                className = 'status-c';
+                break;
+            default:
+                className = 'status-i';
+        }
+        const text = status.charAt(0).toUpperCase() + status.slice(1);
+        return `<span class="status ${className}">${text}</span>`;
     }
 
-    // Xử lý nút Close
-    if (closeButton) {
-        closeButton.addEventListener('click', closeModal);
-    }
-});
+    document.querySelectorAll('.view-task').forEach(icon => {
+        icon.addEventListener('click', async () => {
+            const taskId = icon.getAttribute('data-task-id');
+            console.log('Clicked taskId:', taskId);
+            try {
+                const response = await fetch(`/lecturer/api/task/${taskId}`);
+                if (!response.ok) throw new Error('Task not found');
+                const task = await response.json();
+                // Cập nhật modal
+                document.querySelector('.modal .modal-due').textContent = `Due: ${task.dueDate?.split('T')[0] || ''}`;
+                document.querySelector('.modal input[readonly][value]').value = task.cousres;
+                document.querySelectorAll('.modal input[readonly]')[1].value = task.description;
+
+                document.querySelector('.info-group div:nth-child(1)').innerHTML = `<strong>Total Question:</strong> ${task.totalQuestions}`;
+                document.querySelector('.info-group div:nth-child(2)').innerHTML = `<strong>Deadline:</strong> ${task.dueDate?.split('T')[0] || ''}`;
+                // Không bọc thêm span vì formatStatus đã trả về span rồi
+                document.querySelector('.info-group div:nth-child(3)').innerHTML = `<strong>Status:</strong> ${formatStatus(task.status)}`;
+
+                document.querySelector('.levels div:nth-child(1)').innerHTML = `<strong>Recognition</strong><br>${task.totalRecognition}`;
+                document.querySelector('.levels div:nth-child(2)').innerHTML = `<strong>Comprehension</strong><br>${task.totalComprehension}`;
+                document.querySelector('.levels div:nth-child(3)').innerHTML = `<strong>Basic</strong><br>${task.totalBasicApplication}`;
+                document.querySelector('.levels div:nth-child(4)').innerHTML = `<strong>Advanced</strong><br>${task.totalAdvancedApplication}`;
+
+            } catch (err) {
+                alert('Error loading task: ' + err.message);
+            }
+        });
+    });
 </script>
-<script src="../../Static/js/L_activeMenu.js"></script>
+
+<script th:src="@{/Static/js/L_activeMenu.js}"></script>
 
 </html>
