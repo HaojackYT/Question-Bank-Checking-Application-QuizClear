@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/dashboard/subject-leader")
+@RequestMapping("/api/sl-dashboard")
 public class SubjectLeaderDashboardController {
     
     private static final Logger logger = LoggerFactory.getLogger(SubjectLeaderDashboardController.class);
@@ -26,11 +26,48 @@ public class SubjectLeaderDashboardController {
     @Autowired
     private SubjectLeaderDashboardService dashboardService;
     
+    /**
+     * Helper method to safely get userId from session
+     */
+    private Long getUserIdFromSession(HttpSession session) {
+        Object userIdObj = session.getAttribute("userId");
+        if (userIdObj == null) {
+            return null;
+        }
+        
+        if (userIdObj instanceof Long) {
+            return (Long) userIdObj;
+        } else if (userIdObj instanceof String) {
+            try {
+                return Long.parseLong((String) userIdObj);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        } else if (userIdObj instanceof Integer) {
+            return ((Integer) userIdObj).longValue();
+        }
+        
+        return null;
+    }
+    
     @GetMapping("")
     public ResponseEntity<String> getSubjectLeaderDashboard(HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        String role = (String) session.getAttribute("role");
-        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
+        
+        if (userId == null || roleObj == null) {
+            return ResponseEntity.status(403).body("Access denied: Not logged in");
+        }
+        
+        // Handle both String and UserRole enum cases
+        String roleStr = null;
+        if (roleObj instanceof String) {
+            roleStr = (String) roleObj;
+        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+        }
+        
+        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
             return ResponseEntity.status(403).body("Access denied: Not subject leader or not logged in");
         }
         return ResponseEntity.ok("Welcome to Subject Leader Dashboard! UserId: " + userId);
@@ -43,16 +80,26 @@ public class SubjectLeaderDashboardController {
     public ResponseEntity<?> getSLStats(HttpSession session) {
         try {
             logger.info("=== [SL DASHBOARD API] /stats called ===");
-            Long userId = (Long) session.getAttribute("userId");
-            String role = (String) session.getAttribute("role");
-            logger.info("Session userId: {}, role: {}", userId, role);
+            Long userId = getUserIdFromSession(session);
+            Object roleObj = session.getAttribute("role");
+            logger.info("Session userId: {}, role: {}", userId, roleObj);
+            
+            if (userId == null || roleObj == null) {
+                logger.warn("ACCESS DENIED - userId: {}, role: {}", userId, roleObj);
+                return ResponseEntity.status(403).body("Access denied: Not logged in");
+            }
+            
+            // Handle both String and UserRole enum cases
+            String roleStr = null;
+            if (roleObj instanceof String) {
+                roleStr = (String) roleObj;
+            } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+                roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+            }
             
             // Check if user is authenticated and has SL role
-            if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
-                logger.warn("ACCESS DENIED - userId: {}, role: {}", userId, role);
-                // For demo purposes, use a default SL user if not authenticated
-                // userId = 4L; // Brian Carter - Subject Leader (user_id=4) - COMMENTED OUT
-                // logger.warn("Using demo userId for testing: {}", userId);
+            if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
+                logger.warn("ACCESS DENIED - userId: {}, role: {}", userId, roleStr);
                 return ResponseEntity.status(403).body("Access denied: Not subject leader or not logged in");
             }
             
@@ -74,16 +121,26 @@ public class SubjectLeaderDashboardController {
     public ResponseEntity<?> getSLChartData(HttpSession session) {
         try {
             logger.info("=== [SL DASHBOARD API] /chart-data called ===");
-            Long userId = (Long) session.getAttribute("userId");
-            String role = (String) session.getAttribute("role");
-            logger.info("Session userId: {}, role: {}", userId, role);
+            Long userId = getUserIdFromSession(session);
+            Object roleObj = session.getAttribute("role");
+            logger.info("Session userId: {}, role: {}", userId, roleObj);
             
-            // TEMPORARY: Use hardcoded userId for testing DB data
             if (userId == null) {
-                // userId = 4L; // Brian Carter - Subject Leader (user_id=4) - COMMENTED OUT
-                // logger.warn("Using hardcoded userId for testing: {}", userId);
                 logger.warn("User not authenticated - userId is null");
                 return ResponseEntity.status(403).body("Access denied: Not logged in");
+            }
+            
+            // Handle both String and UserRole enum cases
+            String roleStr = null;
+            if (roleObj instanceof String) {
+                roleStr = (String) roleObj;
+            } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+                roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+            }
+            
+            if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
+                logger.warn("ACCESS DENIED - userId: {}, role: {}", userId, roleStr);
+                return ResponseEntity.status(403).body("Access denied: Not subject leader");
             }
             
             logger.info("Getting SL chart data for user: {}", userId);
@@ -105,16 +162,26 @@ public class SubjectLeaderDashboardController {
                                            @RequestParam(defaultValue = "10") int limit) {
         try {
             logger.info("=== [SL DASHBOARD API] /activities called with limit: {} ===", limit);
-            Long userId = (Long) session.getAttribute("userId");
-            String role = (String) session.getAttribute("role");
-            logger.info("Session userId: {}, role: {}", userId, role);
+            Long userId = getUserIdFromSession(session);
+            Object roleObj = session.getAttribute("role");
+            logger.info("Session userId: {}, role: {}", userId, roleObj);
             
-            // TEMPORARY: Use hardcoded userId for testing DB data
             if (userId == null) {
-                // userId = 4L; // Brian Carter - Subject Leader (user_id=4) - COMMENTED OUT
-                // logger.warn("Using hardcoded userId for testing: {}", userId);
                 logger.warn("User not authenticated - userId is null");
                 return ResponseEntity.status(403).body("Access denied: Not logged in");
+            }
+            
+            // Handle both String and UserRole enum cases
+            String roleStr = null;
+            if (roleObj instanceof String) {
+                roleStr = (String) roleObj;
+            } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+                roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+            }
+            
+            if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
+                logger.warn("ACCESS DENIED - userId: {}, role: {}", userId, roleStr);
+                return ResponseEntity.status(403).body("Access denied: Not subject leader");
             }
             
             logger.info("Getting SL activities for user: {}, limit: {}", userId, limit);
@@ -134,22 +201,33 @@ public class SubjectLeaderDashboardController {
     @GetMapping("/test-session")
     public ResponseEntity<?> testSession(HttpSession session) {
         logger.info("=== [TEST SESSION] ===");
-        Long userId = (Long) session.getAttribute("userId");
-        String role = (String) session.getAttribute("role");
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
         String email = (String) session.getAttribute("email");
         
         logger.info("Session ID: {}", session.getId());
         logger.info("Session userId: {}", userId);
-        logger.info("Session role: {}", role);
+        logger.info("Session role object: {}", roleObj);
+        logger.info("Session role object type: {}", roleObj != null ? roleObj.getClass().getName() : "null");
+        
+        // Handle both String and UserRole enum cases
+        String roleStr = null;
+        if (roleObj instanceof String) {
+            roleStr = (String) roleObj;
+        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+        }
+        
+        logger.info("Session role: {}", roleStr);
         logger.info("Session email: {}", email);
         
         return ResponseEntity.ok(Map.of(
             "sessionId", session.getId(),
             "userId", userId,
-            "role", role,
-            "email", email,
+            "role", roleStr != null ? roleStr : "null",
+            "email", email != null ? email : "null",
             "isAuthenticated", userId != null,
-            "isSubjectLeader", "SL".equalsIgnoreCase(role)
+            "isSubjectLeader", "SL".equalsIgnoreCase(roleStr)
         ));
     }
     

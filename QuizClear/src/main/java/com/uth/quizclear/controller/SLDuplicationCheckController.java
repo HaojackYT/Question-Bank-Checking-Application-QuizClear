@@ -21,34 +21,60 @@ import java.util.*;
 @Slf4j
 public class SLDuplicationCheckController {
 
-    private final DuplicateDetectionService duplicateDetectionService;
-
-    private Long getCurrentUserId(HttpSession session) {
+    private final DuplicateDetectionService duplicateDetectionService;    private Long getCurrentUserId(HttpSession session) {
         Object userIdObj = session.getAttribute("userId");
+        if (userIdObj == null) {
+            return null;
+        }
+        
         if (userIdObj instanceof Long) {
             return (Long) userIdObj;
-        }
-        if (userIdObj instanceof Integer) {
+        } else if (userIdObj instanceof String) {
+            try {
+                return Long.parseLong((String) userIdObj);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        } else if (userIdObj instanceof Integer) {
             return ((Integer) userIdObj).longValue();
         }
+        
         return null;
-    }
-
-    /**
+    }    /**
      * Display the duplication check page
      */
     @GetMapping
-    public String duplicationCheckPage(Model model, HttpSession session) {
-        Long userId = getCurrentUserId(session);
-        if (userId == null) {
-            // Xử lý trường hợp chưa đăng nhập
+    public String duplicationCheckPage(Model model, 
+                                     org.springframework.security.core.Authentication authentication) {
+        // Debug logging
+        log.info("=== DUPLICATION CHECK PAGE DEBUG ===");
+        
+        // Check authentication first
+        if (authentication == null || !authentication.isAuthenticated()) {
+            log.warn("REDIRECTING TO LOGIN - User not authenticated");
             return "redirect:/login";
         }
-        model.addAttribute("duplications", duplicateDetectionService.getAllDetectionsForSubjectLeader(userId));
+        
+        // Check if user has SL role
+        boolean isSL = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("SL") || auth.equals("ROLE_SL");
+                });
+        
+        if (!isSL) {
+            log.warn("REDIRECTING TO LOGIN - User is not Subject Leader");
+            return "redirect:/login";
+        }
+        
+        log.info("Authentication name: {}", authentication.getName());
+        log.info("User authorities: {}", authentication.getAuthorities());
+        
+        log.info("User authenticated, loading duplication check page");
+        // For now, pass a default userId for the service call
+        model.addAttribute("duplications", duplicateDetectionService.getAllDetectionsForSubjectLeader(3L));
         return "subjectLeader/sl_duplicationCheck";
-    }
-
-    /**
+    }/**
      * Get duplicate questions (AJAX)
      */
     @GetMapping("/api/duplicates")
@@ -61,8 +87,13 @@ public class SLDuplicationCheckController {
             HttpSession session) {
         
         try {
-            // For testing purpose, use hardcoded user ID
-            Long userId = 3L;
+            // Get user ID from session
+            Long userId = getCurrentUserId(session);
+            if (userId == null) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("error", "User not authenticated");
+                return ResponseEntity.status(403).body(errorResponse);
+            }
             
             // Sample duplicate questions data
             List<Map<String, Object>> duplicates = new ArrayList<>();
@@ -100,9 +131,7 @@ public class SLDuplicationCheckController {
             errorResponse.put("error", "Unable to retrieve duplicate questions");
             return ResponseEntity.internalServerError().body(errorResponse);
         }
-    }
-
-    /**
+    }    /**
      * Approve duplicate question (mark as not duplicate)
      */
     @PostMapping("/api/duplicates/{questionId}/approve")
@@ -112,8 +141,14 @@ public class SLDuplicationCheckController {
             HttpSession session) {
         
         try {
-            // For testing purpose, use hardcoded user ID
-            Long userId = 3L;
+            // Get user ID from session
+            Long userId = getCurrentUserId(session);
+            if (userId == null) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("success", false);
+                errorResponse.put("message", "User not authenticated");
+                return ResponseEntity.status(403).body(errorResponse);
+            }
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -129,9 +164,7 @@ public class SLDuplicationCheckController {
             errorResponse.put("message", "Unable to approve question");
             return ResponseEntity.internalServerError().body(errorResponse);
         }
-    }
-
-    /**
+    }    /**
      * Reject duplicate question (mark as duplicate)
      */
     @PostMapping("/api/duplicates/{questionId}/reject")
@@ -142,8 +175,14 @@ public class SLDuplicationCheckController {
             HttpSession session) {
         
         try {
-            // For testing purpose, use hardcoded user ID
-            Long userId = 3L;
+            // Get user ID from session
+            Long userId = getCurrentUserId(session);
+            if (userId == null) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("success", false);
+                errorResponse.put("message", "User not authenticated");
+                return ResponseEntity.status(403).body(errorResponse);
+            }
             
             String reason = requestData != null ? (String) requestData.get("reason") : null;
             
@@ -190,17 +229,21 @@ public class SLDuplicationCheckController {
             errorResponse.put("error", "Unable to retrieve question details");
             return ResponseEntity.internalServerError().body(errorResponse);
         }
-    }
-
-    /**
+    }    /**
      * Run automatic duplication detection
      */
     @PostMapping("/api/run-detection")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> runDuplicationDetection(HttpSession session) {
         try {
-            // For testing purpose, use hardcoded user ID
-            Long userId = 3L;
+            // Get user ID from session
+            Long userId = getCurrentUserId(session);
+            if (userId == null) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("success", false);
+                errorResponse.put("message", "User not authenticated");
+                return ResponseEntity.status(403).body(errorResponse);
+            }
             
             // Simulate running AI duplication detection
             Map<String, Object> response = new HashMap<>();

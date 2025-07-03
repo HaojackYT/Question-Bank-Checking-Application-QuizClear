@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,67 +30,130 @@ import jakarta.servlet.http.HttpSession;
 public class SubjectLeaderController {
     
     @Autowired
-    private SubjectLeaderFeedbackService feedbackService;
-
-    @Autowired
+    private SubjectLeaderFeedbackService feedbackService;    @Autowired
     private PlanService planService;
-    
-    // View pages
-    @GetMapping("/dashboard")
-    public String dashboardPage(HttpSession session, Model model) {
-        // Get user ID from session
-        Long userId = (Long) session.getAttribute("userId");
-        
-        if (userId == null) {
-            return "redirect:/login";
+      /**
+     * Helper method to safely get userId from session
+     */
+    private Long getUserIdFromSession(HttpSession session) {
+        Object userIdObj = session.getAttribute("userId");
+        if (userIdObj == null) {
+            return null;
         }
         
-        model.addAttribute("userId", userId);
+        if (userIdObj instanceof Long) {
+            return (Long) userIdObj;
+        } else if (userIdObj instanceof String) {
+            try {
+                return Long.parseLong((String) userIdObj);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        } else if (userIdObj instanceof Integer) {
+            return ((Integer) userIdObj).longValue();
+        }
         
-        return "subjectLeader/slDashboard";
+        return null;
     }
     
-    @GetMapping("/plans")
-    public String plansPage(HttpSession session, Model model) {
-        // Long userId = 3L; // COMMENTED OUT - using session instead
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
+    /**
+     * Helper method to get userId from email (temporary solution)
+     */
+    private Long getUserIdFromEmail(String email) {
+        // This is a temporary solution - in real app, you'd query database
+        // For Subject Leader testing, use fixed ID based on email
+        if ("brian.carter@university.edu".equals(email)) {
+            return 3L; // Brian Carter - Subject Leader
+        }
+        return 3L; // Default for testing
+    }
+      // View pages
+    @GetMapping("/dashboard")
+    public String dashboardPage(org.springframework.security.core.Authentication authentication, Model model) {
+        // Check authentication first
+        if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
+        
+        // Check if user has SL role
+        boolean isSL = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("SL") || auth.equals("ROLE_SL");
+                });
+        
+        if (!isSL) {
+            return "redirect:/login";
+        }
+        
+        model.addAttribute("userEmail", authentication.getName());
+        return "subjectLeader/slDashboard";
+    }
+      @GetMapping("/plans")
+    public String plansPage(org.springframework.security.core.Authentication authentication, Model model) {
+        // Check authentication first
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        
+        // Check if user has SL role
+        boolean isSL = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("SL") || auth.equals("ROLE_SL");
+                });
+        
+        if (!isSL) {
+            return "redirect:/login";
+        }
+        
         // Load list of plans for the subject leader
         List<SL_PlanDTO> plans = planService.getSLPlan();
         if (plans == null || plans.isEmpty()) {
             model.addAttribute("message", "No plans available for the subject leader.");
         }
         model.addAttribute("plans", plans);
-        model.addAttribute("userId", userId);
+        model.addAttribute("userEmail", authentication.getName());
         return "subjectLeader/slPlans";
-    }
-    
-    @GetMapping("/exam-assignment")
-    public String examAssignmentPage(HttpSession session, Model model) {
-        // Long userId = 3L; // COMMENTED OUT - using session instead
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
+    }    @GetMapping("/exam-assignment")
+    public String examAssignmentPage(org.springframework.security.core.Authentication authentication, Model model) {
+        // Check authentication first
+        if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
-        model.addAttribute("userId", userId);
+        
+        // Check if user has SL role
+        boolean isSL = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("SL") || auth.equals("ROLE_SL");
+                });
+        
+        if (!isSL) {
+            return "redirect:/login";
+        }
+        
+        model.addAttribute("userEmail", authentication.getName());
         return "subjectLeader/SLExamAssignment";
-    }
-    
-    @GetMapping("/review-approval")
-    public String reviewApprovalPage(HttpSession session, Model model) {
-        // For testing purpose, use hardcoded user ID
-        // Long userId = 3L; // COMMENTED OUT - using session instead
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
+    }    @GetMapping("/review-approval")
+    public String reviewApprovalPage(org.springframework.security.core.Authentication authentication, Model model) {
+        // Check authentication first
+        if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
         
-        // Add any required data for the review approval page
-        // This can be expanded based on your business logic
-        model.addAttribute("userId", userId);
+        // Check if user has SL role
+        boolean isSL = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("SL") || auth.equals("ROLE_SL");
+                });
         
+        if (!isSL) {
+            return "redirect:/login";
+        }
+        
+        model.addAttribute("userEmail", authentication.getName());
         return "subjectLeader/slReviewApproval";
     }
     
@@ -97,7 +161,7 @@ public class SubjectLeaderController {
     public String reviewApprovalDetailPage(@PathVariable Long id, HttpSession session, Model model) {
         // For testing purpose, use hardcoded user ID
         // Long userId = 3L; // COMMENTED OUT - using session instead
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = getUserIdFromSession(session);
         if (userId == null) {
             return "redirect:/login";
         }
@@ -107,36 +171,59 @@ public class SubjectLeaderController {
         model.addAttribute("userId", userId);
         
         return "subjectLeader/slReviewApprovalDetail";
-    }
-    
-    @GetMapping("/feedback")
-    public String feedbackPage(HttpSession session, Model model) {
-        // For testing purpose, use hardcoded user ID
-        Long userId = (Long) session.getAttribute("userId");
-        String role = (String) session.getAttribute("role");
+    }    @GetMapping("/feedback")
+    public String feedbackPage(Authentication authentication, Model model) {
+        // Debug logging
+        System.out.println("=== FEEDBACK PAGE DEBUG ===");
+        System.out.println("Authentication: " + authentication);
+        System.out.println("Authentication name: " + (authentication != null ? authentication.getName() : "null"));
+        System.out.println("Authentication authorities: " + (authentication != null ? authentication.getAuthorities() : "null"));
         
-        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("REDIRECTING TO LOGIN - User not authenticated");
             return "redirect:/login";
         }
         
-        // Hardcode for testing - Subject Leader with ID 3 (Brian Carter from Physics department)
-        // Long userId = 3L; // COMMENTED OUT - using session instead
+        // Check if user has SL role
+        boolean isSL = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("SL") || auth.equals("ROLE_SL");
+                });
+        
+        if (!isSL) {
+            System.out.println("REDIRECTING TO LOGIN - User is not Subject Leader");
+            return "redirect:/login";
+        }
+        
+        // Get userId from email (temporary mapping)
+        Long userId = getUserIdFromEmail(authentication.getName());
         
         // Get feedback list for the subject leader's department
         List<QuestionFeedbackDTO> feedbackList = feedbackService.getFeedbackForSubjectLeader(userId);
         model.addAttribute("feedbackList", feedbackList);
         
         return "subjectLeader/sl_feedBack";
-    }
-      @GetMapping("/feedback/{feedbackId}")
+    }@GetMapping("/feedback/{feedbackId}")
     public String feedbackDetailPage(@PathVariable Long feedbackId, 
                                    @RequestParam(required = false) String type,
                                    HttpSession session, Model model) {
         // For testing purpose, use hardcoded user ID
-        Long userId = (Long) session.getAttribute("userId");
-        String role = (String) session.getAttribute("role");
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
         
-        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+        if (userId == null || roleObj == null) {
+            return "redirect:/login";
+        }
+        
+        // Handle both String and UserRole enum cases
+        String roleStr = null;
+        if (roleObj instanceof String) {
+            roleStr = (String) roleObj;        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+        }
+        
+        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
             return "redirect:/login";
         }
         
@@ -150,16 +237,26 @@ public class SubjectLeaderController {
         
         return "subjectLeader/sl_FB_viewDetails";
     }
-    
-    @GetMapping("/feedback/{feedbackId}/details")
+      @GetMapping("/feedback/{feedbackId}/details")
     public String feedbackDetailPageWithDetails(@PathVariable Long feedbackId, 
                                                 @RequestParam(required = false) String type,
                                                 HttpSession session, Model model) {
         // For testing purpose, use hardcoded user ID  
-        Long userId = (Long) session.getAttribute("userId");
-        String role = (String) session.getAttribute("role");
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
         
-        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+        if (userId == null || roleObj == null) {
+            return "redirect:/login";
+        }
+        
+        // Handle both String and UserRole enum cases
+        String roleStr = null;
+        if (roleObj instanceof String) {
+            roleStr = (String) roleObj;        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+        }
+        
+        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
             return "redirect:/login";
         }
           QuestionFeedbackDetailDTO feedbackDetail = feedbackService.getFeedbackDetail(feedbackId, type);
@@ -172,16 +269,26 @@ public class SubjectLeaderController {
         
         return "subjectLeader/sl_FB_viewDetails";
     }
-    
-    // REST API endpoints
+      // REST API endpoints
     @GetMapping("/api/feedback")
     @ResponseBody
     public ResponseEntity<List<QuestionFeedbackDTO>> getFeedbackList(HttpSession session) {
         // For testing purpose, use hardcoded user ID
-        Long userId = (Long) session.getAttribute("userId");
-        String role = (String) session.getAttribute("role");
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
         
-        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+        if (userId == null || roleObj == null) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        // Handle both String and UserRole enum cases
+        String roleStr = null;
+        if (roleObj instanceof String) {
+            roleStr = (String) roleObj;        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+        }
+        
+        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
             return ResponseEntity.status(403).build();
         }
         
@@ -190,16 +297,26 @@ public class SubjectLeaderController {
         
         List<QuestionFeedbackDTO> feedbackList = feedbackService.getFeedbackForSubjectLeader(userId);
         return ResponseEntity.ok(feedbackList);
-    }
-      @GetMapping("/api/feedback/{feedbackId}")
+    }      @GetMapping("/api/feedback/{feedbackId}")
     @ResponseBody
     public ResponseEntity<QuestionFeedbackDetailDTO> getFeedbackDetail(@PathVariable Long feedbackId, 
                                                                       @RequestParam(required = false) String type,
                                                                       HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        String role = (String) session.getAttribute("role");
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
         
-        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+        if (userId == null || roleObj == null) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        // Handle both String and UserRole enum cases
+        String roleStr = null;
+        if (roleObj instanceof String) {
+            roleStr = (String) roleObj;
+        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();        }
+        
+        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
             return ResponseEntity.status(403).build();
         }
         
@@ -210,18 +327,28 @@ public class SubjectLeaderController {
         
         return ResponseEntity.ok(feedbackDetail);
     }
-    
-    @PostMapping("/api/feedback/{feedbackId}/update-question")
+      @PostMapping("/api/feedback/{feedbackId}/update-question")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> updateQuestion(
             @PathVariable Long feedbackId,
             @RequestBody Map<String, Object> questionData,
             HttpSession session) {
         
-        Long userId = (Long) session.getAttribute("userId");
-        String role = (String) session.getAttribute("role");
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
         
-        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+        if (userId == null || roleObj == null) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        // Handle both String and UserRole enum cases
+        String roleStr = null;
+        if (roleObj instanceof String) {
+            roleStr = (String) roleObj;        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+        }
+        
+        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
             return ResponseEntity.status(403).build();
         }
         
@@ -239,18 +366,28 @@ public class SubjectLeaderController {
                 .body(Map.of("success", false, "message", "Error updating question: " + e.getMessage()));
         }
     }
-    
-    @PostMapping("/api/feedback/{feedbackId}/assign")
+      @PostMapping("/api/feedback/{feedbackId}/assign")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> assignQuestion(
             @PathVariable Long feedbackId,
             @RequestBody Map<String, Object> assignmentData,
             HttpSession session) {
         
-        Long userId = (Long) session.getAttribute("userId");
-        String role = (String) session.getAttribute("role");
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
         
-        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+        if (userId == null || roleObj == null) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        // Handle both String and UserRole enum cases
+        String roleStr = null;
+        if (roleObj instanceof String) {
+            roleStr = (String) roleObj;        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+        }
+        
+        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
             return ResponseEntity.status(403).build();
         }
         
@@ -268,17 +405,27 @@ public class SubjectLeaderController {
                 .body(Map.of("success", false, "message", "Error assigning question: " + e.getMessage()));
         }
     }
-    
-    @PostMapping("/api/feedback/{feedbackId}/resubmit")
+      @PostMapping("/api/feedback/{feedbackId}/resubmit")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> resubmitQuestion(
             @PathVariable Long feedbackId,
             HttpSession session) {
         
-        Long userId = (Long) session.getAttribute("userId");
-        String role = (String) session.getAttribute("role");
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
         
-        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+        if (userId == null || roleObj == null) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        // Handle both String and UserRole enum cases
+        String roleStr = null;
+        if (roleObj instanceof String) {
+            roleStr = (String) roleObj;
+        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();        }
+        
+        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
             return ResponseEntity.status(403).build();
         }
         
@@ -296,13 +443,24 @@ public class SubjectLeaderController {
                 .body(Map.of("success", false, "message", "Error resubmitting question: " + e.getMessage()));
         }
     }    @GetMapping("/summary-report")
-    public String summaryReportPage(HttpSession session, Model model) {
-        // Long userId = 3L; // COMMENTED OUT - using session instead
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
+    public String summaryReportPage(org.springframework.security.core.Authentication authentication, Model model) {
+        // Check authentication first
+        if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
-        model.addAttribute("userId", userId);
+        
+        // Check if user has SL role
+        boolean isSL = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("SL") || auth.equals("ROLE_SL");
+                });
+        
+        if (!isSL) {
+            return "redirect:/login";
+        }
+        
+        model.addAttribute("userEmail", authentication.getName());
         return "subjectLeader/SL_SummaryReport";
     }
 

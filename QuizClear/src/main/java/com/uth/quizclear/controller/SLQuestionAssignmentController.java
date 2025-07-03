@@ -21,17 +21,52 @@ import java.util.Map;
 public class SLQuestionAssignmentController {
 
     /**
+     * Helper method to safely get userId from session
+     */
+    private Long getCurrentUserId(HttpSession session) {
+        Object userIdObj = session.getAttribute("userId");
+        if (userIdObj == null) {
+            return null;
+        }
+        
+        if (userIdObj instanceof Long) {
+            return (Long) userIdObj;
+        } else if (userIdObj instanceof String) {
+            try {
+                return Long.parseLong((String) userIdObj);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        } else if (userIdObj instanceof Integer) {
+            return ((Integer) userIdObj).longValue();
+        }
+        
+        return null;
+    }    /**
      * Display the question assignment page
      */
     @GetMapping
-    public String questionAssignmentPage(Model model, HttpSession session) {
+    public String questionAssignmentPage(Model model, org.springframework.security.core.Authentication authentication) {
         try {
-            // For testing purpose, use hardcoded user ID
-            Long userId = 3L;
+            // Check authentication first
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return "redirect:/login";
+            }
             
-            model.addAttribute("userId", userId);
+            // Check if user has SL role
+            boolean isSL = authentication.getAuthorities().stream()
+                    .anyMatch(a -> {
+                        String auth = a.getAuthority();
+                        return auth.equals("SL") || auth.equals("ROLE_SL");
+                    });
             
-            log.info("Displaying question assignment page for user: {}", userId);
+            if (!isSL) {
+                return "redirect:/login";
+            }
+            
+            model.addAttribute("userEmail", authentication.getName());
+            
+            log.info("Displaying question assignment page for user: {}", authentication.getName());
             return "subjectLeader/slQuesAssignment";
             
         } catch (Exception e) {
@@ -39,9 +74,7 @@ public class SLQuestionAssignmentController {
             model.addAttribute("error", "Unable to load question assignment page");
             return "error/500";
         }
-    }
-
-    /**
+    }/**
      * Get assignments with pagination and filters (AJAX)
      */
     @GetMapping("/api/assignments")
@@ -55,8 +88,13 @@ public class SLQuestionAssignmentController {
             HttpSession session) {
         
         try {
-            // For testing purpose, use hardcoded user ID
-            Long userId = 3L;
+            // Get user ID from session
+            Long userId = getCurrentUserId(session);
+            if (userId == null) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("error", "User not authenticated");
+                return ResponseEntity.status(403).body(errorResponse);
+            }
             
             Map<String, Object> response = new HashMap<>();
             response.put("assignments", java.util.Collections.emptyList());
@@ -73,9 +111,7 @@ public class SLQuestionAssignmentController {
             errorResponse.put("error", "Unable to retrieve assignments");
             return ResponseEntity.internalServerError().body(errorResponse);
         }
-    }
-
-    /**
+    }    /**
      * Create new assignment (AJAX)
      */
     @PostMapping("/api/assignments")
@@ -85,8 +121,14 @@ public class SLQuestionAssignmentController {
             HttpSession session) {
         
         try {
-            // For testing purpose, use hardcoded user ID
-            Long userId = 3L;
+            // Get user ID from session
+            Long userId = getCurrentUserId(session);
+            if (userId == null) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("success", false);
+                errorResponse.put("message", "User not authenticated");
+                return ResponseEntity.status(403).body(errorResponse);
+            }
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -103,9 +145,7 @@ public class SLQuestionAssignmentController {
             errorResponse.put("message", "Unable to create assignment");
             return ResponseEntity.internalServerError().body(errorResponse);
         }
-    }
-
-    /**
+    }    /**
      * Update assignment (AJAX)
      */
     @PutMapping("/api/assignments/{assignmentId}")
@@ -116,8 +156,14 @@ public class SLQuestionAssignmentController {
             HttpSession session) {
         
         try {
-            // For testing purpose, use hardcoded user ID
-            Long userId = 3L;
+            // Get user ID from session
+            Long userId = getCurrentUserId(session);
+            if (userId == null) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("success", false);
+                errorResponse.put("message", "User not authenticated");
+                return ResponseEntity.status(403).body(errorResponse);
+            }
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -133,9 +179,7 @@ public class SLQuestionAssignmentController {
             errorResponse.put("message", "Unable to update assignment");
             return ResponseEntity.internalServerError().body(errorResponse);
         }
-    }
-
-    /**
+    }    /**
      * Delete assignment (AJAX)
      */
     @DeleteMapping("/api/assignments/{assignmentId}")
@@ -145,8 +189,14 @@ public class SLQuestionAssignmentController {
             HttpSession session) {
         
         try {
-            // For testing purpose, use hardcoded user ID
-            Long userId = 3L;
+            // Get user ID from session
+            Long userId = getCurrentUserId(session);
+            if (userId == null) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("success", false);
+                errorResponse.put("message", "User not authenticated");
+                return ResponseEntity.status(403).body(errorResponse);
+            }
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);

@@ -649,12 +649,12 @@ public class WebPageController {
         }
         model.addAttribute("userEmail", authentication.getName());
         return "Lecturer/lecturerFeedback";
-    }
-
-    @GetMapping("/lecturer/feedback")
+    }    @GetMapping("/lecturer/feedback")
     public String lecturerFeedbackAlias(org.springframework.security.core.Authentication authentication, Model model) {
         return lecturerFeedback(authentication, model);
-    }    // ========== STAFF API ENDPOINTS ==========
+    }
+
+    // ========== STAFF API ENDPOINTS ==========
     
     @GetMapping("/api/staff/scope")
     @ResponseBody
