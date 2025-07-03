@@ -168,9 +168,11 @@ body {
     margin-top: 0.25rem; /* 4px */
 }
 
+/* Status badges for activities */
 .status-btn-a,
 .status-btn-p,
-.status-btn-r {
+.status-btn-r,
+.status-btn-d {
     padding: 0.3125rem 0.75rem; /* 5px 12px */
     border-radius: 1rem; /* 16px */
     font-size: 0.8125rem; /* 13px */
@@ -180,15 +182,40 @@ body {
 }
 
 .status-btn-a {
-    background-color: #69c081;
+    background-color: #69c081; /* Approved - Green */
 }
 
 .status-btn-p {
-    background-color: #f7b731;
+    background-color: #f7b731; /* Pending - Yellow */
 }
 
 .status-btn-r {
-    background-color: #ff5e57;
+    background-color: #ff5e57; /* Rejected - Red */
+}
+
+.status-btn-d {
+    background-color: #6c757d; /* Draft - Gray */
+}
+
+/* Additional utility classes */
+.no-data {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 2rem;
+}
+
+.error {
+    text-align: center;
+    color: #dc3545;
+    font-weight: 500;
+    padding: 2rem;
+}
+
+.loading-placeholder {
+    text-align: center;
+    color: #6c757d;
+    padding: 2rem;
 }
 
 .date {
