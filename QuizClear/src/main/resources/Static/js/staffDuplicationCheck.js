@@ -7,7 +7,8 @@ const API_URLS = {
     statContent: '/staff/stat-content',
     logContent: '/staff/log-content',
     dupDetails: '/staff/dup-details', // Update this to match the new route
-    logDetails: '/api/staff/duplications' // Consider aligning with a specific log endpoint
+    logDetails: '/api/staff/duplications', // Consider aligning with a specific log endpoint
+    processingLogs: '/api/staff/duplications/processing-logs'
 };
 
 function loadCSS(href) {
@@ -482,24 +483,109 @@ function filterLogs(search) {
 
 async function showLogDetails(logId) {
     try {
-        const response = await fetch(`${API_URLS.logDetails}/${logId.replace("L", "")}`, {
+        console.log('Loading log details for ID:', logId);
+        
+        // Load CSS for modal
+        loadCSS('/Static/css/staff/staffLogsModal.css');
+        
+        // Fetch log details from API
+        const response = await fetch(`/api/staff/duplications/processing-logs/${logId}`, {
             headers: { 'Accept': 'application/json' }
         });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);        const log = await response.json();
-        const modalContent = document.getElementById("logDetailContent");
-        modalContent.innerHTML = 
-            '<div class="info-row"><span class="info-label">Log ID:</span><span class="info-value">L' + log.id + '</span></div>' +
-            '<div class="info-row"><span class="info-label">New Question:</span><span class="info-value">' + (log.newQuestion?.content || 'N/A') + '</span></div>' +
-            '<div class="info-row"><span class="info-label">Similar Question:</span><span class="info-value">' + log.similarQuestion.content + '</span></div>' +
-            '<div class="info-row"><span class="info-label">Similarity:</span><span class="info-value">' + (log.similarityScore * 100).toFixed(1) + '%</span></div>' +
-            '<div class="info-row"><span class="info-label">Action:</span><span class="info-value">' + (log.action || 'N/A') + '</span></div>' +
-            '<div class="info-row"><span class="info-label">Processor:</span><span class="info-value">' + (log.processedBy?.name || 'N/A') + '</span></div>' +
-            '<div class="info-row"><span class="info-label">Date:</span><span class="info-value">' + (log.processedAt ? new Date(log.processedAt).toLocaleString() : 'N/A') + '</span></div>' +
-            '<div class="info-row"><span class="info-label">Feedback:</span><span class="info-value">' + (log.feedback || 'N/A') + '</span></div>';
-        document.getElementById("logDetailModal").style.display = "flex";
+        
+        if (!response.ok) {
+            throw new Error(`Failed to load log details: ${response.status}`);
+        }
+        
+        const log = await response.json();
+        
+        // Create modal with CSS classes
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Processing Log Details</h3>
+                    <button class="close-btn" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="detail-row">
+                        <label>Log ID:</label>
+                        <span>${log.logId || 'N/A'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <label>Processed At:</label>
+                        <span>${log.processedAt ? new Date(log.processedAt).toLocaleString() : 'N/A'}</span>
+                    </div>
+                    <div class="detail-row full-width">
+                        <label>Question:</label>
+                        <div class="question-content">${log.newQuestion || 'Question content not available'}</div>
+                    </div>
+                    <div class="detail-row full-width">
+                        <label>Duplicate:</label>
+                        <div class="question-content">${log.similarQuestion || 'Question content not available'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <label>Similarity:</label>
+                        <span>${log.similarity || 'N/A'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <label>Action:</label>
+                        <span class="action-badge ${(log.action || '').toLowerCase()}">${log.action || 'UNKNOWN'}</span>
+                    </div>
+                    <div class="detail-row full-width">
+                        <label>Reason:</label>
+                        <div class="feedback-content">${log.feedback || 'No reason provided'}</div>
+                    </div>
+                    <div class="detail-row full-width">
+                        <label>Feedback:</label>
+                        <div class="feedback-content">${log.feedback || 'No feedback provided'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <label>Processor:</label>
+                        <span>${log.processorName || 'Unknown'}</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Close</button>
+                </div>
+            </div>
+        `;
+        
+        // Close modal when clicking outside
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+        
+        document.body.appendChild(modal);
+        
     } catch (err) {
         console.error('Error loading log details:', err);
         alert('Failed to load log details: ' + err.message);
+    }
+}
+
+// Handle URL parameters for tab selection
+function handleURLParameters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    
+    if (tabParam) {
+        const tab = document.querySelector(`.tab[data-tab="${tabParam}"]`);
+        if (tab) {
+            console.log(`Loading tab from URL parameter: ${tabParam}`);
+            handleTabClick(tab);
+            return;
+        }
+    }
+    
+    // Load default tab if no valid tab parameter
+    const firstTab = document.querySelector('.tab');
+    if (firstTab) {
+        console.log("Loading default first tab:", firstTab.dataset?.tab);
+        handleTabClick(firstTab);
     }
 }
 
@@ -604,7 +690,7 @@ async function loadDuplicationDetails(detectionId) {
             tabContent.innerHTML = html;
             
             // Load the staffDupDetails CSS
-            loadCSS('/css/staff/staffDupDetails.css');
+            loadCSS('/Static/css/staff/staffDupDetails.css');
             
             // Mark that we're in details view
             window._inDetailsView = true;
@@ -1063,7 +1149,7 @@ function goBackToDetectionList() {
             })
             .then((html) => {
                 contentArea.innerHTML = html;
-                loadCSS("/css/staff/staffDup.css");
+                loadCSS("/Static/css/staff/staffDup.css");
                   // Bind events for the loaded content
                 bindFilterEvents();
                 
@@ -1330,6 +1416,9 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             console.warn("No tabs found on page load");
         }
+        
+        // Handle URL parameters for tab selection
+        handleURLParameters();
     } catch (error) {
         console.error("Error during DOMContentLoaded:", error);
     }
@@ -1343,18 +1432,36 @@ window.viewDuplication = viewDuplication;
 // Load processing logs
 async function loadProcessingLogs() {
     try {
-        console.log('Loading processing logs...');
-        const response = await fetch('/api/staff/duplications/processing-logs');
+        console.log('=== LOADING PROCESSING LOGS ===');
+        console.log('API URL:', API_URLS.processingLogs);
+        
+        const response = await fetch(API_URLS.processingLogs, {
+            cache: 'no-cache',
+            headers: { 
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Accept': 'application/json'
+            }
+        });
+        
+        console.log('Processing logs response status:', response.status);
+        console.log('Processing logs response ok:', response.ok);
         
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorText = await response.text();
+            console.error('Processing logs API error:', errorText);
+            throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
         }
         
         const logs = await response.json();
-        console.log('Processing logs loaded:', logs.length, 'entries');
+        console.log('=== PROCESSING LOGS DATA ===');
+        console.log('Total logs received:', logs.length);
+        console.log('First log (if any):', logs.length > 0 ? logs[0] : 'No logs');
+        console.log('All logs:', JSON.stringify(logs, null, 2));
         
         displayProcessingLogs(logs);
     } catch (error) {
+        console.error('=== PROCESSING LOGS ERROR ===');
         console.error('Error loading processing logs:', error);
         showProcessingLogsError('Failed to load processing logs: ' + error.message);
     }
@@ -1496,7 +1603,8 @@ function exportLogs() {
     const csvData = [headers.join(',')];
     
     rows.forEach(row => {
-        const cells = row.querySelectorAll('td');        if (cells.length >= 7) { // Skip details column
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 7) { // Skip details column
             const rowData = Array.from(cells).slice(0, 7).map(cell => 
                 '"' + cell.textContent.trim().replace(/"/g, '""') + '"'
             );
@@ -1513,174 +1621,3 @@ function exportLogs() {
     link.click();
     window.URL.revokeObjectURL(url);
 }
-
-// Show log details function - Enhanced version
-async function showLogDetails(logId) {
-    try {
-        console.log('Loading details for log:', logId);
-        
-        // Fetch detailed log information
-        const response = await fetch(`/api/staff/duplications/processing-logs`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const logs = await response.json();
-        const log = logs.find(l => l.logId === logId);
-        
-        if (!log) {
-            throw new Error('Log not found');
-        }
-        
-        // Create simple modal content like in the image
-        const modalContent = `
-            <div class="simple-log-modal">
-                <div class="modal-header">
-                    <h3>Processing Log Details</h3>
-                    <button class="close-btn" onclick="closeLogDetailModal()">×</button>
-                </div>
-                
-                <div class="modal-body">
-                    <div class="detail-row">
-                        <span class="label">Log ID:</span>
-                        <span class="value">${log.logId}</span>
-                    </div>
-                    
-                    <div class="detail-row">
-                        <span class="label">Processed At:</span>
-                        <span class="value">${formatDateTime(log.processedAt)}</span>
-                    </div>
-                    
-                    <div class="detail-row">
-                        <span class="label">Question:</span>
-                        <span class="value">${log.newQuestion || 'N/A'}</span>
-                    </div>
-                    
-                    <div class="detail-row">
-                        <span class="label">Duplicate:</span>
-                        <span class="value">${log.similarQuestion || 'N/A'}</span>
-                    </div>
-                    
-                    <div class="detail-row">
-                        <span class="label">Similarity:</span>
-                        <span class="value">${log.similarity}</span>
-                    </div>
-                    
-                    <div class="detail-row">
-                        <span class="label">Action:</span>
-                        <span class="value">${log.action || 'N/A'}</span>
-                    </div>
-                    
-                    <div class="detail-row">
-                        <span class="label">Reason:</span>
-                        <span class="value">High semantic similarity with existing question</span>
-                    </div>
-                    
-                    <div class="detail-row">
-                        <span class="label">Feedback:</span>
-                        <span class="value">${log.feedback || 'N/A'}</span>
-                    </div>
-                    
-                    <div class="detail-row">
-                        <span class="label">Processor:</span>
-                        <span class="value">${log.processorName || 'N/A'}</span>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        // Show modal
-        showLogDetailModal(modalContent);
-        
-    } catch (error) {
-        console.error('Error loading log details:', error);
-        alert('Failed to load log details: ' + error.message);
-    }
-}
-
-// Helper function to show the modal
-function showLogDetailModal(content) {
-    // Remove existing modal if any
-    const existingModal = document.getElementById('logDetailModal');
-    if (existingModal) {
-        existingModal.remove();
-    }
-    
-    // Create modal
-    const modal = document.createElement('div');
-    modal.id = 'logDetailModal';
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `
-        <div class="modal-content log-detail-modal-content">
-            ${content}
-        </div>
-    `;
-    
-    // Add modal styles
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    `;
-    
-    // Add to document
-    document.body.appendChild(modal);
-    
-    // Close modal when clicking outside
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeLogDetailModal();
-        }
-    });
-    
-    // Close modal with Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeLogDetailModal();
-        }
-    });
-}
-
-// Close modal function
-function closeLogDetailModal() {
-    const modal = document.getElementById('logDetailModal');
-    if (modal) {
-        modal.remove();
-    }
-    
-    // Remove escape key listener
-    document.removeEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeLogDetailModal();
-        }
-    });
-}
-
-// Format date time helper
-function formatDateTime(dateTimeStr) {
-    if (!dateTimeStr) return 'N/A';
-    
-    try {
-        const date = new Date(dateTimeStr);
-        return date.toLocaleString('en-CA', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false
-        }).replace(',', '');
-    } catch (e) {
-        return dateTimeStr;
-    }
-}
-
-// End of processing logs functions

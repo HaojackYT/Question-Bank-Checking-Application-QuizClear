@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing Log Details</title>
+    <link rel="stylesheet" th:href="@{/Static/css/staff/staffLogDetails.css}">
+    <script th:src="@{/Static/js/staffLogDetails.js}"></script>
+</head>
+<body>
+    <div class="log-details-container">
+        <div class="log-header">
+            <h2>Processing Log Details</h2>
+            <button class="back-btn" onclick="goBackToLogsList()">
+                <span>←</span> Back to Logs
+            </button>
+        </div>
+
+        <div class="log-content">
+            <div class="log-info-card">
+                <h3>Processing Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Log ID:</label>
+                        <span id="log-id" class="info-value">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Action Taken:</label>
+                        <span id="log-action" class="info-value action-badge">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Processed By:</label>
+                        <span id="log-processor" class="info-value">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Processed At:</label>
+                        <span id="log-date" class="info-value">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="questions-comparison">
+                <h3>Question Comparison</h3>
+                <div class="comparison-grid">
+                    <div class="question-card new-question">
+                        <h4>New Question</h4>
+                        <div class="question-content">
+                            <div class="question-text" id="new-question-content">
+                                Loading...
+                            </div>
+                            <div class="question-meta">
+                                <div class="meta-item">
+                                    <label>Course:</label>
+                                    <span id="new-question-course">-</span>
+                                </div>
+                                <div class="meta-item">
+                                    <label>Created by:</label>
+                                    <span id="new-question-creator">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="similarity-indicator">
+                        <div class="similarity-score" id="similarity-score">
+                            <span class="percentage">-</span>
+                            <span class="label">Similarity</span>
+                        </div>
+                        <div class="similarity-bar">
+                            <div class="similarity-fill" id="similarity-fill"></div>
+                        </div>
+                    </div>
+
+                    <div class="question-card similar-question">
+                        <h4>Similar Question</h4>
+                        <div class="question-content">
+                            <div class="question-text" id="similar-question-content">
+                                Loading...
+                            </div>
+                            <div class="question-meta">
+                                <div class="meta-item">
+                                    <label>Course:</label>
+                                    <span id="similar-question-course">-</span>
+                                </div>
+                                <div class="meta-item">
+                                    <label>Created by:</label>
+                                    <span id="similar-question-creator">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="processing-details">
+                <h3>Processing Details</h3>
+                <div class="details-card">
+                    <div class="detail-item">
+                        <label>Feedback/Reason:</label>
+                        <div class="feedback-content" id="log-feedback">
+                            No feedback provided
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <label>Full Activity Log:</label>
+                        <div class="activity-content" id="log-activity">
+                            Loading activity details...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-summary">
+                <h3>Action Summary</h3>
+                <div class="summary-card" id="action-summary-card">
+                    <div class="summary-icon" id="summary-icon">
+                        <span>?</span>
+                    </div>
+                    <div class="summary-text">
+                        <h4 id="summary-title">Processing Result</h4>
+                        <p id="summary-description">Loading summary...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="log-actions">
+            <button class="btn-secondary" onclick="goBackToLogsList()">
+                Close
+            </button>
+            <button class="btn-primary" onclick="exportLogDetails()">
+                Export Details
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript functions will be added by the main staffDuplicationCheck.js
+        function goBackToLogsList() {
+            // This will be implemented in the main JS file
+            if (window.goBackToProcessingLogs) {
+                window.goBackToProcessingLogs();
+            } else {
+                console.log('Going back to logs list...');
+                // Fallback - reload the logs tab
+                window.location.reload();
+            }
+        }
+
+        function exportLogDetails() {
+            // Export current log details as PDF or text
+            const logData = {
+                logId: document.getElementById('log-id').textContent,
+                action: document.getElementById('log-action').textContent,
+                processor: document.getElementById('log-processor').textContent,
+                date: document.getElementById('log-date').textContent,
+                similarity: document.getElementById('similarity-score').querySelector('.percentage').textContent,
+                newQuestion: document.getElementById('new-question-content').textContent,
+                similarQuestion: document.getElementById('similar-question-content').textContent,
+                feedback: document.getElementById('log-feedback').textContent
+            };
+
+            const content = `Processing Log Details\n\n` +
+                `Log ID: ${logData.logId}\n` +
+                `Action: ${logData.action}\n` +
+                `Processor: ${logData.processor}\n` +
+                `Date: ${logData.date}\n` +
+                `Similarity: ${logData.similarity}\n\n` +
+                `New Question: ${logData.newQuestion}\n\n` +
+                `Similar Question: ${logData.similarQuestion}\n\n` +
+                `Feedback: ${logData.feedback}`;
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `log_details_${logData.logId}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

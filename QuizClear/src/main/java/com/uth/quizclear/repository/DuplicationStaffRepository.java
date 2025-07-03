@@ -2,6 +2,7 @@ package com.uth.quizclear.repository;
 
 import com.uth.quizclear.model.entity.DuplicateDetection;
 import com.uth.quizclear.model.entity.Course;
+import com.uth.quizclear.model.enums.QuestionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -57,11 +58,11 @@ public interface DuplicationStaffRepository extends JpaRepository<DuplicateDetec
     @Transactional
     @Query(value = "DELETE FROM duplicate_detections WHERE new_question_id = :questionId OR similar_question_id = :questionId", nativeQuery = true)
     void deleteDuplicateDetectionsByQuestionId(@Param("questionId") Long questionId);
-      // Update question status
+      // Update question status - use enum value to ensure correct format
     @Modifying
     @Transactional
-    @Query(value = "UPDATE questions SET status = :status WHERE question_id = :questionId", nativeQuery = true)
-    void updateQuestionStatus(@Param("questionId") Long questionId, @Param("status") String status);
+    @Query(value = "UPDATE questions SET status = ?1 WHERE question_id = ?2", nativeQuery = true)
+    void updateQuestionStatus(String status, Long questionId);
     
     // Verification methods
     @Query(value = "SELECT COUNT(*) FROM duplicate_detections WHERE detection_id = :detectionId", nativeQuery = true)

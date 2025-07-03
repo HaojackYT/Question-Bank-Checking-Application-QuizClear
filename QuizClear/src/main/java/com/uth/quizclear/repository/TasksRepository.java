@@ -1,5 +1,6 @@
 package com.uth.quizclear.repository;
 
+import com.uth.quizclear.model.dto.LecTaskDTO;
 import com.uth.quizclear.model.entity.Tasks;
 import com.uth.quizclear.model.enums.TaskType;
 import com.uth.quizclear.model.enums.TaskStatus;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TasksRepository extends JpaRepository<Tasks, Integer> {
@@ -58,4 +60,70 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
         // Methods for Lecturer Dashboard
         List<Tasks> findByAssignedToAndStatusIn(com.uth.quizclear.model.entity.User assignedTo,
                         List<TaskStatus> statuses);
+
+
+        // Lec Task (for DEBUG)
+        @Query("""
+                SELECT new com.uth.quizclear.model.dto.LecTaskDTO(
+                        t.taskId,
+                        c.courseName,
+                        t.description,
+                        t.dueDate,
+                        t.status,
+                        p.planId,
+                        p.totalQuestions,
+                        p.totalRecognition,
+                        p.totalComprehension,
+                        p.totalBasicApplication,
+                        p.totalAdvancedApplication
+                )
+                FROM Tasks t
+                JOIN t.plan p
+                JOIN t.course c
+                """)
+        List<LecTaskDTO> getAllTasksWithPlan();
+
+        // Lec Task by ID
+        @Query("""
+                SELECT new com.uth.quizclear.model.dto.LecTaskDTO(
+                        t.taskId,
+                        c.courseName,
+                        t.description,
+                        t.dueDate,
+                        t.status,
+                        p.planId,
+                        p.totalQuestions,
+                        p.totalRecognition,
+                        p.totalComprehension,
+                        p.totalBasicApplication,
+                        p.totalAdvancedApplication
+                )
+                FROM Tasks t
+                JOIN t.plan p
+                JOIN t.course c
+                WHERE t.assignedTo.userId = :userId
+                """)
+        List<LecTaskDTO> getTasksByUserId(@Param("userId") Long userId);
+        
+        // Get Task Detail by ID
+        @Query("""
+                SELECT new com.uth.quizclear.model.dto.LecTaskDTO(
+                        t.taskId,
+                        c.courseName,
+                        t.description,
+                        t.dueDate,
+                        t.status,
+                        p.planId,
+                        p.totalQuestions,
+                        p.totalRecognition,
+                        p.totalComprehension,
+                        p.totalBasicApplication,
+                        p.totalAdvancedApplication
+                )
+                FROM Tasks t
+                JOIN t.plan p
+                JOIN t.course c
+                WHERE t.taskId = :taskId
+        """)
+        Optional<LecTaskDTO> findTaskDTOById(@Param("taskId") Integer taskId);
 }
