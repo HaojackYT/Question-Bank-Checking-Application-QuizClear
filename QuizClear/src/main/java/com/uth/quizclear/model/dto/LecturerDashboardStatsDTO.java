@@ -14,10 +14,4 @@ public class LecturerDashboardStatsDTO {
     private long questionApproved;
     private long questionReturned;
     private long questionPending;
-
-    // Change indicators (percentage change from previous period)
-    private Double submittedChange;
-    private Double approvedChange;
-    private Double returnedChange;
-    private Double pendingChange;
 }

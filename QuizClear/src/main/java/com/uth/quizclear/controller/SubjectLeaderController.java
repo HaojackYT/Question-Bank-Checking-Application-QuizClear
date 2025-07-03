@@ -37,8 +37,12 @@ public class SubjectLeaderController {
     // View pages
     @GetMapping("/dashboard")
     public String dashboardPage(HttpSession session, Model model) {
-        // For testing purpose, use hardcoded user ID
-        Long userId = 3L;
+        // Get user ID from session
+        Long userId = (Long) session.getAttribute("userId");
+        
+        if (userId == null) {
+            return "redirect:/login";
+        }
         
         model.addAttribute("userId", userId);
         
@@ -47,7 +51,11 @@ public class SubjectLeaderController {
     
     @GetMapping("/plans")
     public String plansPage(HttpSession session, Model model) {
-        Long userId = 3L;
+        // Long userId = 3L; // COMMENTED OUT - using session instead
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
         // Load list of plans for the subject leader
         List<SL_PlanDTO> plans = planService.getSLPlan();
         if (plans == null || plans.isEmpty()) {
@@ -60,7 +68,11 @@ public class SubjectLeaderController {
     
     @GetMapping("/exam-assignment")
     public String examAssignmentPage(HttpSession session, Model model) {
-        Long userId = 3L;
+        // Long userId = 3L; // COMMENTED OUT - using session instead
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
         model.addAttribute("userId", userId);
         return "subjectLeader/SLExamAssignment";
     }
@@ -68,7 +80,11 @@ public class SubjectLeaderController {
     @GetMapping("/review-approval")
     public String reviewApprovalPage(HttpSession session, Model model) {
         // For testing purpose, use hardcoded user ID
-        Long userId = 3L;
+        // Long userId = 3L; // COMMENTED OUT - using session instead
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
         
         // Add any required data for the review approval page
         // This can be expanded based on your business logic
@@ -80,7 +96,11 @@ public class SubjectLeaderController {
     @GetMapping("/review-approval/details/{id}")
     public String reviewApprovalDetailPage(@PathVariable Long id, HttpSession session, Model model) {
         // For testing purpose, use hardcoded user ID
-        Long userId = 3L;
+        // Long userId = 3L; // COMMENTED OUT - using session instead
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
         
         // Add logic to fetch review approval details by id
         model.addAttribute("taskId", id);
@@ -92,15 +112,15 @@ public class SubjectLeaderController {
     @GetMapping("/feedback")
     public String feedbackPage(HttpSession session, Model model) {
         // For testing purpose, use hardcoded user ID
-        // Long userId = (Long) session.getAttribute("userId");
-        // String role = (String) session.getAttribute("role");
+        Long userId = (Long) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
         
-        // if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
-        //     return "redirect:/login";
-        // }
+        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+            return "redirect:/login";
+        }
         
         // Hardcode for testing - Subject Leader with ID 3 (Brian Carter from Physics department)
-        Long userId = 3L;
+        // Long userId = 3L; // COMMENTED OUT - using session instead
         
         // Get feedback list for the subject leader's department
         List<QuestionFeedbackDTO> feedbackList = feedbackService.getFeedbackForSubjectLeader(userId);
@@ -113,12 +133,12 @@ public class SubjectLeaderController {
                                    @RequestParam(required = false) String type,
                                    HttpSession session, Model model) {
         // For testing purpose, use hardcoded user ID
-        // Long userId = (Long) session.getAttribute("userId");
-        // String role = (String) session.getAttribute("role");
+        Long userId = (Long) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
         
-        // if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
-        //     return "redirect:/login";
-        // }
+        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+            return "redirect:/login";
+        }
         
         QuestionFeedbackDetailDTO feedbackDetail = feedbackService.getFeedbackDetail(feedbackId, type);
         if (feedbackDetail == null) {
@@ -136,12 +156,12 @@ public class SubjectLeaderController {
                                                 @RequestParam(required = false) String type,
                                                 HttpSession session, Model model) {
         // For testing purpose, use hardcoded user ID  
-        // Long userId = (Long) session.getAttribute("userId");
-        // String role = (String) session.getAttribute("role");
+        Long userId = (Long) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
         
-        // if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
-        //     return "redirect:/login";
-        // }
+        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+            return "redirect:/login";
+        }
           QuestionFeedbackDetailDTO feedbackDetail = feedbackService.getFeedbackDetail(feedbackId, type);
         if (feedbackDetail == null) {
             return "redirect:/subject-leader/feedback";
@@ -158,15 +178,15 @@ public class SubjectLeaderController {
     @ResponseBody
     public ResponseEntity<List<QuestionFeedbackDTO>> getFeedbackList(HttpSession session) {
         // For testing purpose, use hardcoded user ID
-        // Long userId = (Long) session.getAttribute("userId");
-        // String role = (String) session.getAttribute("role");
+        Long userId = (Long) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
         
-        // if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
-        //     return ResponseEntity.status(403).build();
-        // }
+        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+            return ResponseEntity.status(403).build();
+        }
         
         // Hardcode for testing - Subject Leader with ID 3 (Brian Carter from Physics department)
-        Long userId = 3L;
+        // Long userId = 3L; // COMMENTED OUT - using session instead
         
         List<QuestionFeedbackDTO> feedbackList = feedbackService.getFeedbackForSubjectLeader(userId);
         return ResponseEntity.ok(feedbackList);
@@ -176,12 +196,12 @@ public class SubjectLeaderController {
     public ResponseEntity<QuestionFeedbackDetailDTO> getFeedbackDetail(@PathVariable Long feedbackId, 
                                                                       @RequestParam(required = false) String type,
                                                                       HttpSession session) {
-        // Long userId = (Long) session.getAttribute("userId");
-        // String role = (String) session.getAttribute("role");
+        Long userId = (Long) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
         
-        // if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
-        //     return ResponseEntity.status(403).build();
-        // }
+        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+            return ResponseEntity.status(403).build();
+        }
         
         QuestionFeedbackDetailDTO feedbackDetail = feedbackService.getFeedbackDetail(feedbackId, type);
         if (feedbackDetail == null) {
@@ -198,14 +218,14 @@ public class SubjectLeaderController {
             @RequestBody Map<String, Object> questionData,
             HttpSession session) {
         
-        // Long userId = (Long) session.getAttribute("userId");
-        // String role = (String) session.getAttribute("role");
+        Long userId = (Long) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
         
-        // if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
-        //     return ResponseEntity.status(403).build();
-        // }
+        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+            return ResponseEntity.status(403).build();
+        }
         
-        Long userId = 3L; // Hardcode for testing
+        // Long userId = 3L; // Hardcode for testing - COMMENTED OUT
         
         try {
             boolean success = feedbackService.updateQuestion(feedbackId, questionData, userId);
@@ -227,14 +247,14 @@ public class SubjectLeaderController {
             @RequestBody Map<String, Object> assignmentData,
             HttpSession session) {
         
-        // Long userId = (Long) session.getAttribute("userId");
-        // String role = (String) session.getAttribute("role");
+        Long userId = (Long) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
         
-        // if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
-        //     return ResponseEntity.status(403).build();
-        // }
+        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+            return ResponseEntity.status(403).build();
+        }
         
-        Long userId = 3L; // Hardcode for testing
+        // Long userId = 3L; // Hardcode for testing - COMMENTED OUT
         
         try {
             boolean success = feedbackService.assignQuestion(feedbackId, assignmentData, userId);
@@ -255,14 +275,14 @@ public class SubjectLeaderController {
             @PathVariable Long feedbackId,
             HttpSession session) {
         
-        // Long userId = (Long) session.getAttribute("userId");
-        // String role = (String) session.getAttribute("role");
+        Long userId = (Long) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
         
-        // if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
-        //     return ResponseEntity.status(403).build();
-        // }
+        if (userId == null || role == null || !"SL".equalsIgnoreCase(role)) {
+            return ResponseEntity.status(403).build();
+        }
         
-        Long userId = 3L; // Hardcode for testing
+        // Long userId = 3L; // Hardcode for testing - COMMENTED OUT
         
         try {
             boolean success = feedbackService.resubmitQuestion(feedbackId, userId);
@@ -277,7 +297,11 @@ public class SubjectLeaderController {
         }
     }    @GetMapping("/summary-report")
     public String summaryReportPage(HttpSession session, Model model) {
-        Long userId = 3L;
+        // Long userId = 3L; // COMMENTED OUT - using session instead
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
         model.addAttribute("userId", userId);
         return "subjectLeader/SL_SummaryReport";
     }

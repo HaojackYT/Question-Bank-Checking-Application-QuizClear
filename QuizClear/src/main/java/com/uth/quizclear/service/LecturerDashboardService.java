@@ -52,22 +52,11 @@ public class LecturerDashboardService {
         long rejectedQuestions = questionRepository.countByCreatedByAndStatus(lecturer, QuestionStatus.REJECTED);
         long pendingQuestions = questionRepository.countByCreatedByAndStatus(lecturer, QuestionStatus.DRAFT);
 
-        // For now, we'll set meaningful change indicators based on current data
-        // In real implementation, you would compare with previous period data
-        Double submittedChange = submittedQuestions > 0 ? 10.0 : 0.0; // Demo: +10% for submitted
-        Double approvedChange = approvedQuestions > 0 ? 15.0 : 0.0; // Demo: +15% for approved
-        Double returnedChange = rejectedQuestions > 0 ? -5.0 : 0.0; // Demo: -5% for returned
-        Double pendingChange = pendingQuestions > 0 ? 8.0 : 0.0; // Demo: +8% for pending
-
         return LecturerDashboardStatsDTO.builder()
                 .questionSubmitted(submittedQuestions)
                 .questionApproved(approvedQuestions)
                 .questionReturned(rejectedQuestions)
                 .questionPending(pendingQuestions)
-                .submittedChange(submittedChange)
-                .approvedChange(approvedChange)
-                .returnedChange(returnedChange)
-                .pendingChange(pendingChange)
                 .build();
     }
 

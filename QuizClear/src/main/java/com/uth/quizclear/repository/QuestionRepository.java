@@ -144,4 +144,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
       @Param("difficulty") DifficultyLevel difficulty);
 
   long countByTaskIdAndStatus(Integer taskId, QuestionStatus status);
+
+  @Query("SELECT q.questionId FROM Question q WHERE q.course.courseId IN :courseIds")
+  List<Long> findQuestionIdsByCourseIds(@Param("courseIds") List<Long> courseIds);
 }
