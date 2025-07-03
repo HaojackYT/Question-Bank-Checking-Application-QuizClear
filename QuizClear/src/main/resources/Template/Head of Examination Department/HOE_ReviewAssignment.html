@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
     <link rel="stylesheet" th:href="@{/Static/header.css}">
     <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
     <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
-    <link rel="stylesheet" th:href="@{/Static/css/HOE/HOE_ReviewAssignment .css}">
+    <link rel="stylesheet" th:href="@{/Static/css/HOE/HOE_ReviewAssignment.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <title>Review_Assignment</title>
 </head>
 
-<body>    <!--header-->
+<body> <!--header-->
     <div th:insert="~{header_user :: header}"></div>
 
     <!-- body -->
-    <div id="Container-body">        <!-- Menu -->
+    <div id="Container-body"> <!-- Menu -->
         <div th:insert="~{Head of Examination Department/Menu-ExaminationDepartment :: menu}"></div>
 
         <!-- Main content -->
@@ -46,7 +47,7 @@
                             </select>
                             <i class="fas fa-chevron-down"></i>
                         </div>
-                    </div>                    <button class="new-assign-btn" th:onclick="|location.href='@{/hoe-new-assign}'|">
+                    </div> <button class="new-assign-btn" th:onclick="|location.href='@{/hoe-new-assign}'|">
                         <i class="fas fa-plus"></i> New Assign
                     </button>
                 </div>
@@ -65,32 +66,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>DB202</td>
-                                <td>Database Systems</td>
-                                <td>Ng Van A</td>
-                                <td>12/04/25</td>
-                                <td>22/04/25</td>
-                                <td><span class="status completed">Completed</span></td>
-                                <td class="actions">
-                                    <button class="action-btn edit-btn">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn delete-btn">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                            <tr th:each="review : ${reviews}">
+                                <td th:text="${review.exam.examCode}">Loading</td>
+                                <td th:text="${review.exam.examTitle}">Loading</td>
+                                <td th:text="${review.reviewer.fullName}">Loading</td>
+                                <td th:text="${#temporals.format(review.createdAt, 'dd/MM/yy')}">__/__/__</td>
+                                <td th:text="${#temporals.format(review.dueDate, 'dd/MM/yy')}">__/__/__</td>
+                                <td>
+                                    <span
+                                        th:class="'status ' + ${#strings.replace(review.status.name().toLowerCase(), '_', '-')}"
+                                        th:text="${review.status.name()}">Loading</span>
+
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>DB202</td>
-                                <td>Operating Systems</td>
-                                <td>Ng Van B</td>
-                                <td>13/04/25</td>
-                                <td>23/04/25</td>
-                                <td><span class="status in-progress">In
-                                        Progress</span></td>
                                 <td class="actions">
-                                    <button class="action-btn edit-btn">
+                                    <button class="action-btn edit-btn"
+                                        th:onclick="|location.href='@{/exam/edit/{id}(id=${review.exam.examId})}'|">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     <button class="action-btn delete-btn">
@@ -112,9 +102,10 @@
                 </div>
             </div>
         </div>
-    </div>    <!-- ma nhung header vs menu -->
+    </div>
     <script>
-    </script>        <script th:src="@{/Static/js/L_activeMenu.js}"></script>
+    </script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
 </html>

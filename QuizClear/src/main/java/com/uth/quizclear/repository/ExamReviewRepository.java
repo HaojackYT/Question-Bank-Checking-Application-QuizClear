@@ -1,15 +1,16 @@
 package com.uth.quizclear.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.uth.quizclear.model.dto.HoEDReviewExamDTO;
 import com.uth.quizclear.model.entity.ExamReview;
-import com.uth.quizclear.model.enums.ReviewType;
 import com.uth.quizclear.model.enums.ExamReviewStatus;
-
-import java.util.List;
+import com.uth.quizclear.model.enums.ReviewType;
 
 @Repository
 public interface ExamReviewRepository extends JpaRepository<ExamReview, Long> {
@@ -30,4 +31,34 @@ public interface ExamReviewRepository extends JpaRepository<ExamReview, Long> {
     @Query("SELECT er FROM ExamReview er WHERE er.reviewType = :reviewType AND er.exam.examTitle LIKE %:searchTerm%")
     List<ExamReview> findByReviewTypeAndExamTitleContaining(@Param("reviewType") ReviewType reviewType,
             @Param("searchTerm") String searchTerm);
+
+    @Query("""
+        SELECT new com.uth.quizclear.model.dto.HoEDReviewExamDTO(
+            er.reviewId, 
+            er.exam, 
+            er.reviewer, 
+            er.reviewType, 
+            er.status, 
+            er.comments, 
+            er.createdAt, 
+            er.dueDate) 
+        FROM ExamReview er
+        """)
+    List<HoEDReviewExamDTO> findAllReview();
+
+    @Query("""
+        SELECT new com.uth.quizclear.model.dto.HoEDReviewExamDTO(
+            er.reviewId,
+            er.exam,
+            er.reviewer,
+            er.reviewType,
+            er.status,
+            er.comments,
+            er.createdAt,
+            er.dueDate)
+        FROM ExamReview er
+        WHERE er.reviewType = :reviewType
+        """)
+    List<HoEDReviewExamDTO> findAllByReviewType(@Param("reviewType") ReviewType reviewType);
+
 }

@@ -196,17 +196,17 @@ INSERT INTO comments (entity_type, entity_id, commenter_id, content, created_at)
 ('question', 6, 1, 'Consider simplifying the language', '2025-03-10 12:00:00');
 
 -- 13. Thêm bản ghi vào bảng exam_reviews (chỉ cho exam_id 1, 2, 3 có sẵn)
-INSERT INTO exam_reviews (exam_id, reviewer_id, review_type, status, comments, created_at) VALUES
-(1, 2, 'SUBJECT_LEADER', 'APPROVED', 'Exam content aligns well with course objectives', '2025-03-01 13:00:00'),
-(2, 3, 'DEPARTMENT_HEAD', 'NEEDS_REVISION', 'Some questions need clarification', '2025-03-02 13:00:00'),
-(3, 4, 'EXAMINATION_DEPARTMENT', 'APPROVED', 'Format and structure are excellent', '2025-03-03 13:00:00'),
-(1, 5, 'SUBJECT_LEADER', 'PENDING', 'Under review for final approval', '2025-03-04 13:00:00'),
-(2, 1, 'DEPARTMENT_HEAD', 'APPROVED', 'Well-balanced difficulty levels', '2025-03-05 13:00:00'),
-(3, 2, 'EXAMINATION_DEPARTMENT', 'NEEDS_REVISION', 'Minor formatting issues', '2025-03-06 13:00:00'),
-(1, 3, 'SUBJECT_LEADER', 'APPROVED', 'Comprehensive assessment', '2025-03-07 13:00:00'),
-(2, 4, 'DEPARTMENT_HEAD', 'NEEDS_REVISION', 'Time allocation needs adjustment', '2025-03-08 13:00:00'),
-(3, 5, 'EXAMINATION_DEPARTMENT', 'PENDING', 'Awaiting final review', '2025-03-09 13:00:00'),
-(1, 1, 'SUBJECT_LEADER', 'APPROVED', 'Good variety of question types', '2025-03-10 13:00:00');
+INSERT INTO exam_reviews (exam_id, reviewer_id, review_type, status, comments, created_at, due_date) VALUES
+(1, 2, 'SUBJECT_LEADER', 'APPROVED', 'Exam content aligns well with course objectives', '2025-03-01 13:00:00', '2025-03-08 13:00:00'),
+(2, 3, 'DEPARTMENT_HEAD', 'NEEDS_REVISION', 'Some questions need clarification', '2025-03-02 13:00:00', '2025-03-09 13:00:00'),
+(3, 4, 'EXAMINATION_DEPARTMENT', 'APPROVED', 'Format and structure are excellent', '2025-03-03 13:00:00', '2025-03-10 13:00:00'),
+(2, 5, 'SUBJECT_LEADER', 'PENDING', 'Under review for final approval', '2025-03-04 13:00:00', '2025-03-11 13:00:00'),
+(1, 1, 'DEPARTMENT_HEAD', 'APPROVED', 'Well-balanced difficulty levels', '2025-03-05 13:00:00', '2025-03-12 13:00:00'),
+(3, 2, 'EXAMINATION_DEPARTMENT', 'NEEDS_REVISION', 'Minor formatting issues', '2025-03-06 13:00:00', '2025-03-13 13:00:00'),
+(3, 3, 'SUBJECT_LEADER', 'APPROVED', 'Comprehensive assessment', '2025-03-07 13:00:00', '2025-03-14 13:00:00'),
+(2, 4, 'DEPARTMENT_HEAD', 'NEEDS_REVISION', 'Time allocation needs adjustment', '2025-03-08 13:00:00', '2025-03-15 13:00:00'),
+(1, 5, 'EXAMINATION_DEPARTMENT', 'PENDING', 'Awaiting final review', '2025-03-09 13:00:00', '2025-03-16 13:00:00'),
+(1, 1, 'SUBJECT_LEADER', 'APPROVED', 'Good variety of question types', '2025-03-10 13:00:00', '2025-03-17 13:00:00');
 
 -- 14. Thêm 10 bản ghi vào bảng notifications
 INSERT INTO notifications (user_id, type, title, message, priority, created_at) VALUES

@@ -275,6 +275,7 @@ CREATE TABLE IF NOT EXISTS exam_reviews (
   status ENUM('pending', 'approved', 'rejected', 'needs_revision') DEFAULT 'pending',
   comments TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  due_date DATETIME DEFAULT NULL,
   FOREIGN KEY (exam_id) REFERENCES exams(exam_id),
   FOREIGN KEY (reviewer_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;

@@ -15,9 +15,16 @@ import java.util.Optional;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSpecificationExecutor<Question> {
-
   // Basic finders
   Optional<Question> findByContent(String content);
+    // Find by content containing (case-insensitive)
+  List<Question> findByContentContainingIgnoreCase(String content);
+  
+  // Find by subject/course name containing (case-insensitive)
+  @Query("SELECT q FROM Question q JOIN q.course c WHERE LOWER(c.courseName) LIKE LOWER(CONCAT('%', :subject, '%'))")
+  List<Question> findBySubjectContainingIgnoreCase(@Param("subject") String subject);
+    // Find by correct answer containing (case-insensitive)
+  List<Question> findByAnswerKeyContainingIgnoreCase(String answerKey);
 
   // Find by CLO
   List<Question> findByClo_CloId(Long cloId);
