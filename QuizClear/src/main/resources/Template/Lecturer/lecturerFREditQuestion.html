@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -39,10 +39,9 @@
             <!-- Feedback Section -->
             <div class="feedback-section">
                 <h2 class="feedback-title">Feedback</h2>
-                <p class="feedback-text">
+                <p class="feedback-text" th:text="${question.feedbackContent} ?: 'No feedback available'">
                     This question is too broad. Please make it more specific by asking about a particular normal form or
-                    a specific benefit of normalization. Also, the answer options need to be more distinct from each
-                    other.
+                    a specific benefit of normalization. Also, the answer options need to be more distinct from each other.
                 </p>
             </div>
 
@@ -51,21 +50,26 @@
                 <h2 class="section-title">Information</h2>
                 <p class="section-subtitle">Enter detailed information for the question</p>
 
-                <form>
+                <form id="edit-question-form">
+                    <input type="hidden" id="questionId" th:value="${question.questionId}">
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Subject <span class="required">(*)</span></label>
-                            <input type="text" class="form-input" id="subject" value="Mathematics" readonly>
+                            <input type="text" class="form-input" id="subject" th:value="${question.courseName}" readonly>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Difficulty Level <span class="required">(*)</span></label>
-                            <input type="text" class="form-input" id="difficulty" value="Easy" readonly>
+                            <input type="text" class="form-input" id="difficulty" th:value="${question.difficultyLevel == 'recognition' ? 'Remember' : 
+                                                                                              question.difficultyLevel == 'comprehension' ? 'Comprehension' : 
+                                                                                              question.difficultyLevel == 'basic_application' ? 'Basic Application' : 
+                                                                                              question.difficultyLevel == 'advanced_application' ? 'Advanced Application' : 
+                                                                                              question.difficultyLevel}" readonly>
                         </div>
                     </div>
 
                     <div class="form-group full-width">
                         <label class="form-label">Question Title</label>
-                        <input type="text" class="form-input" placeholder="The title question...">
+                        <input type="text" class="form-input" id="questionTitle" th:value="${question.questionContent}">
                     </div>
 
                     <!-- Duplicate Check -->
@@ -83,34 +87,34 @@
 
                     <div class="form-group">
                         <label class="form-label">Correct Answer <span class="required">(*)</span></label>
-                        <input type="text" class="form-input" placeholder="Enter the correct answer...">
+                        <input type="text" class="form-input" id="correctAnswer" th:value="${question.correctAnswer}">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Incorrect Answers <span class="required">(*)</span></label>
                         <div class="incorrect-answers">
-                            <input type="text" class="form-input" placeholder="Enter an incorrect answer...">
-                            <input type="text" class="form-input" placeholder="Enter an incorrect answer...">
-                            <input type="text" class="form-input" placeholder="Enter an incorrect answer...">
+                            <input type="text" class="form-input" id="incorrectAnswer1" th:value="${question.incorrectAnswer1}">
+                            <input type="text" class="form-input" id="incorrectAnswer2" th:value="${question.incorrectAnswer2}">
+                            <input type="text" class="form-input" id="incorrectAnswer3" th:value="${question.incorrectAnswer3}">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Correct answer explanation</label>
-                        <textarea class="form-input" rows="4" placeholder="Enter explanation here..."></textarea>
+                        <textarea class="form-input" id="explanation" rows="4" th:text="${question.explanation}"></textarea>
+                    </div>
+
+                    <!-- Footer -->
+                    <p class="footer-message">Check for similar questions before proceeding with submission</p>
+                    <div class="footer-button">
+                        <button type="button" class="save-draft">
+                            Save Draft <i class="fa-regular fa-floppy-disk"></i>
+                        </button>
+                        <button type="button" class="submit-button">
+                            Submit <i class="fas fa-paper-plane"></i>
+                        </button>
                     </div>
                 </form>
-            </div>
-
-            <!-- Footer -->
-            <p class="footer-message">Check for similar questions before proceeding with submission</p>
-            <div class="footer-button">
-                <button class="save-draft">
-                    Save Draft <i class="fa-regular fa-floppy-disk"></i>
-                </button>
-                <button class="submit-button">
-                    Submit <i class="fas fa-paper-plane"></i>
-                </button>
             </div>
         </div>
 
@@ -118,7 +122,9 @@
             document.addEventListener('DOMContentLoaded', () => {
                 const checkButton = document.querySelector('.check-button');
                 const statusText = document.querySelector('.status-text');
-                const questionTitleInput = document.querySelector('input[placeholder="The title question..."]');
+                const questionTitleInput = document.querySelector('#questionTitle');
+                const saveDraftButton = document.querySelector('.save-draft');
+                const submitButton = document.querySelector('.submit-button');
 
                 if (checkButton && statusText && questionTitleInput) {
                     checkButton.addEventListener('click', async () => {
@@ -134,7 +140,7 @@
                         statusText.textContent = 'Checking for duplicates...';
                         statusText.classList.remove('safety', 'warring', 'error');
 
-                        try {                            // Gọi API check duplicate
+                        try {
                             const response = await fetch('/lecturer/api/check-duplicate', {
                                 method: 'POST',
                                 headers: {
@@ -144,12 +150,11 @@
                             });
 
                             if (!response.ok) {
-                                throw new Error('Failed to check duplicates');
-                            }                            const data = await response.json();
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            const data = await response.json();
                             console.log('Duplicate check response:', data);
-                            console.log('Type of duplicatePercent:', typeof data.duplicatePercent);
-                            console.log('Value of duplicatePercent:', data.duplicatePercent);
-                            
+
                             const duplicatePercent = data.duplicatePercent;
 
                             // Null safety check
@@ -171,10 +176,9 @@
                                 statusText.textContent = `${duplicatePercent}% duplicated`;
                                 statusText.classList.add('error');
                             }
-
                         } catch (error) {
-                            console.error(error);
-                            statusText.textContent = 'Error checking duplicates.';
+                            console.error('Error checking duplicates:', error);
+                            statusText.textContent = `Error checking duplicates: ${error.message}`;
                             statusText.classList.add('error');
                         } finally {
                             checkButton.textContent = 'Check Duplicates';
@@ -182,70 +186,147 @@
                         }
                     });
                 }
+
+                // Function to validate form
+                function validateForm() {
+                    const questionTitle = document.querySelector('#questionTitle').value.trim();
+                    const correctAnswer = document.querySelector('#correctAnswer').value.trim();
+                    const incorrectAnswers = Array.from(document.querySelectorAll('.incorrect-answers input')).map(input => input.value.trim());
+
+                    let isValid = true;
+
+                    if (!questionTitle) {
+                        alert('Please enter the question title.');
+                        document.querySelector('#questionTitle').style.borderColor = '#ef4444';
+                        isValid = false;
+                    } else {
+                        document.querySelector('#questionTitle').style.borderColor = '#d1d5db';
+                    }
+
+                    if (!correctAnswer) {
+                        alert('Please enter the correct answer.');
+                        document.querySelector('#correctAnswer').style.borderColor = '#ef4444';
+                        isValid = false;
+                    } else {
+                        document.querySelector('#correctAnswer').style.borderColor = '#d1d5db';
+                    }
+
+                    incorrectAnswers.forEach((ans, index) => {
+                        if (!ans) {
+                            alert(`Please enter incorrect answer ${index + 1}.`);
+                            document.querySelector(`#incorrectAnswer${index + 1}`).style.borderColor = '#ef4444';
+                            isValid = false;
+                        } else {
+                            document.querySelector(`#incorrectAnswer${index + 1}`).style.borderColor = '#d1d5db';
+                        }
+                    });
+
+                    return isValid;
+                }
+
+                // Function to collect form data
+                function collectFormData() {
+                    const difficultyDisplay = document.querySelector('#difficulty').value;
+                    let difficultyLevel;
+                    switch (difficultyDisplay.toLowerCase()) {
+                        case 'remember':
+                            difficultyLevel = 'recognition';
+                            break;
+                        case 'comprehension':
+                            difficultyLevel = 'comprehension';
+                            break;
+                        case 'basic application':
+                            difficultyLevel = 'basic_application';
+                            break;
+                        case 'advanced application':
+                            difficultyLevel = 'advanced_application';
+                            break;
+                        default:
+                            difficultyLevel = difficultyDisplay;
+                    }
+
+                    return {
+                        questionId: parseInt(document.querySelector('#questionId').value),
+                        courseName: document.querySelector('#subject').value,
+                        difficultyLevel: difficultyLevel,
+                        questionContent: document.querySelector('#questionTitle').value.trim(),
+                        correctAnswer: document.querySelector('#correctAnswer').value.trim(),
+                        incorrectAnswer1: document.querySelector('#incorrectAnswer1').value.trim(),
+                        incorrectAnswer2: document.querySelector('#incorrectAnswer2').value.trim(),
+                        incorrectAnswer3: document.querySelector('#incorrectAnswer3').value.trim(),
+                        explanation: document.querySelector('#explanation').value.trim(),
+                        feedbackContent: document.querySelector('.feedback-text').textContent.trim()
+                    };
+                }
+
+                // Save Draft
+                saveDraftButton.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    if (!validateForm()) return;
+
+                    const formData = collectFormData();
+                    console.log('Saving draft:', JSON.stringify(formData, null, 2));
+
+                    try {
+                        const response = await fetch('/lecturer/feedback-revisions/api/edit-question', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(formData)
+                        });
+
+                        const result = await response.json();
+                        if (response.ok) {
+                            alert('Question saved as draft successfully!');
+                            window.location.href = '/lecturer/feedback-revisions'; // Redirect to feedback-revisions page
+                        } else {
+                            alert(result.error || 'Failed to save draft.');
+                        }
+                    } catch (error) {
+                        console.error('Error saving draft:', error);
+                        alert(`Error saving draft: ${error.message}`);
+                    }
+                });
+
+                // Submit Question
+                submitButton.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    if (!validateForm()) return;
+
+                    const formData = collectFormData();
+                    console.log('Submitting question:', JSON.stringify(formData, null, 2));
+
+                    try {
+                        const response = await fetch('/lecturer/feedback-revisions/api/submit-question', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(formData)
+                        });
+
+                        const result = await response.json();
+                        if (response.ok) {
+                            alert('Question submitted successfully!');
+                            window.location.href = '/lecturer/feedback-revisions';
+                        } else {
+                            alert(result.error || 'Failed to submit question.');
+                        }
+                    } catch (error) {
+                        console.error('Error submitting question:', error);
+                        alert(`Error submitting question: ${error.message}`);
+                    }
+                });
             });
 
-            document.querySelector('.submit-button').addEventListener('click', function (e) {
-                e.preventDefault();
-
-                const subject = document.getElementById('subject').value.trim();
-                const difficulty = document.getElementById('difficulty').value.trim();
-                const questionTitle = document.querySelector('input[placeholder="The title question..."]').value.trim();
-                const correctAnswer = document.querySelector('input[placeholder="Enter the correct answer..."]').value.trim();
-                const incorrectAnswers = Array.from(document.querySelectorAll('.incorrect-answers input')).map(input => input.value.trim());
-                const explanation = document.querySelector('textarea').value.trim();
-
-                let isValid = true;
-
-                // Kiểm tra Subject & Difficulty
-                if (!subject) {
-                    document.getElementById('subject').style.borderColor = '#ef4444';
-                    isValid = false;
-                } else {
-                    document.getElementById('subject').style.borderColor = '#d1d5db';
-                }
-
-                if (!difficulty) {
-                    document.getElementById('difficulty').style.borderColor = '#ef4444';
-                    isValid = false;
-                } else {
-                    document.getElementById('difficulty').style.borderColor = '#d1d5db';
-                }
-
-                // Kiểm tra các trường input khác
-                if (!questionTitle) {
-                    alert('Please enter the question title.');
-                    isValid = false;
-                }
-
-                if (!correctAnswer) {
-                    alert('Please enter the correct answer.');
-                    isValid = false;
-                }
-
-                if (incorrectAnswers.some(ans => !ans)) {
-                    alert('Please enter all incorrect answers.');
-                    isValid = false;
-                }
-
-                if (isValid) {
-                    const formData = {
-                        subject,
-                        difficulty,
-                        questionTitle,
-                        correctAnswer,
-                        incorrectAnswers,
-                        explanation
-                    };
-
-                    console.log('Form Data:', formData);
-                    alert('Question submitted successfully!');
-                } else {
-                    alert('Please fill in all required fields.');
-                }
+            // Set active menu
+            document.addEventListener('DOMContentLoaded', () => {
+                setActiveMenu(document.title);
             });
         </script>
 
-        <script src="../../Static/js/L_activeMenu.js"></script>
+        <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
 </html>
