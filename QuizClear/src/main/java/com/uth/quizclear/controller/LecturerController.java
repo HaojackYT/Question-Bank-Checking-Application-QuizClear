@@ -192,21 +192,43 @@ public class LecturerController {
                 } catch (IllegalArgumentException e) {
                     // Ignore invalid status
                 }
-            }
-
-            // Filter by difficulty
+            }            // Filter by difficulty
             if (difficulty != null && !difficulty.isEmpty() && !difficulty.equals("All different")) {
                 try {
-                    DifficultyLevel diffLevel = DifficultyLevel.valueOf(difficulty.toUpperCase().replace(" ", "_"));
-                    questions = questions.stream()
-                        .filter(q -> q.getDifficultyLevel() == diffLevel)
-                        .collect(Collectors.toList());
+                    DifficultyLevel diffLevel = null;
+                    // Handle both enum names and display names
+                    switch (difficulty.toLowerCase()) {
+                        case "remember":
+                        case "recognition":
+                            diffLevel = DifficultyLevel.RECOGNITION;
+                            break;
+                        case "understand":
+                        case "comprehension":
+                            diffLevel = DifficultyLevel.COMPREHENSION;
+                            break;
+                        case "apply(basic)":
+                        case "basic_application":
+                            diffLevel = DifficultyLevel.BASIC_APPLICATION;
+                            break;
+                        case "apply(advance)":
+                        case "advanced_application":
+                            diffLevel = DifficultyLevel.ADVANCED_APPLICATION;
+                            break;
+                        default:
+                            // Try to parse as enum
+                            diffLevel = DifficultyLevel.valueOf(difficulty.toUpperCase().replace(" ", "_"));
+                    }
+                    
+                    if (diffLevel != null) {
+                        final DifficultyLevel finalDiffLevel = diffLevel;
+                        questions = questions.stream()
+                            .filter(q -> q.getDifficultyLevel() == finalDiffLevel)
+                            .collect(Collectors.toList());
+                    }
                 } catch (IllegalArgumentException e) {
                     // Ignore invalid difficulty
                 }
-            }
-
-            // Convert to response format
+            }            // Convert to response format
             List<Map<String, Object>> questionData = questions.stream().map(q -> {
                 Map<String, Object> questionMap = new HashMap<>();
                 questionMap.put("id", q.getQuestionId());
@@ -221,7 +243,11 @@ public class LecturerController {
                 if (q.getAnswerF3() != null) otherAnswers.append("• ").append(q.getAnswerF3());
                 questionMap.put("otherAnswers", otherAnswers.toString());
                 
+                // Set actual status with proper display text and styling
                 questionMap.put("status", q.getStatus().toString().toLowerCase());
+                questionMap.put("statusDisplay", getStatusDisplayText(q.getStatus()));
+                questionMap.put("statusClass", getStatusCssClass(q.getStatus()));
+                questionMap.put("canEdit", canEditByStatus(q.getStatus()));
                 questionMap.put("difficulty", q.getDifficultyLevel().toString());
                 
                 return questionMap;
@@ -815,6 +841,557 @@ public class LecturerController {
     public String lExeFeedbackEXam(Model model, HttpSession session, Authentication authentication) {
         // Add dynamic data from database here
         return "Lecturer/L-EXE_FeedbackEXam";
+    }
+    
+    /**
+     * API endpoint để lấy thông tin chi tiết về status và difficulty của một câu hỏi
+     */
+    @GetMapping("/api/questions/{questionId}/details")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getQuestionDetails(@PathVariable Long questionId) {
+        try {
+            Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new RuntimeException("Question not found"));
+            
+            Map<String, Object> details = new HashMap<>();
+            details.put("id", question.getQuestionId());
+            details.put("content", question.getContent());
+            details.put("subject", question.getCourse().getCourseName());
+            details.put("correctAnswer", question.getAnswerKey());
+            details.put("status", question.getStatus().toString());
+            details.put("statusDisplay", getStatusDisplay(question.getStatus()));
+            details.put("difficulty", question.getDifficultyLevel().toString());
+            details.put("difficultyDisplay", getDifficultyDisplay(question.getDifficultyLevel()));
+            details.put("createdBy", question.getCreatedBy().getUserId());
+            
+            // Thêm thông tin về answers
+            List<String> otherAnswers = new ArrayList<>();
+            if (question.getAnswerF1() != null) otherAnswers.add(question.getAnswerF1());
+            if (question.getAnswerF2() != null) otherAnswers.add(question.getAnswerF2());
+            if (question.getAnswerF3() != null) otherAnswers.add(question.getAnswerF3());
+            details.put("otherAnswers", otherAnswers);
+            
+            return ResponseEntity.ok(details);
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to get question details: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+      /**
+     * Helper method để convert status thành display text (Vietnamese)
+     */
+    private String getStatusDisplay(QuestionStatus status) {
+        switch (status) {
+            case DRAFT: return "Bản nháp";
+            case SUBMITTED: return "Đã gửi";
+            case APPROVED: return "Đã phê duyệt";
+            case REJECTED: return "Bị từ chối";
+            case ARCHIVED: return "Đã lưu trữ";
+            case DECLINED: return "Đã từ chối";
+            default: return status.toString();
+        }
+    }
+      /**
+     * Helper method để convert difficulty thành display text
+     */    private String getDifficultyDisplay(DifficultyLevel difficulty) {
+        switch (difficulty) {
+            case RECOGNITION: return "Remember";
+            case COMPREHENSION: return "Understand";
+            case BASIC_APPLICATION: return "Apply (Ba)";
+            case ADVANCED_APPLICATION: return "Apply (Ad)";
+            default: return difficulty.toString();
+        }
+    }
+    
+    /**
+     * API endpoint để lấy danh sách difficulty levels cho dropdown
+     */
+    @GetMapping("/api/difficulty-levels")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, String>>> getDifficultyLevels() {
+        try {
+            List<Map<String, String>> difficulties = new ArrayList<>();
+            for (DifficultyLevel level : DifficultyLevel.values()) {
+                Map<String, String> diffMap = new HashMap<>();
+                diffMap.put("value", level.toString());
+                diffMap.put("display", getDifficultyDisplay(level));
+                difficulties.add(diffMap);
+            }
+            return ResponseEntity.ok(difficulties);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(List.of());
+        }
+    }
+
+    /**
+     * API endpoint để tìm câu hỏi theo nội dung
+     */
+    @GetMapping("/api/questions/search")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> searchQuestions(
+            @RequestParam String content) {
+        try {
+            List<Question> questions = questionRepository.findByContentContainingIgnoreCase(content);
+            
+            List<Map<String, Object>> results = questions.stream().map(q -> {
+                Map<String, Object> questionMap = new HashMap<>();
+                questionMap.put("id", q.getQuestionId());
+                questionMap.put("content", q.getContent());
+                questionMap.put("subject", q.getCourse().getCourseName());
+                questionMap.put("correctAnswer", q.getAnswerKey());
+                questionMap.put("status", q.getStatus().toString());
+                questionMap.put("statusDisplay", getStatusDisplay(q.getStatus()));
+                questionMap.put("difficulty", q.getDifficultyLevel().toString());
+                questionMap.put("difficultyDisplay", getDifficultyDisplay(q.getDifficultyLevel()));
+                return questionMap;
+            }).collect(Collectors.toList());
+            
+            return ResponseEntity.ok(results);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(List.of());
+        }
+    }
+    
+    /**
+     * API endpoint để tìm câu hỏi theo từ khóa cụ thể
+     */
+    @GetMapping("/api/questions/find")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> findSpecificQuestion(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String subject,
+            @RequestParam(required = false) String correctAnswer) {
+        try {
+            List<Question> allQuestions = questionRepository.findAll();
+            List<Question> matchedQuestions = new ArrayList<>();
+            
+            // Tìm kiếm câu hỏi theo từ khóa
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                matchedQuestions = allQuestions.stream()
+                    .filter(q -> q.getContent() != null && 
+                                q.getContent().toLowerCase().contains(keyword.toLowerCase()))
+                    .collect(Collectors.toList());
+            }
+            
+            // Lọc thêm theo subject nếu có
+            if (subject != null && !subject.trim().isEmpty()) {
+                matchedQuestions = matchedQuestions.stream()
+                    .filter(q -> q.getCourse() != null && 
+                                q.getCourse().getCourseName().toLowerCase().contains(subject.toLowerCase()))
+                    .collect(Collectors.toList());
+            }
+            
+            // Lọc thêm theo correct answer nếu có
+            if (correctAnswer != null && !correctAnswer.trim().isEmpty()) {
+                matchedQuestions = matchedQuestions.stream()
+                    .filter(q -> q.getAnswerKey() != null && 
+                                q.getAnswerKey().toLowerCase().contains(correctAnswer.toLowerCase()))
+                    .collect(Collectors.toList());
+            }
+            
+            // Convert to response format
+            List<Map<String, Object>> questionData = matchedQuestions.stream().map(q -> {
+                Map<String, Object> questionMap = new HashMap<>();
+                questionMap.put("id", q.getQuestionId());
+                questionMap.put("content", q.getContent());
+                questionMap.put("subject", q.getCourse() != null ? q.getCourse().getCourseName() : "N/A");
+                questionMap.put("correctAnswer", q.getAnswerKey());
+                questionMap.put("status", q.getStatus().toString());
+                questionMap.put("statusDisplay", getStatusDisplay(q.getStatus()));
+                questionMap.put("difficulty", q.getDifficultyLevel().toString());
+                questionMap.put("difficultyDisplay", getDifficultyDisplay(q.getDifficultyLevel()));
+                
+                // Thêm other answers
+                List<String> otherAnswers = new ArrayList<>();
+                if (q.getAnswerF1() != null) otherAnswers.add(q.getAnswerF1());
+                if (q.getAnswerF2() != null) otherAnswers.add(q.getAnswerF2());
+                if (q.getAnswerF3() != null) otherAnswers.add(q.getAnswerF3());
+                questionMap.put("otherAnswers", otherAnswers);
+                
+                return questionMap;
+            }).collect(Collectors.toList());
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("found", !questionData.isEmpty());
+            response.put("totalMatched", questionData.size());
+            response.put("questions", questionData);
+            response.put("searchCriteria", Map.of(
+                "keyword", keyword != null ? keyword : "",
+                "subject", subject != null ? subject : "",
+                "correctAnswer", correctAnswer != null ? correctAnswer : ""
+            ));
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to search questions: " + e.getMessage());
+            errorResponse.put("found", false);
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    /**
+     * API endpoint đặc biệt để kiểm tra câu hỏi Java primitive data type
+     */
+    @GetMapping("/api/questions/check-java-question")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> checkJavaQuestion() {
+        try {
+            // Tìm câu hỏi về Java primitive data type
+            List<Question> javaQuestions = questionRepository.findAll().stream()
+                .filter(q -> q.getContent() != null && 
+                            (q.getContent().toLowerCase().contains("primitive data type") ||
+                             q.getContent().toLowerCase().contains("primitive") && q.getContent().toLowerCase().contains("java")) &&
+                            q.getAnswerKey() != null && q.getAnswerKey().toLowerCase().contains("string"))
+                .collect(Collectors.toList());
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("found", !javaQuestions.isEmpty());
+            response.put("totalFound", javaQuestions.size());
+            
+            if (!javaQuestions.isEmpty()) {
+                Question targetQuestion = javaQuestions.get(0); // Lấy câu đầu tiên
+                
+                Map<String, Object> questionInfo = new HashMap<>();
+                questionInfo.put("id", targetQuestion.getQuestionId());
+                questionInfo.put("content", targetQuestion.getContent());
+                questionInfo.put("subject", targetQuestion.getCourse() != null ? targetQuestion.getCourse().getCourseName() : "N/A");
+                questionInfo.put("correctAnswer", targetQuestion.getAnswerKey());
+                questionInfo.put("status", targetQuestion.getStatus().toString());
+                questionInfo.put("statusDisplay", getStatusDisplay(targetQuestion.getStatus()));
+                questionInfo.put("difficulty", targetQuestion.getDifficultyLevel().toString());
+                questionInfo.put("difficultyDisplay", getDifficultyDisplay(targetQuestion.getDifficultyLevel()));
+                
+                // Kiểm tra other answers có chứa int, boolean, double không
+                List<String> otherAnswers = new ArrayList<>();
+                if (targetQuestion.getAnswerF1() != null) otherAnswers.add(targetQuestion.getAnswerF1());
+                if (targetQuestion.getAnswerF2() != null) otherAnswers.add(targetQuestion.getAnswerF2());
+                if (targetQuestion.getAnswerF3() != null) otherAnswers.add(targetQuestion.getAnswerF3());
+                questionInfo.put("otherAnswers", otherAnswers);
+                
+                // Verify this is the right question
+                boolean hasIntBooleanDouble = otherAnswers.stream()
+                    .anyMatch(answer -> answer.toLowerCase().contains("int") ||
+                                       answer.toLowerCase().contains("boolean") ||
+                                       answer.toLowerCase().contains("double"));
+                questionInfo.put("isTargetQuestion", hasIntBooleanDouble);
+                
+                response.put("question", questionInfo);
+                
+                // Status analysis
+                response.put("statusAnalysis", Map.of(
+                    "isInDatabase", true,
+                    "currentStatus", targetQuestion.getStatus().toString(),
+                    "statusMeaning", getStatusDisplay(targetQuestion.getStatus()),
+                    "canBeDeleted", targetQuestion.getStatus() != QuestionStatus.APPROVED,
+                    "canBeEdited", targetQuestion.getStatus() != QuestionStatus.APPROVED
+                ));
+            } else {
+                response.put("statusAnalysis", Map.of(
+                    "isInDatabase", false,
+                    "message", "Câu hỏi về Java primitive data type chưa có trong database"
+                ));
+            }
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to check Java question: " + e.getMessage());
+            errorResponse.put("found", false);
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+    
+    /**
+     * API endpoint để test query trực tiếp trong database
+     */
+    @GetMapping("/api/database/test-query")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> testDatabaseQuery(
+            @RequestParam(required = false, defaultValue = "all") String queryType) {
+        try {
+            Map<String, Object> response = new HashMap<>();
+            
+            switch (queryType.toLowerCase()) {
+                case "java-primitive":
+                    // Query tìm câu hỏi Java primitive data type
+                    List<Question> javaQuestions = questionRepository.findAll().stream()
+                        .filter(q -> q.getContent() != null && 
+                                    q.getContent().toLowerCase().contains("primitive") &&
+                                    q.getContent().toLowerCase().contains("java"))
+                        .collect(Collectors.toList());
+                    
+                    response.put("queryType", "Java Primitive Data Type Questions");
+                    response.put("totalFound", javaQuestions.size());
+                    response.put("questions", javaQuestions.stream().map(q -> {
+                        Map<String, Object> qMap = new HashMap<>();
+                        qMap.put("id", q.getQuestionId());
+                        qMap.put("content", q.getContent());
+                        qMap.put("subject", q.getCourse() != null ? q.getCourse().getCourseName() : "N/A");
+                        qMap.put("correctAnswer", q.getAnswerKey());
+                        qMap.put("status", q.getStatus().toString());
+                        qMap.put("difficulty", q.getDifficultyLevel().toString());
+                        
+                        List<String> otherAnswers = new ArrayList<>();
+                        if (q.getAnswerF1() != null) otherAnswers.add(q.getAnswerF1());
+                        if (q.getAnswerF2() != null) otherAnswers.add(q.getAnswerF2());
+                        if (q.getAnswerF3() != null) otherAnswers.add(q.getAnswerF3());
+                        qMap.put("otherAnswers", otherAnswers);
+                        
+                        return qMap;
+                    }).collect(Collectors.toList()));
+                    break;
+                    
+                case "string-answer":
+                    // Query tìm câu hỏi có correct answer là "String"
+                    List<Question> stringQuestions = questionRepository.findAll().stream()
+                        .filter(q -> q.getAnswerKey() != null && 
+                                    q.getAnswerKey().toLowerCase().trim().equals("string"))
+                        .collect(Collectors.toList());
+                    
+                    response.put("queryType", "Questions with 'String' as correct answer");
+                    response.put("totalFound", stringQuestions.size());
+                    response.put("questions", stringQuestions.stream().map(q -> {
+                        Map<String, Object> qMap = new HashMap<>();
+                        qMap.put("id", q.getQuestionId());
+                        qMap.put("content", q.getContent());
+                        qMap.put("subject", q.getCourse() != null ? q.getCourse().getCourseName() : "N/A");
+                        qMap.put("correctAnswer", q.getAnswerKey());
+                        qMap.put("status", q.getStatus().toString());
+                        
+                        return qMap;
+                    }).collect(Collectors.toList()));
+                    break;
+                    
+                case "computer-science":
+                    // Query tìm câu hỏi Introduction to Computer Science
+                    List<Question> csQuestions = questionRepository.findAll().stream()
+                        .filter(q -> q.getCourse() != null && 
+                                    q.getCourse().getCourseName().toLowerCase().contains("computer science"))
+                        .collect(Collectors.toList());
+                    
+                    response.put("queryType", "Introduction to Computer Science Questions");
+                    response.put("totalFound", csQuestions.size());
+                    response.put("questions", csQuestions.stream().limit(10).map(q -> {
+                        Map<String, Object> qMap = new HashMap<>();
+                        qMap.put("id", q.getQuestionId());
+                        qMap.put("content", q.getContent());
+                        qMap.put("subject", q.getCourse().getCourseName());
+                        qMap.put("correctAnswer", q.getAnswerKey());
+                        qMap.put("status", q.getStatus().toString());
+                        
+                        return qMap;
+                    }).collect(Collectors.toList()));
+                    break;
+                    
+                case "exact-match":
+                    // Query chính xác cho câu hỏi bạn đề cập
+                    List<Question> exactQuestions = questionRepository.findAll().stream()
+                        .filter(q -> q.getContent() != null && 
+                                    q.getContent().toLowerCase().contains("which of the following is not a primitive data type in java") &&
+                                    q.getAnswerKey() != null && 
+                                    q.getAnswerKey().toLowerCase().equals("string"))
+                        .collect(Collectors.toList());
+                    
+                    response.put("queryType", "Exact Match for Java Primitive Question");
+                    response.put("totalFound", exactQuestions.size());
+                    response.put("questions", exactQuestions.stream().map(q -> {
+                        Map<String, Object> qMap = new HashMap<>();
+                        qMap.put("id", q.getQuestionId());
+                        qMap.put("content", q.getContent());
+                        qMap.put("subject", q.getCourse() != null ? q.getCourse().getCourseName() : "N/A");
+                        qMap.put("correctAnswer", q.getAnswerKey());
+                        qMap.put("status", q.getStatus().toString());
+                        qMap.put("statusDisplay", getStatusDisplay(q.getStatus()));
+                        qMap.put("difficulty", q.getDifficultyLevel().toString());
+                        qMap.put("difficultyDisplay", getDifficultyDisplay(q.getDifficultyLevel()));
+                        
+                        List<String> otherAnswers = new ArrayList<>();
+                        if (q.getAnswerF1() != null) otherAnswers.add(q.getAnswerF1());
+                        if (q.getAnswerF2() != null) otherAnswers.add(q.getAnswerF2());
+                        if (q.getAnswerF3() != null) otherAnswers.add(q.getAnswerF3());
+                        qMap.put("otherAnswers", otherAnswers);
+                        
+                        // Kiểm tra có chứa int, boolean, double không
+                        boolean hasCorrectOptions = otherAnswers.stream()
+                            .anyMatch(answer -> answer.toLowerCase().contains("int") ||
+                                               answer.toLowerCase().contains("boolean") ||
+                                               answer.toLowerCase().contains("double"));
+                        qMap.put("hasCorrectOptions", hasCorrectOptions);
+                        
+                        return qMap;
+                    }).collect(Collectors.toList()));
+                    break;
+                    
+                case "all":
+                default:
+                    // Query tổng quan
+                    List<Question> allQuestions = questionRepository.findAll();
+                    long totalQuestions = allQuestions.size();
+                    
+                    // Thống kê theo status
+                    Map<String, Long> statusStats = allQuestions.stream()
+                        .collect(Collectors.groupingBy(
+                            q -> q.getStatus().toString(),
+                            Collectors.counting()
+                        ));
+                    
+                    // Thống kê theo subject
+                    Map<String, Long> subjectStats = allQuestions.stream()
+                        .collect(Collectors.groupingBy(
+                            q -> q.getCourse() != null ? q.getCourse().getCourseName() : "N/A",
+                            Collectors.counting()
+                        ));
+                    
+                    response.put("queryType", "Database Overview");
+                    response.put("totalQuestions", totalQuestions);
+                    response.put("statusStatistics", statusStats);
+                    response.put("subjectStatistics", subjectStats);
+                    response.put("sampleQuestions", allQuestions.stream().limit(5).map(q -> {
+                        Map<String, Object> qMap = new HashMap<>();
+                        qMap.put("id", q.getQuestionId());
+                        qMap.put("content", q.getContent());
+                        qMap.put("subject", q.getCourse() != null ? q.getCourse().getCourseName() : "N/A");
+                        qMap.put("status", q.getStatus().toString());
+                        return qMap;
+                    }).collect(Collectors.toList()));
+                    break;
+            }
+            
+            response.put("timestamp", java.time.LocalDateTime.now().toString());
+            response.put("success", true);
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Database query failed: " + e.getMessage());
+            errorResponse.put("success", false);
+            errorResponse.put("timestamp", java.time.LocalDateTime.now().toString());
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+
+    /**
+     * API endpoint để kiểm tra raw SQL query (chỉ dùng cho testing)
+     */
+    @GetMapping("/api/database/raw-stats")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getDatabaseStats() {
+        try {
+            Map<String, Object> response = new HashMap<>();
+            
+            // Lấy tất cả câu hỏi
+            List<Question> allQuestions = questionRepository.findAll();
+            
+            // Thống kê chi tiết
+            response.put("totalQuestions", allQuestions.size());
+            
+            // Tìm câu hỏi có "primitive" và "java"
+            List<Question> primitiveQuestions = allQuestions.stream()
+                .filter(q -> q.getContent() != null && 
+                            q.getContent().toLowerCase().contains("primitive") &&
+                            q.getContent().toLowerCase().contains("java"))
+                .collect(Collectors.toList());
+            
+            response.put("primitiveJavaQuestions", primitiveQuestions.size());
+            
+            // Tìm câu hỏi có correct answer là "String"
+            List<Question> stringAnswerQuestions = allQuestions.stream()
+                .filter(q -> q.getAnswerKey() != null && 
+                            q.getAnswerKey().toLowerCase().trim().equals("string"))
+                .collect(Collectors.toList());
+            
+            response.put("stringAnswerQuestions", stringAnswerQuestions.size());
+            
+            // Tìm câu hỏi Computer Science
+            List<Question> csQuestions = allQuestions.stream()
+                .filter(q -> q.getCourse() != null && 
+                            q.getCourse().getCourseName().toLowerCase().contains("computer science"))
+                .collect(Collectors.toList());
+            
+            response.put("computerScienceQuestions", csQuestions.size());
+            
+            // Kết hợp tất cả điều kiện
+            List<Question> targetQuestions = allQuestions.stream()
+                .filter(q -> q.getContent() != null && 
+                            q.getContent().toLowerCase().contains("primitive") &&
+                            q.getContent().toLowerCase().contains("java") &&
+                            q.getAnswerKey() != null && 
+                            q.getAnswerKey().toLowerCase().trim().equals("string") &&
+                            q.getCourse() != null && 
+                            q.getCourse().getCourseName().toLowerCase().contains("computer science"))
+                .collect(Collectors.toList());
+            
+            response.put("targetQuestionFound", !targetQuestions.isEmpty());
+            response.put("targetQuestionCount", targetQuestions.size());
+            
+            if (!targetQuestions.isEmpty()) {
+                Question target = targetQuestions.get(0);
+                Map<String, Object> questionDetails = new HashMap<>();
+                questionDetails.put("id", target.getQuestionId());
+                questionDetails.put("content", target.getContent());
+                questionDetails.put("subject", target.getCourse().getCourseName());
+                questionDetails.put("correctAnswer", target.getAnswerKey());
+                questionDetails.put("status", target.getStatus().toString());
+                questionDetails.put("statusDisplay", getStatusDisplay(target.getStatus()));
+                questionDetails.put("difficulty", target.getDifficultyLevel().toString());
+                
+                List<String> otherAnswers = new ArrayList<>();
+                if (target.getAnswerF1() != null) otherAnswers.add(target.getAnswerF1());
+                if (target.getAnswerF2() != null) otherAnswers.add(target.getAnswerF2());
+                if (target.getAnswerF3() != null) otherAnswers.add(target.getAnswerF3());
+                questionDetails.put("otherAnswers", otherAnswers);
+                
+                response.put("questionDetails", questionDetails);
+            }
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to get database stats: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+    
+    /**
+     * Helper method để convert status thành display text cho UI
+     */
+    private String getStatusDisplayText(QuestionStatus status) {
+        switch (status) {
+            case DRAFT: return "Draft";
+            case SUBMITTED: return "Submitted";
+            case APPROVED: return "Approved";
+            case REJECTED: return "Rejected";
+            case ARCHIVED: return "Archived";
+            case DECLINED: return "Declined";
+            default: return status.toString();
+        }
+    }
+    
+    /**
+     * Helper method để lấy CSS class cho status styling
+     */
+    private String getStatusCssClass(QuestionStatus status) {
+        switch (status) {
+            case DRAFT: return "draft";
+            case SUBMITTED: return "submitted";
+            case APPROVED: return "approved";
+            case REJECTED: return "rejected";
+            case ARCHIVED: return "archived";
+            case DECLINED: return "declined";
+            default: return "default";
+        }
+    }
+    
+    /**
+     * Helper method để kiểm tra có thể edit theo status không
+     */
+    private boolean canEditByStatus(QuestionStatus status) {
+        // Chỉ có thể edit khi status là DRAFT hoặc REJECTED
+        return status == QuestionStatus.DRAFT || status == QuestionStatus.REJECTED;
     }
 }
 

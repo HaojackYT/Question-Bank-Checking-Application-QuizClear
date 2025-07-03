@@ -545,3 +545,369 @@ td .action-buttons {
     font-size: 1.1rem;
     margin: 0;
 }
+
+/* Status badge styles */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.status-badge.draft {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #d97706;
+}
+
+.status-badge.submitted {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    border: 1px solid #2563eb;
+}
+
+.status-badge.approved {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #10b981;
+}
+
+.status-badge.rejected {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #ef4444;
+}
+
+.status-badge.archived {
+    background-color: #f3f4f6;
+    color: #374151;
+    border: 1px solid #6b7280;
+}
+
+.status-badge.declined {
+    background-color: #fdf2f8;
+    color: #be185d;
+    border: 1px solid #ec4899;
+}
+
+/* Quick actions styles */
+.quick-actions {
+    margin-top: 0.5rem;
+}
+
+.quick-action-btn {
+    background-color: #10b981;
+    color: white;
+    border: none;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.quick-action-btn:hover {
+    background-color: #059669;
+}
+
+.quick-action-btn.submit {
+    background-color: #3b82f6;
+}
+
+.quick-action-btn.submit:hover {
+    background-color: #2563eb;
+}
+
+/* Update status cell layout */
+.status-cell {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.status-buttons {
+    display: flex;    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Difficulty badge styles */
+.action-button.difficulty-recognition {
+    background-color: #00BFFF;
+    color: white;
+    border: 1px solid #0099CC;
+}
+
+.action-button.difficulty-comprehension {
+    background-color: #5EF05E;
+    color: black;
+    border: 1px solid #4AD34A;
+}
+
+.action-button.difficulty-basic {
+    background-color: #FF7D03;
+    color: white;
+    border: 1px solid #E06600;
+}
+
+.action-button.difficulty-advanced {
+    background-color: #F25B5B;
+    color: white;
+    border: 1px solid #D94444;
+}
+
+.action-button.difficulty-unknown {
+    background-color: #cccccc;
+    color: black;
+    border: 1px solid #999999;
+}
+
+/* Status badge styles */
+.action-button.status-draft {
+    background-color: #FFF3CD;
+    color: #856404;
+    border: 1px solid #FFEAA7;
+}
+
+.action-button.status-rejected {
+    background-color: #F8D7DA;
+    color: #721C24;
+    border: 1px solid #F1B0B7;
+}
+
+.action-button.status-submitted {
+    background-color: #D4EDDA;
+    color: #155724;
+    border: 1px solid #C3E6CB;
+    cursor: not-allowed;
+}
+
+.action-button.status-approved {
+    background-color: #D1ECF1;
+    color: #0C5460;
+    border: 1px solid #BEE5EB;
+    cursor: not-allowed;
+}
+
+.action-button.status-declined {
+    background-color: #F8D7DA;
+    color: #721C24;
+    border: 1px solid #F1B0B7;
+    cursor: not-allowed;
+}
+
+.action-button.status-archived {
+    background-color: #E2E3E5;
+    color: #383D41;
+    border: 1px solid #D6D8DB;
+    cursor: not-allowed;
+}
+
+.action-button.status-unknown {
+    background-color: #E9ECEF;
+    color: #495057;
+    border: 1px solid #CED4DA;
+    cursor: not-allowed;
+}
+
+.action-button.status-editable {
+    background-color: #CFFDD2;
+    color: #155724;
+    border: 1px solid #B8F5C2;
+}
+
+/* Hover effects for actionable buttons */
+.action-button.status-draft:hover,
+.action-button.status-rejected:hover,
+.action-button.status-editable:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+}
+
+/* Disable hover for non-actionable buttons */
+.action-button.status-submitted:hover,
+.action-button.status-approved:hover,
+.action-button.status-declined:hover,
+.action-button.status-archived:hover,
+.action-button.status-unknown:hover {
+    transform: none;
+    opacity: 1;
+}
+
+/* Badge styling for difficulty levels and status types */
+
+/* Difficulty level badges */
+.difficulty-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+    text-align: center;
+    min-width: 6rem;
+    border: 1px solid;
+    transition: all 0.2s ease;
+}
+
+.difficulty-recognition {
+    background-color: #E3F2FD;
+    color: #1976D2;
+    border-color: #BBDEFB;
+}
+
+.difficulty-comprehension {
+    background-color: #E8F5E8;
+    color: #388E3C;
+    border-color: #C8E6C9;
+}
+
+.difficulty-basic {
+    background-color: #FFF3E0;
+    color: #F57C00;
+    border-color: #FFCC02;
+}
+
+.difficulty-advanced {
+    background-color: #FFEBEE;
+    color: #D32F2F;
+    border-color: #FFCDD2;
+}
+
+.difficulty-unknown {
+    background-color: #F5F5F5;
+    color: #757575;
+    border-color: #E0E0E0;
+}
+
+/* Status badges */
+.status-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+    text-align: center;
+    min-width: 6rem;
+    border: 1px solid;
+    transition: all 0.2s ease;
+}
+
+.status-draft {
+    background-color: #F3E5F5;
+    color: #7B1FA2;
+    border-color: #CE93D8;
+}
+
+.status-submitted {
+    background-color: #E1F5FE;
+    color: #0277BD;
+    border-color: #81D4FA;
+}
+
+.status-approved {
+    background-color: #E8F5E8;
+    color: #2E7D32;
+    border-color: #A5D6A7;
+}
+
+.status-rejected {
+    background-color: #FFEBEE;
+    color: #C62828;
+    border-color: #EF9A9A;
+}
+
+.status-archived {
+    background-color: #F5F5F5;
+    color: #616161;
+    border-color: #BDBDBD;
+}
+
+.status-declined {
+    background-color: #FFF3E0;
+    color: #EF6C00;
+    border-color: #FFB74D;
+}
+
+.status-unknown {
+    background-color: #FAFAFA;
+    color: #9E9E9E;
+    border-color: #E0E0E0;
+}
+
+/* Status action buttons with distinct styling */
+.status-action-button {
+    padding: 0.4rem 0.8rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+    text-align: center;
+    min-width: 6rem;
+    border: 1px solid;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.status-action-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.status-action-button.clickable {
+    cursor: pointer;
+}
+
+.status-action-button.non-clickable {
+    cursor: default;
+    opacity: 0.8;
+}
+
+.status-action-button.non-clickable:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Override existing action-button styles for consistency */
+.action-button.status-draft {
+    background-color: #F3E5F5;
+    color: #7B1FA2;
+    border-color: #CE93D8;
+}
+
+.action-button.status-submitted {
+    background-color: #E1F5FE;
+    color: #0277BD;
+    border-color: #81D4FA;
+}
+
+.action-button.status-approved {
+    background-color: #E8F5E8;
+    color: #2E7D32;
+    border-color: #A5D6A7;
+}
+
+.action-button.status-rejected {
+    background-color: #FFEBEE;
+    color: #C62828;
+    border-color: #EF9A9A;
+}
+
+.action-button.status-archived {
+    background-color: #F5F5F5;
+    color: #616161;
+    border-color: #BDBDBD;
+}
+
+.action-button.status-declined {
+    background-color: #FFF3E0;
+    color: #EF6C00;
+    border-color: #FFB74D;
+}

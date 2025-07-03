@@ -34,29 +34,33 @@
                 <button class="tab-button">Progress Tracking</button>
             </div>
 
-            <div id="Current_assignment">
-                <div class="filters">
+            <div id="Current_assignment">                <div class="filters">
                     <div class="filter-dropdown">
                         <select>
-                            <option>All different</option>
-                            <option>Option 1</option>
-                            <option>Option 2</option>
+                            <option value="">All difficulty</option>
+                            <option value="recognition">Recognition</option>
+                            <option value="comprehension">Comprehension</option>
+                            <option value="basic_application">Basic Application</option>
+                            <option value="advanced_application">Advanced Application</option>
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="filter-dropdown">
                         <select>
-                            <option>All subject</option>
-                            <option>Subject 1</option>
-                            <option>Subject 2</option>
+                            <option value="">All subject</option>
+                            <!-- Subjects will be loaded dynamically -->
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="filter-dropdown">
                         <select>
-                            <option>All status</option>
-                            <option>Status 1</option>
-                            <option>Status 2</option>
+                            <option value="">All status</option>
+                            <option value="draft">Draft</option>
+                            <option value="submitted">Submitted</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="archived">Archived</option>
+                            <option value="declined">Declined</option>
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div>
@@ -440,16 +444,16 @@
                         </nav>
                     </div>
                 `;
-            });// Load questions data from API
+            });        // Load questions data from API
         function loadQuestions() {
             const selects = document.querySelectorAll('.filters select');
             const difficulty = selects[0] ? selects[0].value : '';
             const subject = selects[1] ? selects[1].value : '';
             const status = selects[2] ? selects[2].value : '';
               const params = new URLSearchParams();
-            if (subject && subject !== 'All subject') params.append('subject', subject);
-            if (status && status !== 'All status') params.append('status', status);
-            if (difficulty && difficulty !== 'All different') params.append('difficulty', difficulty);
+            if (subject && subject !== '') params.append('subject', subject);
+            if (status && status !== '') params.append('status', status);
+            if (difficulty && difficulty !== '') params.append('difficulty', difficulty);
             params.append('lecturerId', lecturerId);
             
             const url = `/lecturer/api/questions?${params.toString()}`;
@@ -506,7 +510,7 @@
                 .catch(error => {
                     console.error('Error loading subjects:', error);
                 });
-        }        // Update questions table
+        }// Update questions table
         function updateQuestionsTable(questions) {
             const tbody = document.querySelector('.question-table tbody');
             
@@ -525,44 +529,30 @@
             tbody.innerHTML = '';
             
             questions.forEach(question => {
-                const row = document.createElement('tr');                // Check if edit button should be shown based on status
-                // Show edit button for 'draft' and 'rejected' status (can be edited)
-                const showEditButton = (question.status === 'DRAFT' || question.status === 'draft' || question.status === 'rejected');
-                const editButtonHtml = showEditButton ? 
-                    `<a href="/lecturer/edit-question?id=${question.id}"><button class="circle-button delete editQuestion"><i class="fa-solid fa-pen-to-square"></i></button></a>` : '';// Status buttons based on current status
-                let statusButtonsHtml = '';                if (question.status === 'DRAFT' || question.status === 'draft' || question.status === 'rejected') {
-                    statusButtonsHtml = `
-                        <button class="action-button remember" onclick="updateQuestionStatus(${question.id}, 'remember')">Remember</button>
-                        <button class="action-button drop" onclick="updateQuestionStatus(${question.id}, 'drop')">Drop</button>
-                    `;
-                } else if (question.status === 'SUBMITTED' || question.status === 'submitted') {
-                    statusButtonsHtml = `
-                        <button class="action-button save" onclick="updateQuestionStatus(${question.id}, 'save')">Save</button>
-                    `;
-                }else if (question.status === 'approved') {
-                    statusButtonsHtml = `
-                        <button class="action-button remember" onclick="updateQuestionStatus(${question.id}, 'remember')">Remember</button>
-                        <button class="action-button drop" onclick="updateQuestionStatus(${question.id}, 'drop')">Drop</button>
-                    `;
-                }
+                const row = document.createElement('tr');
                 
+                // Check if edit button should be shown based on status
+                const canEdit = question.canEdit !== undefined ? question.canEdit : (question.status === 'draft' || question.status === 'rejected');
+                const editButtonHtml = canEdit ? 
+                    `<a href="/lecturer/edit-question?id=${question.id}"><button class="circle-button delete editQuestion"><i class="fa-solid fa-pen-to-square"></i></button></a>` : '';
+
                 row.innerHTML = `
                     <td>${question.subject || 'N/A'}</td>
                     <td title="${question.question}">${question.question.length > 100 ? question.question.substring(0, 100) + '...' : question.question}</td>
                     <td title="${question.correctAnswer}">${question.correctAnswer.length > 50 ? question.correctAnswer.substring(0, 50) + '...' : question.correctAnswer}</td>
-                    <td>${question.otherAnswers || ''}</td>
-                    <td class="status-cell">
+                    <td>${question.otherAnswers || ''}</td>                    <td class="status-cell">
                         <div class="status-buttons">
-                            ${statusButtonsHtml}
+                            <span class="difficulty-badge ${getDifficultyClass(question.difficulty)}">${getDifficultyDisplayText(question.difficulty)}</span>
+                            <button class="status-action-button ${getStatusActionClass(question.status, question.canEdit)} ${question.canEdit && question.status === 'rejected' ? 'clickable' : 'non-clickable'}" ${question.canEdit && question.status === 'rejected' ? 'onclick="handleStatusAction(' + question.id + ', \'' + question.status + '\')"' : ''}>${getStatusActionText(question.status, question.canEdit)}</button>
                         </div>
-                    </td>                    <td>
+                    </td>
+                    <td>
                         <div class="action-buttons">
                             ${editButtonHtml}
                             <button class="circle-button delete" onclick="deleteQuestion(${question.id})"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </td>
-                `;
-                tbody.appendChild(row);
+                `;                tbody.appendChild(row);
             });
         }
 
@@ -608,7 +598,165 @@
                     alert('Failed to delete question');
                 });
             }
-        }        // Update progress charts
+        }        // Helper function to get difficulty display text
+        function getDifficultyDisplayText(difficulty) {
+            switch (difficulty) {
+                case 'recognition': return 'Recognition';
+                case 'comprehension': return 'Comprehension';
+                case 'basic_application': return 'Basic Application';
+                case 'advanced_application': return 'Advanced Application';
+                default: return 'Unknown';
+            }
+        }
+
+        // Helper function to get difficulty CSS class
+        function getDifficultyClass(difficulty) {
+            switch (difficulty) {
+                case 'recognition': return 'difficulty-recognition';
+                case 'comprehension': return 'difficulty-comprehension';
+                case 'basic_application': return 'difficulty-basic';
+                case 'advanced_application': return 'difficulty-advanced';
+                default: return 'difficulty-unknown';
+            }
+        }        // Helper function to get status action text
+        function getStatusActionText(status, canEdit) {
+            if (!canEdit) {
+                switch (status) {
+                    case 'submitted': return 'Submitted';
+                    case 'approved': return 'Approved';
+                    case 'declined': return 'Declined';
+                    case 'archived': return 'Archived';
+                    case 'rejected': return 'Rejected';
+                    case 'draft': return 'Draft';
+                    default: return 'Status';
+                }
+            }
+            
+            switch (status) {
+                case 'draft': return 'Draft';
+                case 'rejected': return 'Rejected';
+                default: return 'Submit';
+            }
+        }        // Helper function to get status action CSS class
+        function getStatusActionClass(status, canEdit) {
+            if (!canEdit) {
+                switch (status) {
+                    case 'submitted': return 'status-submitted';
+                    case 'approved': return 'status-approved';
+                    case 'declined': return 'status-declined';
+                    case 'archived': return 'status-archived';
+                    case 'rejected': return 'status-rejected';
+                    case 'draft': return 'status-draft';
+                    default: return 'status-unknown';
+                }
+            }
+            
+            switch (status) {
+                case 'draft': return 'status-draft';
+                case 'rejected': return 'status-rejected';
+                default: return 'status-editable';
+            }
+        }        // Submit a question for review
+        function submitQuestion(questionId) {
+            if (confirm('Are you sure you want to submit this question for review?')) {
+                fetch(`/lecturer/api/questions/${questionId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action: 'submit' })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                    } else {
+                        alert('Question submitted for review successfully!');
+                        loadQuestions(); // Reload to update the table
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to submit question');
+                });
+            }
+        }
+
+        // Helper function to get status display text from status value
+        function getStatusDisplayFromStatus(status) {
+            const statusMap = {
+                'draft': 'Draft',
+                'submitted': 'Submitted',
+                'approved': 'Approved',
+                'rejected': 'Rejected',
+                'archived': 'Archived',
+                'declined': 'Declined'
+            };
+            return statusMap[status.toLowerCase()] || capitalizeFirst(status);
+        }
+
+        // Helper function to get CSS class from status value
+        function getStatusClassFromStatus(status) {
+            return status.toLowerCase();
+        }
+
+        // Helper function to capitalize first letter
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        }        // Helper function to get difficulty display text
+        function getDifficultyDisplayText(difficulty) {
+            const difficultyMap = {
+                'RECOGNITION': 'Remember',
+                'COMPREHENSION': 'Understand',
+                'BASIC_APPLICATION': 'Apply (Basic)',
+                'ADVANCED_APPLICATION': 'Apply (Advanced)',
+                'recognition': 'Remember',
+                'comprehension': 'Understand',
+                'basic_application': 'Apply (Basic)',
+                'advanced_application': 'Apply (Advanced)'
+            };
+            return difficultyMap[difficulty] || difficulty;
+        }        // Helper function to get difficulty CSS class
+        function getDifficultyClass(difficulty) {
+            switch (difficulty.toLowerCase()) {
+                case 'recognition': return 'difficulty-recognition';
+                case 'comprehension': return 'difficulty-comprehension';
+                case 'basic_application': return 'difficulty-basic';
+                case 'advanced_application': return 'difficulty-advanced';
+                default: return 'difficulty-unknown';
+            }        }
+
+        // Helper function to get status action text
+        function getStatusActionText(status, canEdit) {
+            if (!canEdit) {
+                switch (status.toLowerCase()) {
+                    case 'submitted': return 'Submitted';
+                    case 'approved': return 'Approved';
+                    case 'declined': return 'Declined';
+                    case 'archived': return 'Archived';
+                    case 'rejected': return 'Rejected';
+                    case 'draft': return 'Draft';
+                    default: return 'Status';
+                }
+            }
+            
+            // Only rejected questions can be resubmitted
+            switch (status.toLowerCase()) {
+                case 'draft': return 'Draft';
+                case 'rejected': return 'Rejected';
+                default: return 'Submit';
+            }
+        }
+
+        // Handle status action click
+        function handleStatusAction(questionId, status) {
+            // Only allow action for rejected questions (they can be resubmitted)
+            if (status.toLowerCase() === 'rejected') {
+                if (confirm('Are you sure you want to resubmit this question for review?')) {
+                    submitQuestion(questionId);
+                }
+            }
+        }// Update progress charts
         function updateProgressCharts(difficultyStats, completionRate) {
             // Update difficulty chart bars
             const barGroups = document.querySelectorAll('.bar-group');
