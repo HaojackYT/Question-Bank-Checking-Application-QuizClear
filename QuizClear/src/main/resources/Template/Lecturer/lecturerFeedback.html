@@ -86,7 +86,8 @@
                         </div>
                         <div class="item-footer">
                             <span class="submitted-date">Submitted on May 18, 2025</span>
-                            <a href="lecturerFREditQuestion"><button class="edit-button edit-question-btn">Edit Question</button></a>
+                            <a href="lecturerFREditQuestion"><button class="edit-button edit-question-btn">Edit
+                                    Question</button></a>
                         </div>
                     </div>
 
@@ -99,13 +100,15 @@
                             </div>
                         </div>
                         <div class="feedback-content">
-                            <p><strong>The question needs improvement:</strong> Consider rewriting the question to focus on a specific
+                            <p><strong>The question needs improvement:</strong> Consider rewriting the question to focus
+                                on a specific
                                 normal form or a specific benefit of normalization. Also, the answer options need to be
                                 more distinct from each other.</p>
                         </div>
                         <div class="item-footer">
                             <span class="submitted-date">Submitted on May 18, 2025</span>
-                            <a href="lecturerFREditQuestion"><button class="edit-button edit-question-btn">Edit Question</button></a>
+                            <a href="lecturerFREditQuestion"><button class="edit-button edit-question-btn">Edit
+                                    Question</button></a>
                         </div>
                     </div>
                 </div>
@@ -115,38 +118,90 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
 
-        const mainContentTitle = document.getElementById('main-content-title');
-        const mainContentTabs = document.getElementById('main-content-tabs');
+            const mainContentTitle = document.getElementById('main-content-title');
+            const mainContentTabs = document.getElementById('main-content-tabs');
 
-        let activeTabId = 'revisions-content';
+            let activeTabId = 'revisions-content';
 
-        // Gán sự kiện cho các nút tab
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                // Cập nhật tiêu đề
-                mainContentTitle.textContent = 'Feedback & Revisions';
-                mainContentTabs.style.display = 'flex';
+            // Gán sự kiện cho các nút tab
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Cập nhật tiêu đề
+                    mainContentTitle.textContent = 'Feedback & Revisions';
+                    mainContentTabs.style.display = 'flex';
 
-                // Cập nhật trạng thái các tab
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active-tab-content'));
+                    // Cập nhật trạng thái các tab
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active-tab-content'));
 
-                button.classList.add('active');
-                activeTabId = button.dataset.tab + '-content';
-                document.getElementById(activeTabId).classList.add('active-tab-content');
+                    button.classList.add('active');
+                    activeTabId = button.dataset.tab + '-content';
+                    document.getElementById(activeTabId).classList.add('active-tab-content');
+                });
             });
         });
-    });
-</script>
+    </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    const feedbackContainer = document.getElementById('feedback-history-content');
 
-    <!-- ma nhung header vs menu -->    <script>
+    // Function to fetch feedback history
+    function loadFeedbackHistory() {
+        fetch('/lecturer/api/feedback/history')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    feedbackContainer.innerHTML = '<p>Error loading feedback history</p>';
+                    return;
+                }
+
+                feedbackContainer.innerHTML = ''; // Clear existing content
+
+                data.feedbacks.forEach(feedback => {
+                    const feedbackItem = document.createElement('div');
+                    feedbackItem.className = 'feedback-item history-item';
+
+                    feedbackItem.innerHTML = `
+                        <div class="item-header">
+                            <h3>${feedback.courseName}</h3>
+                            <span class="tag-approved">${feedback.status}</span>
+                        </div>
+                        <div class="question-box">
+                            <p>${feedback.questionContent}</p>
+                        </div>
+                        ${feedback.feedbackContent ? `
+                        <div class="feedback-note-box">
+                            <p>${feedback.feedbackContent}</p>
+                        </div>` : ''}
+                        <div class="item-footer">
+                            <span class="status-message">${feedback.feedbackContent ? 'Approved with feedback' : 'Approved without revisions'}</span>
+                            <span class="submitted-date">Submitted on ${new Date(feedback.submittedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                        </div>
+                    `;
+
+                    feedbackContainer.appendChild(feedbackItem);
+                });
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                feedbackContainer.innerHTML = '<p>Failed to load feedback history</p>';
+            });
+    }
+
+    // Load feedback history on page load
+    loadFeedbackHistory();
+});
+    </script>
+    <!-- ma nhung header vs menu -->
+    <script>
         // Set active menu based on current page
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             setActiveMenu(document.title);
         });
     </script>
