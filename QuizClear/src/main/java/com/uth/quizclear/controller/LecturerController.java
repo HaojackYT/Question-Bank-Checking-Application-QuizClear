@@ -566,15 +566,28 @@ public class LecturerController {
         }
     }    /**
      * Check for duplicate questions using AI service
-     */
-    @PostMapping("/api/check-duplicate")
+     */    @PostMapping("/api/check-duplicate")
     @ResponseBody    public ResponseEntity<Map<String, Object>> checkDuplicate(@RequestBody Map<String, Object> questionData, HttpSession session) {
         try {
             
             Map<String, Object> response = new HashMap<>();
               // Get question data
             String questionTitle = (String) questionData.get("questionTitle");
+            Object questionIdObj = questionData.get("questionId"); // Check if editing existing question
+            Long currentQuestionId = null;
             
+            if (questionIdObj != null) {
+                if (questionIdObj instanceof Number) {
+                    currentQuestionId = ((Number) questionIdObj).longValue();
+                } else if (questionIdObj instanceof String) {
+                    try {
+                        currentQuestionId = Long.parseLong((String) questionIdObj);
+                    } catch (NumberFormatException e) {
+                        // Invalid question ID format, treat as new question
+                        currentQuestionId = null;
+                    }
+                }
+            }
             
             if (questionTitle == null || questionTitle.trim().isEmpty()) {
                 response.put("error", "Question title is required");
@@ -586,6 +599,11 @@ public class LecturerController {
                 // Fetch existing questions from database
                 List<Question> questions = questionRepository.findAll();
                 for (Question q : questions) {
+                    // Skip the current question when editing to avoid self-comparison
+                    if (currentQuestionId != null && q.getQuestionId().equals(currentQuestionId)) {
+                        continue;
+                    }
+                    
                     Map<String, Object> questionMap = new HashMap<>();
                     questionMap.put("id", q.getQuestionId());
                     questionMap.put("content", q.getContent());

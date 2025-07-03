@@ -201,12 +201,14 @@
                         checkButton.textContent = 'Checking...';
                         checkButton.disabled = true;
                         statusText.textContent = 'Checking for duplicates...';
-                        statusText.classList.remove('safety', 'warring', 'error');
-
-                        try {
+                        statusText.classList.remove('safety', 'warring', 'error');                        try {
+                            // Get question ID for edit mode (to exclude current question from comparison)
+                            const questionId = document.getElementById('questionId').value;
+                            
                             // Gọi API check duplicate với đầy đủ thông tin câu hỏi
                             const questionData = {
                                 questionTitle: title,
+                                questionId: questionId || null, // Include question ID to exclude from comparison
                                 correctAnswer: correctAnswer,
                                 incorrectAnswers: [incorrectAnswer1, incorrectAnswer2, incorrectAnswer3],
                                 subject: subject,
