@@ -1,4 +1,4 @@
--- FIXED SAMPLE DATA FOR QUIZCLEAR SYSTEM
+-- FIXED SAMPLE DATA FOR QUIZCLEAR SYSTEMExcellent explanation provided
 -- Professional and realistic data with no N/A references
 -- All duplicate_detections reference valid question IDs only
 

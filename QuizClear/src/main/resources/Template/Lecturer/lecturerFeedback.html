@@ -16,13 +16,10 @@
     <!--header-->
     <div th:replace="header_user"></div>
 
-
-
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
         <div th:replace="Lecturer/Menu-Lecturer"></div>
-
 
         <!-- Main content -->
         <div id="main">
@@ -101,8 +98,7 @@
                         </div>
                         <div class="feedback-content">
                             <p><strong>The question needs improvement:</strong> Consider rewriting the question to focus
-                                on a specific
-                                normal form or a specific benefit of normalization. Also, the answer options need to be
+                                on a specific normal form or a specific benefit of normalization. Also, the answer options need to be
                                 more distinct from each other.</p>
                         </div>
                         <div class="item-footer">
@@ -112,7 +108,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -125,7 +120,7 @@
             const mainContentTitle = document.getElementById('main-content-title');
             const mainContentTabs = document.getElementById('main-content-tabs');
 
-            let activeTabId = 'revisions-content';
+            let activeTabId = 'feedback-history-content';
 
             // Gán sự kiện cho các nút tab
             tabButtons.forEach(button => {
@@ -143,61 +138,123 @@
                     document.getElementById(activeTabId).classList.add('active-tab-content');
                 });
             });
+
+            // Function to fetch feedback history
+            const feedbackContainer = document.getElementById('feedback-history-content');
+            function loadFeedbackHistory() {
+                fetch('/lecturer/api/feedback/history')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            console.error('Error:', data.error);
+                            feedbackContainer.innerHTML = '<p>Error loading feedback history</p>';
+                            return;
+                        }
+
+                        feedbackContainer.innerHTML = ''; // Clear existing content
+
+                        data.feedbacks.forEach(feedback => {
+                            const feedbackItem = document.createElement('div');
+                            feedbackItem.className = 'feedback-item history-item';
+
+                            feedbackItem.innerHTML = `
+                                <div class="item-header">
+                                    <h3>${feedback.courseName}</h3>
+                                    <span class="tag-approved">${feedback.status}</span>
+                                </div>
+                                <div class="question-box">
+                                    <p>${feedback.questionContent}</p>
+                                </div>
+                                ${feedback.feedbackContent ? `
+                                <div class="feedback-note-box">
+                                    <p>${feedback.feedbackContent}</p>
+                                </div>` : ''}
+                                <div class="item-footer">
+                                    <span class="status-message">${feedback.feedbackContent ? 'Approved with feedback' : 'Approved without revisions'}</span>
+                                    <span class="submitted-date">Submitted on ${new Date(feedback.submittedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                                </div>
+                            `;
+
+                            feedbackContainer.appendChild(feedbackItem);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Fetch error:', error);
+                        feedbackContainer.innerHTML = '<p>Failed to load feedback history</p>';
+                    });
+            }
+
+            // Function to fetch revisions history
+            const revisionsContainer = document.getElementById('revisions-content');
+            function loadRevisionsHistory() {
+                fetch('/lecturer/api/revisions/history')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            console.error('Error:', data.error);
+                            revisionsContainer.innerHTML = '<p>Error loading revisions history</p>';
+                            return;
+                        }
+
+                        revisionsContainer.innerHTML = ''; // Clear existing content
+
+                        data.revisions.forEach(revision => {
+                            // Convert difficultyLevel to display format
+                            let difficultyDisplay = '';
+                            switch (revision.difficultyLevel.toLowerCase()) {
+                                case 'recognition':
+                                    difficultyDisplay = 'Remember';
+                                    break;
+                                case 'comprehension':
+                                    difficultyDisplay = 'Comprehension';
+                                    break;
+                                case 'basic_application':
+                                    difficultyDisplay = 'Basic Application';
+                                    break;
+                                case 'advanced_application':
+                                    difficultyDisplay = 'Advanced Application';
+                                    break;
+                                default:
+                                    difficultyDisplay = revision.difficultyLevel;
+                            }
+
+                            const revisionItem = document.createElement('div');
+                            revisionItem.className = 'feedback-item';
+
+                            revisionItem.innerHTML = `
+                                <div class="item-header">
+                                    <h3>${revision.courseName}</h3>
+                                    <span class="tag-remember a">${difficultyDisplay}</span>
+                                    <span class="tag needs-revision">Rejected</span>
+                                </div>
+                                <div class="question-box">
+                                    <p>${revision.questionContent}</p>
+                                </div>
+                                <div class="feedback-box">
+                                    <h4>Feedback</h4>
+                                    <p>${revision.feedbackContent}</p>
+                                </div>
+                                <div class="item-footer">
+                                    <span class="submitted-date">Submitted on ${new Date(revision.submittedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                                    <a href="lecturerFREditQuestion?id=${revision.questionId}"><button class="edit-button edit-question-btn">Edit Question</button></a>
+                                </div>
+                            `;
+
+                            revisionsContainer.appendChild(revisionItem);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Fetch error:', error);
+                        revisionsContainer.innerHTML = '<p>Failed to load revisions history</p>';
+                    });
+            }
+
+            // Load both feedback and revisions history on page load
+            loadFeedbackHistory();
+            loadRevisionsHistory();
         });
     </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-    const feedbackContainer = document.getElementById('feedback-history-content');
-
-    // Function to fetch feedback history
-    function loadFeedbackHistory() {
-        fetch('/lecturer/api/feedback/history')
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    console.error('Error:', data.error);
-                    feedbackContainer.innerHTML = '<p>Error loading feedback history</p>';
-                    return;
-                }
-
-                feedbackContainer.innerHTML = ''; // Clear existing content
-
-                data.feedbacks.forEach(feedback => {
-                    const feedbackItem = document.createElement('div');
-                    feedbackItem.className = 'feedback-item history-item';
-
-                    feedbackItem.innerHTML = `
-                        <div class="item-header">
-                            <h3>${feedback.courseName}</h3>
-                            <span class="tag-approved">${feedback.status}</span>
-                        </div>
-                        <div class="question-box">
-                            <p>${feedback.questionContent}</p>
-                        </div>
-                        ${feedback.feedbackContent ? `
-                        <div class="feedback-note-box">
-                            <p>${feedback.feedbackContent}</p>
-                        </div>` : ''}
-                        <div class="item-footer">
-                            <span class="status-message">${feedback.feedbackContent ? 'Approved with feedback' : 'Approved without revisions'}</span>
-                            <span class="submitted-date">Submitted on ${new Date(feedback.submittedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                        </div>
-                    `;
-
-                    feedbackContainer.appendChild(feedbackItem);
-                });
-            })
-            .catch(error => {
-                console.error('Fetch error:', error);
-                feedbackContainer.innerHTML = '<p>Failed to load feedback history</p>';
-            });
-    }
-
-    // Load feedback history on page load
-    loadFeedbackHistory();
-});
-    </script>
     <!-- ma nhung header vs menu -->
     <script>
         // Set active menu based on current page
