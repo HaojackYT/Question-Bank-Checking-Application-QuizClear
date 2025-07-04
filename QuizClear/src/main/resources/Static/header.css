@@ -87,6 +87,11 @@
     display: block;
 }
 
+/* Hiển thị dropdown khi có class .show (cho JavaScript) */
+.dropdown-content.show {
+    display: block;
+}
+
 /* Notification Dropdown */
 .notification-dropdown {
     width: 300px;
