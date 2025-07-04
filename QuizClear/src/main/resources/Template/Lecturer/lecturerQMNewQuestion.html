@@ -38,21 +38,16 @@
                     <p class="section-subtitle">Enter detailed information for the new question</p>
 
                     <form>
-                        <div class="form-row">
-                            <div class="form-group">
+                        <div class="form-row">                            <div class="form-group">
                                 <label class="form-label">Subject <span class="required">(*)</span></label>
                                 <select class="form-input" id="subject" required>
                                     <option value="">Select subject...</option>
-                                    <option value="Mathematics">Mathematics</option>
-                                    <option value="Physics">Physics</option>
-                                    <option value="Chemistry">Chemistry</option>
-                                    <option value="Biology">Biology</option>
-                                    <option value="Computer Science">Computer Science</option>
-                                    <option value="English">English</option>
-                                    <option value="History">History</option>
-                                    <option value="Geography">Geography</option>
-                                    <option value="Literature">Literature</option>
-                                    <option value="Economics">Economics</option>
+                                    <!-- Only show subjects assigned to this lecturer -->
+                                    <option th:each="subject : ${subjects}" 
+                                            th:value="${subject.subjectId}" 
+                                            th:text="${subject.subjectName}">
+                                        Subject Name
+                                    </option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -204,13 +199,12 @@
                             checkButton.textContent = 'Checking...';
                             checkButton.disabled = true;
                             statusText.textContent = 'Checking for duplicates...';
-                            statusText.classList.remove('safety', 'warring', 'error');                            try {
-                                // Gọi API check duplicate với đầy đủ thông tin câu hỏi
+                            statusText.classList.remove('safety', 'warring', 'error');                            try {                                // Gọi API check duplicate với đầy đủ thông tin câu hỏi
                                 const questionData = {
                                     questionTitle: title,
                                     correctAnswer: correctAnswer,
                                     incorrectAnswers: incorrectAnswers,
-                                    subject: subject,
+                                    subjectId: subject,
                                     difficulty: difficulty
                                 };
 
@@ -385,9 +379,7 @@
                             const button = this;
                             const originalText = button.innerHTML;
                             button.innerHTML = 'Submitting... <i class="fa-solid fa-spinner fa-spin"></i>';
-                            button.disabled = true;
-
-                            // Collect form data
+                            button.disabled = true;                            // Collect form data
                             const formData = {
                                 content: questionTitle.value.trim(),
                                 correctAnswer: document.querySelector('input[placeholder="Enter the correct answer..."]').value.trim(),
@@ -395,6 +387,8 @@
                                 answer2: incorrectAnswers[1].value.trim(),
                                 answer3: incorrectAnswers[2].value.trim(),
                                 explanation: document.querySelector('textarea').value.trim(),
+                                subjectId: document.getElementById('subject').value.trim(),
+                                difficulty: document.getElementById('difficulty').value.trim(),
                                 action: 'submit'
                             };
 
@@ -445,9 +439,7 @@
                                 const button = this;
                                 const originalText = button.innerHTML;
                                 button.innerHTML = 'Saving... <i class="fa-solid fa-spinner fa-spin"></i>';
-                                button.disabled = true;
-
-                                // Collect form data (no validation required for draft)
+                                button.disabled = true;                                // Collect form data (no validation required for draft)
                                 const formData = {
                                     content: document.querySelector('input[placeholder="The title question..."]').value.trim(),
                                     correctAnswer: document.querySelector('input[placeholder="Enter the correct answer..."]').value.trim(),
@@ -455,7 +447,7 @@
                                     answer2: document.querySelectorAll('.incorrect-answers input')[1].value.trim(),
                                     answer3: document.querySelectorAll('.incorrect-answers input')[2].value.trim(),
                                     explanation: document.querySelector('textarea').value.trim(),
-                                    subject: document.getElementById('subject').value.trim(),
+                                    subjectId: document.getElementById('subject').value.trim(),
                                     difficulty: document.getElementById('difficulty').value.trim(),
                                     action: 'draft'
                                 };

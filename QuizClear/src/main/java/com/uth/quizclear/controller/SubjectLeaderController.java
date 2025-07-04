@@ -339,42 +339,49 @@ public class SubjectLeaderController {
         
         System.out.println("API FEEDBACK DETAIL FOUND: " + feedbackDetail.getTitle());
         return ResponseEntity.ok(feedbackDetail);
-    }
-      @PostMapping("/api/feedback/{feedbackId}/update-question")
+    }    @PostMapping("/api/feedback/{feedbackId}/update-question")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> updateQuestion(
             @PathVariable Long feedbackId,
             @RequestBody Map<String, Object> questionData,
-            HttpSession session) {
+            Authentication authentication) {
         
-        Long userId = getUserIdFromSession(session);
-        Object roleObj = session.getAttribute("role");
+        System.out.println("=== UPDATE QUESTION API DEBUG ===");
+        System.out.println("Authentication: " + (authentication != null ? authentication.getName() : "null"));
+        System.out.println("FeedbackId: " + feedbackId);
+        System.out.println("QuestionData: " + questionData);
         
-        if (userId == null || roleObj == null) {
-            return ResponseEntity.status(403).build();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("API ACCESS DENIED - User not authenticated");
+            return ResponseEntity.status(403).body(Map.of("success", false, "message", "Authentication required"));
         }
         
-        // Handle both String and UserRole enum cases
-        String roleStr = null;
-        if (roleObj instanceof String) {
-            roleStr = (String) roleObj;        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
-            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+        // Check if user has SL role
+        boolean isSL = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("SL") || auth.equals("ROLE_SL");
+                });
+        
+        if (!isSL) {
+            System.out.println("API ACCESS DENIED - User is not Subject Leader");
+            return ResponseEntity.status(403).body(Map.of("success", false, "message", "Subject Leader role required"));
         }
         
-        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
-            return ResponseEntity.status(403).build();
-        }
-        
-        // Long userId = 3L; // Hardcode for testing - COMMENTED OUT
-        
-        try {
+        // Get userId from email (temporary mapping)
+        Long userId = getUserIdFromEmail(authentication.getName());
+        System.out.println("Update question for userId: " + userId);
+          try {
             boolean success = feedbackService.updateQuestion(feedbackId, questionData, userId);
+            System.out.println("Update result: " + success);
             if (success) {
                 return ResponseEntity.ok(Map.of("success", true, "message", "Question updated successfully"));
             } else {
-                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Failed to update question"));
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Failed to update question - question not found or no changes made"));
             }
         } catch (Exception e) {
+            System.err.println("Error updating question: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.internalServerError()
                 .body(Map.of("success", false, "message", "Error updating question: " + e.getMessage()));
         }

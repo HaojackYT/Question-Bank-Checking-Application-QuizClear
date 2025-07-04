@@ -5,6 +5,7 @@ import com.uth.quizclear.model.dto.QuestionFeedbackDetailDTO;
 import com.uth.quizclear.model.entity.Question;
 import com.uth.quizclear.model.entity.Exam;
 import com.uth.quizclear.model.entity.User;
+import com.uth.quizclear.model.enums.QuestionStatus;
 import com.uth.quizclear.repository.QuestionRepository;
 import com.uth.quizclear.repository.ExamRepository;
 import com.uth.quizclear.repository.UserRepository;
@@ -44,13 +45,11 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
         String department = subjectLeaderOpt.get().getDepartment();
         if (department == null || department.trim().isEmpty()) {
             return feedbackList;
-        }
-
-        // Get questions with feedback from the same department
-        List<Question> questionsWithFeedback = questionRepository.findQuestionsWithFeedbackByDepartment(department);
-        
-        for (Question question : questionsWithFeedback) {
-            if (question.getFeedback() != null && !question.getFeedback().trim().isEmpty()) {
+        }        // Get questions from the same department (submitted or with feedback)
+        List<Question> questionsWithFeedback = questionRepository.findSubmittedQuestionsByDepartment(department);
+          for (Question question : questionsWithFeedback) {
+            // Show questions that are submitted or have feedback (not DRAFT)
+            if (question.getStatus() != null && question.getStatus() != QuestionStatus.DRAFT) {
                 QuestionFeedbackDTO dto = new QuestionFeedbackDTO();
                 dto.setId(question.getQuestionId());
                 dto.setType("question");
@@ -64,9 +63,8 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
                 dto.setStatus(question.getStatus() != null ? question.getStatus().toString() : "Unknown");                dto.setCreatedByName(question.getCreatedBy() != null ? question.getCreatedBy().getFullName() : "Unknown");
                 dto.setReviewedByName(question.getReviewer() != null ? question.getReviewer().getFullName() : null);
                 dto.setSubmittedAt(question.getSubmittedAt());
-                dto.setReviewedAt(question.getReviewedAt());
-                dto.setFeedback(question.getFeedback());
-                dto.setHasFeedback(true);
+                dto.setReviewedAt(question.getReviewedAt());                dto.setFeedback(question.getFeedback());
+                dto.setHasFeedback(question.getFeedback() != null && !question.getFeedback().trim().isEmpty());
                 
                 // Set priority based on status and age
                 int priority = calculatePriority(question.getStatus().toString(), question.getSubmittedAt());
@@ -147,9 +145,7 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
         }
 
         return null;
-    }
-
-    @Override
+    }    @Override
     public boolean updateQuestion(Long feedbackId, Map<String, Object> questionData, Long subjectLeaderId) {
         Optional<Question> questionOpt = questionRepository.findById(feedbackId);
         if (!questionOpt.isPresent()) {
@@ -178,6 +174,24 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
             question.setExplanation((String) questionData.get("explanation"));
         }
 
+        // When SL edits and saves, automatically approve the question
+        question.setStatus(QuestionStatus.APPROVED);
+        question.setReviewedAt(LocalDateTime.now());
+        
+        // Set reviewer as the Subject Leader
+        Optional<User> reviewerOpt = userRepository.findById(subjectLeaderId);
+        if (reviewerOpt.isPresent()) {
+            question.setReviewer(reviewerOpt.get());
+        }
+        
+        // Add feedback about the edit
+        String editFeedback = "Question reviewed and approved by Subject Leader with modifications.";
+        if (question.getFeedback() != null && !question.getFeedback().trim().isEmpty()) {
+            question.setFeedback(question.getFeedback() + "\n\nSL Edit: " + editFeedback);
+        } else {
+            question.setFeedback(editFeedback);
+        }
+        
         question.setUpdatedAt(LocalDateTime.now());
         
         try {
