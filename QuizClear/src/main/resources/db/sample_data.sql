@@ -326,7 +326,7 @@ INSERT INTO duplicate_detections (new_question_id, similar_question_id, similari
 (26, 41, 0.7400, NULL, 'pending', NULL, 1, NULL, '2025-06-26 08:00:00', NULL, 'Math geometry vs Chemistry formulas', NULL),
 (32, 42, 0.7700, NULL, 'pending', NULL, 2, NULL, '2025-06-26 09:00:00', NULL, 'Physics relativity vs Biology ecology', NULL),
 (23, 37, 0.7500, NULL, 'pending', NULL, 3, NULL, '2025-06-26 10:00:00', NULL, 'Database concepts vs Gas laws', NULL),
-(28, 48, 0.7600, NULL, 'pending', NULL, 4, NULL, '2025-06-26 11:00:00', NULL, 'Java vs population genetics comparison', NULL),
+(28, 48, 0.7600, NULL, 'pending', NULL, 4, NULL, '2025-06-26 11:00:00', NULL, 'Java vs population genetics comparison', NULL);
 
 -- =================================================================
 -- PHẦN BỔ SUNG: DỮ LIỆU MẪU CHO HỆ THỐNG PHÂN QUYỀN
@@ -596,30 +596,30 @@ INSERT INTO processing_logs (
  'Calculus II', 'Calculus II', 'Frank Green', 'Frank Green');
 
 -- Additional processing logs for more comprehensive data
-INSERT INTO processing_logs (
-    detection_id, new_question_id, similar_question_id, similarity_score, action, 
-    feedback, processed_by, processed_at, new_question_content, similar_question_content,
-    new_question_course, similar_question_course, new_question_creator, similar_question_creator
-) VALUES
-(1011, 31, 32, 0.83, 'REJECTED', 'Redundant question - covers same material as existing question', 3, '2024-07-06 09:20:00',
- 'What is polymorphism in Java?', 'Explain polymorphism in object-oriented programming',
- 'Data Structures', 'Introduction to Computer Science', 'Brian Carter', 'Ash Abrahams'),
+-- INSERT INTO processing_logs (
+--     detection_id, new_question_id, similar_question_id, similarity_score, action, 
+--     feedback, processed_by, processed_at, new_question_content, similar_question_content,
+--     new_question_course, similar_question_course, new_question_creator, similar_question_creator
+-- ) VALUES
+-- (1011, 31, 32, 0.83, 'REJECTED', 'Redundant question - covers same material as existing question', 3, '2024-07-06 09:20:00',
+--  'What is polymorphism in Java?', 'Explain polymorphism in object-oriented programming',
+--  'Data Structures', 'Introduction to Computer Science', 'Brian Carter', 'Ash Abrahams'),
 
-(1012, 33, 34, 0.91, 'ACCEPTED', 'Different context and application - both questions valid for curriculum', 9, '2024-07-06 16:30:00',
- 'Balance the equation: HCl + NaOH → ?', 'What products are formed when HCl reacts with NaOH?',
- 'General Chemistry', 'Organic Chemistry', 'Henry Johnson', 'Henry Johnson'),
+-- (1012, 33, 34, 0.91, 'ACCEPTED', 'Different context and application - both questions valid for curriculum', 9, '2024-07-06 16:30:00',
+--  'Balance the equation: HCl + NaOH → ?', 'What products are formed when HCl reacts with NaOH?',
+--  'General Chemistry', 'Organic Chemistry', 'Henry Johnson', 'Henry Johnson'),
 
-(1013, 35, 36, 0.77, 'SEND_BACK', 'Question needs restructuring to focus on specific learning outcome', 10, '2024-07-07 11:45:00',
- 'What is natural selection?', 'How does natural selection work in evolution?',
- 'Genetics', 'Cell Biology', 'Isabella King', 'Daniel Evans'),
+-- (1013, 35, 36, 0.77, 'SEND_BACK', 'Question needs restructuring to focus on specific learning outcome', 10, '2024-07-07 11:45:00',
+--  'What is natural selection?', 'How does natural selection work in evolution?',
+--  'Genetics', 'Cell Biology', 'Isabella King', 'Daniel Evans'),
 
-(1014, 37, 38, 0.86, 'REJECTED', 'Content overlap significant - existing question covers this topic adequately', 6, '2024-07-07 13:15:00',
- 'What is the limit of (sin x)/x as x approaches 0?', 'Calculate lim(x→0) (sin x)/x',
- 'Calculus II', 'Linear Algebra', 'Frank Green', 'Grace Harris'),
+-- (1014, 37, 38, 0.86, 'REJECTED', 'Content overlap significant - existing question covers this topic adequately', 6, '2024-07-07 13:15:00',
+--  'What is the limit of (sin x)/x as x approaches 0?', 'Calculate lim(x→0) (sin x)/x',
+--  'Calculus II', 'Linear Algebra', 'Frank Green', 'Grace Harris'),
 
-(1015, 39, 40, 0.79, 'ACCEPTED', 'Different emphasis and depth - suitable for different assessment levels', 2, '2024-07-08 10:30:00',
- 'What is Newton''s first law?', 'State and explain Newton''s first law of motion',
- 'Classical Mechanics', 'Electricity and Magnetism', 'Emily Foster', 'Emily Foster');
+-- (1015, 39, 40, 0.79, 'ACCEPTED', 'Different emphasis and depth - suitable for different assessment levels', 2, '2024-07-08 10:30:00',
+--  'What is Newton''s first law?', 'State and explain Newton''s first law of motion',
+--  'Classical Mechanics', 'Electricity and Magnetism', 'Emily Foster', 'Emily Foster');
 
 
 -- Sample data for activity_logs (Processing History for Duplicate Detections)

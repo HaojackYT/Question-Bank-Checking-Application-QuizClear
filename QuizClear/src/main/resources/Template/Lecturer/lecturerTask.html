@@ -85,9 +85,9 @@
                                 <div class="dropdown">
                                     <select id="subject-select">
                                         <option value="all">All Status</option>
-                                        <option value="not received">Not Received</option>
-                                        <option value="in progress">In Progress</option>
-                                        <option value="submitted">Submitted</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="in_progress">In Progress</option>
+                                        <option value="completed">Completed</option>
                                     </select>
                                 </div>
                             </th>
@@ -105,7 +105,6 @@
                                     <div th:case="'pending'" class="status status-n">Pending</div>
                                     <div th:case="'in_progress'" class="status status-i">In Progress</div>
                                     <div th:case="'completed'" class="status status-s">Completed</div>
-                                    <div th:case="'cancelled'" class="status status-c">Cancelled</div>
                                     <div th:case="*" class="status status-i">Unknown</div>
                                 </div>
                             </td>
@@ -267,7 +266,8 @@
                 const selectedStatus = statusSelect.value.toLowerCase();
 
                 rows.forEach(row => {
-                    const statusText = row.querySelector('.status').textContent.trim().toLowerCase();
+                    const statusDiv = row.querySelector('.status');
+                    const statusText = statusDiv ? statusDiv.textContent.trim().toLowerCase().replace(/\s+/g, '_') : '';
 
                     if (selectedStatus === 'all' || statusText === selectedStatus) {
                         row.style.display = '';
@@ -275,6 +275,7 @@
                         row.style.display = 'none';
                     }
                 });
+
             });
         }
 
@@ -283,7 +284,7 @@
             closeButton.addEventListener('click', closeModal);
         }
     });
-    
+
     // Xử lý load detail task
     function formatStatus(status) {
         if (!status) return '';
