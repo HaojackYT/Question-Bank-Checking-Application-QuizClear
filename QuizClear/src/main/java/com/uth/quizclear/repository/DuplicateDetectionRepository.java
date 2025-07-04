@@ -75,5 +75,6 @@ public interface DuplicateDetectionRepository extends JpaRepository<DuplicateDet
     // List<Long> findQuestionIdsBySubjectIds(@Param("subjectIds") List<Long> subjectIds);
 
     // DuplicateDetectionRepository
-    List<DuplicateDetection> findByNewQuestionIdInOrSimilarQuestionIdIn(List<Long> newIds, List<Long> similarIds);
+    @Query("SELECT dd FROM DuplicateDetection dd WHERE dd.newQuestionId IN :newIds OR dd.similarQuestionId IN :similarIds")
+    List<DuplicateDetection> findByNewQuestionIdInOrSimilarQuestionIdIn(@Param("newIds") List<Long> newIds, @Param("similarIds") List<Long> similarIds);
 }

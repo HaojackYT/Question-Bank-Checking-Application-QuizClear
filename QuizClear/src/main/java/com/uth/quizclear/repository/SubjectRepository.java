@@ -132,6 +132,10 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     List<Subject> findRecentSubjects(@Param("since") java.time.LocalDateTime since);
 
     // UserSubjectAssignmentRepository
-    @Query("SELECT usa.subject.subjectId FROM UserSubjectAssignment usa WHERE usa.user.userId = :userId AND usa.role = :role")
+    @Query("SELECT usa.subject.subjectId FROM UserSubjectAssignment usa WHERE usa.user.userId = :userId AND usa.role = :role AND usa.status = 'ACTIVE'")
 	List<Long> findSubjectIdsByUserIdAndRole(@Param("userId") Long userId, @Param("role") com.uth.quizclear.model.enums.UserRole role);
+	
+	// Fallback method to get subjects by subject leader ID
+    @Query("SELECT s.subjectId FROM Subject s WHERE s.subjectLeader.userId = :userId")
+    List<Long> findSubjectIdsBySubjectLeaderId(@Param("userId") Long userId);
 }

@@ -45,7 +45,8 @@ public class SLDuplicationCheckController {
      */
     @GetMapping
     public String duplicationCheckPage(Model model, 
-                                     org.springframework.security.core.Authentication authentication) {
+                                     org.springframework.security.core.Authentication authentication,
+                                     HttpSession session) {
         // Debug logging
         log.info("=== DUPLICATION CHECK PAGE DEBUG ===");
         
@@ -70,10 +71,23 @@ public class SLDuplicationCheckController {
         log.info("Authentication name: {}", authentication.getName());
         log.info("User authorities: {}", authentication.getAuthorities());
         
-        log.info("User authenticated, loading duplication check page");
-        // For now, pass a default userId for the service call
-        model.addAttribute("duplications", duplicateDetectionService.getAllDetectionsForSubjectLeader(3L));
-        return "subjectLeader/sl_duplicationCheck";
+        // Get user ID from session
+        Long userId = getCurrentUserId(session);
+        if (userId == null) {
+            log.warn("REDIRECTING TO LOGIN - User ID not found in session");
+            return "redirect:/login";
+        }
+        
+        log.info("User authenticated with ID: {}, loading duplication check page", userId);
+        
+        try {
+            model.addAttribute("duplications", duplicateDetectionService.getAllDetectionsForSubjectLeader(userId));
+            return "subjectLeader/sl_duplicationCheck";
+        } catch (Exception e) {
+            log.error("Error loading duplications for user {}: {}", userId, e.getMessage(), e);
+            model.addAttribute("error", "Unable to load duplication data");
+            return "subjectLeader/sl_duplicationCheck";
+        }
     }/**
      * Get duplicate questions (AJAX)
      */

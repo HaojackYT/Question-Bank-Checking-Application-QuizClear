@@ -231,6 +231,9 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
+                        x: {
+                            display: false  // This hides the x-axis labels
+                        },
                         y: {
                             beginAtZero: true,
                             ticks: {
@@ -241,6 +244,20 @@
                     plugins: {
                         legend: {
                             position: 'bottom'
+                        },
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                title: function(context) {
+                                    // Show subject name in tooltip title
+                                    return progressData.subjects[context[0].dataIndex] || '';
+                                },
+                                label: function(context) {
+                                    const datasetLabel = context.dataset.label || '';
+                                    const value = context.raw || 0;
+                                    return `${datasetLabel}: ${value} questions`;
+                                }
+                            }
                         }
                     }
                 }
