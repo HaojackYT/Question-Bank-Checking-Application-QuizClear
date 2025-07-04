@@ -4,12 +4,15 @@ import com.uth.quizclear.model.entity.Question;
 import com.uth.quizclear.model.entity.Course;
 import com.uth.quizclear.model.entity.CLO;
 import com.uth.quizclear.model.entity.User;
+import com.uth.quizclear.model.entity.Subject;
 import com.uth.quizclear.model.enums.DifficultyLevel;
 import com.uth.quizclear.model.enums.QuestionStatus;
+import com.uth.quizclear.model.enums.UserRole;
 import com.uth.quizclear.repository.QuestionRepository;
 import com.uth.quizclear.repository.CourseRepository;
 import com.uth.quizclear.repository.CLORepository;
 import com.uth.quizclear.repository.UserRepository;
+import com.uth.quizclear.repository.SubjectRepository;
 import com.uth.quizclear.model.dto.UserBasicDTO;
 import com.uth.quizclear.service.AIService;
 
@@ -105,12 +108,16 @@ public class LecturerController {
     
     @Autowired
     private CourseRepository courseRepository;
-    
-    @Autowired
+      @Autowired
     private CLORepository cloRepository;
       @Autowired
-    private UserRepository userRepository;    @Autowired
-    private AIService aiService;    /**
+    private UserRepository userRepository;    
+    
+    @Autowired
+    private SubjectRepository subjectRepository;
+    
+    @Autowired
+    private AIService aiService;/**
      * Lecturer Question Management page
      */
     @GetMapping("/question-management")
@@ -365,9 +372,7 @@ public class LecturerController {
             response.put("error", "Failed to update question status: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
         }
-    }
-
-    /**
+    }    /**
      * Create new question page
      */
     @GetMapping("/create-question")
@@ -380,9 +385,16 @@ public class LecturerController {
             UserBasicDTO user = (UserBasicDTO) userObj;
             lecturerId = user.getUserId();
         }
+          // Only load subjects that the lecturer is assigned to
+        List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
+            lecturerId, 
+            UserRole.LEC
+        );
         
-        // Add necessary data for the form
-        List<Course> courses = courseRepository.findAll();
+        // Get courses related to assigned subjects (if needed)
+        List<Course> courses = courseRepository.findAll(); // Keep for backward compatibility
+        
+        model.addAttribute("subjects", assignedSubjects);
         model.addAttribute("courses", courses);
         model.addAttribute("lecturerId", lecturerId);
         model.addAttribute("difficultyLevels", DifficultyLevel.values());
@@ -531,10 +543,51 @@ public class LecturerController {
                 }
                 question.setCreatedBy(creator);
             }
-            
-            // Set difficulty (use default for demo)
+              // Set difficulty (use default for demo)
             if (question.getDifficultyLevel() == null) {
                 question.setDifficultyLevel(DifficultyLevel.RECOGNITION);
+            }
+            
+            // Handle subjectId to link question with subject
+            if (questionData.get("subjectId") != null && !questionData.get("subjectId").toString().trim().isEmpty()) {
+                try {
+                    Long subjectId = Long.parseLong(questionData.get("subjectId").toString());
+                    Subject subject = subjectRepository.findById(subjectId).orElse(null);
+                    if (subject != null) {                        // Verify lecturer has permission to create questions for this subject
+                        List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
+                            lecturerId, 
+                            UserRole.LEC
+                        );
+                        
+                        boolean hasPermission = assignedSubjects.stream()
+                            .anyMatch(s -> s.getSubjectId().equals(subjectId));
+                            
+                        if (hasPermission) {
+                            // For now, we'll store subject info in the course field or add custom logic
+                            // Since Question entity might not have direct Subject relationship
+                            // We can store subject info in a custom way or update the entity
+                            
+                            // Find or create a course related to this subject for compatibility
+                            Course relatedCourse = courseRepository.findAll().stream()
+                                .filter(c -> c.getCourseName().contains(subject.getSubjectName()) || 
+                                           c.getDepartment().equals(subject.getDepartment().getDepartmentName()))
+                                .findFirst()
+                                .orElse(courseRepository.findAll().get(0)); // Fallback to first course
+                                
+                            question.setCourse(relatedCourse);
+                        } else {
+                            throw new RuntimeException("Lecturer does not have permission to create questions for this subject");
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    // Invalid subjectId format, use default course
+                    if (question.getCourse() == null) {
+                        List<Course> courses = courseRepository.findAll();
+                        if (!courses.isEmpty()) {
+                            question.setCourse(courses.get(0));
+                        }
+                    }
+                }
             }
             
             // Set status based on action
@@ -567,10 +620,43 @@ public class LecturerController {
     }    /**
      * Check for duplicate questions using AI service
      */    @PostMapping("/api/check-duplicate")
-    @ResponseBody    public ResponseEntity<Map<String, Object>> checkDuplicate(@RequestBody Map<String, Object> questionData, HttpSession session) {
+    @ResponseBody    
+    public ResponseEntity<Map<String, Object>> checkDuplicate(@RequestBody Map<String, Object> questionData, HttpSession session) {
         try {
+            // Get user from session for permission check
+            Object userObj = session.getAttribute("user");
+            Long lecturerId = 1L; // Default fallback
+            
+            if (userObj != null && userObj instanceof UserBasicDTO) {
+                UserBasicDTO user = (UserBasicDTO) userObj;
+                lecturerId = user.getUserId();
+            }
             
             Map<String, Object> response = new HashMap<>();
+            
+            // Validate subjectId permission
+            Object subjectIdObj = questionData.get("subjectId");
+            if (subjectIdObj != null && !subjectIdObj.toString().trim().isEmpty()) {
+                try {
+                    Long subjectId = Long.parseLong(subjectIdObj.toString());
+                      // Check if lecturer has permission for this subject
+                    List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
+                        lecturerId, 
+                        UserRole.LEC
+                    );
+                    
+                    boolean hasPermission = assignedSubjects.stream()
+                        .anyMatch(s -> s.getSubjectId().equals(subjectId));
+                        
+                    if (!hasPermission) {
+                        response.put("error", "You don't have permission to create questions for this subject");
+                        return ResponseEntity.status(403).body(response);
+                    }
+                } catch (NumberFormatException e) {
+                    response.put("error", "Invalid subject ID format");
+                    return ResponseEntity.badRequest().body(response);
+                }
+            }
               // Get question data
             String questionTitle = (String) questionData.get("questionTitle");
             Object questionIdObj = questionData.get("questionId"); // Check if editing existing question
@@ -1428,6 +1514,56 @@ public class LecturerController {
     private boolean canEditByStatus(QuestionStatus status) {
         // Chỉ có thể edit khi status là DRAFT hoặc REJECTED
         return status == QuestionStatus.DRAFT || status == QuestionStatus.REJECTED;
+    }
+    
+    /**
+     * API endpoint to get subjects assigned to current lecturer
+     */
+    @GetMapping("/api/assigned-subjects")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getAssignedSubjects(HttpSession session) {
+        try {
+            // Get user from session
+            Object userObj = session.getAttribute("user");
+            Long lecturerId = 1L; // Default fallback
+            
+            if (userObj != null && userObj instanceof UserBasicDTO) {
+                UserBasicDTO user = (UserBasicDTO) userObj;
+                lecturerId = user.getUserId();
+            }
+              // Get assigned subjects
+            List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
+                lecturerId, 
+                UserRole.LEC
+            );
+            
+            // Prepare response
+            List<Map<String, Object>> subjectList = new ArrayList<>();
+            for (Subject subject : assignedSubjects) {
+                Map<String, Object> subjectMap = new HashMap<>();
+                subjectMap.put("subjectId", subject.getSubjectId());
+                subjectMap.put("subjectName", subject.getSubjectName());
+                subjectMap.put("subjectCode", subject.getSubjectCode());
+                subjectMap.put("credits", subject.getCredits());
+                if (subject.getDepartment() != null) {
+                    subjectMap.put("departmentName", subject.getDepartment().getDepartmentName());
+                }
+                subjectList.add(subjectMap);
+            }
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("subjects", subjectList);
+            response.put("totalCount", subjectList.size());
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("error", "Failed to fetch assigned subjects: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
     }
 }
 
