@@ -176,22 +176,82 @@ public class LecturerController {
     public ResponseEntity<Map<String, Object>> getQuestions(
             @RequestParam(required = false) String subject,
             @RequestParam(required = false) String status,
-            @RequestParam(required = false) String difficulty,
-            @RequestParam(required = false, defaultValue = "1") Long lecturerId) {
-        
+            @RequestParam(required = false) String difficulty,            @RequestParam(required = false, defaultValue = "1") Long lecturerId) {        
         try {
+            // Debug logging
+            System.out.println("=== FILTER DEBUG ===");
+            System.out.println("Subject parameter: " + subject);
+            System.out.println("Status parameter: " + status);
+            System.out.println("Difficulty parameter: " + difficulty);
+            System.out.println("Lecturer ID: " + lecturerId);
+              // First get assigned subjects for the lecturer
+            List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
+                lecturerId, 
+                SubjectRole.LECTURER
+            );
+            
+            // Debug assigned subjects
+            System.out.println("Assigned subjects count: " + assignedSubjects.size());
+            for (Subject s : assignedSubjects) {
+                System.out.println("  - Subject ID: " + s.getSubjectId() + ", Name: " + s.getSubjectName());
+            }
+              // Map subjects to course names for filtering
+            List<String> allowedCourseNames = new ArrayList<>();
+            for (Subject assignedSubject : assignedSubjects) {
+                String courseName = mapSubjectToCourse(assignedSubject.getSubjectName());
+                if (courseName != null) {
+                    allowedCourseNames.add(courseName);
+                }
+            }
+            
             List<Question> questions;
             
-            // Lấy questions của lecturer hiện tại
-            if (subject != null && !subject.isEmpty() && !subject.equals("All subject")) {
-                Course course = courseRepository.findByCourseName(subject);
-                if (course != null) {
-                    questions = questionRepository.findByCourse_CourseIdAndCreatedBy_UserId(course.getCourseId(), lecturerId);
-                } else {
-                    questions = questionRepository.findByCreatedBy_UserId(lecturerId);
-                }
+            // Only get questions from mapped courses
+            if (allowedCourseNames.isEmpty()) {
+                // No assigned subjects = no questions
+                questions = new ArrayList<>();
             } else {
-                questions = questionRepository.findByCreatedBy_UserId(lecturerId);
+                // Get all questions created by lecturer 
+                List<Question> allQuestions = questionRepository.findByCreatedBy_UserId(lecturerId);
+                
+                // Filter by assigned subjects (mapped to courses)
+                questions = allQuestions.stream()
+                    .filter(q -> allowedCourseNames.contains(q.getCourse().getCourseName()))
+                    .collect(Collectors.toList());
+                  // Apply subject filter if specified
+                if (subject != null && !subject.isEmpty() && !subject.equals("All subject")) {
+                    // Try to parse as subject ID first, then try as subject name
+                    Subject selectedSubject = null;
+                    
+                    try {
+                        // Try parsing as Long (subject ID)
+                        Long subjectId = Long.parseLong(subject);
+                        selectedSubject = assignedSubjects.stream()
+                            .filter(s -> s.getSubjectId().equals(subjectId))
+                            .findFirst()
+                            .orElse(null);
+                    } catch (NumberFormatException e) {
+                        // If not a number, try matching by subject name
+                        selectedSubject = assignedSubjects.stream()
+                            .filter(s -> s.getSubjectName().equalsIgnoreCase(subject.trim()))
+                            .findFirst()
+                            .orElse(null);
+                    }
+                    
+                    if (selectedSubject != null) {
+                        String selectedCourseName = mapSubjectToCourse(selectedSubject.getSubjectName());
+                        if (selectedCourseName != null) {
+                            questions = questions.stream()
+                                .filter(q -> selectedCourseName.equals(q.getCourse().getCourseName()))
+                                .collect(Collectors.toList());
+                        } else {
+                            questions = new ArrayList<>();
+                        }
+                    } else {
+                        // If no matching subject found, return empty list
+                        questions = new ArrayList<>();
+                    }
+                }
             }
 
             // Filter by status
@@ -244,7 +304,7 @@ public class LecturerController {
             List<Map<String, Object>> questionData = questions.stream().map(q -> {
                 Map<String, Object> questionMap = new HashMap<>();
                 questionMap.put("id", q.getQuestionId());
-                questionMap.put("subject", q.getCourse().getCourseName());
+                questionMap.put("subject", mapCourseToSubject(q.getCourse().getCourseName()));
                 questionMap.put("question", q.getContent());
                 questionMap.put("correctAnswer", q.getAnswerKey());
                 
@@ -1565,6 +1625,67 @@ public class LecturerController {
         } catch (Exception e) {
             // Return empty array on error to prevent frontend issues
             return ResponseEntity.ok(new ArrayList<>());
+        }
+    }
+    
+    /**
+     * Helper method to map subject names to course names
+     * This is a temporary solution until database relationships are properly aligned
+     */
+    private String mapSubjectToCourse(String subjectName) {
+        if (subjectName == null) return null;
+        
+        // Map subjects to their corresponding course names
+        switch (subjectName.toLowerCase()) {
+            case "programming fundamentals":
+                return "Introduction to Computer Science";
+            case "data structures & algorithms":
+                return "Data Structures";
+            case "web development":
+                return "Introduction to Computer Science"; // Assuming this maps to CS101
+            case "calculus":
+                return "Calculus II";
+            case "linear algebra":
+                return "Linear Algebra";
+            case "statistics":
+                return "Linear Algebra"; // Assuming this maps to available math course
+            case "classical mechanics":
+                return "Classical Mechanics";
+            case "electromagnetism":
+                return "Electricity and Magnetism";
+            case "general chemistry":
+                return "General Chemistry";
+            default:
+                // If no mapping found, return null (no questions will be shown)
+                return null;
+        }
+    }
+    
+    /**
+     * Helper method to map course names back to subject names for display
+     */
+    private String mapCourseToSubject(String courseName) {
+        if (courseName == null) return courseName;
+        
+        // Map course names back to subject names for UI display
+        switch (courseName.toLowerCase()) {
+            case "introduction to computer science":
+                return "Programming Fundamentals";
+            case "data structures":
+                return "Data Structures & Algorithms";
+            case "calculus ii":
+                return "Calculus";
+            case "linear algebra":
+                return "Linear Algebra";
+            case "classical mechanics":
+                return "Classical Mechanics";
+            case "electricity and magnetism":
+                return "Electromagnetism";
+            case "general chemistry":
+                return "General Chemistry";
+            default:
+                // If no mapping found, return original course name
+                return courseName;
         }
     }
 }
