@@ -80,6 +80,7 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
                 FROM Tasks t
                 JOIN t.plan p
                 JOIN t.course c
+                WHERE t.taskType = 'create_questions'
                 """)
         List<LecTaskDTO> getAllTasksWithPlan();
 
@@ -102,8 +103,10 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
                 JOIN t.plan p
                 JOIN t.course c
                 WHERE t.assignedTo.userId = :userId
+                AND t.taskType = 'create_questions'
                 """)
         List<LecTaskDTO> getTasksByUserId(@Param("userId") Long userId);
+
         
         // Get Task Detail by ID
         @Query("""

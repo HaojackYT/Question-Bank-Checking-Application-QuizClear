@@ -20,10 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import com.uth.quizclear.model.dto.LecTaskDTO;
+import com.uth.quizclear.model.dto.QuestionCreateDTO;
 import com.uth.quizclear.service.TaskService;
 
 @Controller
@@ -99,9 +102,8 @@ public class LecturerController {
     // Dynamic mapping for lecturer new question page - clean URLs only
     @GetMapping("/lecturerQMNewQuestion")
     public String lecturerQMNewQuestion(Model model, HttpSession session, Authentication authentication) {
-        // Add dynamic data from database here
-        List<Course> courses = courseRepository.findAll();
-        model.addAttribute("courses", courses);
+        List<Subject> subjects = subjectRepository.findAll();
+        model.addAttribute("subjects", subjects);
         model.addAttribute("difficultyLevels", DifficultyLevel.values());
         return "Lecturer/lecturerQMNewQuestion";
     }
@@ -695,7 +697,8 @@ public class LecturerController {
         }
     }    /**
      * Check for duplicate questions using AI service
-     */    @PostMapping("/api/check-duplicate")
+     */    
+    @PostMapping("/api/check-duplicate")
     @ResponseBody    
     public ResponseEntity<Map<String, Object>> checkDuplicate(@RequestBody Map<String, Object> questionData, HttpSession session) {
         try {
@@ -923,7 +926,7 @@ public class LecturerController {
             lecturerId = (Long) currentUserId;
         }
         // Load tasks for the lecturer
-        List<LecTaskDTO> tasks = taskService.getAllTasksWithPlan();
+        List<LecTaskDTO> tasks = taskService.getTasksByUserId(lecturerId);
 
         model.addAttribute("tasks", tasks);
         model.addAttribute("lecturerId", lecturerId);
@@ -1627,6 +1630,65 @@ public class LecturerController {
             return ResponseEntity.ok(new ArrayList<>());
         }
     }
+
+    @PostMapping("/api/create_questions")
+    public ResponseEntity<?> createQuestion(@RequestBody @Valid QuestionCreateDTO dto) {
+        try {
+            // Lấy các entity cần thiết
+            CLO clo = null;
+            if (dto.getCloId() != null) {
+                clo = cloRepository.findById(dto.getCloId())
+                        .orElseThrow(() -> new RuntimeException("CLO not found"));
+            }
+
+            Course course = courseRepository.findById(dto.getCourseId())
+                    .orElseThrow(() -> new RuntimeException("Course not found"));
+
+            User creator = userRepository.findById(dto.getCreatorId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Khởi tạo câu hỏi
+            Question question = new Question();
+            question.setContent(dto.getContent());
+            question.setAnswerKey(dto.getAnswerKey());
+            question.setAnswerF1(dto.getAnswerF1());
+            question.setAnswerF2(dto.getAnswerF2());
+            question.setAnswerF3(dto.getAnswerF3());
+            question.setExplanation(dto.getExplanation());
+            question.setDifficultyLevel(dto.getDifficultyLevel());
+            question.setCourse(course);
+            if (clo != null) {
+                question.setClo(clo);
+            }
+            question.setCreatedBy(creator);
+
+            if (dto.getTaskId() != null) {
+                question.setTaskId(dto.getTaskId());
+            }
+
+            if (dto.getPlanId() != null) {
+                question.setPlanId(dto.getPlanId());
+            }
+
+            questionRepository.save(question);
+
+            // Log để debug
+            System.out.println("Question created successfully:");
+            System.out.println("ID: " + question.getQuestionId());
+            System.out.println("Content: " + question.getContent());
+            System.out.println("Task ID: " + question.getTaskId());
+            System.out.println("Plan ID: " + question.getPlanId());
+
+            // Trả về thông tin câu hỏi
+            return ResponseEntity.ok("Question created successfully with ID: " + question.getQuestionId());
+
+        } catch (Exception e) {
+            e.printStackTrace(); // log lỗi đầy đủ
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to create question: " + e.getMessage());
+        }
+    }
+
     
     /**
      * Helper method to map subject names to course names
