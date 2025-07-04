@@ -32,33 +32,51 @@
             </div>
         </div>
     </div>    <script>
-            function toggleNotificationDropdown() {
-                const dropdown = document.getElementById('notificationDropdown');
-                if (dropdown) {
-                    dropdown.classList.toggle('show');
-                }
-            }
-            function toggleUserDropdown() {
-                const dropdown = document.getElementById('userDropdown');
-                if (dropdown) {
-                    dropdown.classList.toggle('show');
-                }
-            }
-            document.addEventListener('click', function (e) {
-                if (!e.target.closest('.notification-icon') && !e.target.closest('.notification-dropdown')) {
-                    const dropdown = document.getElementById('notificationDropdown');
-                    if (dropdown) {
-                        dropdown.classList.remove('show');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle notification dropdown
+            const notificationIcon = document.querySelector('.fa-bell');
+            const notificationDropdown = document.querySelector('.notification-dropdown');
+            
+            if (notificationIcon && notificationDropdown) {
+                notificationIcon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    notificationDropdown.classList.toggle('show');
+                    // Close user dropdown if open
+                    const userDropdown = document.querySelector('.profile-dropdown');
+                    if (userDropdown) {
+                        userDropdown.classList.remove('show');
                     }
-                }
-                if (!e.target.closest('.user-avatar') && !e.target.closest('.user-dropdown')) {
-                    const dropdown = document.getElementById('userDropdown');
-                    if (dropdown) {
-                        dropdown.classList.remove('show');
+                });
+            }
+            
+            // Handle user dropdown
+            const userIcon = document.querySelector('.fa-user');
+            const userDropdown = document.querySelector('.profile-dropdown');
+            
+            if (userIcon && userDropdown) {
+                userIcon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    userDropdown.classList.toggle('show');
+                    // Close notification dropdown if open
+                    if (notificationDropdown) {
+                        notificationDropdown.classList.remove('show');
+                    }
+                });
+            }
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown')) {
+                    if (notificationDropdown) {
+                        notificationDropdown.classList.remove('show');
+                    }
+                    if (userDropdown) {
+                        userDropdown.classList.remove('show');
                     }
                 }
             });
-        </script>
+        });
+    </script>
 </div>
 </body>
 </html>
