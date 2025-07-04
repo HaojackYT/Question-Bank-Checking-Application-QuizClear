@@ -7,7 +7,7 @@ import com.uth.quizclear.model.entity.User;
 import com.uth.quizclear.model.entity.Subject;
 import com.uth.quizclear.model.enums.DifficultyLevel;
 import com.uth.quizclear.model.enums.QuestionStatus;
-import com.uth.quizclear.model.enums.UserRole;
+import com.uth.quizclear.model.enums.SubjectRole;
 import com.uth.quizclear.repository.QuestionRepository;
 import com.uth.quizclear.repository.CourseRepository;
 import com.uth.quizclear.repository.CLORepository;
@@ -297,19 +297,36 @@ public class LecturerController {
             errorResponse.put("error", "Failed to load questions: " + e.getMessage());
             return ResponseEntity.status(500).body(errorResponse);
         }
-    }
-
-    /**
-     * API endpoint để lấy danh sách subjects cho filter
+    }    /**
+     * API endpoint để lấy danh sách subjects cho filter (deprecated - use /api/assigned-subjects)
      */
     @GetMapping("/api/subjects")
     @ResponseBody
-    public ResponseEntity<List<String>> getSubjects() {
+    public ResponseEntity<List<String>> getSubjects(Authentication authentication, HttpSession session) {
         try {
-            List<String> subjects = courseRepository.findAll().stream()
-                .map(Course::getCourseName)
-                .distinct()
-                .collect(Collectors.toList());
+            // Get user from session
+            Object userObj = session.getAttribute("user");
+            Long lecturerId = 1L; // Default fallback
+            if (userObj != null && userObj instanceof UserBasicDTO) {
+                UserBasicDTO user = (UserBasicDTO) userObj;
+                lecturerId = user.getUserId();
+            }
+            
+            // Alternative: get from currentUserId set by ScopeInterceptor
+            Object currentUserId = session.getAttribute("currentUserId");
+            if (currentUserId != null && currentUserId instanceof Long) {
+                lecturerId = (Long) currentUserId;
+            }
+              // Get only assigned subjects
+            List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
+                lecturerId, SubjectRole.LECTURER
+            );
+            
+            List<String> subjects = assignedSubjects.stream()
+                    .map(Subject::getSubjectName)
+                    .distinct()
+                    .collect(Collectors.toList());
+                    
             return ResponseEntity.ok(subjects);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(List.of());
@@ -386,11 +403,10 @@ public class LecturerController {
         if (userObj != null && userObj instanceof UserBasicDTO) {
             UserBasicDTO user = (UserBasicDTO) userObj;
             lecturerId = user.getUserId();
-        }
-          // Only load subjects that the lecturer is assigned to
+        }          // Only load subjects that the lecturer is assigned to
         List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
             lecturerId, 
-            UserRole.LEC
+            SubjectRole.LECTURER
         );
         
         // Get courses related to assigned subjects (if needed)
@@ -558,7 +574,7 @@ public class LecturerController {
                     if (subject != null) {                        // Verify lecturer has permission to create questions for this subject
                         List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
                             lecturerId, 
-                            UserRole.LEC
+                            SubjectRole.LECTURER
                         );
                         
                         boolean hasPermission = assignedSubjects.stream()
@@ -641,11 +657,10 @@ public class LecturerController {
             Object subjectIdObj = questionData.get("subjectId");
             if (subjectIdObj != null && !subjectIdObj.toString().trim().isEmpty()) {
                 try {
-                    Long subjectId = Long.parseLong(subjectIdObj.toString());
-                      // Check if lecturer has permission for this subject
+                    Long subjectId = Long.parseLong(subjectIdObj.toString());                      // Check if lecturer has permission for this subject
                     List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
                         lecturerId, 
-                        UserRole.LEC
+                        SubjectRole.LECTURER
                     );
                     
                     boolean hasPermission = assignedSubjects.stream()
@@ -1521,10 +1536,9 @@ public class LecturerController {
     
     /**
      * API endpoint to get subjects assigned to current lecturer
-     */
-    @GetMapping("/api/assigned-subjects")
+     */    @GetMapping("/api/assigned-subjects")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getAssignedSubjects(HttpSession session) {
+    public ResponseEntity<List<Map<String, Object>>> getAssignedSubjects(HttpSession session) {
         try {
             // Get user from session
             Object userObj = session.getAttribute("user");
@@ -1532,40 +1546,28 @@ public class LecturerController {
             
             if (userObj != null && userObj instanceof UserBasicDTO) {
                 UserBasicDTO user = (UserBasicDTO) userObj;
-                lecturerId = user.getUserId();
-            }
+                lecturerId = user.getUserId();            }
               // Get assigned subjects
             List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
                 lecturerId, 
-                UserRole.LEC
+                SubjectRole.LECTURER
             );
-            
-            // Prepare response
+              // Prepare response - format expected by frontend
             List<Map<String, Object>> subjectList = new ArrayList<>();
             for (Subject subject : assignedSubjects) {
                 Map<String, Object> subjectMap = new HashMap<>();
                 subjectMap.put("subjectId", subject.getSubjectId());
                 subjectMap.put("subjectName", subject.getSubjectName());
                 subjectMap.put("subjectCode", subject.getSubjectCode());
-                subjectMap.put("credits", subject.getCredits());
-                if (subject.getDepartment() != null) {
-                    subjectMap.put("departmentName", subject.getDepartment().getDepartmentName());
-                }
                 subjectList.add(subjectMap);
             }
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("subjects", subjectList);
-            response.put("totalCount", subjectList.size());
-            
-            return ResponseEntity.ok(response);
+            // Return subjects array directly (frontend expects array, not wrapped object)
+            return ResponseEntity.ok(subjectList);
             
         } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("error", "Failed to fetch assigned subjects: " + e.getMessage());
-            return ResponseEntity.status(500).body(response);
+            // Return empty array on error to prevent frontend issues
+            return ResponseEntity.ok(new ArrayList<>());
         }
     }
 

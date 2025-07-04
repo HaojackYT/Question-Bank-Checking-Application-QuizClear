@@ -2,7 +2,7 @@ package com.uth.quizclear.repository;
 
 import com.uth.quizclear.model.entity.Subject;
 import com.uth.quizclear.model.enums.Status;
-import com.uth.quizclear.model.enums.UserRole;
+import com.uth.quizclear.model.enums.SubjectRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -69,9 +69,8 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     // Enhanced queries for the new permission system
     @Query("SELECT s FROM Subject s JOIN s.userSubjectAssignments usa WHERE usa.user.userId = :userId AND usa.status = 'ACTIVE'")
     List<Subject> findSubjectsByUserId(@Param("userId") Long userId);
-    
-    @Query("SELECT s FROM Subject s JOIN s.userSubjectAssignments usa WHERE usa.user.userId = :userId AND usa.role = :role AND usa.status = 'ACTIVE'")
-    List<Subject> findSubjectsByUserIdAndRole(@Param("userId") Long userId, @Param("role") UserRole role);
+      @Query("SELECT s FROM Subject s JOIN s.userSubjectAssignments usa WHERE usa.user.userId = :userId AND usa.role = :role AND usa.status = 'ACTIVE'")
+    List<Subject> findSubjectsByUserIdAndRole(@Param("userId") Long userId, @Param("role") SubjectRole role);
     
     // Find subjects where user has specific permissions
     @Query("SELECT DISTINCT s FROM Subject s JOIN s.userSubjectAssignments usa WHERE usa.user.userId = :userId AND usa.status = 'ACTIVE' AND (usa.effectiveTo IS NULL OR usa.effectiveTo > CURRENT_TIMESTAMP)")

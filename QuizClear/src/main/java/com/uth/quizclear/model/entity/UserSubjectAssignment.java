@@ -1,7 +1,7 @@
 package com.uth.quizclear.model.entity;
 
-import com.uth.quizclear.model.enums.UserRole;
-import com.uth.quizclear.model.enums.UserRoleConverter;
+import com.uth.quizclear.model.enums.SubjectRole;
+import com.uth.quizclear.model.enums.SubjectRoleConverter;
 import com.uth.quizclear.model.enums.Status;
 import com.uth.quizclear.model.enums.StatusConverter;
 
@@ -16,11 +16,11 @@ import java.time.LocalDateTime;
        indexes = {
            @Index(name = "idx_user_subj_user", columnList = "user_id"),
            @Index(name = "idx_user_subj_subject", columnList = "subject_id"),
-           @Index(name = "idx_user_subj_role", columnList = "role")
+           @Index(name = "idx_user_subj_role", columnList = "role_in_subject")
        },
        uniqueConstraints = {
-           @UniqueConstraint(name = "uk_user_subject_role", 
-                           columnNames = {"user_id", "subject_id", "role"})
+           @UniqueConstraint(name = "unique_user_subject", 
+                           columnNames = {"user_id", "subject_id"})
        })
 @Getter
 @Setter
@@ -50,9 +50,9 @@ public class UserSubjectAssignment {
     private Subject subject;
 
     @NotNull(message = "Role is required")
-    @Convert(converter = UserRoleConverter.class)
-    @Column(name = "role", nullable = false)
-    private UserRole role;
+    @Convert(converter = SubjectRoleConverter.class)
+    @Column(name = "role_in_subject", nullable = false)
+    private SubjectRole role;
 
     @Convert(converter = StatusConverter.class)
     @Column(name = "status", nullable = false)
@@ -164,43 +164,36 @@ public class UserSubjectAssignment {
 
     // Role validation methods
     public boolean isSubjectLeader() {
-        return UserRole.SL.equals(role);
+        return SubjectRole.LEADER.equals(role);
     }
 
     public boolean isLecturer() {
-        return UserRole.LEC.equals(role);
+        return SubjectRole.LECTURER.equals(role);
     }
 
-    public boolean isResearchDeveloper() {
-        return UserRole.RD.equals(role);
+    public boolean isAssistant() {
+        return SubjectRole.ASSISTANT.equals(role);
     }
 
-    public boolean isHeadOfDepartment() {
-        return UserRole.HOD.equals(role);
-    }
-
-    public boolean isHeadOfExaminationDepartment() {
-        return UserRole.HOED.equals(role);
+    public boolean isObserver() {
+        return SubjectRole.OBSERVER.equals(role);
     }
 
     // Permission methods
     public boolean canCreateQuestions() {
-        return isLecturer() || isSubjectLeader() || 
-               isHeadOfDepartment() || isResearchDeveloper();
+        return isLecturer() || isSubjectLeader();
     }
 
     public boolean canReviewQuestions() {
-        return isSubjectLeader() || isHeadOfDepartment() || 
-               isHeadOfExaminationDepartment() || isResearchDeveloper();
+        return isSubjectLeader();
     }
 
     public boolean canApproveQuestions() {
-        return isHeadOfDepartment() || isHeadOfExaminationDepartment() || 
-               isResearchDeveloper();
+        return isSubjectLeader();
     }
 
     public boolean canManageSubject() {
-        return isSubjectLeader() || isHeadOfDepartment() || isResearchDeveloper();
+        return isSubjectLeader();
     }
 
     // Time validation

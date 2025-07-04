@@ -58,10 +58,10 @@
                 </div>
             </div>
             <div class="tab-container">
-                <a class="tab" href="#">All Exams</a>
-                <a class="tab" href="#">Pending Approval</a>
-                <a class="tab" href="#">Approved</a>
-                <a class="tab" href="#">Needs Revision</a>
+                <a class="tab" th:href="@{/staff/exams/all-exams}">All Exams</a>
+                <a class="tab" th:href="@{/staff/exams/pending-approval}">Pending Approval</a>
+                <a class="tab" th:href="@{/staff/exams/approved}">Approved</a>
+                <a class="tab" th:href="@{/staff/exams/needs-revision}">Needs Revision</a>
             </div>
             <h2>All Exams</h2>
             <p>Manage all exams in the system</p>
@@ -89,11 +89,11 @@
                         <span th:if="${exam.status == 'Rejected'}" class="status-revision">
                             <i class="fas fa-times-circle status-icon red-icon"></i> Needs Revision
                         </span>
-                        <span th:if="${exam.status != 'Approved' and exam.status != 'Rejected'}" class="status-pending">
+                        <span th:if="${exam.status == 'Submitted for Review'}" class="status-pending">
                             <i class="fas fa-clock status-icon orange-icon"></i> Pending
                         </span>
                         <a th:href="@{'/staff/exams/' + ${exam.examId}}" class="view">View</a>
-                        <a th:if="${exam.status == 'Pending'}" th:href="@{'/staff/exams/review/' + ${exam.examId}}" class="review">Review</a>
+                        <a th:if="${exam.status == 'Submitted for Review'}" th:href="@{'/staff/exams/review/' + ${exam.examId}}" class="review">Review</a>
                     </div>
                 </div>
             </div>
