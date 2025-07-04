@@ -64,12 +64,13 @@
                                 <label>Status</label>
                                 <input type="text" value="Received" readonly>
                             </div>
-                        </div>
-
-                        <div class="info-row">
+                        </div>                        <div class="info-row">
                             <div class="info-field">
-                                <label>Notes</label>
-                                <textarea placeholder="Question 25 lacks sufficient differentiation. Please revise the distractors to increase difficulty"></textarea>
+                                <label>Notes <span style="color: #666; font-size: 0.8em;">(Editable)</span></label>
+                                <textarea placeholder="Enter your feedback notes here..." 
+                                         style="border: 1px solid #ddd; background-color: #fafafa;"
+                                         onchange="markNotesAsModified()"
+                                         id="feedbackNotes"></textarea>
                             </div>
                         </div>
                     </div>
@@ -101,36 +102,43 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-
-                    <div class="action-buttons">
-                        <button title="Edit" class="btn btn--edit"
+                    </div>                    <div class="action-buttons">
+                        <button title="Edit Question Content" class="btn btn--edit"
                             onclick="openEditModal()">Edit</button>
-                        <button title="Assign" class="btn btn--assign"
+                        <button title="Assign to Another Lecturer" class="btn btn--assign"
                             onclick="openAssignModal()">Assign</button>
-                        <button title="Resubmit" class="btn btn--resubmit">Resubmit</button>
+                        <button title="Resubmit for Higher Review" class="btn btn--resubmit"
+                            onclick="handleResubmit()">Resubmit</button>
+                        <button title="Save Feedback Notes" class="btn btn--save-notes" 
+                            onclick="saveFeedbackNotes()" 
+                            id="saveNotesBtn" 
+                            style="background: #28a745; display: none;">Save Notes</button>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Modal for New Assignment -->
+        </div>        <!-- Modal for New Assignment -->
         <div id="assignModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeAssignModal()">×</span>
-                <h2 class="modal-title">New Assignment</h2>
+                <h2 class="modal-title">Reassign Question</h2>
+                <p style="color: #666; margin-bottom: 20px;">Assign this question to another lecturer for revision</p>
 
                 <div class="modal-row">
                     <div class="modal-item">
-                        <label class="modal-label">Department</label>
-                        <select class="modal-select">
-                            <option>Title</option>
+                        <label class="modal-label">Target Department</label>
+                        <select id="assignDepartment" class="modal-select" onchange="loadLecturersByDepartment()">
+                            <option value="">Select Department</option>
+                            <option value="CS">Computer Science</option>
+                            <option value="MATH">Mathematics</option>
+                            <option value="PHYS">Physics</option>
+                            <option value="CHEM">Chemistry</option>
+                            <option value="BIO">Biology</option>
                         </select>
                     </div>
                     <div class="modal-item">
-                        <label class="modal-label">Lecturer</label>
-                        <select class="modal-select">
-                            <option>Nguyen Van A</option>
+                        <label class="modal-label">Assign to Lecturer</label>
+                        <select id="assignLecturer" class="modal-select" disabled>
+                            <option value="">First select department</option>
                         </select>
                     </div>
                 </div>
@@ -142,18 +150,18 @@
                     </div>
                     <div class="modal-item">
                         <label class="modal-label">Due Date</label>
-                        <input type="date" class="modal-input" value="2025-04-20">
+                        <input type="date" id="assignDueDate" class="modal-input" value="2025-07-20">
                     </div>
                 </div>
 
                 <div class="modal-notes">
-                    <label class="modal-label">Notes</label>
-                    <input type="text" class="modal-input" value="" placeholder="Enter notes...">
+                    <label class="modal-label">Assignment Instructions</label>
+                    <textarea id="assignNotes" class="modal-input" rows="3" placeholder="Please review and improve this question. Focus on: clarity, difficulty level, answer options..."></textarea>
                 </div>
 
                 <div class="modal-buttons">
                     <button class="modal-btn modal-btn--cancel" onclick="closeAssignModal()">Cancel</button>
-                    <button class="modal-btn modal-btn--assign">Assign</button>
+                    <button class="modal-btn modal-btn--assign" onclick="handleAssignment()">Reassign</button>
                 </div>
             </div>
         </div>
@@ -310,18 +318,16 @@
                     });
                 }
                 dateInput.value = formattedDate;
-            }
-
-            // Status field
+            }            // Status field
             const statusInput = infoInputs[4];
             if (statusInput) {
+                // Display the actual status from backend
                 statusInput.value = data.status || 'Unknown';
-            }
-
-            // Notes field
+            }            // Notes field
             const notesTextarea = document.querySelector('.info-field textarea');
             if (notesTextarea) {
-                notesTextarea.value = data.feedback || 'No feedback provided';
+                notesTextarea.value = data.feedback || '';
+                notesTextarea.setAttribute('data-original', data.feedback || '');
             }
 
             // Update question content if it's a question
@@ -399,12 +405,99 @@
             return `${year}-${month}-${day}`;
         }
 
-        // Assign Modal functionality
+        // Notes management functions
+        function markNotesAsModified() {
+            const notesTextarea = document.getElementById('feedbackNotes') || document.querySelector('.info-field textarea');
+            const saveNotesBtn = document.getElementById('saveNotesBtn');
+            
+            if (notesTextarea && saveNotesBtn) {
+                const originalNotes = notesTextarea.getAttribute('data-original') || '';
+                const currentNotes = notesTextarea.value.trim();
+                
+                if (currentNotes !== originalNotes) {
+                    saveNotesBtn.style.display = 'inline-block';
+                    notesTextarea.style.borderColor = '#ffc107';
+                    notesTextarea.style.backgroundColor = '#fff8e1';
+                } else {
+                    saveNotesBtn.style.display = 'none';
+                    notesTextarea.style.borderColor = '#ddd';
+                    notesTextarea.style.backgroundColor = '#fafafa';
+                }
+            }
+        }
+
+        function saveFeedbackNotes() {
+            const notesTextarea = document.getElementById('feedbackNotes') || document.querySelector('.info-field textarea');
+            
+            if (!notesTextarea) {
+                alert('Error: Could not find notes field');
+                return;
+            }
+
+            const feedbackNotes = notesTextarea.value.trim();
+            
+            if (!currentFeedbackId) {
+                alert('Error: No feedback ID found');
+                return;
+            }
+
+            const notesData = {
+                feedback: feedbackNotes,
+                updatedBy: 'Subject Leader'
+            };
+
+            fetch(`/subject-leader/api/feedback/${currentFeedbackId}/update-notes`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(notesData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ Feedback notes saved successfully!');
+                    
+                    // Update original data
+                    notesTextarea.setAttribute('data-original', feedbackNotes);
+                    if (currentFeedbackData) {
+                        currentFeedbackData.feedback = feedbackNotes;
+                    }
+                    
+                    // Reset visual indicators
+                    const saveNotesBtn = document.getElementById('saveNotesBtn');
+                    if (saveNotesBtn) {
+                        saveNotesBtn.style.display = 'none';
+                    }
+                    notesTextarea.style.borderColor = '#28a745';
+                    notesTextarea.style.backgroundColor = '#f8fff9';
+                    
+                    // Reset to normal after 2 seconds
+                    setTimeout(() => {
+                        notesTextarea.style.borderColor = '#ddd';
+                        notesTextarea.style.backgroundColor = '#fafafa';
+                    }, 2000);
+                    
+                } else {
+                    alert('❌ Error saving notes:\n' + (data.message || 'Unknown error occurred'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Network Error:\nFailed to save notes. Please check your connection and try again.');
+            });
+        }// Assign Modal functionality
         function openAssignModal() {
             // Set Assign Date to current date
             const assignDateInput = document.getElementById('assignDate');
             const currentDate = new Date();
             assignDateInput.value = formatDate(currentDate);
+
+            // Reset form
+            document.getElementById('assignDepartment').value = '';
+            document.getElementById('assignLecturer').innerHTML = '<option value="">First select department</option>';
+            document.getElementById('assignLecturer').disabled = true;
+            document.getElementById('assignNotes').value = '';
 
             // Show the modal
             document.getElementById('assignModal').style.display = 'block';
@@ -414,22 +507,94 @@
             document.getElementById('assignModal').style.display = 'none';
         }
 
-        // Handle assignment submission
+        // Load lecturers based on selected department
+        function loadLecturersByDepartment() {
+            const departmentSelect = document.getElementById('assignDepartment');
+            const lecturerSelect = document.getElementById('assignLecturer');
+            
+            if (!departmentSelect.value) {
+                lecturerSelect.innerHTML = '<option value="">First select department</option>';
+                lecturerSelect.disabled = true;
+                return;
+            }
+
+            // Mock data - in real app, this would fetch from API
+            const lecturersByDepartment = {
+                'CS': [
+                    { id: 1, name: 'Ash Abrahams', email: 'ash.abrahams@university.edu' },
+                    { id: 3, name: 'Brian Carter', email: 'brian.carter@university.edu' }
+                ],
+                'MATH': [
+                    { id: 7, name: 'Frank Green', email: 'frank.green@university.edu' },
+                    { id: 8, name: 'Grace Harris', email: 'grace.harris@university.edu' }
+                ],
+                'PHYS': [
+                    { id: 6, name: 'Emily Foster', email: 'emily.foster@university.edu' }
+                ],
+                'CHEM': [
+                    { id: 9, name: 'Henry Johnson', email: 'henry.johnson@university.edu' }
+                ],
+                'BIO': [
+                    { id: 5, name: 'Daniel Evans', email: 'daniel.evans@university.edu' },
+                    { id: 10, name: 'Isabella King', email: 'isabella.king@university.edu' }
+                ]
+            };
+
+            const lecturers = lecturersByDepartment[departmentSelect.value] || [];
+            
+            lecturerSelect.innerHTML = '<option value="">Select Lecturer</option>';
+            lecturers.forEach(lecturer => {
+                lecturerSelect.innerHTML += `<option value="${lecturer.id}">${lecturer.name} (${lecturer.email})</option>`;
+            });
+            
+            lecturerSelect.disabled = false;
+        }        // Handle assignment submission
         function handleAssignment() {
-            const departmentSelect = document.querySelector('#assignModal .modal-select');
-            const lecturerSelect = document.querySelectorAll('#assignModal .modal-select')[1];
-            const dueDateInput = document.querySelector('#assignModal input[type="date"]:not([disabled])');
-            const notesInput = document.querySelector('#assignModal .modal-input[placeholder*="notes"]');
+            // Get form values
+            const departmentSelect = document.getElementById('assignDepartment');
+            const lecturerSelect = document.getElementById('assignLecturer');
+            const dueDateInput = document.getElementById('assignDueDate');
+            const notesInput = document.getElementById('assignNotes');
+
+            // Validation
+            if (!departmentSelect.value) {
+                alert('Please select a target department');
+                return;
+            }
+            
+            if (!lecturerSelect.value) {
+                alert('Please select a lecturer to assign to');
+                return;
+            }
+            
+            if (!dueDateInput.value) {
+                alert('Please set a due date');
+                return;
+            }
 
             const assignmentData = {
-                department: departmentSelect ? departmentSelect.value : '',
-                lecturerId: lecturerSelect ? lecturerSelect.value : '',
-                dueDate: dueDateInput ? dueDateInput.value : '',
-                notes: notesInput ? notesInput.value : ''
+                targetDepartment: departmentSelect.value,
+                assignToLecturerId: lecturerSelect.value,
+                dueDate: dueDateInput.value,
+                instructions: notesInput.value.trim() || 'Please review and improve this question.',
+                currentQuestionId: currentFeedbackId,
+                assignedBy: 'Subject Leader' // This would come from session in real app
             };
 
             if (!currentFeedbackId) {
-                alert('Error: No feedback ID found');
+                alert('Error: No question ID found');
+                return;
+            }
+
+            // Confirm assignment
+            const selectedLecturer = lecturerSelect.options[lecturerSelect.selectedIndex].text;
+            const confirmMessage = `Are you sure you want to reassign this question to:\n\n` +
+                                 `Lecturer: ${selectedLecturer}\n` +
+                                 `Department: ${departmentSelect.options[departmentSelect.selectedIndex].text}\n` +
+                                 `Due Date: ${dueDateInput.value}\n\n` +
+                                 `The question will be moved to the assigned lecturer for revision.`;
+            
+            if (!confirm(confirmMessage)) {
                 return;
             }
 
@@ -443,17 +608,32 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Question assigned successfully!');
+                    alert('✅ Question successfully reassigned!\n\n' +
+                          `The question has been assigned to ${selectedLecturer} ` +
+                          `for revision. They will receive a notification with ` +
+                          `your instructions and the due date.`);
                     closeAssignModal();
-                    // Reload the page to reflect changes
-                    location.reload();
+                    
+                    // Update status display
+                    const statusInput = document.querySelector('.info-field input[readonly]');
+                    if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
+                        statusInput.value = 'ASSIGNED';
+                    }
+                    
+                    // Optional: redirect back to feedback list
+                    setTimeout(() => {
+                        if (confirm('Question assigned successfully! Do you want to return to feedback list?')) {
+                            window.location.href = '/subject-leader/feedback';
+                        }
+                    }, 1500);
+                    
                 } else {
-                    alert('Error assigning question: ' + (data.message || 'Unknown error'));
+                    alert('❌ Error assigning question:\n' + (data.message || 'Unknown error occurred'));
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error assigning question. Please try again.');
+                alert('❌ Network Error:\nFailed to assign question. Please check your connection and try again.');
             });
         }
 
@@ -492,21 +672,30 @@
 
         function closeEditModal() {
             document.getElementById('editModal').style.display = 'none';
-        }
-
-        function saveQuestion() {
+        }        function saveQuestion() {
             if (!currentFeedbackId) {
                 alert('Error: No feedback ID found');
                 return;
             }
 
+            // Get current form data
             const questionData = {
-                content: document.getElementById('editQuestionText').value,
-                answerF1: document.getElementById('editOptionA').value,
-                answerF2: document.getElementById('editOptionB').value,
-                answerF3: document.getElementById('editOptionC').value,
+                content: document.getElementById('editQuestionText').value.trim(),
+                answerF1: document.getElementById('editOptionA').value.trim(),
+                answerF2: document.getElementById('editOptionB').value.trim(),
+                answerF3: document.getElementById('editOptionC').value.trim(),
                 correctAnswer: document.getElementById('correctAnswer').value
             };
+
+            // Validation: Check if all fields are filled
+            if (!questionData.content) {
+                alert('Please enter question content');
+                return;
+            }
+            if (!questionData.answerF1 || !questionData.answerF2 || !questionData.answerF3) {
+                alert('Please fill in all answer options (A, B, C)');
+                return;
+            }
 
             // Set answerKey based on correct answer selection
             switch(questionData.correctAnswer) {
@@ -520,8 +709,27 @@
                     questionData.answerKey = questionData.answerF3;
                     break;
                 case 'D':
-                    questionData.answerKey = document.getElementById('editOptionD').value;
+                    const optionD = document.getElementById('editOptionD').value.trim();
+                    if (!optionD) {
+                        alert('Please fill in answer option D');
+                        return;
+                    }
+                    questionData.answerKey = optionD;
                     break;
+            }
+
+            // Check if there are actual changes
+            const hasChanges = currentFeedbackData && (
+                questionData.content !== currentFeedbackData.content ||
+                questionData.answerF1 !== currentFeedbackData.answerF1 ||
+                questionData.answerF2 !== currentFeedbackData.answerF2 ||
+                questionData.answerF3 !== currentFeedbackData.answerF3 ||
+                questionData.answerKey !== currentFeedbackData.answerKey
+            );
+
+            if (!hasChanges) {
+                alert('No changes detected. Please make changes before saving.');
+                return;
             }
 
             fetch(`/subject-leader/api/feedback/${currentFeedbackId}/update-question`, {
@@ -530,11 +738,11 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(questionData)
-            })
-            .then(response => response.json())
+            })            .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Question updated successfully!');
+                    alert('✅ Question updated and approved successfully!\n' +
+                          'Changes have been saved and the question has been approved.');
                     closeEditModal();
                     
                     // Update the display with new values
@@ -544,54 +752,100 @@
                     document.getElementById('optionC').innerText = questionData.answerF3;
                     document.getElementById('optionD').innerText = questionData.answerKey;
                     
-                    // Update current data
+                    // Update status to approved
+                    const statusInput = document.querySelector('.info-field input[readonly]');
+                    if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
+                        statusInput.value = 'APPROVED';
+                    }
+                    
+                    // Update current data for future comparisons
                     if (currentFeedbackData) {
                         currentFeedbackData.content = questionData.content;
                         currentFeedbackData.answerF1 = questionData.answerF1;
                         currentFeedbackData.answerF2 = questionData.answerF2;
                         currentFeedbackData.answerF3 = questionData.answerF3;
                         currentFeedbackData.answerKey = questionData.answerKey;
+                        currentFeedbackData.status = 'APPROVED';
                     }
+                    
+                    // Optional: redirect back to feedback list after a delay
+                    setTimeout(() => {
+                        if (confirm('Question approved successfully! Do you want to return to feedback list?')) {
+                            window.location.href = '/subject-leader/feedback';
+                        }
+                    }, 1000);
+                    
                 } else {
-                    alert('Error updating question: ' + (data.message || 'Unknown error'));
+                    alert('❌ Error updating question:\n' + (data.message || 'Unknown error occurred'));
+                }
+            })            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Network Error:\nFailed to update question. Please check your connection and try again.');
+            });
+        }        // Resubmit functionality
+        function handleResubmit() {
+            if (!currentFeedbackId) {
+                alert('Error: No question ID found');
+                return;
+            }
+
+            // Get current notes for resubmission
+            const notesTextarea = document.querySelector('.info-field textarea');
+            const resubmitNotes = notesTextarea ? notesTextarea.value.trim() : '';
+
+            const confirmMessage = `Are you sure you want to resubmit this question for higher-level review?\n\n` +
+                                 `This action will:\n` +
+                                 `• Send the question to Head of Education Department\n` +
+                                 `• Include your feedback notes for context\n` +
+                                 `• Change status to "SUBMITTED_FOR_REVIEW"\n\n` +
+                                 `Current feedback notes:\n"${resubmitNotes || 'No notes provided'}"`;
+
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            const resubmitData = {
+                feedback: resubmitNotes,
+                submittedBy: 'Subject Leader',
+                submissionReason: 'Escalation for higher-level review'
+            };
+
+            fetch(`/subject-leader/api/feedback/${currentFeedbackId}/resubmit`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(resubmitData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ Question resubmitted successfully!\n\n' +
+                          'The question has been escalated to Head of Education Department ' +
+                          'for final review. You will be notified of their decision.');
+                    
+                    // Update status display
+                    const statusInput = document.querySelector('.info-field input[readonly]');
+                    if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
+                        statusInput.value = 'SUBMITTED_FOR_REVIEW';
+                    }
+                    
+                    // Optional: redirect back to feedback list
+                    setTimeout(() => {
+                        if (confirm('Do you want to return to feedback list?')) {
+                            window.location.href = '/subject-leader/feedback';
+                        }
+                    }, 1500);
+                    
+                } else {
+                    alert('❌ Error resubmitting question:\n' + (data.message || 'Unknown error occurred'));
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error updating question. Please try again.');
+                alert('❌ Network Error:\nFailed to resubmit question. Please check your connection and try again.');
             });
-        }
-
-        // Resubmit functionality
-        function handleResubmit() {
-            if (!currentFeedbackId) {
-                alert('Error: No feedback ID found');
-                return;
-            }
-
-            if (confirm('Are you sure you want to resubmit this question for review?')) {
-                fetch(`/subject-leader/api/feedback/${currentFeedbackId}/resubmit`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Question resubmitted successfully!');
-                        // Reload the page to reflect changes
-                        location.reload();
-                    } else {
-                        alert('Error resubmitting question: ' + (data.message || 'Unknown error'));
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error resubmitting question. Please try again.');
-                });
-            }
-        }        // Close modals when clicking outside of them
+        }// Close modals when clicking outside of them
         window.onclick = function (event) {
             const assignModal = document.getElementById('assignModal');
             const editModal = document.getElementById('editModal');
@@ -601,9 +855,7 @@
             if (event.target == editModal) {
                 editModal.style.display = 'none';
             }
-        }
-
-        // Add event listeners when page loads
+        }        // Add event listeners when page loads
         document.addEventListener('DOMContentLoaded', function() {
             // Assign button event listener
             const assignButton = document.querySelector('.modal-btn--assign');
@@ -615,7 +867,15 @@
             const resubmitButton = document.querySelector('.btn--resubmit');
             if (resubmitButton) {
                 resubmitButton.addEventListener('click', handleResubmit);
-            }        });
+            }
+
+            // Notes change event listener
+            const notesTextarea = document.querySelector('.info-field textarea');
+            if (notesTextarea) {
+                notesTextarea.addEventListener('input', markNotesAsModified);
+                notesTextarea.addEventListener('change', markNotesAsModified);
+            }
+        });
     </script>
     <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>

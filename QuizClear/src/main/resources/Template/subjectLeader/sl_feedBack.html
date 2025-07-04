@@ -37,13 +37,12 @@
                         <button class="search-btn">
                             <i class="fas fa-search"></i>
                         </button>
-                    </div>
-                    <div class="filter-dropdown">
+                    </div>                <div class="filter-dropdown">
                         <select class="filter-select">
                             <option>All Status</option>
-                            <option>Pending</option>
-                            <option>Approved</option>
-                            <option>Declined</option>
+                            <option>SUBMITTED</option>
+                            <option>APPROVED</option>
+                            <option>REJECTED</option>
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div>
@@ -111,23 +110,30 @@
                             month: '2-digit',
                             year: '2-digit'
                         });
-                    }
-
-                    // Determine status class and text
-                    let statusClass = 'new';
-                    let statusText = 'New';
+                    }                    // Determine status class and text based on actual status
+                    let statusClass = 'submitted';
+                    let statusText = 'SUBMITTED';
                     
                     if (feedback.status) {
-                        const status = feedback.status.toLowerCase();
-                        if (status.includes('approved') || status.includes('completed')) {
-                            statusClass = 'completed';
-                            statusText = 'Completed';
-                        } else if (status.includes('progress') || status.includes('submitted')) {
-                            statusClass = 'in-progress';
-                            statusText = 'In Prog.';
-                        } else if (status.includes('rejected')) {
-                            statusClass = 'rejected';
-                            statusText = 'Rejected';
+                        const status = feedback.status.toUpperCase();
+                        switch(status) {
+                            case 'APPROVED':
+                                statusClass = 'approved';
+                                statusText = 'APPROVED';
+                                break;
+                            case 'REJECTED':
+                                statusClass = 'rejected';
+                                statusText = 'REJECTED';
+                                break;
+                            case 'SUBMITTED':
+                            case 'SUBMITTED_FOR_REVIEW':
+                                statusClass = 'submitted';
+                                statusText = 'SUBMITTED';
+                                break;
+                            default:
+                                // For any other status, keep as submitted (default for SL view)
+                                statusClass = 'submitted';
+                                statusText = 'SUBMITTED';
                         }
                     }
 
@@ -189,18 +195,14 @@
                 const selectedStatus = filterSelect.value;
                 
                 const rows = document.querySelectorAll('#feedback-table-body tr');
-                
-                rows.forEach(row => {
+                  rows.forEach(row => {
                     if (selectedStatus === 'All Status') {
                         row.style.display = '';
                     } else {
                         const statusCell = row.querySelector('.status');
                         if (statusCell) {
                             const statusText = statusCell.textContent.trim();
-                            const show = statusText.toLowerCase().includes(selectedStatus.toLowerCase()) ||
-                                       (selectedStatus === 'Pending' && statusText === 'New') ||
-                                       (selectedStatus === 'Approved' && statusText === 'Completed') ||
-                                       (selectedStatus === 'Declined' && statusText === 'Rejected');
+                            const show = statusText === selectedStatus;
                             row.style.display = show ? '' : 'none';
                         }
                     }

@@ -154,4 +154,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 
   @Query("SELECT q.questionId FROM Question q WHERE q.course.courseId IN :courseIds")
   List<Long> findQuestionIdsByCourseIds(@Param("courseIds") List<Long> courseIds);
+
+  // For Subject Leader: find all questions that are submitted (not draft) from same department
+  @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department = :department AND q.status != 'DRAFT'")
+  List<Question> findSubmittedQuestionsByDepartment(@Param("department") String department);
 }
