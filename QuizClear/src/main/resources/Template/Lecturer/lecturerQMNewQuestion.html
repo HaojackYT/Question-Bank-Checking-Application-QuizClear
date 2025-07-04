@@ -156,8 +156,7 @@
                 submitButton.style.color = '#6b7280';
                 submitButton.style.border = '1px solid #9ca3af';
                 submitButton.style.cursor = 'not-allowed';
-                submitButton.disabled = false;
-                submitButton.style.pointerEvents = 'auto'; // Đảm bảo luôn click được
+                submitButton.disabled = false;  // Chuyển false để debug (mặc định là true)
             }
 
             if (footerMessage) {
@@ -258,238 +257,119 @@
             });
         }
 
-        // Submit button logic
+        // Hàm validate chung
+        function validateRequiredFields() {
+            const requiredInputs = [
+                document.getElementById('question-title'),
+                document.getElementById('correct-answer'),
+                document.getElementById('answer-f1'),
+                document.getElementById('answer-f2'),
+                document.getElementById('answer-f3')
+            ];
 
-        // === PHẦN CŨ (comment lại) - Bắt buộc check duplicate trước khi submit ===
-        /*
-        if (submitButton) {
-            submitButton.addEventListener('click', async function (e) {
-                e.preventDefault();
- 
-                // Check if submit button is disabled (AI check not run)
-                if (submitButton.disabled) {
-                    alert('Please run the duplicate check first before submitting.');
-                    return;
-                }
- 
-                // If AI check failed (duplicates found), show confirmation
-                if (!aiCheckPassed && aiCheckResult !== null) {
-                    const confirmMessage = `Warning: This question has ${aiCheckResult}% similarity with existing questions. Are you sure you want to submit anyway?`;
-                    if (!confirm(confirmMessage)) {
-                        return;
-                    }
-                }
- 
-                // Continue with submit validation and logic
-                const requiredInputs = document.querySelectorAll('input.form-input[placeholder*="Enter"]');
-                const requiredSelects = document.querySelectorAll('select.form-input[required]');
-                const incorrectAnswers = document.querySelectorAll('.incorrect-answers input');
-                const questionTitle = document.querySelector('input[placeholder="The title question..."]');
- 
-                let isValid = true;
- 
-                // Kiểm tra question title
-                if (!questionTitle.value.trim()) {
-                    questionTitle.style.borderColor = '#ef4444';
+            const requiredSelects = [
+                document.getElementById('subject'),
+                document.getElementById('difficulty')
+            ];
+
+            let isValid = true;
+
+            requiredInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.style.borderColor = '#ef4444';
                     isValid = false;
                 } else {
-                    questionTitle.style.borderColor = '#d1d5db';
-                }
- 
-                // Kiểm tra select fields
-                requiredSelects.forEach(select => {
-                    if (!select.value.trim()) {
-                        select.style.borderColor = '#ef4444';
-                        isValid = false;
-                    } else {
-                        select.style.borderColor = '#d1d5db';
-                    }
-                });
- 
-                // Kiểm tra required input fields
-                requiredInputs.forEach(field => {
-                    if (!field.value.trim()) {
-                        field.style.borderColor = '#ef4444';
-                        isValid = false;
-                    } else {
-                        field.style.borderColor = '#d1d5db';
-                    }
-                });
- 
-                // Kiểm tra incorrect answers
-                incorrectAnswers.forEach(field => {
-                    if (!field.value.trim()) {
-                        field.style.borderColor = '#ef4444';
-                        isValid = false;
-                    } else {
-                        field.style.borderColor = '#d1d5db';
-                    }
-                });
- 
-                if (!isValid) {
-                    alert('Please fill in all required fields.');
-                    return;
-                }
- 
-                try {
-                    // Show loading state
-                    const button = this;
-                    const originalText = button.innerHTML;
-                    button.innerHTML = 'Submitting... <i class="fa-solid fa-spinner fa-spin"></i>';
-                    button.disabled = true;
- 
-                    // Collect form data
-                    const formData = {
-                        content: questionTitle.value.trim(),
-                        correctAnswer: document.querySelector('input[placeholder="Enter the correct answer..."]').value.trim(),
-                        answer1: incorrectAnswers[0].value.trim(),
-                        answer2: incorrectAnswers[1].value.trim(),
-                        answer3: incorrectAnswers[2].value.trim(),
-                        explanation: document.querySelector('textarea').value.trim(),
-                        subjectId: document.getElementById('subject').value.trim(),
-                        difficulty: document.getElementById('difficulty').value.trim(),
-                        action: 'submit'
-                    };
- 
-                    console.log('Submitting question with data:', formData);
- 
-                    // Call API to submit question
-                    const response = await fetch('/lecturer/api/questions', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    });
- 
-                    if (!response.ok) {
-                        throw new Error('Failed to submit question');
-                    }
- 
-                    const data = await response.json();
- 
-                    if (data.error) {
-                        throw new Error(data.error);
-                    }
- 
-                    // Success - show message and redirect
-                    alert('Question submitted successfully!');
- 
-                    // Redirect to Question Management page
-                    window.location.href = '/lecturer/question-management';
- 
-                } catch (error) {
-                    console.error('Submit question error:', error);
-                    alert('Error submitting question: ' + error.message);
- 
-                    // Reset button state
-                    const button = this;
-                    button.innerHTML = 'Submit <i class="fas fa-paper-plane"></i>';
-                    button.disabled = false;
+                    input.style.borderColor = '#d1d5db';
                 }
             });
+
+            requiredSelects.forEach(select => {
+                if (!select.value.trim()) {
+                    select.style.borderColor = '#ef4444';
+                    isValid = false;
+                } else {
+                    select.style.borderColor = '#d1d5db';
+                }
+            });
+
+            return isValid;
         }
-        */
 
-        // === PHẦN MỚI - BỎ QUA KIỂM TRA DUPLICATE, CHO SUBMIT LUÔN ĐỂ DEBUG ===
-        if (submitButton) {
-            submitButton.addEventListener('click', async function (e) {
-                e.preventDefault();
+        // Hàm gửi data
+        async function sendQuestion(statusValue, button) {
+            if (!validateRequiredFields()) {
+                alert('Please fill in all required fields.');
+                return;
+            }
 
-                // Validation
-                const requiredInputs = [
-                    document.getElementById('question-title'),
-                    document.getElementById('correct-answer'),
-                    document.getElementById('answer-f1'),
-                    document.getElementById('answer-f2'),
-                    document.getElementById('answer-f3')
-                ];
-
-                const requiredSelects = [
-                    document.getElementById('subject'),
-                    document.getElementById('difficulty')
-                ];
-
-                let isValid = true;
-
-                requiredInputs.forEach(input => {
-                    if (!input.value.trim()) {
-                        input.style.borderColor = '#ef4444';
-                        isValid = false;
-                    } else {
-                        input.style.borderColor = '#d1d5db';
-                    }
-                });
-
-                requiredSelects.forEach(select => {
-                    if (!select.value.trim()) {
-                        select.style.borderColor = '#ef4444';
-                        isValid = false;
-                    } else {
-                        select.style.borderColor = '#d1d5db';
-                    }
-                });
-
-                if (!isValid) {
-                    alert('Please fill in all required fields.');
+            // Nếu status là SUBMITTED và duplicate check chưa pass hoặc có duplicate > 0 thì hỏi confirm
+            if (statusValue === 'SUBMITTED' && !aiCheckPassed) {
+                if (!confirm(`Duplicate check result is ${aiCheckResult}%. Are you sure you want to submit?`)) {
                     return;
                 }
+            }
 
-                try {
-                    const button = this;
-                    const originalText = button.innerHTML;
-                    button.innerHTML = 'Submitting... <i class="fa-solid fa-spinner fa-spin"></i>';
-                    button.disabled = true;
+            try {
+                const originalText = button.innerHTML;
+                button.innerHTML = (statusValue === 'SUBMITTED' ? 'Submitting...' : 'Saving...') + ' <i class="fa-solid fa-spinner fa-spin"></i>';
+                button.disabled = true;
 
-                    const formData = {
-                        content: document.getElementById('question-title').value.trim(),
-                        answerKey: document.getElementById('correct-answer').value.trim(),
-                        answerF1: document.getElementById('answer-f1').value.trim(),
-                        answerF2: document.getElementById('answer-f2').value.trim(),
-                        answerF3: document.getElementById('answer-f3').value.trim(),
-                        explanation: document.getElementById('explanation').value.trim(),
-                        courseId: Number(document.getElementById('subject').value.trim()),
-                        difficultyLevel: document.getElementById('difficulty').value.trim(),
-                        action: 'submit',
-                        // nếu có taskId, planId thì bổ sung thêm
-                        taskId: null,
-                        planId: null
-                    };
+                const formData = {
+                    content: document.getElementById('question-title').value.trim(),
+                    answerKey: document.getElementById('correct-answer').value.trim(),
+                    answerF1: document.getElementById('answer-f1').value.trim(),
+                    answerF2: document.getElementById('answer-f2').value.trim(),
+                    answerF3: document.getElementById('answer-f3').value.trim(),
+                    explanation: document.getElementById('explanation').value.trim(),
+                    courseId: Number(document.getElementById('subject').value.trim()),
+                    difficultyLevel: document.getElementById('difficulty').value.trim(),
+                    status: statusValue,
+                    taskId: null,
+                    planId: null
+                };
 
+                console.log('Submitting question with data:', formData);
 
-                    console.log('Submitting question with data:', formData);
+                const response = await fetch('/lecturer/api/create_questions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
 
-                    const response = await fetch('/lecturer/api/create_questions', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    });
-
-                    if (!response.ok) {
-                        const text = await response.text();
-                        console.error('Server response:', text);
-                        throw new Error('Failed to submit question: ' + text);
-                    }
-
-                    const data = await response.json();
-
-                    if (data.error) {
-                        throw new Error(data.error);
-                    }
-
-                    alert('Question submitted successfully!');
-                    window.location.href = '/lecturer/lecturerTask';
-
-                } catch (error) {
-                    console.error('Submit question error:', error);
-                    alert('Error submitting question: ' + error.message);
-
-                    const button = this;
-                    button.innerHTML = 'Submit <i class="fas fa-paper-plane"></i>';
-                    button.disabled = false;
+                if (!response.ok) {
+                    const text = await response.text();
+                    console.error('Server response:', text);
+                    throw new Error('Failed to submit question: ' + text);
                 }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Thành công - chuyển trang
+                window.location.href = '/lecturer/lecturerTask';
+
+            } catch (error) {
+                console.error('Submit question error:', error);
+                alert('Error submitting question: ' + error.message);
+                button.innerHTML = (statusValue === 'SUBMITTED' ? 'Submit <i class="fas fa-paper-plane"></i>' : 'Save Draft <i class="fa-regular fa-floppy-disk"></i>');
+                button.disabled = false;
+            }
+        }
+
+        if (submitButton) {
+            submitButton.addEventListener('click', e => {
+                e.preventDefault();
+                sendQuestion('SUBMITTED', submitButton);
+            });
+        }
+
+        if (saveDraftBtn) {
+            saveDraftBtn.addEventListener('click', e => {
+                e.preventDefault();
+                sendQuestion('DRAFT', saveDraftBtn);
             });
         }
     });

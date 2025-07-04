@@ -1,13 +1,13 @@
 package com.uth.quizclear.model.dto;
 
 import com.uth.quizclear.model.enums.DifficultyLevel;
+import com.uth.quizclear.model.enums.QuestionStatus;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class QuestionCreateDTO {
 
-    
     @NotBlank(message = "Question content is required")
     private String content;
 
@@ -26,11 +26,11 @@ public class QuestionCreateDTO {
     @NotNull(message = "Course ID is required")
     private Long courseId;
 
-    @NotNull(message = "CLO ID is required")
-    private Long cloId;
+    @NotNull(message = "Status is required")
+    private QuestionStatus status;
 
-    @NotNull(message = "Creator ID is required")
-    private Long creatorId;
+    // @NotNull(message = "CLO ID is required")
+    private Long cloId;
 
     private Long taskId;
     private Long planId;
@@ -92,14 +92,6 @@ public class QuestionCreateDTO {
         this.difficultyLevel = difficultyLevel;
     }
 
-    public Long getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(Long creatorId) {
-        this.creatorId = creatorId;
-    }
-
     public Long getTaskId() {
         return taskId;
     }
@@ -132,6 +124,14 @@ public class QuestionCreateDTO {
         this.cloId = cloId;
     }
 
+    public QuestionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(QuestionStatus status) {
+        this.status = status;
+    }
+
     // Contructors
     public QuestionCreateDTO() {
     }
@@ -141,8 +141,7 @@ public class QuestionCreateDTO {
             String answerF3, String explanation,
             @NotNull(message = "Difficulty level is required") DifficultyLevel difficultyLevel,
             @NotNull(message = "Course ID is required") Long courseId,
-            @NotNull(message = "CLO ID is required") Long cloId,
-            @NotNull(message = "Creator ID is required") Long creatorId, Long taskId, Long planId) {
+            @NotNull(message = "Status is required") QuestionStatus status, Long cloId, Long taskId, Long planId) {
         this.content = content;
         this.answerKey = answerKey;
         this.answerF1 = answerF1;
@@ -151,10 +150,10 @@ public class QuestionCreateDTO {
         this.explanation = explanation;
         this.difficultyLevel = difficultyLevel;
         this.courseId = courseId;
+        this.status = status;
         this.cloId = cloId;
-        this.creatorId = creatorId;
         this.taskId = taskId;
         this.planId = planId;
     }
-    
+
 }
