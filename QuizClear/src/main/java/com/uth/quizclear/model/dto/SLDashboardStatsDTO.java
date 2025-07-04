@@ -1,4 +1,4 @@
-package com.uth.quizclear.dto;
+package com.uth.quizclear.model.dto;
 
 public class SLDashboardStatsDTO {
     private int pendingAssignments;

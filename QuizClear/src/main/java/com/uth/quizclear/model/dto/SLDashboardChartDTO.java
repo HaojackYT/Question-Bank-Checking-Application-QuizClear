@@ -1,4 +1,4 @@
-package com.uth.quizclear.dto;
+package com.uth.quizclear.model.dto;
 
 import java.util.List;
 
