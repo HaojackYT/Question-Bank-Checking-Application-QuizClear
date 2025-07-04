@@ -497,21 +497,6 @@ INSERT INTO question_access_permissions (question_id, department_id, subject_id,
 (43, 5, 11, 'write', 6, 'Plant cell biology - Cell biology'),
 (48, 5, 12, 'approve', 6, 'Advanced population genetics - Genetics');
 
--- IN PROGRESS
--- INSERT INTO ai_duplicate_checks (
---     question_content, course_id, similarity_threshold, max_similarity_score, duplicate_found, model_used, analysis_text, recommendation_text, checked_by, checked_at, status
--- ) VALUES
--- ('Java primitive data types question', 1, 0.75, 0.85, TRUE, 'all-MiniLM-L6-v2', 'Similar Java programming concepts detected', 'Review for content overlap', 1, '2025-03-01 10:00:00', 'completed'),
--- ('Calculus derivative question', 2, 0.75, 0.92, TRUE, 'all-MiniLM-L6-v2', 'High similarity in mathematical concepts', 'Consider consolidation or revision', 2, '2025-03-02 10:00:00', 'completed'),
--- ('Physics Newton laws question', 3, 0.75, 0.83, TRUE, 'all-MiniLM-L6-v2', 'Physics principles show moderate similarity', 'Manual review recommended', 3, '2025-03-03 10:00:00', 'completed'),
--- ('General Chemistry overlap', 4, 0.80, 0.78, FALSE, 'all-MiniLM-L6-v2', 'No significant overlap found', 'No action needed', 9, '2025-03-04 10:00:00', 'completed'),
--- ('Cell Biology similarity', 5, 0.75, 0.81, TRUE, 'all-MiniLM-L6-v2', 'Cell structure questions are similar', 'Suggest merging questions', 10, '2025-03-05 10:00:00', 'completed'),
--- ('Data Structures duplicate', 1, 0.80, 0.88, TRUE, 'all-MiniLM-L6-v2', 'Duplicate found in data structure questions', 'Revise question wording', 3, '2025-03-06 10:00:00', 'completed'),
--- ('Linear Algebra overlap', 2, 0.75, 0.79, FALSE, 'all-MiniLM-L6-v2', 'Minor similarity in matrix questions', 'No action needed', 8, '2025-03-07 10:00:00', 'completed'),
--- ('Physics kinematics check', 3, 0.75, 0.76, FALSE, 'all-MiniLM-L6-v2', 'Kinematics questions are unique', 'No action needed', 6, '2025-03-08 10:00:00', 'completed'),
--- ('Organic Chemistry duplicate', 4, 0.75, 0.91, TRUE, 'all-MiniLM-L6-v2', 'High similarity in organic chemistry', 'Review for possible merge', 9, '2025-03-09 10:00:00', 'completed'),
--- ('Genetics question overlap', 5, 0.75, 0.82, TRUE, 'all-MiniLM-L6-v2', 'Genetics questions flagged as similar', 'Manual review required', 10, '2025-03-10 10:00:00', 'completed');
-
 -- ========== LOGIN TESTING GUIDE ==========
 -- All users have their original password hashes
 -- 
