@@ -535,50 +535,50 @@ INSERT INTO question_access_permissions (question_id, department_id, subject_id,
 -- HoED -> hoe-dashboard (Emily Foster)
 
 -- Processing logs sample data for duplicate detection history
-INSERT INTO processing_logs (
-    detection_id, new_question_id, similar_question_id, similarity_score, action, 
-    feedback, processed_by, processed_at, new_question_content, similar_question_content,
-    new_question_course, similar_question_course, new_question_creator, similar_question_creator
-) VALUES
-(1001, 11, 16, 0.92, 'ACCEPTED', 'Questions are contextually different despite similarity', 6, '2024-07-01 10:30:00', 
- 'What is the fundamental theorem of calculus?', 'Explain the fundamental theorem of calculus in detail',
- 'Calculus II', 'Calculus II', 'Frank Green', 'Grace Harris'),
+-- INSERT INTO processing_logs (
+--     detection_id, new_question_id, similar_question_id, similarity_score, action, 
+--     feedback, processed_by, processed_at, new_question_content, similar_question_content,
+--     new_question_course, similar_question_course, new_question_creator, similar_question_creator
+-- ) VALUES
+-- (1001, 11, 16, 0.92, 'ACCEPTED', 'Questions are contextually different despite similarity', 6, '2024-07-01 10:30:00', 
+--  'What is the fundamental theorem of calculus?', 'Explain the fundamental theorem of calculus in detail',
+--  'Calculus II', 'Calculus II', 'Frank Green', 'Grace Harris'),
 
-(1002, 12, 18, 0.85, 'REJECTED', 'Too similar to existing question - duplicate content', 2, '2024-07-01 14:15:00',
- 'Define what is a variable in programming', 'What is a variable in computer programming?',
- 'Introduction to Computer Science', 'Introduction to Computer Science', 'Ash Abrahams', 'Brian Carter'),
+-- (1002, 12, 18, 0.85, 'REJECTED', 'Too similar to existing question - duplicate content', 2, '2024-07-01 14:15:00',
+--  'Define what is a variable in programming', 'What is a variable in computer programming?',
+--  'Introduction to Computer Science', 'Introduction to Computer Science', 'Ash Abrahams', 'Brian Carter'),
 
-(1003, 13, 20, 0.78, 'SEND_BACK', 'Please rephrase to avoid similarity and add more specific context', 8, '2024-07-02 09:45:00',
- 'How does DNA replication work?', 'Describe the process of DNA replication',
- 'Cell Biology', 'Genetics', 'Daniel Evans', 'Isabella King'),
+-- (1003, 13, 20, 0.78, 'SEND_BACK', 'Please rephrase to avoid similarity and add more specific context', 8, '2024-07-02 09:45:00',
+--  'How does DNA replication work?', 'Describe the process of DNA replication',
+--  'Cell Biology', 'Genetics', 'Daniel Evans', 'Isabella King'),
 
-(1004, 14, 22, 0.94, 'REJECTED', 'Nearly identical to existing question - content overlap too high', 6, '2024-07-02 16:20:00',
- 'Calculate the derivative of x^2 + 3x + 1', 'Find the derivative of the function f(x) = x^2 + 3x + 1',
- 'Calculus II', 'Linear Algebra', 'Frank Green', 'Grace Harris'),
+-- (1004, 14, 22, 0.94, 'REJECTED', 'Nearly identical to existing question - content overlap too high', 6, '2024-07-02 16:20:00',
+--  'Calculate the derivative of x^2 + 3x + 1', 'Find the derivative of the function f(x) = x^2 + 3x + 1',
+--  'Calculus II', 'Linear Algebra', 'Frank Green', 'Grace Harris'),
 
-(1005, 15, 19, 0.73, 'ACCEPTED', 'Approved after review - questions target different learning outcomes', 9, '2024-07-03 11:10:00',
- 'What are the properties of alkenes?', 'List the main characteristics of alkene compounds',
- 'Organic Chemistry', 'General Chemistry', 'Henry Johnson', 'Henry Johnson'),
+-- (1005, 15, 19, 0.73, 'ACCEPTED', 'Approved after review - questions target different learning outcomes', 9, '2024-07-03 11:10:00',
+--  'What are the properties of alkenes?', 'List the main characteristics of alkene compounds',
+--  'Organic Chemistry', 'General Chemistry', 'Henry Johnson', 'Henry Johnson'),
 
-(1006, 21, 17, 0.88, 'SEND_BACK', 'Good question but needs more specificity. Please add context about application domain', 3, '2024-07-03 13:30:00',
- 'Explain the concept of inheritance in OOP', 'What is inheritance in object-oriented programming?',
- 'Data Structures', 'Introduction to Computer Science', 'Brian Carter', 'Ash Abrahams'),
+-- (1006, 21, 17, 0.88, 'SEND_BACK', 'Good question but needs more specificity. Please add context about application domain', 3, '2024-07-03 13:30:00',
+--  'Explain the concept of inheritance in OOP', 'What is inheritance in object-oriented programming?',
+--  'Data Structures', 'Introduction to Computer Science', 'Brian Carter', 'Ash Abrahams'),
 
-(1007, 23, 24, 0.81, 'ACCEPTED', 'Different difficulty levels and contexts - both questions serve different purposes', 10, '2024-07-04 08:45:00',
- 'What is mitosis?', 'Describe the stages of cell division (mitosis)',
- 'Cell Biology', 'Genetics', 'Daniel Evans', 'Isabella King'),
+-- (1007, 23, 24, 0.81, 'ACCEPTED', 'Different difficulty levels and contexts - both questions serve different purposes', 10, '2024-07-04 08:45:00',
+--  'What is mitosis?', 'Describe the stages of cell division (mitosis)',
+--  'Cell Biology', 'Genetics', 'Daniel Evans', 'Isabella King'),
 
-(1008, 25, 26, 0.95, 'REJECTED', 'Exact duplicate - same content and context', 2, '2024-07-04 15:25:00',
- 'What is Ohm''s law?', 'State Ohm''s law',
- 'Electricity and Magnetism', 'Electricity and Magnetism', 'Emily Foster', 'Emily Foster'),
+-- (1008, 25, 26, 0.95, 'REJECTED', 'Exact duplicate - same content and context', 2, '2024-07-04 15:25:00',
+--  'What is Ohm''s law?', 'State Ohm''s law',
+--  'Electricity and Magnetism', 'Electricity and Magnetism', 'Emily Foster', 'Emily Foster'),
 
-(1009, 27, 28, 0.76, 'ACCEPTED', 'Similar topics but different focus areas - complementary questions', 8, '2024-07-05 10:15:00',
- 'How do enzymes work in biological systems?', 'What is the role of enzymes in metabolism?',
- 'Cell Biology', 'Cell Biology', 'Daniel Evans', 'Daniel Evans'),
+-- (1009, 27, 28, 0.76, 'ACCEPTED', 'Similar topics but different focus areas - complementary questions', 8, '2024-07-05 10:15:00',
+--  'How do enzymes work in biological systems?', 'What is the role of enzymes in metabolism?',
+--  'Cell Biology', 'Cell Biology', 'Daniel Evans', 'Daniel Evans'),
 
-(1010, 29, 30, 0.89, 'SEND_BACK', 'Please add more specific examples and clarify the scope of the question', 7, '2024-07-05 14:40:00',
- 'What are the applications of integration?', 'List practical uses of integral calculus',
- 'Calculus II', 'Calculus II', 'Frank Green', 'Frank Green');
+-- (1010, 29, 30, 0.89, 'SEND_BACK', 'Please add more specific examples and clarify the scope of the question', 7, '2024-07-05 14:40:00',
+--  'What are the applications of integration?', 'List practical uses of integral calculus',
+--  'Calculus II', 'Calculus II', 'Frank Green', 'Frank Green');
 
 -- Additional processing logs for more comprehensive data
 -- INSERT INTO processing_logs (
