@@ -236,95 +236,108 @@ public class SubjectLeaderController {
         model.addAttribute("type", type);
         
         return "subjectLeader/sl_FB_viewDetails";
-    }
-      @GetMapping("/feedback/{feedbackId}/details")
+    }    @GetMapping("/feedback/{feedbackId}/details")
     public String feedbackDetailPageWithDetails(@PathVariable Long feedbackId, 
                                                 @RequestParam(required = false) String type,
-                                                HttpSession session, Model model) {
-        // For testing purpose, use hardcoded user ID  
-        Long userId = getUserIdFromSession(session);
-        Object roleObj = session.getAttribute("role");
+                                                Authentication authentication, Model model) {
+        System.out.println("=== FEEDBACK DETAIL PAGE DEBUG ===");
+        System.out.println("Authentication: " + (authentication != null ? authentication.getName() : "null"));
+        System.out.println("FeedbackId: " + feedbackId);
+        System.out.println("Type: " + type);
         
-        if (userId == null || roleObj == null) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("REDIRECTING TO LOGIN - User not authenticated");
             return "redirect:/login";
         }
         
-        // Handle both String and UserRole enum cases
-        String roleStr = null;
-        if (roleObj instanceof String) {
-            roleStr = (String) roleObj;        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
-            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
-        }
-        
-        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
+        // Check if user has SL role
+        boolean isSL = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("SL") || auth.equals("ROLE_SL");
+                });
+          if (!isSL) {
+            System.out.println("REDIRECTING TO LOGIN - User is not Subject Leader");
             return "redirect:/login";
         }
-          QuestionFeedbackDetailDTO feedbackDetail = feedbackService.getFeedbackDetail(feedbackId, type);
+        
+        QuestionFeedbackDetailDTO feedbackDetail = feedbackService.getFeedbackDetail(feedbackId, type);
         if (feedbackDetail == null) {
+            System.out.println("FEEDBACK DETAIL NOT FOUND for ID: " + feedbackId + ", type: " + type);
             return "redirect:/subject-leader/feedback";
         }
         
+        System.out.println("FEEDBACK DETAIL FOUND: " + feedbackDetail.getTitle());
         model.addAttribute("feedback", feedbackDetail);
         model.addAttribute("type", type);
         
         return "subjectLeader/sl_FB_viewDetails";
-    }
-      // REST API endpoints
+    }// REST API endpoints
     @GetMapping("/api/feedback")
     @ResponseBody
-    public ResponseEntity<List<QuestionFeedbackDTO>> getFeedbackList(HttpSession session) {
-        // For testing purpose, use hardcoded user ID
-        Long userId = getUserIdFromSession(session);
-        Object roleObj = session.getAttribute("role");
+    public ResponseEntity<List<QuestionFeedbackDTO>> getFeedbackList(Authentication authentication) {
+        System.out.println("=== API FEEDBACK LIST DEBUG ===");
+        System.out.println("Authentication: " + (authentication != null ? authentication.getName() : "null"));
+        System.out.println("Authentication authorities: " + (authentication != null ? authentication.getAuthorities() : "null"));
         
-        if (userId == null || roleObj == null) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("API ACCESS DENIED - User not authenticated");
             return ResponseEntity.status(403).build();
         }
         
-        // Handle both String and UserRole enum cases
-        String roleStr = null;
-        if (roleObj instanceof String) {
-            roleStr = (String) roleObj;        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
-            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
-        }
+        // Check if user has SL role
+        boolean isSL = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("SL") || auth.equals("ROLE_SL");
+                });
         
-        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
+        if (!isSL) {
+            System.out.println("API ACCESS DENIED - User is not Subject Leader");
             return ResponseEntity.status(403).build();
         }
         
-        // Hardcode for testing - Subject Leader with ID 3 (Brian Carter from Physics department)
-        // Long userId = 3L; // COMMENTED OUT - using session instead
+        // Get userId from email (temporary mapping)
+        Long userId = getUserIdFromEmail(authentication.getName());
+        System.out.println("API Getting feedback for userId: " + userId);
         
         List<QuestionFeedbackDTO> feedbackList = feedbackService.getFeedbackForSubjectLeader(userId);
+        System.out.println("API Feedback list size: " + (feedbackList != null ? feedbackList.size() : "null"));
         return ResponseEntity.ok(feedbackList);
-    }      @GetMapping("/api/feedback/{feedbackId}")
+    }    @GetMapping("/api/feedback/{feedbackId}")
     @ResponseBody
     public ResponseEntity<QuestionFeedbackDetailDTO> getFeedbackDetail(@PathVariable Long feedbackId, 
                                                                       @RequestParam(required = false) String type,
-                                                                      HttpSession session) {
-        Long userId = getUserIdFromSession(session);
-        Object roleObj = session.getAttribute("role");
+                                                                      Authentication authentication) {
+        System.out.println("=== API FEEDBACK DETAIL DEBUG ===");
+        System.out.println("Authentication: " + (authentication != null ? authentication.getName() : "null"));
+        System.out.println("FeedbackId: " + feedbackId);
+        System.out.println("Type: " + type);
         
-        if (userId == null || roleObj == null) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("API ACCESS DENIED - User not authenticated");
             return ResponseEntity.status(403).build();
         }
         
-        // Handle both String and UserRole enum cases
-        String roleStr = null;
-        if (roleObj instanceof String) {
-            roleStr = (String) roleObj;
-        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
-            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();        }
+        // Check if user has SL role
+        boolean isSL = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("SL") || auth.equals("ROLE_SL");
+                });
         
-        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
+        if (!isSL) {
+            System.out.println("API ACCESS DENIED - User is not Subject Leader");
             return ResponseEntity.status(403).build();
         }
         
         QuestionFeedbackDetailDTO feedbackDetail = feedbackService.getFeedbackDetail(feedbackId, type);
         if (feedbackDetail == null) {
+            System.out.println("API FEEDBACK DETAIL NOT FOUND for ID: " + feedbackId + ", type: " + type);
             return ResponseEntity.notFound().build();
         }
         
+        System.out.println("API FEEDBACK DETAIL FOUND: " + feedbackDetail.getTitle());
         return ResponseEntity.ok(feedbackDetail);
     }
       @PostMapping("/api/feedback/{feedbackId}/update-question")

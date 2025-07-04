@@ -58,6 +58,10 @@ tr:hover {
     background: #FB8C00;
 }
 
+.status.rejected {
+    background: #E53935;
+}
+
 /* Styling cho cột Actions */
 .action-icon {
     cursor: pointer;
