@@ -2,6 +2,7 @@ package com.uth.quizclear.model.entity;
 
 import com.uth.quizclear.model.enums.UserRole;
 import com.uth.quizclear.model.enums.UserRoleConverter;
+import com.uth.quizclear.model.enums.SubjectRole;
 import com.uth.quizclear.model.enums.Gender;
 import com.uth.quizclear.model.enums.GenderConverter;
 import com.uth.quizclear.model.enums.Status;
@@ -318,9 +319,7 @@ public class User {
                     assignment.isCurrentlyEffective() &&
                     assignment.getDepartmentName().equals(departmentName) &&
                     assignment.getRole() == role);
-    }
-
-    public boolean hasPermissionInSubject(String subjectCode, UserRole role) {
+    }    public boolean hasPermissionInSubject(String subjectCode, SubjectRole role) {
         return subjectAssignments.stream()
                 .anyMatch(assignment -> 
                     assignment.isCurrentlyEffective() &&

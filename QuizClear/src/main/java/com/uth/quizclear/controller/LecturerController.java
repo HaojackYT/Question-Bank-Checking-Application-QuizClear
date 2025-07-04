@@ -7,7 +7,7 @@ import com.uth.quizclear.model.entity.User;
 import com.uth.quizclear.model.entity.Subject;
 import com.uth.quizclear.model.enums.DifficultyLevel;
 import com.uth.quizclear.model.enums.QuestionStatus;
-import com.uth.quizclear.model.enums.UserRole;
+import com.uth.quizclear.model.enums.SubjectRole;
 import com.uth.quizclear.repository.QuestionRepository;
 import com.uth.quizclear.repository.CourseRepository;
 import com.uth.quizclear.repository.CLORepository;
@@ -384,11 +384,10 @@ public class LecturerController {
         if (userObj != null && userObj instanceof UserBasicDTO) {
             UserBasicDTO user = (UserBasicDTO) userObj;
             lecturerId = user.getUserId();
-        }
-          // Only load subjects that the lecturer is assigned to
+        }          // Only load subjects that the lecturer is assigned to
         List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
             lecturerId, 
-            UserRole.LEC
+            SubjectRole.LECTURER
         );
         
         // Get courses related to assigned subjects (if needed)
@@ -556,7 +555,7 @@ public class LecturerController {
                     if (subject != null) {                        // Verify lecturer has permission to create questions for this subject
                         List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
                             lecturerId, 
-                            UserRole.LEC
+                            SubjectRole.LECTURER
                         );
                         
                         boolean hasPermission = assignedSubjects.stream()
@@ -638,11 +637,10 @@ public class LecturerController {
             Object subjectIdObj = questionData.get("subjectId");
             if (subjectIdObj != null && !subjectIdObj.toString().trim().isEmpty()) {
                 try {
-                    Long subjectId = Long.parseLong(subjectIdObj.toString());
-                      // Check if lecturer has permission for this subject
+                    Long subjectId = Long.parseLong(subjectIdObj.toString());                      // Check if lecturer has permission for this subject
                     List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
                         lecturerId, 
-                        UserRole.LEC
+                        SubjectRole.LECTURER
                     );
                     
                     boolean hasPermission = assignedSubjects.stream()
@@ -1529,12 +1527,11 @@ public class LecturerController {
             
             if (userObj != null && userObj instanceof UserBasicDTO) {
                 UserBasicDTO user = (UserBasicDTO) userObj;
-                lecturerId = user.getUserId();
-            }
+                lecturerId = user.getUserId();            }
               // Get assigned subjects
             List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
                 lecturerId, 
-                UserRole.LEC
+                SubjectRole.LECTURER
             );
             
             // Prepare response
