@@ -1,8 +1,9 @@
 package com.uth.quizclear.service;
 
-import com.uth.quizclear.dto.SLDashboardStatsDTO;
-import com.uth.quizclear.dto.SLDashboardChartDTO;
-import com.uth.quizclear.dto.SLDashboardActivityDTO;
+import com.uth.quizclear.model.dto.SLDashboardActivityDTO;
+import com.uth.quizclear.model.dto.SLDashboardChartDTO;
+import com.uth.quizclear.model.dto.SLDashboardStatsDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;

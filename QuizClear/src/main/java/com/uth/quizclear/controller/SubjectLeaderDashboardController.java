@@ -1,8 +1,8 @@
 package com.uth.quizclear.controller;
 
-import com.uth.quizclear.dto.SLDashboardStatsDTO;
-import com.uth.quizclear.dto.SLDashboardChartDTO;
-import com.uth.quizclear.dto.SLDashboardActivityDTO;
+import com.uth.quizclear.model.dto.SLDashboardActivityDTO;
+import com.uth.quizclear.model.dto.SLDashboardChartDTO;
+import com.uth.quizclear.model.dto.SLDashboardStatsDTO;
 import com.uth.quizclear.service.SubjectLeaderDashboardService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
