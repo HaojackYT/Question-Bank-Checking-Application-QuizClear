@@ -492,23 +492,46 @@
             tbody.innerHTML = `<tr><td colspan="6" class="error-message">${message}</td></tr>`;
         }        // Load subjects for filter dropdown
         function loadSubjects() {
-            fetch('/lecturer/api/subjects')
+            fetch('/lecturer/api/assigned-subjects')
                 .then(response => response.json())
-                .then(subjects => {
+                .then(data => {
                     const selects = document.querySelectorAll('.filters select');
                     const subjectSelect = selects[1]; // Second dropdown is subject
                     if (subjectSelect) {
                         subjectSelect.innerHTML = '<option value="">All subject</option>';
-                        subjects.forEach(subject => {
-                            const option = document.createElement('option');
-                            option.value = subject;
-                            option.textContent = subject;
-                            subjectSelect.appendChild(option);
-                        });
+                        
+                        // Handle new API format - data is array of objects
+                        if (Array.isArray(data)) {
+                            data.forEach(subject => {
+                                const option = document.createElement('option');
+                                option.value = subject.subjectName; // Use subject name for filtering
+                                option.textContent = subject.subjectName;
+                                subjectSelect.appendChild(option);
+                            });
+                        }
                     }
                 })
                 .catch(error => {
                     console.error('Error loading subjects:', error);
+                    // Fallback to old API if new one fails
+                    fetch('/lecturer/api/subjects')
+                        .then(response => response.json())
+                        .then(subjects => {
+                            const selects = document.querySelectorAll('.filters select');
+                            const subjectSelect = selects[1];
+                            if (subjectSelect) {
+                                subjectSelect.innerHTML = '<option value="">All subject</option>';
+                                subjects.forEach(subject => {
+                                    const option = document.createElement('option');
+                                    option.value = subject;
+                                    option.textContent = subject;
+                                    subjectSelect.appendChild(option);
+                                });
+                            }
+                        })
+                        .catch(fallbackError => {
+                            console.error('Both APIs failed:', fallbackError);
+                        });
                 });
         }// Update questions table
         function updateQuestionsTable(questions) {
