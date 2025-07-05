@@ -1,31 +1,26 @@
-/* General Body and Layout - REMOVED/MODIFIED */
-/* The existing framework likely handles the body and top-level container. */
-/* We will focus on the main content area that the "Export Exam" page occupies. */
-
 #export-exam-container {
     width: 100%;
-    max-width: 1200px; /* Adhere to max-width for better readability on large screens */
-    margin-left: 0rem; /* Center the entire export exam section */
-    padding: 2rem; /* Consistent padding around the entire container */
-    box-sizing: border-box; /* Include padding in element's total width and height */
-    background-color: white; /* Background color for the whole section */
+    max-width: 1200px;
+    margin-left: 0rem;
+    padding: 2rem;
+    box-sizing: border-box;
+    background-color: white;
 }
 
 /* Main Content Area for Export Exam */
 /* This class now ONLY wraps the 'export options' and 'preview' sections. */
 .main-content {
     display: flex;
-    gap: 2rem; /* Spacing between the two main columns */
-    width: 100%; /* Take full width of its parent container (#export-exam-container) */
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    align-items: stretch; /* Align items to the top */
-    /* Removed padding and background-color as they are now on #export-exam-container */
+    gap: 2rem;
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: stretch;
 }
 
 /* Header */
 /* This header-content is now outside the main-content flex container */
 .header-content {
-    width: 100%; /* Take full width */
+    width: 100%;
     margin-bottom: 2rem;
     display: flex;
     flex-direction: column;
@@ -33,13 +28,13 @@
 }
 
 .header-content h1 {
-    font-size: 1.8rem; /* Use rem for font size */
+    font-size: 1.8rem;
     color: #333;
     margin: 0;
 }
 
 .header-content p {
-    font-size: 0.9rem; /* Use rem for font size */
+    font-size: 0.9rem;
     color: #666;
     margin: 0;
 }
@@ -47,40 +42,40 @@
 /* Cards */
 .card {
     background-color: #fff;
-    border-radius: 0.5rem; /* Use rem for border-radius */
-    padding: 1.5rem; /* Use rem for padding */
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1); /* Use rem for box-shadow spread */
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
 }
 
 .card h2 {
-    font-size: 1.2rem; /* Use rem for font size */
+    font-size: 1.2rem;
     color: #333;
     margin-top: 0;
-    margin-bottom: 0.5rem; /* Use rem for margin */
+    margin-bottom: 0.5rem;
 }
 
 .card-subtitle {
-    font-size: 0.85rem; /* Use rem for font size */
+    font-size: 0.85rem;
     color: #888;
-    margin-bottom: 1.5rem; /* Use rem for margin */
+    margin-bottom: 1.5rem;
 }
 
 /* Export Options Section */
 .export-options {
-    flex: 1; /* Allow to grow */
-    min-width: 300px; /* Minimum width to prevent squishing */
+    flex: 1;
+    min-width: 300px;
 }
 
 /* Form Groups */
 .form-group {
-    margin-bottom: 1rem; /* Use rem for margin */
+    margin-bottom: 1rem;
 }
 
 .form-group label {
     display: block;
-    font-size: 0.9rem; /* Use rem for font size */
+    font-size: 0.9rem;
     color: #555;
-    margin-bottom: 0.5rem; /* Use rem for margin */
+    margin-bottom: 0.5rem;
     font-weight: bold;
 }
 
@@ -92,21 +87,21 @@
 
 .custom-select select {
     width: 100%;
-    padding: 0.75rem 1rem; /* Use rem for padding */
+    padding: 0.75rem 1rem;
     border: 1px solid #ddd;
-    border-radius: 0.3rem; /* Use rem for border-radius */
+    border-radius: 0.3rem;
     background-color: #fff;
-    appearance: none; /* Remove default arrow */
+    appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    font-size: 0.9rem; /* Use rem for font size */
+    font-size: 0.9rem;
     color: #333;
     cursor: pointer;
 }
 
 .custom-select .select-arrow {
     position: absolute;
-    right: 1rem; /* Use rem for position */
+    right: 1rem;
     top: 50%;
     transform: translateY(-50%);
     color: #888;
@@ -115,31 +110,31 @@
 
 /* Content Options (Toggles) */
 h3 {
-    font-size: 1rem; /* Use rem for font size */
+    font-size: 1rem;
     color: #333;
-    margin-top: 2.5rem; /* Use rem for margin */
-    margin-bottom: 1.5rem; /* Use rem for margin */
+    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
 }
 
 .toggle-group {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1rem; /* Use rem for margin */
-    padding-right: 0.5rem; /* Adjust padding for better alignment with toggle */
+    margin-bottom: 1rem;
+    padding-right: 0.5rem;
 }
 
 .toggle-group label {
-    font-size: 0.9rem; /* Use rem for font size */
+    font-size: 0.9rem;
     color: #555;
     font-weight: bold;
-    margin-right: 1rem; /* Use rem for margin */
+    margin-right: 1rem;
 }
 
 .toggle-group .toggle-description {
-    font-size: 0.8rem; /* Use rem for font size */
+    font-size: 0.8rem;
     color: #888;
-    flex-grow: 1; /* Allow description to take available space */
+    flex-grow: 1;
     margin-top: 0.5rem;
 }
 
@@ -147,8 +142,8 @@ h3 {
 .switch {
     position: relative;
     display: inline-block;
-    width: 3.4rem; /* Use rem for width */
-    height: 1.5rem; /* Use rem for height */
+    width: 3.4rem;
+    height: 1.5rem;
 }
 
 .switch input {
@@ -167,16 +162,16 @@ h3 {
     background-color: #ccc;
     -webkit-transition: .4s;
     transition: .4s;
-    border-radius: 1.5rem; /* Use rem for border-radius */
+    border-radius: 1.5rem;
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 1.1rem; /* Use rem for height */
-    width: 1.1rem; /* Use rem for width */
-    left: 0.2rem; /* Use rem for position */
-    bottom: 0.2rem; /* Use rem for position */
+    height: 1.1rem;
+    width: 1.1rem;
+    left: 0.2rem;
+    bottom: 0.2rem;
     background-color: white;
     -webkit-transition: .4s;
     transition: .4s;
@@ -192,31 +187,31 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-    -webkit-transform: translateX(2rem); /* Use rem for transform */
-    -ms-transform: translateX(2rem); /* Use rem for transform */
-    transform: translateX(2rem); /* Use rem for transform */
+    -webkit-transform: translateX(2rem);
+    -ms-transform: translateX(2rem);
+    transform: translateX(2rem);
 }
 
 /* Distribution Buttons */
 .distribution-buttons {
     display: flex;
-    gap: 0.8rem; /* Use rem for gap */
-    margin-top: 1rem; /* Use rem for margin */
-    margin-bottom: 1.5rem; /* Use rem for margin */
-    flex-wrap: wrap; /* Allow wrapping */
+    gap: 0.8rem;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
 }
 
 .icon-button {
     background-color: #e9ecef;
     border: 1px solid #ddd;
-    border-radius: 0.3rem; /* Use rem for border-radius */
-    padding: 0.7rem 1.2rem; /* Use rem for padding */
-    font-size: 0.9rem; /* Use rem for font size */
+    border-radius: 0.3rem;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
     color: #555;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.5rem; /* Use rem for gap */
+    gap: 0.5rem;
     transition: background-color 0.3s ease;
 }
 
@@ -231,19 +226,19 @@ input:checked + .slider:before {
 /* Export Button */
 .export-button {
     width: 100%;
-    padding: 0.8rem 1.5rem; /* Use rem for padding */
+    padding: 0.8rem 1.5rem;
     margin-top: 2rem;
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 0.3rem; /* Use rem for border-radius */
-    font-size: 1rem; /* Use rem for font size */
+    border-radius: 0.3rem;
+    font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem; /* Use rem for gap */
+    gap: 0.5rem;
 }
 
 .export-button:hover {
@@ -252,91 +247,85 @@ input:checked + .slider:before {
 
 /* Preview Section */
 .preview {
-    flex: 1.2; /* Allow to grow more than export options */
-    min-width: 400px; /* Minimum width for preview */
-}
-
-/* Preview Tabs */
-.preview-tabs {
-    display: flex; /* Dùng flexbox để các nút nằm cạnh nhau */
-    border: 1px solid #ddd; /* Viền xung quanh box */
-    border-radius: 8px; /* Bo tròn góc */
-    overflow: hidden; /* Quan trọng để bo tròn viền các nút bên trong */
-    width: fit-content; /* Giúp box chỉ rộng bằng nội dung của nó */
-    margin-bottom: 1rem; /* Khoảng cách dưới box */
-    background-color: #f0f0f0; /* Màu nền cho container */
+    flex: 1.2;
+    min-width: 400px;
 }
 
 .tab-button {
-    flex-grow: 1; /* Cho phép các nút giãn ra để lấp đầy không gian */
-    padding: 0.75rem 1.5rem; /* Khoảng cách bên trong nút */
-    border: none; /* Không có viền cho từng nút */
-    background-color: transparent; /* Mặc định trong suốt */
-    color: #555; /* Màu chữ mặc định */
+    flex-grow: 1;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    background-color: transparent;
+    color: #555;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     width: 15rem;
-    transition: all 0.2s ease-in-out; /* Hiệu ứng chuyển động mượt mà */
-    white-space: nowrap; /* Ngăn không cho chữ xuống dòng */
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
 }
 
 .tab-button:hover {
-    background-color: #e0e0e0; /* Màu nền khi di chuột qua */
+    background-color: #e0e0e0;
 }
 
 .tab-button.active {
-    background-color: #fff; /* Màu nền cho tab đang hoạt động */
-    color: #333; /* Màu chữ cho tab đang hoạt động */
+    background-color: #fff;
+    color: #333;
     font-weight: 700;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Bóng đổ nhẹ cho tab active */
-    /* Có thể thêm border-right cho tab active nếu muốn có đường phân cách rõ hơn */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Loại bỏ viền phải cho nút active nếu nó không phải là nút cuối cùng */
 .tab-button.active:not(:last-child) {
     border-right: 1px solid #ddd;
 }
 
 /* Exam Preview Content */
 .exam-preview-content h4 {
-    font-size: 1.1rem; /* Use rem for font size */
+    font-size: 1.1rem;
     color: #333;
-    margin-bottom: 0.5rem; /* Use rem for margin */
+    margin-bottom: 0.5rem;
 }
 
 .exam-info {
-    font-size: 0.8rem; /* Use rem for font size */
+    font-size: 0.8rem;
     color: #777;
-    margin-bottom: 0.3rem; /* Use rem for margin */
+    margin-bottom: 0.3rem;
     text-align: center;
 }
 
 .question-number {
-    font-size: 0.85rem; /* Use rem for font size */
+    font-size: 0.85rem;
     color: #666;
-    margin-top: 0.5rem; /* Use rem for margin */
-    margin-bottom: 0.5rem; /* Use rem for margin */
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .question-text {
-    font-size: 0.95rem; /* Use rem for font size */
+    font-size: 0.95rem;
     color: #333;
-    margin-bottom: 1rem; /* Use rem for margin */
+    margin-bottom: 1rem;
     font-weight: bold;
 }
 
 .options-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); /* Responsive grid for options */
-    gap: 0.8rem; /* Use rem for gap */
+    grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
+    gap: 0.8rem;
+}
+
+.correct-answer {
+    font-size: 0.9rem;
+    color: #444;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .option {
     border: 1px solid #ddd;
-    border-radius: 0.3rem; /* Use rem for border-radius */
-    padding: 0.7rem 1rem; /* Use rem for padding */
-    font-size: 0.9rem; /* Use rem for font size */
+    border-radius: 0.3rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.9rem;
     color: #444;
 }
 
@@ -345,17 +334,17 @@ input:checked + .slider:before {
     width: 100%;
     background-color: #f8f9fa;
     border: 1px solid #dee2e6;
-    border-radius: 0.3rem; /* Use rem for border-radius */
-    padding: 0.8rem 1.5rem; /* Use rem for padding */
-    margin-top: 1.6rem; /* Use rem for margin */
-    font-size: 0.9rem; /* Use rem for font size */
+    border-radius: 0.3rem;
+    padding: 0.8rem 1.5rem;
+    margin-top: 1.6rem;
+    font-size: 0.9rem;
     color: #007bff;
     cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem; /* Use rem for gap */
+    gap: 0.5rem;
 }
 
 .view-full-preview-button:hover {
@@ -370,11 +359,10 @@ input:checked + .slider:before {
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .main-content {
-        flex-direction: column; /* Stack columns on smaller screens */
+        flex-direction: column;
         align-items: center;
     }
 
-    /* Adjust padding of the overall container for smaller screens */
     #export-exam-container {
         padding: 2rem;
     }
@@ -382,8 +370,8 @@ input:checked + .slider:before {
     .export-options,
     .preview {
         width: 100%;
-        max-width: 500px; /* Limit width for stacked elements */
-        min-width: unset; /* Remove min-width for flexibility */
+        max-width: 500px; 
+        min-width: unset;
     }
 
     .header-content {
