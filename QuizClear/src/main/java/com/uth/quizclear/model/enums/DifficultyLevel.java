@@ -1,5 +1,7 @@
 package com.uth.quizclear.model.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /**
  * Difficulty levels based on Bloom's Taxonomy
  */
@@ -25,5 +27,16 @@ public enum DifficultyLevel {
 
     public boolean isHigherThan(DifficultyLevel other) {
         return this.ordinal() > other.ordinal();
+    }
+
+    
+    @JsonCreator
+    public static DifficultyLevel fromValue(String value) {
+        for (DifficultyLevel level : DifficultyLevel.values()) {
+            if (level.value.equalsIgnoreCase(value)) {
+                return level;
+            }
+        }
+        throw new IllegalArgumentException("Invalid difficulty level: " + value);
     }
 }

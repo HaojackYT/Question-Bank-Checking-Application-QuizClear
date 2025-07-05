@@ -1632,20 +1632,27 @@ public class LecturerController {
     }
 
     @PostMapping("/api/create_questions")
-    public ResponseEntity<?> createQuestion(@RequestBody @Valid QuestionCreateDTO dto) {
+    public ResponseEntity<?> createQuestion(@RequestBody @Valid QuestionCreateDTO dto, HttpSession session) {
         try {
-            // Lấy các entity cần thiết
-            CLO clo = null;
-            if (dto.getCloId() != null) {
-                clo = cloRepository.findById(dto.getCloId())
-                        .orElseThrow(() -> new RuntimeException("CLO not found"));
-            }
+            Long cloId = dto.getCloId() != null ? dto.getCloId() : 1L;
+            CLO clo = cloRepository.findById(cloId)
+                    .orElseThrow(() -> new RuntimeException("CLO not found"));
 
             Course course = courseRepository.findById(dto.getCourseId())
                     .orElseThrow(() -> new RuntimeException("Course not found"));
 
-            User creator = userRepository.findById(dto.getCreatorId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+            Object userObj = session.getAttribute("user");
+            Long creatorId;
+
+            if (userObj != null && userObj instanceof UserBasicDTO) {
+                creatorId = ((UserBasicDTO) userObj).getUserId();
+            } else {
+                // Nếu không có user trong session, dùng userId giả lập (chỉ dùng cho test)
+                creatorId = 1L;
+            }
+
+            User creator = userRepository.findById(creatorId)
+                    .orElseThrow(() -> new RuntimeException("Creator user not found"));
 
             // Khởi tạo câu hỏi
             Question question = new Question();
@@ -1657,10 +1664,20 @@ public class LecturerController {
             question.setExplanation(dto.getExplanation());
             question.setDifficultyLevel(dto.getDifficultyLevel());
             question.setCourse(course);
+
+            if (dto.getStatus() == null) {
+                question.setStatus(QuestionStatus.DRAFT);
+            } else {
+                question.setStatus(dto.getStatus());
+            }
+            
             if (clo != null) {
                 question.setClo(clo);
             }
-            question.setCreatedBy(creator);
+
+            if (creator != null) {
+                question.setCreatedBy(creator);
+            }
 
             if (dto.getTaskId() != null) {
                 question.setTaskId(dto.getTaskId());
@@ -1680,7 +1697,11 @@ public class LecturerController {
             System.out.println("Plan ID: " + question.getPlanId());
 
             // Trả về thông tin câu hỏi
-            return ResponseEntity.ok("Question created successfully with ID: " + question.getQuestionId());
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Question created successfully");
+            response.put("questionId", question.getQuestionId());
+
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             e.printStackTrace(); // log lỗi đầy đủ

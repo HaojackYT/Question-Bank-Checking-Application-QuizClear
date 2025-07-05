@@ -1,37 +1,87 @@
-// HED Join Task JavaScript
+// HED Join Task JavaScript - Updated to use real data
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize page
-    loadTaskData();
-    setupEventListeners();
+    initializeTaskPage();
 });
 
-// Load task data from backend
-async function loadTaskData() {    try {
-        const response = await fetch('/api/hed/tasks');
-        if (response.ok) {
-            const tasks = await response.json();
-            populateTaskTable(tasks);
-        } else {
-            console.error('Failed to load task data');
-            // Show error message instead of mock data
-            showErrorMessage('Failed to load task data from server');
-        }
+let allTasksData = [];
+let filteredTasksData = [];
+
+// Initialize page
+async function initializeTaskPage() {
+    try {
+        console.log('Initializing HED Join Task page...');
+        
+        // Load task data from API
+        await loadTaskData();
+        
+        // Load notifications
+        await loadTaskNotifications();
+        
+        // Setup event listeners
+        setupEventListeners();
+        
+        // Setup filters
+        setupFilters();
+        
     } catch (error) {
-        console.error('Error loading task data:', error);
-        showErrorMessage('Error connecting to server: ' + error.message);
+        console.error('Error initializing page:', error);
+        showErrorMessage('Failed to load page data');
     }
 }
 
-// Show error message when data loading fails  
-function showErrorMessage(message) {
-    const tbody = document.querySelector('.exam-table tbody');
-    tbody.innerHTML = `
-        <tr>
-            <td colspan="7" class="text-center text-danger">
-                <i class="fas fa-exclamation-triangle"></i> ${message}
-            </td>
-        </tr>
-    `;
+// Load task data from backend API
+async function loadTaskData() {
+    try {
+        const response = await fetch('/api/hed/tasks', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        allTasksData = data || [];
+        filteredTasksData = [...allTasksData];
+        
+        console.log('Loaded task data:', allTasksData);
+        
+        // Update table if we have data
+        if (allTasksData.length > 0) {
+            updateTaskTable(allTasksData);
+        }
+        
+    } catch (error) {
+        console.error('Error loading task data:', error);
+        // Keep the Thymeleaf-rendered data as fallback
+        console.log('Using server-side rendered data as fallback');
+    }
+}
+
+// Load task notifications from API
+async function loadTaskNotifications() {
+    try {
+        const response = await fetch('/api/hed/task-notifications', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const notifications = await response.json();
+        updateTaskNotifications(notifications);
+        
+    } catch (error) {
+        console.error('Error loading task notifications:', error);
+        // Keep server-side rendered notifications
+    }
 }
 
 // Populate the task table with data
@@ -71,15 +121,228 @@ function populateTaskTable(tasks) {
     setupActionButtons();
 }
 
+// Update task table with data
+function updateTaskTable(tasks) {
+    const tableBody = document.getElementById('taskTableBody');
+    if (!tableBody) return;
+    
+    if (!tasks || tasks.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 2rem; color: #666;">
+                    No tasks assigned to your department at this time
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    const rows = tasks.map(task => `
+        <tr data-task-id="${task.id}">
+            <td>${task.id}</td>
+            <td>${task.subjectName || 'N/A'}</td>
+            <td>${formatDate(task.deadline)}</td>
+            <td>${task.totalQuestions || 0}</td>
+            <td>${task.assignedStaff || 'N/A'}</td>
+            <td>
+                <span class="status-badge ${task.status?.toLowerCase() || 'pending'}">${task.status || 'Pending'}</span>
+            </td>
+            <td>
+                <button class="action-btn view-btn" title="View" onclick="viewTask(${task.id})">
+                    <i class="fas fa-eye"></i>
+                </button>
+                ${(task.status === 'ASSIGNED' || task.status === 'PENDING') ? `
+                    <button class="action-btn edit-btn" title="Join Task" onclick="joinTask(${task.id})">
+                        <i class="fas fa-user-plus"></i>
+                    </button>
+                ` : ''}
+                ${task.status === 'COMPLETED' ? `
+                    <button class="action-btn delete-btn" title="Remove" onclick="removeTask(${task.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                ` : ''}
+            </td>
+        </tr>
+    `).join('');
+    
+    tableBody.innerHTML = rows;
+}
+
+// Update task notifications
+function updateTaskNotifications(notifications) {
+    const container = document.getElementById('taskNotificationContainer');
+    if (!container) return;
+    
+    if (!notifications || notifications.length === 0) {
+        container.innerHTML = `
+            <div class="notification_item">
+                <div class="notification-text">
+                    <strong>No new task assignments</strong>
+                    <p>All tasks are up to date</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    const notificationHtml = notifications.map(notif => `
+        <div class="notification_item">
+            <input type="checkbox" checked>
+            <div class="notification-text">
+                <strong>${notif.title || 'New task assignment'}</strong>
+                <p>Deadline: ${formatDate(notif.deadline)}</p>
+            </div>
+        </div>
+    `).join('');
+    
+    container.innerHTML = notificationHtml;
+}
+
+// Setup event listeners
+function setupEventListeners() {
+    // Search functionality
+    const searchInput = document.querySelector('.search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', handleTaskSearch);
+    }
+    
+    // Filter dropdowns
+    const statusFilter = document.querySelector('.filter-select');
+    const subjectFilter = document.querySelectorAll('.filter-select')[1];
+    
+    if (statusFilter) {
+        statusFilter.addEventListener('change', applyTaskFilters);
+    }
+    if (subjectFilter) {
+        subjectFilter.addEventListener('change', applyTaskFilters);
+    }
+    
+    // Search button
+    const searchBtn = document.querySelector('.search-btn');
+    if (searchBtn) {
+        searchBtn.addEventListener('click', handleTaskSearch);
+    }
+}
+
+// Setup filters with dynamic data
+function setupFilters() {
+    if (allTasksData.length === 0) return;
+    
+    // Get unique subjects for subject filter
+    const subjects = [...new Set(allTasksData.map(task => task.subjectName).filter(Boolean))];
+    const subjectFilter = document.querySelectorAll('.filter-select')[1];
+    
+    if (subjectFilter && subjects.length > 0) {
+        const currentValue = subjectFilter.value;
+        subjectFilter.innerHTML = `
+            <option value="">All Subject</option>
+            ${subjects.map(subject => 
+                `<option value="${subject}" ${currentValue === subject ? 'selected' : ''}>${subject}</option>`
+            ).join('')}
+        `;
+    }
+}
+
+// Handle search
+function handleTaskSearch() {
+    const searchTerm = document.querySelector('.search-input')?.value?.toLowerCase() || '';
+    
+    let filtered = [...allTasksData];
+    
+    if (searchTerm) {
+        filtered = filtered.filter(task => 
+            task.subjectName?.toLowerCase().includes(searchTerm) ||
+            task.assignedStaff?.toLowerCase().includes(searchTerm) ||
+            task.id?.toString().includes(searchTerm)
+        );
+    }
+    
+    filteredTasksData = filtered;
+    applyTaskFilters();
+}
+
+// Apply filters
+function applyTaskFilters() {
+    const statusFilter = document.querySelector('.filter-select');
+    const subjectFilter = document.querySelectorAll('.filter-select')[1];
+    
+    const statusValue = statusFilter?.value || '';
+    const subjectValue = subjectFilter?.value || '';
+    
+    let filtered = [...filteredTasksData];
+    
+    if (statusValue) {
+        filtered = filtered.filter(task => 
+            task.status?.toLowerCase() === statusValue.toLowerCase()
+        );
+    }
+    
+    if (subjectValue) {
+        filtered = filtered.filter(task => 
+            task.subjectName === subjectValue
+        );
+    }
+    
+    updateTaskTable(filtered);
+}
+
+// Action functions
+function viewTask(taskId) {
+    console.log('Viewing task:', taskId);
+    window.location.href = `/api/hed/tasks/${taskId}/details`;
+}
+
+function joinTask(taskId) {
+    if (confirm('Are you sure you want to join this task?')) {
+        updateTaskStatus(taskId, 'JOINED');
+    }
+}
+
+function removeTask(taskId) {
+    if (confirm('Are you sure you want to remove this task?')) {
+        updateTaskStatus(taskId, 'REMOVED');
+    }
+}
+
+// Update task status
+async function updateTaskStatus(taskId, action) {
+    try {
+        const response = await fetch(`/api/hed/tasks/${taskId}/${action.toLowerCase()}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            alert(`Task ${action.toLowerCase()} successfully!`);
+            // Reload data
+            await loadTaskData();
+            await loadTaskNotifications();
+        } else {
+            throw new Error(`Failed to ${action.toLowerCase()} task`);
+        }
+    } catch (error) {
+        console.error(`Error ${action.toLowerCase()} task:`, error);
+        alert(`Failed to ${action.toLowerCase()} task. Please try again.`);
+    }
+}
+
+// Load more task notifications
+function loadMoreTaskNotifications() {
+    console.log('Loading more task notifications...');
+    // Implement pagination if needed
+}
+
 // Format date for display
 function formatDate(dateString) {
     if (!dateString) return 'N/A';
-    try {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-GB');
-    } catch (error) {
-        return dateString;
-    }
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
 }
 
 // Get CSS class for status
@@ -98,191 +361,18 @@ function getStatusClass(status) {
     }
 }
 
-// Setup event listeners
-function setupEventListeners() {
-    // Search functionality
-    const searchBtn = document.querySelector('.search-btn');
-    const searchInput = document.querySelector('.search-input');
-    
-    if (searchBtn && searchInput) {
-        searchBtn.addEventListener('click', performSearch);
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                performSearch();
-            }
-        });
-    }
-
-    // Filter functionality
-    const filterSelects = document.querySelectorAll('.filter-select');
-    filterSelects.forEach(select => {
-        select.addEventListener('change', performSearch);
-    });
-}
-
-// Setup action buttons
-function setupActionButtons() {
-    // Remove existing event listeners and add new ones
-    const actionButtons = document.querySelectorAll('.action-btn');
-    actionButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const icon = this.querySelector('i');
-            const row = this.closest('tr');
-            const taskId = row.querySelector('td').textContent;
-            
-            if (icon.classList.contains('fa-eye')) {
-                viewTaskDetails(taskId);
-            } else if (icon.classList.contains('fa-edit')) {
-                editTask(taskId);
-            } else if (icon.classList.contains('fa-trash')) {
-                deleteTask(taskId);
-            }
-        });
-    });
-}
-
-// Perform search and filter
-async function performSearch() {
-    const searchQuery = document.querySelector('.search-input')?.value || '';
-    const statusFilter = document.querySelector('.filter-select')?.value || '';
-    const subjectFilter = document.querySelector('.filter-select')?.parentElement?.nextElementSibling?.querySelector('select')?.value || '';
-
-    try {
-        const response = await fetch(`/api/hed/tasks/search?query=${encodeURIComponent(searchQuery)}&status=${encodeURIComponent(statusFilter)}&subject=${encodeURIComponent(subjectFilter)}`);
-        if (response.ok) {
-            const tasks = await response.json();
-            populateTaskTable(tasks);
-        }
-    } catch (error) {
-        console.error('Error searching tasks:', error);
-    }
-}
-
-// View task details
-function viewTaskDetails(taskId) {
-    const modal = document.getElementById('courseDetailsModal');
-    if (!modal) {
-        console.error('Course modal not found');
-        return;
-    }
-
-    // Find task data
-    const row = document.querySelector(`td:first-child`);
-    const taskData = {
-        taskId: taskId,
-        title: "Course for advanced students",
-        subjectName: "Programming",
-        totalQuestions: 45,
-        assignedLecturerName: "Nguyen Van A",
-        deadline: "2025-08-15",
-        status: "Active"
-    };
-
-    openTaskModal(taskData);
-}
-
-// Open task details modal
-function openTaskModal(task) {
-    const modal = document.getElementById('courseDetailsModal');
-    if (!modal) return;
-
-    // Populate modal with task data
-    document.getElementById('modalStaff').textContent = task.assignedLecturerName || 'N/A';
-    document.getElementById('modalTitle').textContent = task.title + " course for advanced students";
-    document.getElementById('modalTotalQuestion').textContent = task.totalQuestions || 'N/A';
-    document.getElementById('modalSubject').textContent = task.subjectName || 'N/A';
-    document.getElementById('modalDeadline').textContent = formatDate(task.deadline);
-    document.getElementById('modalDueDate').textContent = formatDate(task.deadline);
-    
-    const statusElement = document.getElementById('modalStatus');
-    if (statusElement) {
-        statusElement.textContent = task.status || 'Active';
-        statusElement.className = getStatusClass(task.status || 'Active');
-    }
-
-    document.getElementById('modalDescription').textContent = 
-        `This is a comprehensive ${(task.subjectName || 'programming').toLowerCase()} course that covers modern technologies and best practices for students.`;
-
-    modal.style.display = 'block';
-
-    // Setup modal buttons
-    setupTaskModalButtons(task.taskId);
-}
-
-// Setup task modal buttons
-function setupTaskModalButtons(taskId) {
-    const approveBtn = document.querySelector('#courseDetailsModal .approve-btn');
-    const rejectBtn = document.querySelector('#courseDetailsModal .reject-btn');
-    const closeBtn = document.querySelector('#courseDetailsModal .close-btn');
-    const expandBtn = document.querySelector('#courseDetailsModal .expand-btn');
-
-    if (approveBtn) {
-        approveBtn.onclick = () => approveTask(taskId);
-    }
-    
-    if (rejectBtn) {
-        rejectBtn.onclick = () => rejectTask(taskId);
-    }
-
-    if (closeBtn) {
-        closeBtn.onclick = () => closeTaskModal();
-    }
-
-    if (expandBtn) {
-        expandBtn.onclick = () => toggleExpand();
-    }
-}
-
-// Approve task
-function approveTask(taskId) {
-    alert('Task approved successfully!');
-    closeTaskModal();
-    loadTaskData(); // Refresh the table
-}
-
-// Reject task
-function rejectTask(taskId) {
-    const feedback = document.querySelector('#courseDetailsModal #modalFeedback')?.value || '';
-    
-    if (!feedback.trim()) {
-        alert('Please provide feedback before rejecting the task.');
-        return;
-    }
-
-    alert('Task rejected with feedback: ' + feedback);
-    closeTaskModal();
-    loadTaskData(); // Refresh the table
-}
-
-// Close task modal
-function closeTaskModal() {
-    const modal = document.getElementById('courseDetailsModal');
-    if (modal) {
-        modal.style.display = 'none';
-    }
-}
-
-// Toggle expand modal
-function toggleExpand() {
-    const modal = document.querySelector('#courseDetailsModal .details-modal');
-    if (modal) {
-        modal.classList.toggle('expanded');
-    }
-}
-
-// Edit task
-function editTask(taskId) {
-    alert(`Edit functionality for task ${taskId} - To be implemented`);
-}
-
-// Delete task
-function deleteTask(taskId) {
-    if (confirm(`Are you sure you want to delete task "${taskId}"?`)) {
-        alert(`Task "${taskId}" has been deleted!`);
-        loadTaskData(); // Refresh the table
+// Show error message
+function showErrorMessage(message) {
+    console.error(message);
+    const tableBody = document.getElementById('taskTableBody');
+    if (tableBody) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 2rem; color: #dc3545;">
+                    <i class="fas fa-exclamation-triangle"></i> ${message}
+                </td>
+            </tr>
+        `;
     }
 }
 

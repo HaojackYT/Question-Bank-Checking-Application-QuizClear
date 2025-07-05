@@ -3,11 +3,11 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../../Static/fontawesome/css/all.css">
-        <link rel="stylesheet" href="../../Static/header.css">
-        <link rel="stylesheet" href="../../Static/web_styles.css">
-        <link rel="stylesheet" href="../../Static/Menu-Staff.css">
-        <link rel="stylesheet" href="../../Static/css/staff/staffExportExam.css">
+        <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+        <link rel="stylesheet" th:href="@{/Static/header.css}">
+        <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+        <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+        <link rel="stylesheet" th:href="@{/Static/css/staff/staffExportExam.css}">
         <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
         <title>Template</title>
     </head>
@@ -26,9 +26,8 @@
                 <div id="export-exam-container">
                     <div class="header-content">
                         <h1><i class="fas fa-arrow-left back-arrow"></i> Export Exam</h1>
-                        <p>Data Structures Final Exam • CS301-FINAL-2023</p>
+                        <p th:text="${exam.examTitle} + ' • ' + ${exam.examCode}"></p>
                     </div>
-
                     <div class="main-content">
                         <div class="export-options card">
                             <h2>Export Options</h2>
@@ -96,40 +95,19 @@
                         <div class="preview card">
                             <h2>Preview</h2>
                             <p class="card-subtitle">Preview how your exam will look</p>
-
-                            <div class="preview-tabs">
-                                <button class="tab-button active">Exam</button>
-                                <button class="tab-button">Answer Key</button>
-                            </div>
-
                             <div class="exam-preview-content">
-                                <h4 class="exam-info">Data Structures Final Exam</h4>
-                                <p class="exam-info">CS301-FINAL-2023</p>
-                                <p class="exam-info">Course: Data Structures</p>
-                                <p class="exam-info">Semester: Fall 2023</p>
-
-                                <div class="question">
-                                    <p class="question-number">Question 1</p>
-                                    <p class="question-text">What is the time complexity of binary search?</p>
+                                <h4 class="exam-info" th:text="${exam.examTitle}"></h4>
+                                <p class="exam-info" th:text="${exam.examCode}"></p>
+                                <p class="exam-info" th:text="'Course: ' + ${exam.courseName}"></p>
+                                <p class="exam-info" th:text="'Semester: ' + ${exam.semester}"></p>
+                                <div th:each="q : ${exam.questions}" class="question">
+                                    <p class="question-number" th:text="'Question ' + ${q.number}"></p>
+                                    <p class="question-text" th:text="${q.content}"></p>
                                     <div class="options-grid">
-                                        <div class="option">A. O(1)</div>
-                                        <div class="option">B. O(log n)</div>
-                                        <div class="option">C. O(n)</div>
-                                        <div class="option">D. O(n log n)</div>
+                                        <div class="option" th:each="opt,iter : ${q.options}" th:text="${'ABCD'[iter.index]} + '. ' + ${opt}"></div>
                                     </div>
+                                    <p class="correct-answer"><strong>Correct Answer:</strong> <span th:text="${q.correctAnswer}"></span></p>
                                 </div>
-
-                                <div class="question">
-                                    <p class="question-number">Question 2</p>
-                                    <p class="question-text">Explain the difference between a stack and a queue data structure.</p>
-                                    <div class="options-grid">
-                                        <div class="option">A. Option A</div>
-                                        <div class="option">B. Option B</div>
-                                        <div class="option">C. Option C</div>
-                                        <div class="option">D. Option D</div>
-                                    </div>
-                                </div>
-
                                 <button class="view-full-preview-button">
                                     <i class="fas fa-eye"></i> View Full Preview
                                 </button>

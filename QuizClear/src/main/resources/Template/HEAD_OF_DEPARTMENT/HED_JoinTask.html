@@ -24,29 +24,31 @@
         <div id="main">
             <div class="content-header">
                 <h1 class="title">Join Task</h1>
-            </div>
-
-            <!-- Notification Section -->
+            </div>            <!-- Notification Section -->
             <div class="notification-section">
                 <h2>New Notification</h2>
-                <p class="notification-subtitle">Submission to be approved</p>
-                <div class="notification_items">
-                    <div class="notification_item">
-                        <input type="checkbox" checked>
-                        <div class="notification-text">
-                            <strong>New Approve: Lecturer Tran Thi B has submitted 20 questions for Database</strong>
-                            <p>At: 2PM 25/05/2025</p>
+                <p class="notification-subtitle">New task assignments</p>
+                <div class="notification_items" id="taskNotificationContainer">
+                    <!-- Dynamic notifications will be loaded here -->
+                    <div th:if="${tasks != null and !tasks.isEmpty()}">
+                        <div th:each="task : ${tasks}" th:if="${task.status == 'ASSIGNED' or task.status == 'PENDING'}" class="notification_item">
+                            <input type="checkbox" checked>
+                            <div class="notification-text">
+                                <strong th:text="'New Task: ' + ${task.subjectName} + ' - ' + ${task.totalQuestions} + ' questions assigned'">
+                                    Notification text
+                                </strong>
+                                <p th:text="'Deadline: ' + ${#temporals.format(task.deadline, 'dd/MM/yyyy')}">At: Time</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="notification_item">
-                        <input type="checkbox" checked>
+                    <div th:if="${tasks == null or tasks.isEmpty()}" class="notification_item">
                         <div class="notification-text">
-                            <strong>New Approve: Lecturer Tran Thi B has submitted 20 questions for Database</strong>
-                            <p>At: 2PM 25/05/2025</p>
+                            <strong>No new task assignments</strong>
+                            <p>All tasks are up to date</p>
                         </div>
                     </div>
                 </div>
-                <a href="#" class="see-more">See more...</a>
+                <a href="#" class="see-more" onclick="loadMoreTaskNotifications()">See more...</a>
             </div>
 
             <!-- Search and Filter Section -->
@@ -93,9 +95,41 @@
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
-                    </thead>                    <tbody>
-                        <!-- Task data will be loaded dynamically -->
-                    </tbody>                </table>
+                    </thead>                    <tbody id="taskTableBody">
+                        <!-- Dynamic data from database -->
+                        <tr th:if="${tasks == null or tasks.isEmpty()}">
+                            <td colspan="7" style="text-align: center; padding: 2rem; color: #666;">
+                                No tasks assigned to your department at this time
+                            </td>
+                        </tr>
+                        <tr th:each="task : ${tasks}" th:attr="data-task-id=${task.id}">
+                            <td th:text="${task.id}">ID</td>
+                            <td th:text="${task.subjectName}">Subject</td>
+                            <td th:text="${#temporals.format(task.deadline, 'dd-MM-yyyy')}">Deadline</td>
+                            <td th:text="${task.totalQuestions}">Questions</td>
+                            <td th:text="${task.assignedStaff}">Staff</td>
+                            <td>
+                                <span th:class="'status-badge ' + ${#strings.toLowerCase(task.status)}" 
+                                      th:text="${task.status}">Status</span>
+                            </td>
+                            <td>
+                                <button class="action-btn view-btn" title="View" 
+                                        th:onclick="'viewTask(' + ${task.id} + ')'">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button th:if="${task.status == 'ASSIGNED' or task.status == 'PENDING'}" 
+                                        class="action-btn edit-btn" title="Join Task" 
+                                        th:onclick="'joinTask(' + ${task.id} + ')'">
+                                    <i class="fas fa-user-plus"></i>
+                                </button>
+                                <button th:if="${task.status == 'COMPLETED'}" 
+                                        class="action-btn delete-btn" title="Remove" 
+                                        th:onclick="'removeTask(' + ${task.id} + ')'">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody></table>
             </div>            <!-- Pagination -->
             <div class="pagination">
                 <i class="fa-solid fa-bullhorn" style="padding: 20px;"></i>

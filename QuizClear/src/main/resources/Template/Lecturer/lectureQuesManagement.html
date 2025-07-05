@@ -11,13 +11,13 @@
     <link rel="stylesheet" th:href="@{/Static/css/Lecturer/lectureQuesManagement.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>QuestionManager</title>
-</head>
+</head>    <body class="question-management-page">
+        <!-- Header using Thymeleaf fragment like other pages -->
+        <div th:replace="~{header_user :: header}"></div>
 
-<body class="question-management-page">
-    <div id="header-placeholder"></div>
-
-    <div id="Container-body">
-        <div id="menu-HTML"></div>
+        <div id="Container-body">
+            <!-- Menu using Thymeleaf fragment -->
+            <div th:replace="~{Lecturer/Menu-Lecturer :: menu}"></div>
 
         <div id="main">
             <div class="question-management-header">
@@ -385,66 +385,19 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </div>                </div>
             </div>
         </div>
-    </div>    <script th:inline="javascript">
+    </div>
+        </div> <!-- End Main content -->
+    </div> <!-- End Container-body -->
+
+    <script th:inline="javascript">
         /*<![CDATA[*/
         // Get lecturer ID from server (passed from controller)
         const lecturerId = /*[[${lecturerId}]]*/ 1;
         console.log("Using lecturerId:", lecturerId);
-        
-        // Load header
-        fetch('/Static/Template/header_user.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-placeholder').innerHTML = data;
-            })
-            .catch(error => {
-                console.log('Header not found, continuing without header');
-                document.getElementById('header-placeholder').innerHTML = '<div><!-- Header placeholder --></div>';
-            });
-
-        // Load menu
-        fetch('/Static/Template/Lecturer/Menu-Lecturer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('menu-HTML').innerHTML = data;
-                if (typeof setActiveMenu === 'function') {
-                    setActiveMenu(document.title);
-                }
-                
-                // Force menu height after loading
-                setTimeout(() => {
-                    const menuStaff = document.getElementById('Menu-Staff');
-                    if (menuStaff) {
-                        menuStaff.style.minHeight = '100vh';
-                        menuStaff.style.display = 'flex';
-                        menuStaff.style.flexDirection = 'column';
-                        menuStaff.style.backgroundColor = '#E0EAFA';
-                        
-                        // Set container height only if needed
-                        const containerBody = document.getElementById('Container-body');
-                        if (containerBody) {
-                            containerBody.style.minHeight = '100vh';
-                        }
-                    }
-                }, 100);
-            })
-            .catch(error => {
-                console.log('Menu not found, using fallback menu');
-                document.getElementById('menu-HTML').innerHTML = `
-                    <div class="menu-sidebar">
-                        <nav class="menu-nav">
-                            <ul class="menu-list">
-                                <li><a href="/lecturer-dashboard">Dashboard</a></li>
-                                <li><a href="/lecturer/question-management" class="active">Question Management</a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                `;
-            });        // Load questions data from API
+          // Header and menu are loaded via Thymeleaf fragments, no need for fetch// Load questions data from API
         function loadQuestions() {
             const selects = document.querySelectorAll('.filters select');
             const difficulty = selects[0] ? selects[0].value : '';
