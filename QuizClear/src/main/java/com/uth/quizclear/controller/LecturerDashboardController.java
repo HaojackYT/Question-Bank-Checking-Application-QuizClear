@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.uth.quizclear.model.dto.LecturerDashboardActivityDTO;
 import com.uth.quizclear.model.dto.LecturerDashboardStatsDTO;
 import com.uth.quizclear.model.dto.LecturerDashboardTaskDTO;
+import com.uth.quizclear.repository.UserRepository;
 import com.uth.quizclear.service.LecturerDashboardService;
 
 @RestController
@@ -35,16 +36,27 @@ public class LecturerDashboardController {
                 .anyMatch(a -> a.getAuthority().equals("ROLE_LEC") || a.getAuthority().equals("ROLE_Lec"));
     }
 
+    @Autowired
+    private UserRepository userRepository;
+
     /**
-     * Helper method to get userId from email (temporary solution)
+     * Helper method to get userId from email
      */
     private Long getUserIdFromEmail(String email) {
-        // This is a temporary solution - in real app, you'd query database
-        // For now, return a fixed ID based on email
-        if ("ash.abrahams@university.edu".equals(email)) {
-            return 1L;
+        // Map emails to correct user IDs based on sample data
+        switch (email) {
+            case "ash.abrahams@university.edu":
+                return 1L;
+            case "daniel.evans@university.edu":
+                return 5L;
+            case "frank.green@university.edu":
+                return 7L;
+            default:
+                // Query database for other users
+                return userRepository.findByEmail(email)
+                    .map(user -> user.getUserId().longValue())
+                    .orElse(1L); // fallback
         }
-        return 1L; // Default for testing
     }    @GetMapping("/stats")
     public ResponseEntity<LecturerDashboardStatsDTO> getStats(Authentication authentication) {
         logger.info("Stats API called for user: {}", authentication.getName());
