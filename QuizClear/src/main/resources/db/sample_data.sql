@@ -5,20 +5,20 @@
 -- 1. Users data (core academic staff)
 -- Keeping original password hashes as requested by user
 INSERT INTO users (
-    user_id, full_name, email, password_hash, role, status, department,
+    full_name, email, password_hash, role, status, department,
     gender, date_of_birth, nation, phone_number, created_at,
     hometown, contact_address, start, end, work_place, qualification, is_locked
 ) VALUES
-(1, 'Ash Abrahams', 'ash.abrahams@university.edu', 'hash_ab001', 'Lec', 'active', 'Computer Science', 'male', '1986-03-15', 'USA', '1234567101', '2025-01-01 09:00:00', 'Boston', '101 Elm St, Boston', '2020-01-01', '2030-01-01', 'University of Transport and Communications, Campus 3', 'MS in Information Technology - University of Transport and Communications, Vietnam - 2012', false),
-(2, 'Alexander Brooks', 'alex.brooks@university.edu', 'hash_ab002', 'HoD', 'active', 'Mathematics', 'male', '1975-09-20', 'UK', '1234567102', '2025-01-02 09:00:00', 'London', '22 Baker St, London', '2020-02-01', '2030-02-01', 'UTC - Faculty of Science, Campus 1', 'MSc in Computer Science - University of Transport and Communications - 2013', false),
-(3, 'Brian Carter', 'brian.carter@university.edu', 'hash_bc003', 'SL', 'active', 'Computer Science', 'male', '1982-11-12', 'Canada', '1234567103', '2025-01-03 09:00:00', 'Toronto', '33 Queen St, Toronto', '2020-03-01', '2030-03-01', 'UTC, Campus 2', 'PhD in Computer Science - University of Transport and Communications, Vietnam - 2008', false),
-(4, 'Catherine Davis', 'catherine.davis@university.edu', 'hash_cd004', 'RD', 'active', 'Research & Development', 'female', '1980-07-05', 'Australia', '1234567104', '2025-01-04 09:00:00', 'Sydney', '44 George St, Sydney', '2020-04-01', '2030-04-01', 'UTC - Department of Chemistry, Campus 1', 'PhD in Chemistry - University of Transport and Communications, Vietnam - 2005', false),
-(5, 'Daniel Evans', 'daniel.evans@university.edu', 'hash_de005', 'Lec', 'active', 'Biology', 'male', '1988-01-18', 'New Zealand', '1234567105', '2025-01-05 09:00:00', 'Auckland', '55 Karangahape Rd, Auckland', '2020-05-01', '2030-05-01', 'UTC - Biology Department, Campus 2', 'MSc in Biology - University of Transport and Communications, Vietnam - 2015', false),
-(6, 'Emily Foster', 'emily.foster@university.edu', 'hash_ef006', 'HoED', 'active', 'Head of Examination Department', 'female', '1979-04-22', 'Ireland', '1234567106', '2025-01-06 09:00:00', 'Dublin', '66 Grafton St, Dublin', '2020-06-01', '2030-06-01', 'UTC - Head of Examination Department', 'PhD in Computer Science - University of Transport and Communications, Vietnam - 2004', false),
-(7, 'Frank Green', 'frank.green@university.edu', 'hash_fg007', 'Lec', 'active', 'Mathematics', 'male', '1985-12-30', 'South Africa', '1234567107', '2025-01-07 09:00:00', 'Cape Town', '77 Long St, Cape Town', '2020-07-01', '2030-07-01', 'UTC - Mathematics Faculty, Campus 1', 'MSc in Mathematics - University of Transport and Communications, Vietnam - 2011', false),
-(8, 'Grace Harris', 'grace.harris@university.edu', 'hash_gh008', 'SL', 'active', 'Mathematics', 'female', '1983-06-14', 'Germany', '1234567108', '2025-01-08 09:00:00', 'Berlin', '88 Unter den Linden, Berlin', '2020-08-01', '2030-08-01', 'UTC - Mathematics Department, Campus 2', 'PhD in Mathematics - University of Transport and Communications, Vietnam - 2009', false),
-(9, 'Henry Johnson', 'henry.johnson@university.edu', 'hash_hj009', 'HoD', 'active', 'Chemistry', 'male', '1981-10-08', 'France', '1234567109', '2025-01-09 09:00:00', 'Paris', '99 Champs-Élysées, Paris', '2020-09-01', '2030-09-01', 'UTC - Chemistry Research Lab, Campus 1', 'PhD in Chemistry - University of Transport and Communications, Vietnam - 2006', false),
-(10, 'Isabella King', 'isabella.king@university.edu', 'hash_ik010', 'HoD', 'active', 'Biology', 'female', '1977-02-25', 'Spain', '1234567110', '2025-01-10 09:00:00', 'Madrid', '111 Gran Vía, Madrid', '2020-10-01', '2030-10-01', 'UTC - Head of Biology Department, Campus 2', 'PhD in Biology - University of Transport and Communications, Vietnam - 2003', false);
+('Ash Abrahams', 'ash.abrahams@university.edu', 'hash_ab001', 'Lec', 'active', 'Computer Science', 'male', '1986-03-15', 'USA', '1234567101', '2025-01-01 09:00:00', 'Boston', '101 Elm St, Boston', '2020-01-01', '2030-01-01', 'University of Transport and Communications, Campus 3', 'MS in Information Technology - University of Transport and Communications, Vietnam - 2012', false),
+('Alexander Brooks', 'alex.brooks@university.edu', 'hash_ab002', 'HoD', 'active', 'Mathematics', 'male', '1975-09-20', 'UK', '1234567102', '2025-01-02 09:00:00', 'London', '22 Baker St, London', '2020-02-01', '2030-02-01', 'UTC - Faculty of Science, Campus 1', 'MSc in Computer Science - University of Transport and Communications - 2013', false),
+('Brian Carter', 'brian.carter@university.edu', 'hash_bc003', 'SL', 'active', 'Computer Science', 'male', '1982-11-12', 'Canada', '1234567103', '2025-01-03 09:00:00', 'Toronto', '33 Queen St, Toronto', '2020-03-01', '2030-03-01', 'UTC, Campus 2', 'PhD in Computer Science - University of Transport and Communications, Vietnam - 2008', false),
+('Catherine Davis', 'catherine.davis@university.edu', 'hash_cd004', 'RD', 'active', 'Research & Development', 'female', '1980-07-05', 'Australia', '1234567104', '2025-01-04 09:00:00', 'Sydney', '44 George St, Sydney', '2020-04-01', '2030-04-01', 'UTC - Department of Chemistry, Campus 1', 'PhD in Chemistry - University of Transport and Communications, Vietnam - 2005', false),
+('Daniel Evans', 'daniel.evans@university.edu', 'hash_de005', 'Lec', 'active', 'Biology', 'male', '1988-01-18', 'New Zealand', '1234567105', '2025-01-05 09:00:00', 'Auckland', '55 Karangahape Rd, Auckland', '2020-05-01', '2030-05-01', 'UTC - Biology Department, Campus 2', 'MSc in Biology - University of Transport and Communications, Vietnam - 2015', false),
+('Emily Foster', 'emily.foster@university.edu', 'hash_ef006', 'HoED', 'active', 'Head of Examination Department', 'female', '1979-04-22', 'Ireland', '1234567106', '2025-01-06 09:00:00', 'Dublin', '66 Grafton St, Dublin', '2020-06-01', '2030-06-01', 'UTC - Head of Examination Department', 'PhD in Computer Science - University of Transport and Communications, Vietnam - 2004', false),
+('Frank Green', 'frank.green@university.edu', 'hash_fg007', 'Lec', 'active', 'Mathematics', 'male', '1985-12-30', 'South Africa', '1234567107', '2025-01-07 09:00:00', 'Cape Town', '77 Long St, Cape Town', '2020-07-01', '2030-07-01', 'UTC - Mathematics Faculty, Campus 1', 'MSc in Mathematics - University of Transport and Communications, Vietnam - 2011', false),
+('Grace Harris', 'grace.harris@university.edu', 'hash_gh008', 'SL', 'active', 'Mathematics', 'female', '1983-06-14', 'Germany', '1234567108', '2025-01-08 09:00:00', 'Berlin', '88 Unter den Linden, Berlin', '2020-08-01', '2030-08-01', 'UTC - Mathematics Department, Campus 2', 'PhD in Mathematics - University of Transport and Communications, Vietnam - 2009', false),
+('Henry Johnson', 'henry.johnson@university.edu', 'hash_hj009', 'HoD', 'active', 'Chemistry', 'male', '1981-10-08', 'France', '1234567109', '2025-01-09 09:00:00', 'Paris', '99 Champs-Élysées, Paris', '2020-09-01', '2030-09-01', 'UTC - Chemistry Research Lab, Campus 1', 'PhD in Chemistry - University of Transport and Communications, Vietnam - 2006', false),
+('Isabella King', 'isabella.king@university.edu', 'hash_ik010', 'HoD', 'active', 'Biology', 'female', '1977-02-25', 'Spain', '1234567110', '2025-01-10 09:00:00', 'Madrid', '111 Gran Vía, Madrid', '2020-10-01', '2030-10-01', 'UTC - Head of Biology Department, Campus 2', 'PhD in Biology - University of Transport and Communications, Vietnam - 2003', false);
 
 -- 2. Thêm 10 bản ghi vào bảng courses  
 INSERT INTO courses (course_code, course_name, credits, department, description, created_by, semester, academic_year) VALUES
@@ -764,3 +764,18 @@ INSERT INTO questions (
 (1, 1, 11, 1, 'comprehension', 'Explain the concept of method overloading in Java with an example.', 'Multiple methods with same name but different parameters in same class', 'Methods with same name in different classes', 'Methods that override parent class methods', 'Methods that are called repeatedly', 'Method overloading allows multiple method definitions with different parameter lists', 1, 'approved', 'Excellent explanation and example provided - approved by SL', '2025-06-26 11:30:00', '2025-06-27 13:45:00', 3, '2025-06-27 17:20:00', 3, '2025-06-26 11:30:00'),
 
 (2, 2, 13, 2, 'Basic Application', 'Find the equation of tangent line to y = x³ at point (2, 8)', 'y = 12x - 16', 'y = 3x + 2', 'y = 6x - 4', 'y = x + 6', 'Derivative at x=2 is 12, so tangent line: y - 8 = 12(x - 2)', 7, 'approved', 'Clear solution process - approved by SL', '2025-06-25 16:20:00', '2025-06-26 10:30:00', 8, '2025-06-26 14:15:00', 8, '2025-06-25 16:20:00');
+
+INSERT INTO exam_questions (
+    exam_id, question_id, question_order, marks
+) VALUES
+(1, 1, 1, 1.00),
+(1, 2, 2, 1.00),
+(1, 3, 3, 1.00),
+
+(2, 5, 1, 1.00),
+(2, 6, 2, 1.00),
+(2, 7, 3, 1.00),
+
+(3, 9, 1, 1.00),
+(3, 10, 2, 1.00),
+(3, 11, 3, 1.00);

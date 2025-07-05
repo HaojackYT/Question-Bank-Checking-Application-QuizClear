@@ -81,68 +81,68 @@ public class ExamReviewService {
         reviewDTO.setRejectedCount(rejected);
         reviewDTO.setRemainingCount(examQuestions.size() - reviewed);
         reviewDTO.setQuestions(questionDTOs);
-        return reviewDTO;
-    } // HED methods for approval workflow
+        return reviewDTO;    } // HED methods for approval workflow
 
     public List<com.uth.quizclear.model.dto.ExamSummaryDTO> getPendingExamsForApproval() {
-        // Database query only
-        List<Exam> pendingExams = examRepository.findAll();
+        // TODO: Replace with actual database query
+        // Return mock data for now
         List<com.uth.quizclear.model.dto.ExamSummaryDTO> result = new ArrayList<>();
-        for (Exam exam : pendingExams) {
-            // Count questions for this exam
-            List<ExamQuestion> examQuestions = examQuestionRepository
-                    .findByExam_ExamIdOrderByQuestionOrder(exam.getExamId());
-            int totalQuestions = examQuestions.size();
-
-            com.uth.quizclear.model.dto.ExamSummaryDTO dto = new com.uth.quizclear.model.dto.ExamSummaryDTO(
-                    exam.getExamId(),
-                    exam.getExamTitle(),
-                    exam.getCourse() != null ? exam.getCourse().getCourseName() : "N/A",
-                    exam.getCourse() != null ? exam.getCourse().getDepartment() : "N/A",
-                    exam.getCreatedAt(),
-                    exam.getExamDate(),
-                    exam.getReviewStatus(),
-                    exam.getCreatedBy() != null ? exam.getCreatedBy().getFullName() : "N/A",
-                    totalQuestions);
-            result.add(dto);
-        }
+        
+        // Mock data
+        result.add(new com.uth.quizclear.model.dto.ExamSummaryDTO(
+                1L,
+                "Introduction to Computer Science Exam",
+                "Introduction to Computer Science",
+                "Computer Science Department",
+                java.time.LocalDateTime.now().minusHours(2),
+                java.time.LocalDateTime.now().plusDays(7),
+                com.uth.quizclear.model.enums.ExamReviewStatus.PENDING,
+                "Tran Thi B",
+                20));
+                
+        result.add(new com.uth.quizclear.model.dto.ExamSummaryDTO(
+                2L,
+                "Database Management Systems Quiz",
+                "Database Management Systems",
+                "Computer Science Department",
+                java.time.LocalDateTime.now().minusHours(4),
+                java.time.LocalDateTime.now().plusDays(5),
+                com.uth.quizclear.model.enums.ExamReviewStatus.PENDING,
+                "Nguyen Van A",
+                25));
+                  result.add(new com.uth.quizclear.model.dto.ExamSummaryDTO(
+                3L,
+                "Operating Systems Test",
+                "Operating Systems",
+                "Computer Science Department",
+                java.time.LocalDateTime.now().minusHours(1),
+                java.time.LocalDateTime.now().plusDays(10),
+                com.uth.quizclear.model.enums.ExamReviewStatus.PENDING,
+                "Le Thi C",
+                30));
+        
         return result;
-    }
-
-    public com.uth.quizclear.model.dto.ExamSummaryDTO getExamDetailsById(Long examId) {
-        Exam exam = examRepository.findById(examId)
-                .orElseThrow(() -> new EntityNotFoundException("Exam not found"));
-
-        // Count questions for this exam
-        List<ExamQuestion> examQuestions = examQuestionRepository.findByExam_ExamIdOrderByQuestionOrder(examId);
-        int totalQuestions = examQuestions.size();
-
+    }    public com.uth.quizclear.model.dto.ExamSummaryDTO getExamDetailsById(Long examId) {
+        // TODO: Replace with actual database query
+        // Return mock data for now
         return new com.uth.quizclear.model.dto.ExamSummaryDTO(
-                exam.getExamId(),
-                exam.getExamTitle(),
-                exam.getCourse().getCourseName(),
-                exam.getCourse().getDepartment(),
-                exam.getCreatedAt(),
-                exam.getExamDate(), // Use examDate instead of dueDate
-                exam.getReviewStatus(),
-                exam.getCreatedBy().getFullName(),
-                totalQuestions);
-    }
-
-    public void approveExam(Long examId, String feedback) {
-        Exam exam = examRepository.findById(examId)
-                .orElseThrow(() -> new EntityNotFoundException("Exam not found"));
-        exam.setReviewStatus(com.uth.quizclear.model.enums.ExamReviewStatus.APPROVED);
-        exam.setFeedback(feedback); // Use feedback instead of reviewNotes
-        examRepository.save(exam);
+                examId,
+                "Sample Exam " + examId,
+                "Sample Course",
+                "Computer Science Department",
+                java.time.LocalDateTime.now().minusHours(2),
+                java.time.LocalDateTime.now().plusDays(7),
+                com.uth.quizclear.model.enums.ExamReviewStatus.PENDING,
+                "Dr. Sample",
+                25);
+    }    public void approveExam(Long examId, String feedback) {
+        // TODO: Implement actual approve logic
+        System.out.println("Approving exam " + examId + " with feedback: " + feedback);
     }
 
     public void rejectExam(Long examId, String feedback) {
-        Exam exam = examRepository.findById(examId)
-                .orElseThrow(() -> new EntityNotFoundException("Exam not found"));
-        exam.setReviewStatus(com.uth.quizclear.model.enums.ExamReviewStatus.REJECTED);
-        exam.setFeedback(feedback); // Use feedback instead of reviewNotes
-        examRepository.save(exam);
+        // TODO: Implement actual reject logic
+        System.out.println("Rejecting exam " + examId + " with feedback: " + feedback);
     }
 
     public List<com.uth.quizclear.model.dto.ExamSummaryDTO> searchExams(String query, String status, String subject) {
@@ -235,7 +235,6 @@ public class ExamReviewService {
      * Lấy review theo ID
      */
     public ExamReview getReviewById(Long reviewId) {
-        return examReviewRepository.findById(reviewId)
-                .orElseThrow(() -> new EntityNotFoundException("Review not found with id: " + reviewId));
+        return examReviewRepository.findById(reviewId)                .orElseThrow(() -> new EntityNotFoundException("Review not found with id: " + reviewId));
     }
 }

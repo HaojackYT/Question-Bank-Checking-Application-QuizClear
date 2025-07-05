@@ -1,47 +1,94 @@
-// HED Approve Questions JavaScript with Department Scope Filtering
+// HED Approve Questions JavaScript - Updated to use real data
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize page with scope awareness
-    initializeHEDApproval();
+    initializeApprovalPage();
 });
 
-// Global scope variables for HED (Head of Examination Department)
-let hedScope = {
-    userId: null,
-    userRole: 'HED',
-    managedDepartmentIds: [],
-    accessibleSubjectIds: [],
-    canApproveAll: false,
-    departmentName: ''
-};
-
-// All questions/exams data for filtering
-let allQuestionsData = [];
 let allExamsData = [];
+let filteredExamsData = [];
+let allQuestionsData = [];
+let hedScope = {};
 
-// Initialize HED approval page with department scope
-async function initializeHEDApproval() {
+// Initialize page
+async function initializeApprovalPage() {
     try {
-        console.log('=== Initializing HED Approval with department scope ===');
+        console.log('Initializing HED Approval page...');
         
-        // Load HED scope first
-        await loadHEDScope();
+        // Load exam data from API
+        await loadExamData();
         
-        // Load data filtered by department scope
-        await loadDataWithDepartmentScope();
+        // Load notifications
+        await loadNotifications();
         
         // Setup event listeners
         setupEventListeners();
         
+        // Setup filters
+        setupFilters();
+        
     } catch (error) {
-        console.error('Error initializing HED approval:', error);
-        loadFallbackData();
+        console.error('Error initializing page:', error);
+        showErrorMessage('Failed to load page data');
     }
 }
 
-// Load HED's department scope
+// Load exam data from backend API
+async function loadExamData() {
+    try {
+        const response = await fetch('/api/hed/exams', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        allExamsData = data || [];
+        filteredExamsData = [...allExamsData];
+        
+        console.log('Loaded exam data:', allExamsData);
+        
+        // Update table if we have data
+        if (allExamsData.length > 0) {
+            updateExamTable(allExamsData);
+        }
+        
+    } catch (error) {
+        console.error('Error loading exam data:', error);
+        // Keep the Thymeleaf-rendered data as fallback
+        console.log('Using server-side rendered data as fallback');
+    }
+}
+
+// Load notifications from API
+async function loadNotifications() {
+    try {
+        const response = await fetch('/api/hed/notifications', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const notifications = await response.json();
+        updateNotifications(notifications);
+          } catch (error) {
+        console.error('Error loading notifications:', error);
+        // Keep server-side rendered notifications
+    }
+}
+
+// Load HED department scope information
 async function loadHEDScope() {
     try {
-        const response = await fetch('/api/user/current-scope', {
+        const response = await fetch('/api/hed/scope', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -266,6 +313,41 @@ function updateQuestionApprovalSection() {
     });
 }
 
+// Create question approval element
+function createQuestionApprovalElement(question) {
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question-approval-item';
+    questionDiv.innerHTML = `
+        <div class="question-header">
+            <span class="question-id">Q${question.id}</span>
+            <span class="question-subject">${question.subjectName || 'N/A'}</span>
+            <span class="question-difficulty ${question.difficultyLevel?.toLowerCase() || 'medium'}">${question.difficultyLevel || 'Medium'}</span>
+        </div>
+        <div class="question-content">
+            <p class="question-text">${question.content || 'No content available'}</p>
+            <div class="question-options">
+                <div class="option">A: ${question.answerF1 || 'N/A'}</div>
+                <div class="option">B: ${question.answerF2 || 'N/A'}</div>
+                <div class="option">C: ${question.answerF3 || 'N/A'}</div>
+                <div class="option correct">Correct: ${question.answerKey || 'N/A'}</div>
+            </div>
+            ${question.explanation ? `<div class="question-explanation"><strong>Explanation:</strong> ${question.explanation}</div>` : ''}
+        </div>
+        <div class="question-actions">
+            <button class="action-btn approve-btn" onclick="approveQuestion(${question.id})">
+                <i class="fas fa-check"></i> Approve
+            </button>
+            <button class="action-btn reject-btn" onclick="rejectQuestion(${question.id})">
+                <i class="fas fa-times"></i> Reject
+            </button>
+            <button class="action-btn edit-btn" onclick="editQuestion(${question.id})">
+                <i class="fas fa-edit"></i> Edit
+            </button>
+        </div>
+    `;
+    return questionDiv;
+}
+
 // Check if exam is within HED's department scope
 function isExamInDepartmentScope(exam) {
     if (hedScope.canApproveAll) return true;
@@ -431,4 +513,315 @@ function loadFallbackData() {
 // Backward compatibility - keeping original function name
 async function loadExamData() {
     await loadExamDataWithScope();
+}
+
+// Update exam table with data
+function updateExamTable(exams) {
+    const tableBody = document.getElementById('examTableBody');
+    if (!tableBody) return;
+    
+    if (!exams || exams.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 2rem; color: #666;">
+                    No exams requiring approval in your department scope
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    const rows = exams.map(exam => `
+        <tr data-exam-id="${exam.id}">
+            <td>${exam.id}</td>
+            <td>${exam.subjectName || 'N/A'}</td>
+            <td>${exam.lecturerName || 'N/A'}</td>
+            <td>${exam.totalQuestions || 0}</td>
+            <td>${formatDate(exam.deadline)}</td>
+            <td>
+                <span class="status-badge ${exam.status?.toLowerCase() || 'pending'}">${exam.status || 'Pending'}</span>
+            </td>
+            <td>
+                <button class="action-btn view-btn" title="View" onclick="viewExam(${exam.id})">
+                    <i class="fas fa-eye"></i>
+                </button>
+                ${exam.status === 'PENDING' ? `
+                    <button class="action-btn edit-btn" title="Approve" onclick="approveExam(${exam.id})">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button class="action-btn delete-btn" title="Reject" onclick="rejectExam(${exam.id})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                ` : ''}
+            </td>
+        </tr>
+    `).join('');
+    
+    tableBody.innerHTML = rows;
+}
+
+// Update notifications
+function updateNotifications(notifications) {
+    const container = document.getElementById('notificationContainer');
+    if (!container) return;
+    
+    if (!notifications || notifications.length === 0) {
+        container.innerHTML = `
+            <div class="notification_item">
+                <div class="notification-text">
+                    <strong>No pending approvals at this time</strong>
+                    <p>All submissions have been processed</p>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    const notificationHtml = notifications.map(notif => `
+        <div class="notification_item">
+            <input type="checkbox" checked>
+            <div class="notification-text">
+                <strong>${notif.title || 'New notification'}</strong>
+                <p>At: ${formatDateTime(notif.createdAt)}</p>
+            </div>
+        </div>
+    `).join('');
+    
+    container.innerHTML = notificationHtml;
+}
+
+// Setup event listeners
+function setupEventListeners() {
+    // Search functionality
+    const searchInput = document.querySelector('.search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', handleSearch);
+    }
+    
+    // Filter dropdowns
+    const statusFilter = document.querySelector('.filter-select[value=""]');
+    const subjectFilter = document.querySelectorAll('.filter-select')[1];
+    
+    if (statusFilter) {
+        statusFilter.addEventListener('change', applyFilters);
+    }
+    if (subjectFilter) {
+        subjectFilter.addEventListener('change', applyFilters);
+    }
+    
+    // Search button
+    const searchBtn = document.querySelector('.search-btn');
+    if (searchBtn) {
+        searchBtn.addEventListener('click', handleSearch);
+    }
+}
+
+// Setup filters with dynamic data
+function setupFilters() {
+    if (allExamsData.length === 0) return;
+    
+    // Get unique subjects for subject filter
+    const subjects = [...new Set(allExamsData.map(exam => exam.subjectName).filter(Boolean))];
+    const subjectFilter = document.querySelectorAll('.filter-select')[1];
+    
+    if (subjectFilter && subjects.length > 0) {
+        const currentValue = subjectFilter.value;
+        subjectFilter.innerHTML = `
+            <option value="">All Subject</option>
+            ${subjects.map(subject => 
+                `<option value="${subject}" ${currentValue === subject ? 'selected' : ''}>${subject}</option>`
+            ).join('')}
+        `;
+    }
+}
+
+// Handle search
+function handleSearch() {
+    const searchTerm = document.querySelector('.search-input')?.value?.toLowerCase() || '';
+    
+    let filtered = [...allExamsData];
+    
+    if (searchTerm) {
+        filtered = filtered.filter(exam => 
+            exam.subjectName?.toLowerCase().includes(searchTerm) ||
+            exam.lecturerName?.toLowerCase().includes(searchTerm) ||
+            exam.id?.toString().includes(searchTerm)
+        );
+    }
+    
+    filteredExamsData = filtered;
+    applyFilters();
+}
+
+// Apply filters
+function applyFilters() {
+    const statusFilter = document.querySelector('.filter-select');
+    const subjectFilter = document.querySelectorAll('.filter-select')[1];
+    
+    const statusValue = statusFilter?.value || '';
+    const subjectValue = subjectFilter?.value || '';
+    
+    let filtered = [...filteredExamsData];
+    
+    if (statusValue) {
+        filtered = filtered.filter(exam => 
+            exam.status?.toLowerCase() === statusValue.toLowerCase()
+        );
+    }
+    
+    if (subjectValue) {
+        filtered = filtered.filter(exam => 
+            exam.subjectName === subjectValue
+        );
+    }
+    
+    updateExamTable(filtered);
+}
+
+// Action functions
+function viewExam(examId) {
+    console.log('Viewing exam:', examId);
+    window.location.href = `/api/hed/exams/${examId}/details`;
+}
+
+function approveExam(examId) {
+    if (confirm('Are you sure you want to approve this exam?')) {
+        updateExamStatus(examId, 'APPROVED');
+    }
+}
+
+function rejectExam(examId) {
+    const reason = prompt('Please provide a reason for rejection:');
+    if (reason) {
+        updateExamStatus(examId, 'REJECTED', reason);
+    }
+}
+
+// Update exam status
+async function updateExamStatus(examId, status, reason = '') {
+    try {
+        const response = await fetch(`/api/hed/exams/${examId}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                status: status,
+                reason: reason
+            })
+        });
+        
+        if (response.ok) {
+            alert(`Exam ${status.toLowerCase()} successfully!`);
+            // Reload data
+            await loadExamData();
+            await loadNotifications();
+        } else {
+            throw new Error('Failed to update status');
+        }
+    } catch (error) {
+        console.error('Error updating exam status:', error);
+        alert('Failed to update exam status. Please try again.');
+    }
+}
+
+// Load more notifications
+function loadMoreNotifications() {
+    console.log('Loading more notifications...');
+    // Implement pagination if needed
+}
+
+// Question approval actions
+function approveQuestion(questionId) {
+    if (confirm('Are you sure you want to approve this question?')) {
+        updateQuestionStatus(questionId, 'APPROVED');
+    }
+}
+
+function rejectQuestion(questionId) {
+    const reason = prompt('Please provide a reason for rejection:');
+    if (reason) {
+        updateQuestionStatus(questionId, 'REJECTED', reason);
+    }
+}
+
+function editQuestion(questionId) {
+    console.log('Editing question:', questionId);
+    window.location.href = `/api/questions/${questionId}/edit`;
+}
+
+// Update question status
+async function updateQuestionStatus(questionId, status, reason = '') {
+    try {
+        const response = await fetch(`/api/hed/questions/${questionId}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                status: status,
+                reason: reason
+            })
+        });
+        
+        if (response.ok) {
+            alert(`Question ${status.toLowerCase()} successfully!`);
+            // Reload data
+            await loadQuestionDataWithScope();
+        } else {
+            throw new Error('Failed to update question status');
+        }
+    } catch (error) {
+        console.error('Error updating question status:', error);
+        alert('Failed to update question status. Please try again.');
+    }
+}
+
+// Utility functions
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+function formatDateTime(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+function showErrorMessage(message) {
+    console.error(message);
+    // You can implement a toast or modal here
+}
+
+// Get CSS class for status badge
+function getStatusClass(status) {
+    if (!status) return 'pending';
+    
+    switch (status.toLowerCase()) {
+        case 'approved':
+            return 'approved';
+        case 'rejected':
+            return 'rejected';
+        case 'pending':
+        case 'submitted':
+            return 'pending';
+        case 'in_progress':
+        case 'in-progress':
+            return 'in-progress';
+        default:
+            return 'pending';
+    }
 }

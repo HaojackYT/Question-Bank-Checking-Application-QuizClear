@@ -11,19 +11,22 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping("/api/hed")
-public class HEDController {    @Autowired
+public class HEDController {
+    
+    @Autowired
     private TaskAssignmentService taskAssignmentService;
 
     @Autowired
     private ExamReviewService examReviewService;
     
     @Autowired
-    private HEDStaticService hedStaticService;
-
-    /**
+    private HEDStaticService hedStaticService;    /**
      * HED Dashboard page
      */
     @GetMapping("/dashboard")
@@ -35,7 +38,9 @@ public class HEDController {    @Autowired
         model.addAttribute("completedTasks", 45);
         
         return "HEAD_OF_DEPARTMENT/HED_Dashboard";
-    }    /**
+    }
+
+    /**
      * HED Assignment Management page
      */
     @GetMapping("/assignment-management")
@@ -47,28 +52,27 @@ public class HEDController {    @Autowired
         model.addAttribute("totalPages", 1);
         
         return "HEAD_OF_DEPARTMENT/HED_AssignmentManagement";
-    }
-
-    /**
+    }    /**
      * HED Approve Questions page
-     */    @GetMapping("/approve-questions")
+     */
+    @GetMapping("/approve-questions")
     public String approveQuestions(Model model) {
         // Get exam submissions waiting for approval - only from database
         List<ExamSummaryDTO> pendingExams = examReviewService.getPendingExamsForApproval();
         model.addAttribute("pendingExams", pendingExams);
         
         return "HEAD_OF_DEPARTMENT/HED_ApproveQuestion";
-    }
-
-    /**
+    }    /**
      * HED Join Task page
-     */    @GetMapping("/join-task")
+     */
+    @GetMapping("/join-task")
     public String joinTask(Model model) {
         // Get task assignments for the HED - only from database
         List<TaskAssignmentDTO> tasks = taskAssignmentService.getTasksForHED();
         model.addAttribute("tasks", tasks);
         
-        return "HEAD_OF_DEPARTMENT/HED_JoinTask";    }
+        return "HEAD_OF_DEPARTMENT/HED_JoinTask";
+    }
 
     /**
      * HED Profile page
@@ -99,16 +103,16 @@ public class HEDController {    @Autowired
     @ResponseBody
     public List<TaskAssignmentDTO> getAllTasks() {
         return taskAssignmentService.getTasksForHED();
-    }
-
-    /**
+    }    /**
      * API endpoint to get exam details for approval
      */
     @GetMapping("/exam/{examId}")
     @ResponseBody
     public ExamSummaryDTO getExamDetails(@PathVariable Long examId) {
         return examReviewService.getExamDetailsById(examId);
-    }    /**
+    }
+
+    /**
      * API endpoint to approve exam
      */
     @PostMapping("/exam/{examId}/approve")
@@ -116,9 +120,7 @@ public class HEDController {    @Autowired
     public String approveExam(@PathVariable Long examId, @RequestBody String feedback) {
         examReviewService.approveExam(examId, feedback);
         return "success";
-    }
-
-    /**
+    }    /**
      * API endpoint to reject exam
      */
     @PostMapping("/exam/{examId}/reject")
@@ -126,7 +128,9 @@ public class HEDController {    @Autowired
     public String rejectExam(@PathVariable Long examId, @RequestBody String feedback) {
         examReviewService.rejectExam(examId, feedback);
         return "success";
-    }/**
+    }
+
+    /**
      * API endpoint to search exams
      */
     @GetMapping("/exams/search")
@@ -137,9 +141,7 @@ public class HEDController {    @Autowired
             @RequestParam(required = false) String subject) {
         
         return examReviewService.searchExams(query, status, subject);
-    }
-
-    /**
+    }    /**
      * API endpoint to search tasks
      */
     @GetMapping("/tasks/search")
@@ -148,7 +150,8 @@ public class HEDController {    @Autowired
             @RequestParam(required = false) String query,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String subject) {
-          return taskAssignmentService.searchTaskAssignments(query, status, subject);
+        
+        return taskAssignmentService.searchTaskAssignments(query, status, subject);
     }
 
     /**
@@ -243,27 +246,6 @@ public class HEDController {    @Autowired
     }
 
     /**
-     * API endpoint to get notifications
-     */
-    @GetMapping("/notifications")
-    @ResponseBody
-    public List<java.util.Map<String, Object>> getNotifications() {
-        // Return sample notification data - replace with real service
-        java.util.List<java.util.Map<String, Object>> notifications = new java.util.ArrayList<>();
-        notifications.add(java.util.Map.of(
-            "title", "Assignment: Database Systems Quiz",
-            "courseName", "Database Systems",
-            "dueDate", "2025-07-01T23:59:59"
-        ));
-        notifications.add(java.util.Map.of(
-            "title", "Assignment: Java Programming Questions",
-            "courseName", "Programming Fundamentals",
-            "dueDate", "2025-06-30T23:59:59"
-        ));
-        return notifications;
-    }
-
-    /**
      * API endpoint to create new assignment
      */
     @PostMapping("/assignments")
@@ -350,6 +332,118 @@ public class HEDController {    @Autowired
         });
         
         return "HEAD_OF_DEPARTMENT/HED_Static-reports";
+    }    /**
+     * API endpoint to get notifications for HED
+     */
+    @GetMapping("/notifications")
+    @ResponseBody
+    public List<Map<String, Object>> getNotifications() {
+        // TODO: Replace with actual notification service
+        List<Map<String, Object>> notifications = new ArrayList<>();
+        
+        // Mock notifications
+        for (ExamSummaryDTO exam : examReviewService.getPendingExamsForApproval()) {
+            Map<String, Object> notification = new HashMap<>();
+            notification.put("id", exam.getExamId());
+            notification.put("title", "New Approve: " + exam.getCreatedBy() + 
+                           " has submitted " + exam.getTotalQuestions() + " questions for " + exam.getCourseName());
+            notification.put("createdAt", exam.getCreatedAt());
+            notifications.add(notification);
+        }
+        
+        return notifications;
+    }    /**
+     * API endpoint to get task notifications for HED
+     */
+    @GetMapping("/task-notifications")
+    @ResponseBody
+    public List<Map<String, Object>> getTaskNotifications() {
+        // TODO: Replace with actual notification service
+        List<Map<String, Object>> notifications = new ArrayList<>();
+        
+        // Mock task notifications
+        for (TaskAssignmentDTO task : taskAssignmentService.getTasksForHED()) {
+            if ("ASSIGNED".equals(task.getStatus()) || "PENDING".equals(task.getStatus())) {
+                Map<String, Object> notification = new HashMap<>();
+                notification.put("id", task.getTaskId());
+                notification.put("title", "New Task: " + task.getSubjectName() + " - " + 
+                               task.getTotalQuestions() + " questions assigned");
+                notification.put("deadline", task.getDueDate());
+                notifications.add(notification);
+            }
+        }
+        
+        return notifications;
+    }
+
+    /**
+     * API endpoint to update exam status
+     */
+    @PutMapping("/exams/{examId}/status")
+    @ResponseBody
+    public Map<String, Object> updateExamStatus(@PathVariable Long examId, 
+                                               @RequestBody Map<String, String> request) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            String status = request.get("status");
+            String reason = request.get("reason");
+            
+            // TODO: Implement actual status update
+            System.out.println("Updating exam " + examId + " to status: " + status + " with reason: " + reason);
+            
+            response.put("success", true);
+            response.put("message", "Exam status updated successfully");
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Failed to update exam status: " + e.getMessage());
+        }
+        
+        return response;
+    }
+
+    /**
+     * API endpoint to join a task
+     */
+    @PutMapping("/tasks/{taskId}/joined")
+    @ResponseBody
+    public Map<String, Object> joinTask(@PathVariable Long taskId) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            // TODO: Implement actual task joining logic
+            System.out.println("Joining task: " + taskId);
+            
+            response.put("success", true);
+            response.put("message", "Task joined successfully");
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Failed to join task: " + e.getMessage());
+        }
+        
+        return response;
+    }
+
+    /**
+     * API endpoint to remove a task
+     */
+    @PutMapping("/tasks/{taskId}/removed")
+    @ResponseBody
+    public Map<String, Object> removeTask(@PathVariable Long taskId) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            // TODO: Implement actual task removal logic
+            System.out.println("Removing task: " + taskId);
+            
+            response.put("success", true);
+            response.put("message", "Task removed successfully");
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Failed to remove task: " + e.getMessage());
+        }
+        
+        return response;
     }
 }
 

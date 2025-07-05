@@ -141,22 +141,8 @@
             document.addEventListener('DOMContentLoaded', function() {
                 console.log('Dashboard initializing...');
                 
-                // Set test session first (for development)
-                fetch('/api/dashboard/lecturer/test-session')
-                    .then(response => {
-                        console.log('Test session response:', response.status);
-                        return response.text();
-                    })
-                    .then(data => {
-                        console.log('Test session set:', data);
-                        // Now load dashboard data
-                        loadDashboardData();
-                    })
-                    .catch(error => {
-                        console.error('Error setting test session:', error);
-                        // Try loading data anyway
-                        loadDashboardData();
-                    });
+                // Load dashboard data directly (removed test-session call)
+                loadDashboardData();
             });
 
             function loadDashboardData() {

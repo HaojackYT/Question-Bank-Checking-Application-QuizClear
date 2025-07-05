@@ -92,8 +92,8 @@
                         <span th:if="${exam.status == 'Submitted for Review'}" class="status-pending">
                             <i class="fas fa-clock status-icon orange-icon"></i> Pending
                         </span>
-                        <a th:href="@{'/staff/exams/' + ${exam.examId}}" class="view">View</a>
-                        <a th:if="${exam.status == 'Submitted for Review'}" th:href="@{'/staff/exams/review/' + ${exam.examId}}" class="review">Review</a>
+                        <a th:href="@{'/staff/exams/' + ${exam.examId} + '/overview-questions'}" class="view">View</a>
+                        <a th:if="${exam.status == 'Submitted for Review'}" th:href="@{'/staff/exams/' + ${exam.examId} + '/review'}" class="review">Review</a>
                     </div>
                 </div>
             </div>

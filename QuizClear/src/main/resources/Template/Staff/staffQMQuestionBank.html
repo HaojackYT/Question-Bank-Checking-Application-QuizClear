@@ -3,16 +3,15 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../../Static/fontawesome/css/all.css" />
-        <link rel="stylesheet" href="../../Static/header.css" />
-        <link rel="stylesheet" href="../../Static/web_styles.css" />
-        <link rel="stylesheet" href="../../Static/Menu-Staff.css" />
-        <link rel="stylesheet"
-            href="../../Static/css/staff/staffQMQuestionBank.css">
+        <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}" />
+        <link rel="stylesheet" th:href="@{/Static/header.css}" />
+        <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
+        <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
+        <link rel="stylesheet" th:href="@{/Static/css/staff/staffQMQuestionBank.css}" />
         <link
             href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
             rel="stylesheet">
-        <link rel="stylesheet" href="../Static/staffQuestionBank.css" />
+        <!-- Nếu cần thêm file css riêng, hãy dùng th:href tương tự trên -->
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -21,12 +20,12 @@
 
     <body>
         <!--header-->
-        <div id="header-placeholder"></div>
+        <div th:replace="~{/Template/header_user.html}"></div>
 
         <!-- body -->
         <div id="Container-body">
             <!-- Menu -->
-            <div id="menu-HTML"></div>
+            <div th:replace="~{/Template/Menu-Staff.html}"></div>
 
             <!-- Main content -->
             <div id="main">
