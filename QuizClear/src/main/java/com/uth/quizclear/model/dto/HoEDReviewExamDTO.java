@@ -6,6 +6,7 @@ import com.uth.quizclear.model.entity.Exam;
 import com.uth.quizclear.model.entity.User;
 import com.uth.quizclear.model.enums.ExamReviewStatus;
 import com.uth.quizclear.model.enums.ReviewType;
+import java.util.List;
 
 public class HoEDReviewExamDTO {
 
