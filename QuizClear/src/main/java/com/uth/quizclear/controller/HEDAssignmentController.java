@@ -5,7 +5,6 @@ import com.uth.quizclear.model.dto.QuestionDTO;
 import com.uth.quizclear.model.dto.TaskAssignmentDTO;
 import com.uth.quizclear.model.dto.TaskNotificationDTO;
 import com.uth.quizclear.model.enums.QuestionStatus;
-import com.uth.quizclear.model.enums.DifficultyLevel;
 import com.uth.quizclear.service.CourseService;
 import com.uth.quizclear.service.QuestionService;
 import com.uth.quizclear.service.TaskAssignmentService;
@@ -427,14 +426,14 @@ public class HEDAssignmentController {
         questions.add(q3);
         
         return questions;
-    }
-
-    // Helper method to create sample tasks for testing
+    }    // Helper method to create sample tasks for testing
     private List<TaskAssignmentDTO> createSampleTasks() {
         List<TaskAssignmentDTO> tasks = new ArrayList<>();
         
         TaskAssignmentDTO t1 = new TaskAssignmentDTO();
         t1.setTaskId(1L);
+        t1.setTitle("Database System Midterm Questions");
+        t1.setDescription("Create questions for database system midterm exam covering normalization, SQL queries, and transaction management.");
         t1.setSubjectName("Database System");
         t1.setTotalQuestions(15);
         t1.setAssignedLecturerName("Dr. John Smith");
@@ -444,12 +443,25 @@ public class HEDAssignmentController {
         
         TaskAssignmentDTO t2 = new TaskAssignmentDTO();
         t2.setTaskId(2L);
+        t2.setTitle("Operating System Final Questions");
+        t2.setDescription("Develop questions for operating system final exam including process management, memory management, and file systems.");
         t2.setSubjectName("Operating System");
         t2.setTotalQuestions(20);
         t2.setAssignedLecturerName("Prof. Jane Doe");
         t2.setStatus("PENDING");
         t2.setDueDate("2025-01-20");
         tasks.add(t2);
+        
+        TaskAssignmentDTO t3 = new TaskAssignmentDTO();
+        t3.setTaskId(3L);
+        t3.setTitle("Computer Architecture Quiz Questions");
+        t3.setDescription("Create quiz questions covering CPU architecture, instruction sets, and pipeline concepts.");
+        t3.setSubjectName("Computer Architecture");
+        t3.setTotalQuestions(10);
+        t3.setAssignedLecturerName("Dr. Bob Wilson");
+        t3.setStatus("COMPLETED");
+        t3.setDueDate("2025-01-10");
+        tasks.add(t3);
         
         return tasks;
     }

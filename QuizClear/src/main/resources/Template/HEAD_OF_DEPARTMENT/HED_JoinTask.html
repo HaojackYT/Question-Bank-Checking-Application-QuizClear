@@ -33,14 +33,13 @@
                 <p class="notification-subtitle">New task assignments</p>
                 <div class="notification_items" id="taskNotificationContainer">
                     <!-- Dynamic notifications will be loaded here -->
-                    <div th:if="${tasks != null and !tasks.isEmpty()}">
-                        <div th:each="task : ${tasks}" th:if="${task.status == 'ASSIGNED' or task.status == 'PENDING'}" class="notification_item">
+                    <div th:if="${tasks != null and !tasks.isEmpty()}">                        <div th:each="task : ${tasks}" th:if="${task.status == 'ASSIGNED' or task.status == 'PENDING'}" class="notification_item">
                             <input type="checkbox" checked>
                             <div class="notification-text">
                                 <strong th:text="'New Task: ' + ${task.subjectName} + ' - ' + ${task.totalQuestions} + ' questions assigned'">
                                     Notification text
                                 </strong>
-                                <p th:text="'Deadline: ' + ${#temporals.format(task.deadline, 'dd/MM/yyyy')}">At: Time</p>
+                                <p th:text="'Deadline: ' + ${task.dueDate}">At: Time</p>
                             </div>
                         </div>
                     </div>
@@ -104,30 +103,29 @@
                             <td colspan="7" style="text-align: center; padding: 2rem; color: #666;">
                                 No tasks assigned to your department at this time
                             </td>
-                        </tr>
-                        <tr th:each="task : ${tasks}" th:attr="data-task-id=${task.id}">
-                            <td th:text="${task.id}">ID</td>
+                        </tr>                        <tr th:each="task : ${tasks}" th:attr="data-task-id=${task.taskId}">
+                            <td th:text="${task.taskId}">ID</td>
                             <td th:text="${task.subjectName}">Subject</td>
-                            <td th:text="${#temporals.format(task.deadline, 'dd-MM-yyyy')}">Deadline</td>
+                            <td th:text="${task.dueDate}">Deadline</td>
                             <td th:text="${task.totalQuestions}">Questions</td>
-                            <td th:text="${task.assignedStaff}">Staff</td>
+                            <td th:text="${task.assignedLecturerName}">Staff</td>
                             <td>
                                 <span th:class="'status-badge ' + ${#strings.toLowerCase(task.status)}" 
                                       th:text="${task.status}">Status</span>
                             </td>
                             <td>
                                 <button class="action-btn view-btn" title="View" 
-                                        th:onclick="'viewTask(' + ${task.id} + ')'">
+                                        th:onclick="'viewTask(' + ${task.taskId} + ')'">
                                     <i class="fas fa-eye"></i>
                                 </button>
                                 <button th:if="${task.status == 'ASSIGNED' or task.status == 'PENDING'}" 
                                         class="action-btn edit-btn" title="Join Task" 
-                                        th:onclick="'joinTask(' + ${task.id} + ')'">
+                                        th:onclick="'joinTask(' + ${task.taskId} + ')'">
                                     <i class="fas fa-user-plus"></i>
                                 </button>
                                 <button th:if="${task.status == 'COMPLETED'}" 
                                         class="action-btn delete-btn" title="Remove" 
-                                        th:onclick="'removeTask(' + ${task.id} + ')'">
+                                        th:onclick="'removeTask(' + ${task.taskId} + ')'">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -307,43 +305,42 @@
                     }
                     
                     tbody.innerHTML = '';
-                    
-                    tasks.forEach(task => {
+                      tasks.forEach(task => {
                         const row = document.createElement('tr');
-                        row.setAttribute('data-task-id', task.id);
+                        row.setAttribute('data-task-id', task.taskId);
                         
                         // Determine action buttons based on status
                         let actionButtons = '';
                         if (task.status === 'ASSIGNED' || task.status === 'PENDING') {
                             actionButtons = `
-                                <button class="action-btn view-btn" title="View" onclick="viewTask(${task.id})">
+                                <button class="action-btn view-btn" title="View" onclick="viewTask(${task.taskId})">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button class="action-btn edit-btn" title="Join Task" onclick="joinTask(${task.id})">
+                                <button class="action-btn edit-btn" title="Join Task" onclick="joinTask(${task.taskId})">
                                     <i class="fas fa-user-plus"></i>
                                 </button>
                             `;
                         } else if (task.status === 'COMPLETED') {
                             actionButtons = `
-                                <button class="action-btn view-btn" title="View" onclick="viewTask(${task.id})">
+                                <button class="action-btn view-btn" title="View" onclick="viewTask(${task.taskId})">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button class="action-btn delete-btn" title="Remove" onclick="removeTask(${task.id})">
+                                <button class="action-btn delete-btn" title="Remove" onclick="removeTask(${task.taskId})">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             `;
                         } else {
                             actionButtons = `
-                                <button class="action-btn view-btn" title="View" onclick="viewTask(${task.id})">
+                                <button class="action-btn view-btn" title="View" onclick="viewTask(${task.taskId})">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             `;
                         }                        row.innerHTML = `
-                            <td>${task.taskId || task.id}</td>
+                            <td>${task.taskId || 'N/A'}</td>
                             <td>${task.subjectName || 'N/A'}</td>
-                            <td>${task.dueDate || task.deadline || 'N/A'}</td>
-                            <td>${task.totalQuestions || task.totalQuestionsRequired || 0}</td>
-                            <td>${task.assignedLecturerName || task.assignedStaff || 'N/A'}</td>
+                            <td>${task.dueDate || 'N/A'}</td>
+                            <td>${task.totalQuestions || 0}</td>
+                            <td>${task.assignedLecturerName || 'N/A'}</td>
                             <td>
                                 <span class="status-badge ${task.status ? task.status.toLowerCase() : 'unknown'}">${task.status || 'Unknown'}</span>
                             </td>
@@ -503,22 +500,21 @@
                         console.error('Error:', error);
                         alert('Failed to reject task');
                     });
-                }
-                  // Open task modal with details
+                }                // Open task modal with details
                 function openTaskModal(task) {
                     const modal = document.getElementById('courseDetailsModal');
                     if (!modal) return;
                     
                     // Store task ID in modal for later use
-                    modal.setAttribute('data-task-id', task.id);
+                    modal.setAttribute('data-task-id', task.taskId);
                     
                     // Populate modal with task data
-                    document.getElementById('modalDueDate').textContent = task.deadline || 'N/A';
-                    document.getElementById('modalStaff').textContent = task.assignedStaff || 'N/A';
+                    document.getElementById('modalDueDate').textContent = task.dueDate || 'N/A';
+                    document.getElementById('modalStaff').textContent = task.assignedLecturerName || 'N/A';
                     document.getElementById('modalTitle').textContent = task.title || `${task.subjectName} Task`;
                     document.getElementById('modalTotalQuestion').textContent = task.totalQuestions || '0';
                     document.getElementById('modalSubject').textContent = task.subjectName || 'N/A';
-                    document.getElementById('modalDeadline').textContent = task.deadline || 'N/A';
+                    document.getElementById('modalDeadline').textContent = task.dueDate || 'N/A';
                     document.getElementById('modalDescription').textContent = task.description || 'No description available';
                     
                     const modalStatus = document.getElementById('modalStatus');
