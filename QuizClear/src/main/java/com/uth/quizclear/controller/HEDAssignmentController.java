@@ -62,27 +62,7 @@ public class HEDAssignmentController {
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "1") Long hedId) {
         try {
-            List<TaskAssignmentDTO> tasks = createSampleTasks();
-            
-            // Apply filters
-            if (!status.isEmpty()) {
-                tasks = tasks.stream()
-                    .filter(t -> t.getStatus() != null && t.getStatus().toLowerCase().contains(status.toLowerCase()))
-                    .collect(java.util.stream.Collectors.toList());
-            }
-            
-            if (!subject.isEmpty()) {
-                tasks = tasks.stream()
-                    .filter(t -> t.getSubjectName() != null && t.getSubjectName().toLowerCase().contains(subject.toLowerCase()))
-                    .collect(java.util.stream.Collectors.toList());
-            }
-            
-            if (!search.isEmpty()) {
-                tasks = tasks.stream()
-                    .filter(t -> (t.getTitle() != null && t.getTitle().toLowerCase().contains(search.toLowerCase())) ||
-                                (t.getSubjectName() != null && t.getSubjectName().toLowerCase().contains(search.toLowerCase())))
-                    .collect(java.util.stream.Collectors.toList());
-            }
+            List<TaskAssignmentDTO> tasks = taskAssignmentService.getTasksForHEDWithFilter(search, status, subject);
             
             return ResponseEntity.ok(Map.of(
                 "tasks", tasks,
@@ -91,23 +71,12 @@ public class HEDAssignmentController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
-    }
-
-    // API: Get task details
+    }    // API: Get task details
     @GetMapping("/api/tasks/{taskId}")
     @ResponseBody
     public ResponseEntity<?> getTaskDetails(@PathVariable Long taskId) {
         try {
-            List<TaskAssignmentDTO> tasks = createSampleTasks();
-            TaskAssignmentDTO task = tasks.stream()
-                .filter(t -> t.getTaskId().equals(taskId))
-                .findFirst()
-                .orElse(null);
-            
-            if (task == null) {
-                return ResponseEntity.status(404).body(Map.of("error", "Task not found"));
-            }
-            
+            TaskAssignmentDTO task = taskAssignmentService.getTaskDetailForHED(taskId);
             return ResponseEntity.ok(task);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
@@ -217,24 +186,22 @@ public class HEDAssignmentController {
         }
         
         return "HEAD_OF_DEPARTMENT/HED_ApproveQuestion";
-    }
-
-    // HED Join Task page
+    }    // HED Join Task page
     @GetMapping("/join-task")
     public String joinTask(Model model) {
         // Add hedId for JavaScript
         model.addAttribute("hedId", 1L); // TODO: Get from session
-          // Get tasks for HED
+        
+        // Get tasks for HED from database
         try {
-            // Create some sample data for testing
-            List<TaskAssignmentDTO> tasks = createSampleTasks();
+            List<TaskAssignmentDTO> tasks = taskAssignmentService.getTasksForHED();
             model.addAttribute("tasks", tasks);
         } catch (Exception e) {
             model.addAttribute("tasks", List.of());
         }
         
         return "HEAD_OF_DEPARTMENT/HED_JoinTask";
-    }    // API: Get questions pending approval
+    }// API: Get questions pending approval
     @GetMapping("/api/questions/pending-approval")
     @ResponseBody
     public ResponseEntity<?> getQuestionsForApproval(
@@ -336,14 +303,13 @@ public class HEDAssignmentController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
-    }
-
-    // API: Join task
+    }    // API: Join task
     @PostMapping("/api/tasks/{taskId}/join")
     @ResponseBody
     public ResponseEntity<?> joinTask(@PathVariable Long taskId, @RequestBody Map<String, Object> request) {
         try {
-            // TODO: Implement join task logic
+            Long hedId = Long.parseLong(request.get("hedId").toString());
+            taskAssignmentService.joinTask(taskId, hedId);
             return ResponseEntity.ok(Map.of("success", true, "message", "Task joined successfully"));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
@@ -425,45 +391,6 @@ public class HEDAssignmentController {
         q3.setUpdatedDate("2025-01-04");
         questions.add(q3);
         
-        return questions;
-    }    // Helper method to create sample tasks for testing
-    private List<TaskAssignmentDTO> createSampleTasks() {
-        List<TaskAssignmentDTO> tasks = new ArrayList<>();
-        
-        TaskAssignmentDTO t1 = new TaskAssignmentDTO();
-        t1.setTaskId(1L);
-        t1.setTitle("Database System Midterm Questions");
-        t1.setDescription("Create questions for database system midterm exam covering normalization, SQL queries, and transaction management.");
-        t1.setSubjectName("Database System");
-        t1.setTotalQuestions(15);
-        t1.setAssignedLecturerName("Dr. John Smith");
-        t1.setStatus("ASSIGNED");
-        t1.setDueDate("2025-01-15");
-        tasks.add(t1);
-        
-        TaskAssignmentDTO t2 = new TaskAssignmentDTO();
-        t2.setTaskId(2L);
-        t2.setTitle("Operating System Final Questions");
-        t2.setDescription("Develop questions for operating system final exam including process management, memory management, and file systems.");
-        t2.setSubjectName("Operating System");
-        t2.setTotalQuestions(20);
-        t2.setAssignedLecturerName("Prof. Jane Doe");
-        t2.setStatus("PENDING");
-        t2.setDueDate("2025-01-20");
-        tasks.add(t2);
-        
-        TaskAssignmentDTO t3 = new TaskAssignmentDTO();
-        t3.setTaskId(3L);
-        t3.setTitle("Computer Architecture Quiz Questions");
-        t3.setDescription("Create quiz questions covering CPU architecture, instruction sets, and pipeline concepts.");
-        t3.setSubjectName("Computer Architecture");
-        t3.setTotalQuestions(10);
-        t3.setAssignedLecturerName("Dr. Bob Wilson");
-        t3.setStatus("COMPLETED");
-        t3.setDueDate("2025-01-10");
-        tasks.add(t3);
-        
-        return tasks;
-    }
+        return questions;    }
 }
 
