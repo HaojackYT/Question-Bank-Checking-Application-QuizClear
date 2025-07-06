@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import com.uth.quizclear.model.entity.User;
+import com.uth.quizclear.repository.UserRepository;
 import com.uth.quizclear.service.DuplicateDetectionService;
 
 import jakarta.servlet.http.HttpSession;
@@ -21,7 +23,11 @@ import java.util.*;
 @Slf4j
 public class SLDuplicationCheckController {
 
-    private final DuplicateDetectionService duplicateDetectionService;    private Long getCurrentUserId(HttpSession session) {
+    private final UserRepository userRepository;
+
+    private final DuplicateDetectionService duplicateDetectionService;
+    
+    private Long getCurrentUserId(HttpSession session) {
         Object userIdObj = session.getAttribute("userId");
         if (userIdObj == null) {
             return null;
@@ -78,16 +84,24 @@ public class SLDuplicationCheckController {
             return "redirect:/login";
         }
         
-        log.info("User authenticated with ID: {}, loading duplication check page", userId);
+        // log.info("User authenticated with ID: {}, loading duplication check page", userId);
         
-        try {
-            model.addAttribute("duplications", duplicateDetectionService.getAllDetectionsForSubjectLeader(userId));
-            return "subjectLeader/sl_duplicationCheck";
-        } catch (Exception e) {
-            log.error("Error loading duplications for user {}: {}", userId, e.getMessage(), e);
-            model.addAttribute("error", "Unable to load duplication data");
-            return "subjectLeader/sl_duplicationCheck";
+        // try {
+        //     model.addAttribute("duplications", duplicateDetectionService.getAllDetectionsForSubjectLeader(userId));
+        //     return "subjectLeader/sl_duplicationCheck";
+        // } catch (Exception e) {
+        //     log.error("Error loading duplications for user {}: {}", userId, e.getMessage(), e);
+        //     model.addAttribute("error", "Unable to load duplication data");
+        //     return "subjectLeader/sl_duplicationCheck";
+        // }
+        // Lấy department của user
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null || user.getDepartment() == null) {
+            return "redirect:/login";
         }
+        String department = user.getDepartment();
+        model.addAttribute("duplications", duplicateDetectionService.getAllDetectionsForDepartment(department));
+        return "subjectLeader/sl_duplicationCheck";
     }/**
      * Get duplicate questions (AJAX)
      */
