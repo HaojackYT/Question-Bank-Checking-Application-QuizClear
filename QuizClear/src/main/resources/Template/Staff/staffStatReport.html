@@ -1,28 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../../Static/fontawesome/css/all.css" />
-    <link rel="stylesheet" href="../../Static/header.css" />
-    <link rel="stylesheet" href="../../Static/web_styles.css" />
-    <link rel="stylesheet" href="../../Static/Menu-Staff.css" />
+    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}" />
+    <link rel="stylesheet" th:href="@{/Static/header.css}" />
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
     <link
       href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../../Static/css/staff/staffStatRp.css" />
+    <link rel="stylesheet" th:href="@{/Static/css/staff/staffStatRp.css}" />
     <title>Statistics & Reporting</title>
   </head>
 
   <body>
     <!--header-->
-    <div id="header-placeholder"></div>
+    <div th:replace="~{/Template/header_user.html}"></div>
 
     <!-- body -->
     <div id="Container-body">
       <!-- Menu -->
-      <div id="menu-HTML"></div>
+      <div th:replace="~{/Template/Menu-Staff.html}"></div>
 
       <!-- Main content -->
       <div id="main">
@@ -32,30 +32,7 @@
 
     <!-- ma nhung header vs menu -->
     <script>
-      // Load header
-      fetch("../../Template/header_user.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("header-placeholder").innerHTML = data;
-        });
-
-      // Load menu
-      fetch("../../Template/Menu-Staff.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("menu-HTML").innerHTML = data;
-
-          return fetch("staffStatRpContent.html");
-        })
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("main").innerHTML = data;
-
-          //   Chạy script sau khi nội dung đã được chèn vào
-          const script = document.createElement("script");
-          script.src = "../../Static/js/staffStatRp.js";
-          document.body.appendChild(script);
-        });
+      // Đã dùng th:replace cho header và menu, hãy chuyển phần nội dung động sang controller Thymeleaf nếu cần
     </script>
   </body>
 </html>
