@@ -178,7 +178,8 @@ tr:hover {
     align-items: center;
 }
 
-.checkbox-container input[type="checkbox"] {
+.checkbox-container input[type="checkbox"],
+.checkbox-container input[type="radio"] {
     display: none;
 }
 
@@ -192,12 +193,14 @@ tr:hover {
     transition: all 0.2s ease;
 }
 
-.checkbox-container input[type="checkbox"]:checked+label {
+.checkbox-container input[type="checkbox"]:checked+label,
+.checkbox-container input[type="radio"]:checked + label {
     background-color: #10b981;
     border-color: #10b981;
 }
 
-.checkbox-container input[type="checkbox"]:checked+label::after {
+.checkbox-container input[type="checkbox"]:checked+label::after,
+.checkbox-container input[type="radio"]:checked + label::after  {
     content: '✓';
     position: absolute;
     top: 50%;

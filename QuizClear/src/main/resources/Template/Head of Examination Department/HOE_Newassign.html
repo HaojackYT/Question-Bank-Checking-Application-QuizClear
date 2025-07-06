@@ -63,12 +63,12 @@
                             <div class="form-row">
                                 <label for="assign-date">Assign Date</label>
                                 <input type="text" id="assign-date" name="assignDate"
-                                    th:value="${#temporals.format(T(java.time.LocalDate).now(), 'dd/MM/yy')}" />
+                                    th:value="${#temporals.format(T(java.time.LocalDate).now(), 'dd/MM/yy')}" required/>
                             </div>
 
                             <div class="form-row">
                                 <label for="due-date">Due Date</label>
-                                <input type="text" id="due-date" name="dueDate" placeholder="--/--/--" />
+                                <input type="text" id="due-date" name="dueDate" placeholder="--/--/--" required/>
                             </div>
 
                             <div class="form-row" id="comments-row">
@@ -142,8 +142,6 @@
         <script>
             document.querySelector('form').addEventListener('submit', function (event) {
                 // Lấy các trường input
-                // const examId = document.getElementById('exam-id').value.trim();
-                // const examTitle = document.getElementById('exam-title').value.trim();
                 const department = document.getElementById('department').value.trim();
                 const reviewer = document.getElementById('reviewer').value.trim();
                 const assignDate = document.getElementById('assign-date').value.trim();
@@ -159,16 +157,6 @@
                 }
                 if (!reviewer) {
                     alert('Vui lòng nhập Reviewer');
-                    event.preventDefault();
-                    return;
-                }
-                if (!assignDate) {
-                    alert('Vui lòng nhập Assign Date');
-                    event.preventDefault();
-                    return;
-                }
-                if (!dueDate) {
-                    alert('Vui lòng nhập Due Date');
                     event.preventDefault();
                     return;
                 }

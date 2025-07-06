@@ -142,13 +142,12 @@
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
-                <div class="filter-controls">
-                    <div class="filter-dropdown">
+                <div class="filter-controls">                    <div class="filter-dropdown">
                         <select class="filter-select">
                             <option value="">All Status</option>
-                            <option value="approved">Approved</option>
-                            <option value="pending">Pending</option>
-                            <option value="rejected">Rejected</option>
+                            <option value="APPROVED">Approved</option>
+                            <option value="SUBMITTED">Submitted</option>
+                            <option value="REJECTED">Rejected</option>
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div>
@@ -239,12 +238,11 @@
                     const subject = selects[1] ? selects[1].value : '';
                     const searchInput = document.querySelector('.search-input');
                     const search = searchInput ? searchInput.value : '';
-                    
-                    const params = new URLSearchParams();
+                      const params = new URLSearchParams();
                     if (status && status !== '') params.append('status', status);
                     if (subject && subject !== '') params.append('subject', subject);
                     if (search && search !== '') params.append('search', search);
-                    params.append('hedId', hedId);
+                    // Note: hedId is now automatically determined by backend from session
                     
                     const url = `/hed/api/questions/pending-approval?${params.toString()}`;
                     console.log("Fetching:", url);
@@ -280,11 +278,9 @@
                 function showError(message) {
                     const tbody = document.querySelector('#examTableBody');
                     tbody.innerHTML = `<tr><td colspan="7" class="error-message">${message}</td></tr>`;
-                }
-                
-                // Load subjects for filter dropdown
+                }                  // Load subjects for filter dropdown
                 function loadSubjects() {
-                    fetch('/hed/api/subjects')
+                    fetch(`/hed/api/subjects`)
                         .then(response => response.json())
                         .then(data => {
                             const selects = document.querySelectorAll('.filter-controls select');
@@ -295,8 +291,8 @@
                                 if (Array.isArray(data)) {
                                     data.forEach(subject => {
                                         const option = document.createElement('option');
-                                        option.value = subject.subjectName || subject;
-                                        option.textContent = subject.subjectName || subject;
+                                        option.value = subject;
+                                        option.textContent = subject;
                                         subjectSelect.appendChild(option);
                                     });
                                 }
@@ -304,6 +300,18 @@
                         })
                         .catch(error => {
                             console.error('Error loading subjects:', error);
+                            // Fallback to default subjects if API fails
+                            const selects = document.querySelectorAll('.filter-controls select');
+                            const subjectSelect = selects[1];
+                            if (subjectSelect) {
+                                subjectSelect.innerHTML = `
+                                    <option value="">All Subject</option>
+                                    <option value="Operating System">Operating System</option>
+                                    <option value="Database">Database</option>
+                                    <option value="Computer Architecture">Computer Architecture</option>
+                                    <option value="Object Oriented Programming">Object Oriented Programming</option>
+                                `;
+                            }
                         });
                 }
                 

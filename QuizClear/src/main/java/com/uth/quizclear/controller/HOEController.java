@@ -37,6 +37,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -177,11 +178,9 @@ public class HOEController {
     // Show edit review assignment
     @GetMapping("/api/edit-review/{id}")
     public String editReview(@PathVariable Long id, Model model) {
-        // Lấy 1 row ExamReview theo id
         ExamReview review = examReviewRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid review ID: " + id));
 
-        // Lấy danh sách tất cả đề thi để hiển thị (checkbox, dropdown,...)
         List<ExReviewAssignDTO> exams = hoeDReviewExService.getAllExams();
 
         // Lấy danh sách examId đã chọn cho review này (trong trường hợp mỗi review tương ứng 1 đề thi)
@@ -206,21 +205,36 @@ public class HOEController {
 
         ExamReview review = reviewOpt.get();
 
-        if(updateDTO.getCreatedAt() != null){
-            review.setCreatedAt(updateDTO.getCreatedAt());
+        if (updateDTO.getStartDate() != null) {
+            LocalDateTime assignDateTime = updateDTO.getStartDate().atTime(LocalTime.now());
+            review.setCreatedAt(assignDateTime);
         }
-        if (updateDTO.getDueDate() != null) {
-            review.setDueDate(updateDTO.getDueDate());
+        if (updateDTO.getEndDate() != null) {
+            LocalDateTime dueDateTime = updateDTO.getEndDate().atStartOfDay();
+            review.setDueDate(dueDateTime);
         }
+
         if (updateDTO.getComments() != null) {
             review.setComments(updateDTO.getComments());
+        }
+
+        if (updateDTO.getExam() != null) {
+            Long examId = updateDTO.getExam().getExamId();
+            System.out.println("===> Checking examId: " + examId); // DEBUG
+            if (examId != null) {
+                Exam exam = examRepository.findById(examId)
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid exam ID: " + examId));
+                        
+                System.out.println("===> Exam set for review: " + exam.getExamId()); // DEBUG
+
+                review.setExam(exam);
+            }
         }
 
         examReviewRepository.save(review);
 
         return "redirect:/hoe/review-assignment";
     }
-
 
     // Delete review assignment
     @DeleteMapping("/api/delete-review/{id}")
