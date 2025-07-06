@@ -58,10 +58,9 @@
                                 <div>
                                     <p>Subject</p>
                                     <select th:field="*{subjectId}" required>
-                                        <option value="">Select Subject</option>
                                         <option th:each="subject : ${subjects}"
-                                                th:value="${subject.id}"
-                                                th:text="${subject.name}"></option>
+                                            th:value="${subject.subjectId}"
+                                            th:text="${subject.subjectName}"></option>
                                     </select>
                                 </div>
                                 <div>
@@ -87,11 +86,11 @@
                                 <div>
                                     <p>Course/Module</p>
                                     <select th:field="*{courseId}" required>
-                                        <option value="">Select Course</option>
+                                    <option value="">Select Course</option>
                                         <option th:each="course : ${courses}"
-                                                th:value="${course.id}"
-                                                th:text="${course.name}"></option>
-                                    </select>
+                                            th:value="${course.courseId}"
+                                            th:text="${course.courseName}"></option>
+                                </select>
                                 </div>
                                 <div>
                                     <p>Deadline Date</p>

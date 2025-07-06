@@ -11,15 +11,11 @@
         <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
         <title>Template</title>
     </head>
-
     <body>
-        <!--header-->
-        <div id="header-placeholder"></div>
-
+        <header class="header" th:insert="~{header_user :: header}"></header>
         <!-- body -->
         <div id="Container-body">
-            <!-- Menu -->
-            <div id="menu-HTML"></div>
+            <div id="menu-HTML" th:insert="~{Menu-Staff :: menu}"></div>
 
             <!-- Main content -->
             <div id="main">
@@ -115,24 +111,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
-
-        <!-- ma nhung header vs menu -->
-        <script>
-            // Load header
-            fetch('../header_user.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('header-placeholder').innerHTML = data;
-                });
-
-            // Load menu
-            fetch('../Menu-Staff.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('menu-HTML').innerHTML = data;
-                });
-
-        </script>
     </body>
 </html>
