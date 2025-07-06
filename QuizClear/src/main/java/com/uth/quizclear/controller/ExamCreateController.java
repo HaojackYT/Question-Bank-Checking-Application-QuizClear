@@ -1,5 +1,9 @@
 package com.uth.quizclear.controller;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,7 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.uth.quizclear.model.dto.ExamCreateDTO;
+import com.uth.quizclear.model.entity.Course;
+import com.uth.quizclear.model.entity.Subject;
+import com.uth.quizclear.model.enums.ExamType;
+import com.uth.quizclear.service.CourseService;
 import com.uth.quizclear.service.ExamService;
+import com.uth.quizclear.service.SubjectService;
 
 @Controller
 @RequestMapping("/staff/exams/create")
@@ -18,11 +27,32 @@ public class ExamCreateController {
     @Autowired
     private ExamService examService;
 
+    @Autowired
+    private CourseService courseService;
+
+    @Autowired
+    private SubjectService subjectService;
+
     @GetMapping("/step1")
     public String step1(Model model) {
         model.addAttribute("examCreateDTO", new ExamCreateDTO());
-        // model.addAttribute("subjects", subjectService.getAll());
-        // model.addAttribute("courses", courseService.getAll());
+
+        List<Subject> subjects = subjectService.getAll();
+        List<Course> courses = courseService.getAllCourses();
+
+        // Lấy danh sách exam types từ enum
+        List<String> examTypes = Arrays.stream(ExamType.values())
+                                    .map(ExamType::getDisplayName)
+                                    .collect(Collectors.toList());
+
+        // Lấy danh sách semester mẫu
+        List<String> semesters = Arrays.asList("Spring", "Summer", "Fall", "Winter");
+
+        model.addAttribute("subjects", subjects);
+        model.addAttribute("courses", courses);
+        model.addAttribute("examTypes", examTypes);
+        model.addAttribute("semesters", semesters);
+
         return "Staff/Staff_Create_New_Exam-b1";
     }
 

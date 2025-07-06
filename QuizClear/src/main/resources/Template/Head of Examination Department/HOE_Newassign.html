@@ -2,27 +2,30 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
-    <link rel="stylesheet" th:href="@{/Static/header.css}">
-    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
-    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
-    <link rel="stylesheet" th:href="@{/Static/css/HOE/HOE_Newassign.css}">
-    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}" />
+    <link rel="stylesheet" th:href="@{/Static/header.css}" />
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
+    <link rel="stylesheet" th:href="@{/Static/css/HOE/HOE_Newassign.css}" />
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet" />
     <title>Review_Assignment</title>
 </head>
 
-<body> <!--header-->
+<body>
+    <!--header-->
     <div th:insert="~{header_user :: header}"></div>
 
     <!-- body -->
-    <div id="Container-body"> <!-- Menu -->
+    <div id="Container-body">
+        <!-- Menu -->
         <div th:insert="~{Head of Examination Department/Menu-ExaminationDepartment :: menu}"></div>
 
         <!-- Main content -->
         <div id="main">
-            <div class="new-assign-container"> <!-- Header with back button -->
+            <div class="new-assign-container">
+                <!-- Header with back button -->
                 <div class="page-header">
                     <a th:href="@{/hoe/review-assignment}" class="back-btn">
                         <i class="fas fa-arrow-left"></i>
@@ -35,121 +38,207 @@
                 <div class="info-section">
                     <div class="section-header">
                         <h2>Information</h2>
-                        <p class="section-subtitle">Display all related
-                            information</p>
+                        <p class="section-subtitle">Display all related information</p>
                     </div>
+                    <form th:action="@{/hoe/api/assign-review}" method="post">
+                        <div class="form-grid">
+                            <div class="form-row">
+                                <label for="department">Department</label>
+                                <select id="department" name="departmentId"
+                                    onchange="loadLecturersByDepartment(this.value)">
+                                    <option value="">-- Select Department --</option>
+                                    <option th:each="dept : ${departments}" th:value="${dept.departmentId}"
+                                        th:text="${dept.departmentName}"></option>
+                                </select>
 
-                    <div class="form-grid">
-                        <div class="form-row">
-                            <label for="exam-id">Exam ID</label>
-                            <input type="text" id="exam-id" value="DB_S102" readonly>
+                            </div>
+
+                            <div class="form-row">
+                                <label for="reviewer">Reviewer (Lecturer)</label>
+                                <select id="reviewer" name="reviewerId" disabled>
+                                    <option value="">-- Select Reviewer --</option>
+                                </select>
+                            </div>
+
+                            <div class="form-row">
+                                <label for="assign-date">Assign Date</label>
+                                <input type="text" id="assign-date" name="assignDate"
+                                    th:value="${#temporals.format(T(java.time.LocalDate).now(), 'dd/MM/yy')}" required/>
+                            </div>
+
+                            <div class="form-row">
+                                <label for="due-date">Due Date</label>
+                                <input type="text" id="due-date" name="dueDate" placeholder="--/--/--" required/>
+                            </div>
+
+                            <div class="form-row" id="comments-row">
+                                <label for="comments">Comment</label>
+                                <input type="text" id="comments" name="comments" placeholder="Enter comment" />
+                            </div>
+
                         </div>
 
-                        <div class="form-row">
-                            <label for="exam-title">Exam Title</label>
-                            <input type="text" id="exam-title" value="Midterm Test" readonly>
+
+                        <!-- List of exam papers Section -->
+                        <div class="papers-section">
+                            <div class="section-header">
+                                <h2>List of exam papers</h2>
+                                <p class="section-subtitle">
+                                    Display the list of exam papers and all related information
+                                </p>
+                            </div>
+
+                            <div class="table-container">
+                                <table class="papers-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Exam ID</th>
+                                            <th>Exam Title</th>
+                                            <th>Author</th>
+                                            <th>Updated Date</th>
+                                            <th>Status</th>
+                                            <th>Selected</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="exam : ${exams}">
+                                            <td th:text="${exam.examId}"></td>
+                                            <td th:text="${exam.examTitle}"></td>
+                                            <td th:text="${exam.author}"></td>
+                                            <td
+                                                th:text="${exam.createdAt != null ? #temporals.format(exam.createdAt, 'dd/MM/yy') : '-'}">
+                                            </td>
+                                            <td>
+                                                <span th:text="${exam.examStatus.name()}"
+                                                    th:classappend="'status-badge ' + ${exam.examStatus.toString().toLowerCase()}"></span>
+                                            </td>
+                                            <td>
+                                                <div class="checkbox-container">
+                                                    <input type="checkbox" th:id="'select_' + ${exam.examId}"
+                                                        th:name="selectedExams" th:value="${exam.examId}" />
+                                                    <label th:for="'select_' + ${exam.examId}"></label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="action-buttons">
+                                <button type="button" class="btn btn-cancel"
+                                    th:onclick="|location.href='@{/hoe/review-assignment}'|">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="btn btn-assign">Assign</button>
+                            </div>
                         </div>
-
-                        <div class="form-row">
-                            <label for="department">Department</label>
-                            <input type="text" id="department" value="Department" readonly>
-                        </div>
-
-                        <div class="form-row">
-                            <label for="reviewer">Reviewer
-                                (Lecturer)</label>
-                            <input type="text" id="reviewer" value="Nguyen Van A" readonly>
-                        </div>
-
-                        <div class="form-row">
-                            <label for="assign-date">Assign Date</label>
-                            <input type="text" id="assign-date" value="23/4/25" readonly>
-                        </div>
-
-                        <div class="form-row">
-                            <label for="due-date">Due Date</label>
-                            <input type="text" id="due-date" value="23/4/25" readonly>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- List of exam papers Section -->
-                <div class="papers-section">
-                    <div class="section-header">
-                        <h2>List of exam papers</h2>
-                        <p class="section-subtitle">Display the list of exam
-                            papers and all related information</p>
-                    </div>
-
-                    <div class="table-container">
-                        <table class="papers-table">
-                            <thead>
-                                <tr>
-                                    <th>Exam ID</th>
-                                    <th>Exam Title</th>
-                                    <th>Author</th>
-                                    <th>Updated Date</th>
-                                    <th>Status</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>E101</td>
-                                    <td>DAI SO</td>
-                                    <td>Nguyen Van A</td>
-                                    <td>22/04/25</td>
-                                    <td><span class="status-badge approved">Approved</span></td>
-                                    <td>
-                                        <div class="checkbox-container">
-                                            <input type="checkbox" id="check1" checked>
-                                            <label for="check1"></label>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>E101</td>
-                                    <td>DAI SO</td>
-                                    <td>Nguyen Van A</td>
-                                    <td>22/04/25</td>
-                                    <td><span class="status-badge new">New</span></td>
-                                    <td>
-                                        <div class="checkbox-container">
-                                            <input type="checkbox" id="check2">
-                                            <label for="check2"></label>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>E101</td>
-                                    <td>DAI SO</td>
-                                    <td>Nguyen Van A</td>
-                                    <td>22/04/25</td>
-                                    <td><span class="status-badge in-progress">In
-                                            Prog.</span></td>
-                                    <td>
-                                        <div class="checkbox-container">
-                                            <input type="checkbox" id="check3">
-                                            <label for="check3"></label>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="action-buttons">
-                        <button class="btn btn-cancel">Cancel</button>
-                        <button class="btn btn-assign">Assign</button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
-    <script>
-    </script>
-    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
+
+        <script th:src="@{/Static/js/L_activeMenu.js}"></script>
+        <script>
+            document.querySelector('form').addEventListener('submit', function (event) {
+                // Lấy các trường input
+                const department = document.getElementById('department').value.trim();
+                const reviewer = document.getElementById('reviewer').value.trim();
+                const assignDate = document.getElementById('assign-date').value.trim();
+                const dueDate = document.getElementById('due-date').value.trim();
+                const comments = document.getElementById('comments').value.trim();
+
+                // Lấy checkbox exam đã chọn
+                const selectedExams = Array.from(document.querySelectorAll('input[name="selectedExams"]:checked'));
+                if (!department) {
+                    alert('Vui lòng nhập Department');
+                    event.preventDefault();
+                    return;
+                }
+                if (!reviewer) {
+                    alert('Vui lòng nhập Reviewer');
+                    event.preventDefault();
+                    return;
+                }
+
+                // Kiểm tra định dạng ngày (dd/MM/yy)
+                const datePattern = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[0-2])\/\d{2}$/;
+
+                // Hàm kiểm tra ngày hợp lệ thực tế (đúng ngày tháng)
+                function isValidDate(dateStr) {
+                    if (!datePattern.test(dateStr)) return false;
+
+                    const parts = dateStr.split('/');
+                    const day = parseInt(parts[0], 10);
+                    const month = parseInt(parts[1], 10);
+                    const year = parseInt(parts[2], 10);
+
+                    const fullYear = year >= 70 ? 1900 + year : 2000 + year;
+
+                    const date = new Date(fullYear, month - 1, day);
+
+                    return date.getFullYear() === fullYear &&
+                        date.getMonth() === month - 1 &&
+                        date.getDate() === day;
+                }
+
+                // Kiểm tra assignDate
+                if (!isValidDate(assignDate)) {
+                    alert('Assign Date không hợp lệ');
+                    event.preventDefault();
+                    return;
+                }
+
+                // Kiểm tra dueDate
+                if (!isValidDate(dueDate)) {
+                    alert('Due Date không hợp lệ');
+                    event.preventDefault();
+                    return;
+                }
+
+                // Kiểm tra có ít nhất 1 exam được chọn
+                if (selectedExams.length === 0) {
+                    alert('Vui lòng chọn ít nhất một exam trong danh sách');
+                    event.preventDefault();
+                    return;
+                }
+
+                // Có thể thêm kiểm tra cho comment nếu muốn (ví dụ không để trống)
+                // if (!comments) {
+                //   alert('Vui lòng nhập Comment');
+                //   event.preventDefault();
+                //   return;
+                // }
+
+                // Nếu tất cả đều hợp lệ thì form sẽ được submit bình thường
+            });
+        </script>
+
+        <script>
+            function loadLecturersByDepartment(deptId) {
+                const reviewerSelect = document.getElementById("reviewer");
+                reviewerSelect.innerHTML = '<option value="">-- Select Reviewer --</option>'; // reset
+                reviewerSelect.disabled = true;
+
+                if (deptId) {
+                    fetch(`/hoe/api/lecturers/by-department/${encodeURIComponent(deptId)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(lec => {
+                                const option = document.createElement("option");
+                                option.value = lec.id;
+                                option.textContent = lec.name;
+                                reviewerSelect.appendChild(option);
+                            });
+                            reviewerSelect.disabled = false;
+                        })
+                        .catch(error => {
+                            console.error("Failed to load lecturers", error);
+                            alert("Không thể tải danh sách giảng viên.");
+                        });
+                }
+            }
+        </script>
 </body>
 
 </html>

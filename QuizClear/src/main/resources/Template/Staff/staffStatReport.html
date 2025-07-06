@@ -1,28 +1,29 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}" />
-    <link rel="stylesheet" th:href="@{/Static/header.css}" />
-    <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
-    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
+    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css" />
+    <link rel="stylesheet" href="../../Static/header.css" />
+    <link rel="stylesheet" href="../../Static/web_styles.css" />
+    <link rel="stylesheet" href="../../Static/Menu-Staff.css" />
+    <link rel="stylesheet" href="../../Static/css/Staff/staffStatRp.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" th:href="@{/Static/css/staff/staffStatRp.css}" />
+    <link rel="stylesheet" href="../../Static/staffStatRp.css" />
     <title>Statistics & Reporting</title>
   </head>
 
   <body>
     <!--header-->
-    <div th:replace="~{/Template/header_user.html}"></div>
+    <div id="header-placeholder"></div>
 
     <!-- body -->
     <div id="Container-body">
       <!-- Menu -->
-      <div th:replace="~{/Template/Menu-Staff.html}"></div>
+      <div id="menu-HTML"></div>
 
       <!-- Main content -->
       <div id="main">
@@ -32,7 +33,31 @@
 
     <!-- ma nhung header vs menu -->
     <script>
-      // Đã dùng th:replace cho header và menu, hãy chuyển phần nội dung động sang controller Thymeleaf nếu cần
+      // Load header
+      fetch("../../Template/header_user.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("header-placeholder").innerHTML = data;
+        });
+
+      // Load menu
+      fetch("../../Template/Menu-Staff.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("menu-HTML").innerHTML = data;
+
+          // Đường dẫn đã sửa cho staffStatRpContent.html
+          return fetch("./staffStatRpContent.html"); // Hoặc "staffStatRpContent.html"
+        })
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("main").innerHTML = data;
+
+          // Chạy script sau khi nội dung đã được chèn vào
+          const script = document.createElement("script");
+          script.src = "../../Static/js/staffStatRp.js";
+          document.body.appendChild(script);
+        });
     </script>
   </body>
 </html>

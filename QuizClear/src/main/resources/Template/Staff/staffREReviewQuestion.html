@@ -63,8 +63,8 @@
                 </div>
 
                 <div class="tabs">
-                    <button class="tab-button active">Question Review</button>
-                    <button class="tab-button">Question List</button>
+                    <a class="tab-button active">Question Review</a>
+                    <a th:href="@{'/staff/exams/' + ${exam.examId} + '/questions'}" class="tab-button">Question List</a>
                 </div>
 
                 <!-- Nếu có câu hỏi -->

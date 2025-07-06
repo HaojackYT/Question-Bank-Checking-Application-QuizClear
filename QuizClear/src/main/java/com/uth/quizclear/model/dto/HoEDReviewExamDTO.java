@@ -1,11 +1,15 @@
 package com.uth.quizclear.model.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.uth.quizclear.model.entity.Exam;
 import com.uth.quizclear.model.entity.User;
 import com.uth.quizclear.model.enums.ExamReviewStatus;
 import com.uth.quizclear.model.enums.ReviewType;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class HoEDReviewExamDTO {
 
@@ -17,6 +21,13 @@ public class HoEDReviewExamDTO {
     private String comments;
     private LocalDateTime createdAt;
     private LocalDateTime dueDate;
+
+    // For edit review
+    @DateTimeFormat(pattern = "dd/MM/yy")
+    private LocalDate startDate;
+    
+    @DateTimeFormat(pattern = "dd/MM/yy")
+    private LocalDate endDate;
 
     // Getters/Setters
     public Long getReviewId() {
@@ -81,6 +92,22 @@ public class HoEDReviewExamDTO {
 
     public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     // Constructors

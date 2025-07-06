@@ -21,7 +21,7 @@
                     <div class="title">Exam Management</div>
                     <div class="subtitle">Create, review, and manage exams across all subjects</div>
                 </div>
-                <a th:href="@{/staff/exams/create}" class="create-exam-btn">Create New Exam</a>
+                <a th:href="@{/staff/exams/create/step1}" class="create-exam-btn">Create New Exam</a>
             </div>
             <div class="exam-status">
                 <div class="status-item">
@@ -81,13 +81,13 @@
                                         </p>
                                         <div class="feedback-noti" th:if="${exam.status == 'Rejected'}">
                                             <i class="fa-solid fa-circle-exclamation"></i>
-                                            <span style="margin-left: 6px;" th:text="${'Feedback: ' + exam.feedback}">Feedback: ...</span>
+                                            <span style="margin-left: 6px;">Feedback: ...</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="exam-actions">
-                                    <a th:href="@{'/staff/exams/edit/' + ${exam.examId}}" class="edit-exam">Edit</a>
-                                    <a th:href="@{'/staff/exams/' + ${exam.examId}}" class="view-details">View</a>
+                                    <a th:href="@{'/staff/exams/revision-request/' + ${exam.examId}}" class="edit-exam">Edit</a>
+                                    <a th:href="@{'/staff/exams/' + ${exam.examId} + '/overview-questions'}" class="view-details">View</a>
                                 </div>
                             </div>
                         </div>
