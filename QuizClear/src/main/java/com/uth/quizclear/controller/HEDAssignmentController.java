@@ -4,7 +4,6 @@ import com.uth.quizclear.model.dto.CourseDTO;
 import com.uth.quizclear.model.dto.QuestionDTO;
 import com.uth.quizclear.model.dto.TaskAssignmentDTO;
 import com.uth.quizclear.model.dto.TaskNotificationDTO;
-import com.uth.quizclear.model.enums.QuestionStatus;
 import com.uth.quizclear.service.CourseService;
 import com.uth.quizclear.service.QuestionService;
 import com.uth.quizclear.service.TaskAssignmentService;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -176,17 +174,17 @@ public class HEDAssignmentController {
     public String approveQuestions(Model model) {
         // Add hedId for JavaScript
         model.addAttribute("hedId", 1L); // TODO: Get from session
-          // Get pending questions for approval
+        
+        // Get pending questions for approval from database
         try {
-            // Create some sample data for testing
-            List<QuestionDTO> pendingQuestions = createSampleQuestions();
+            List<QuestionDTO> pendingQuestions = questionService.getQuestionsForHEDApproval("", "", "");
             model.addAttribute("pendingExams", pendingQuestions);
         } catch (Exception e) {
             model.addAttribute("pendingExams", List.of());
         }
         
         return "HEAD_OF_DEPARTMENT/HED_ApproveQuestion";
-    }    // HED Join Task page
+    }// HED Join Task page
     @GetMapping("/join-task")
     public String joinTask(Model model) {
         // Add hedId for JavaScript
@@ -201,37 +199,16 @@ public class HEDAssignmentController {
         }
         
         return "HEAD_OF_DEPARTMENT/HED_JoinTask";
-    }// API: Get questions pending approval
+    }    // API: Get questions pending approval
     @GetMapping("/api/questions/pending-approval")
     @ResponseBody
     public ResponseEntity<?> getQuestionsForApproval(
             @RequestParam(defaultValue = "") String status,
             @RequestParam(defaultValue = "") String subject,
             @RequestParam(defaultValue = "") String search,
-            @RequestParam(defaultValue = "1") Long hedId) {        try {
-            List<QuestionDTO> questions = createSampleQuestions();
-            
-            // Filter by status
-            if (!status.isEmpty()) {
-                questions = questions.stream()
-                    .filter(q -> q.getStatus() != null && q.getStatus().toString().toLowerCase().contains(status.toLowerCase()))
-                    .collect(java.util.stream.Collectors.toList());
-            }
-            
-            // Filter by subject
-            if (!subject.isEmpty()) {
-                questions = questions.stream()
-                    .filter(q -> q.getSubjectName() != null && q.getSubjectName().toLowerCase().contains(subject.toLowerCase()))
-                    .collect(java.util.stream.Collectors.toList());
-            }
-            
-            // Filter by search
-            if (!search.isEmpty()) {
-                questions = questions.stream()
-                    .filter(q -> (q.getContent() != null && q.getContent().toLowerCase().contains(search.toLowerCase())) ||
-                                (q.getSubjectName() != null && q.getSubjectName().toLowerCase().contains(search.toLowerCase())))
-                    .collect(java.util.stream.Collectors.toList());
-            }
+            @RequestParam(defaultValue = "1") Long hedId) {
+        try {
+            List<QuestionDTO> questions = questionService.getQuestionsForHEDApproval(search, status, subject);
             
             return ResponseEntity.ok(Map.of(
                 "questions", questions,
@@ -240,35 +217,23 @@ public class HEDAssignmentController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
-    }
-
-    // API: Get question details
+    }    // API: Get question details
     @GetMapping("/api/questions/{questionId}")
     @ResponseBody
-    public ResponseEntity<?> getQuestionDetails(@PathVariable Long questionId) {        try {
-            // Use sample data to get questions and find the one with matching ID
-            List<QuestionDTO> questions = createSampleQuestions();
-            QuestionDTO question = questions.stream()
-                .filter(q -> q.getQuestionId().equals(questionId))
-                .findFirst()
-                .orElse(null);
-            
-            if (question == null) {
-                return ResponseEntity.status(404).body(Map.of("error", "Question not found"));
-            }
-            
+    public ResponseEntity<?> getQuestionDetails(@PathVariable Long questionId) {
+        try {
+            QuestionDTO question = questionService.getQuestionForHED(questionId);
             return ResponseEntity.ok(question);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
-    }
-
-    // API: Approve question
+    }    // API: Approve question
     @PostMapping("/api/questions/{questionId}/approve")
     @ResponseBody
     public ResponseEntity<?> approveQuestion(@PathVariable Long questionId, @RequestBody Map<String, Object> request) {
         try {
-            questionService.updateQuestionStatus(questionId, "APPROVED");
+            Long hedId = 1L; // TODO: Get from session
+            questionService.approveQuestionByHED(questionId, hedId);
             return ResponseEntity.ok(Map.of("success", true, "message", "Question approved successfully"));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
@@ -278,8 +243,9 @@ public class HEDAssignmentController {
     @ResponseBody
     public ResponseEntity<?> rejectQuestion(@PathVariable Long questionId, @RequestBody Map<String, Object> request) {
         try {
-            questionService.updateQuestionStatus(questionId, "REJECTED");
-            // TODO: Save feedback - request.get("feedback")
+            Long hedId = 1L; // TODO: Get from session
+            String feedback = request.get("feedback") != null ? request.get("feedback").toString() : "";
+            questionService.rejectQuestionByHED(questionId, hedId, feedback);
             return ResponseEntity.ok(Map.of("success", true, "message", "Question rejected successfully"));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
@@ -355,42 +321,7 @@ public class HEDAssignmentController {
         // Add profile data
         model.addAttribute("userName", "Head of Department");
         model.addAttribute("email", "hed@university.edu");
-        model.addAttribute("department", "Computer Science");
-        return "HEAD_OF_DEPARTMENT/HED_Profile";
-    }    // Helper method to create sample questions for testing
-    private List<QuestionDTO> createSampleQuestions() {
-        List<QuestionDTO> questions = new ArrayList<>();
-        
-        QuestionDTO q1 = new QuestionDTO();
-        q1.setQuestionId(1L);
-        q1.setContent("What is the difference between ArrayList and LinkedList in Java?");
-        q1.setSubjectName("Object Oriented Programming");
-        q1.setCreatedByName("Dr. John Smith");
-        q1.setCreatedById(101L);
-        q1.setStatus(QuestionStatus.SUBMITTED);
-        q1.setUpdatedDate("2025-01-06");
-        questions.add(q1);
-        
-        QuestionDTO q2 = new QuestionDTO();
-        q2.setQuestionId(2L);
-        q2.setContent("Explain the concept of database normalization and its different normal forms");
-        q2.setSubjectName("Database");
-        q2.setCreatedByName("Prof. Jane Doe");
-        q2.setCreatedById(102L);
-        q2.setStatus(QuestionStatus.SUBMITTED);
-        q2.setUpdatedDate("2025-01-05");
-        questions.add(q2);
-        
-        QuestionDTO q3 = new QuestionDTO();
-        q3.setQuestionId(3L);
-        q3.setContent("What are the differences between processes and threads in operating systems?");
-        q3.setSubjectName("Operating System");
-        q3.setCreatedByName("Dr. Bob Wilson");
-        q3.setCreatedById(103L);
-        q3.setStatus(QuestionStatus.SUBMITTED);
-        q3.setUpdatedDate("2025-01-04");
-        questions.add(q3);
-        
-        return questions;    }
+        model.addAttribute("department", "Computer Science");        return "HEAD_OF_DEPARTMENT/HED_Profile";
+    }
 }
 

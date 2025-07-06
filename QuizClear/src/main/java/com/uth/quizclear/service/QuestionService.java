@@ -536,4 +536,110 @@ public class QuestionService {
             return 0;
         }
     }
+    
+    /**
+     * Get questions pending approval for HED with filters
+     */
+    @Transactional(readOnly = true)
+    public List<QuestionDTO> getQuestionsForHEDApproval(String search, String status, String subject) {
+        // Get all questions that need approval (SUBMITTED status)
+        List<Question> allQuestions = questionRepository.findByStatus(QuestionStatus.SUBMITTED);
+        
+        return allQuestions.stream()
+                .filter(question -> {                    // Filter by search term (content or subject)
+                    if (search != null && !search.isEmpty()) {
+                        String searchLower = search.toLowerCase();
+                        String content = question.getContent() != null ? question.getContent().toLowerCase() : "";
+                        String courseName = question.getCourse() != null && question.getCourse().getCourseName() != null 
+                                ? question.getCourse().getCourseName().toLowerCase() : "";
+                        if (!content.contains(searchLower) && !courseName.contains(searchLower)) {
+                            return false;
+                        }
+                    }
+                    
+                    // Filter by status
+                    if (status != null && !status.isEmpty()) {
+                        String questionStatus = question.getStatus() != null ? question.getStatus().toString() : "";
+                        if (!questionStatus.toLowerCase().contains(status.toLowerCase())) {
+                            return false;
+                        }
+                    }
+                      // Filter by subject
+                    if (subject != null && !subject.isEmpty()) {
+                        String courseName = question.getCourse() != null && question.getCourse().getCourseName() != null 
+                                ? question.getCourse().getCourseName().toLowerCase() : "";
+                        if (!courseName.toLowerCase().contains(subject.toLowerCase())) {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                })
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * Get question details for HED by ID
+     */
+    @Transactional(readOnly = true)
+    public QuestionDTO getQuestionForHED(Long questionId) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy câu hỏi với id: " + questionId));
+        return convertToDTO(question);
+    }
+    
+    /**
+     * Approve question by HED
+     */
+    @Transactional
+    public void approveQuestionByHED(Long questionId, Long hedId) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy câu hỏi với id: " + questionId));
+        
+        if (question.getStatus() == QuestionStatus.SUBMITTED) {
+            question.setStatus(QuestionStatus.APPROVED);
+            question.setUpdatedAt(LocalDateTime.now());
+            questionRepository.save(question);
+        }
+    }
+
+    /**
+     * Reject question by HED
+     */
+    @Transactional
+    public void rejectQuestionByHED(Long questionId, Long hedId, String feedback) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy câu hỏi với id: " + questionId));
+        
+        if (question.getStatus() == QuestionStatus.SUBMITTED) {
+            question.setStatus(QuestionStatus.REJECTED);
+            question.setUpdatedAt(LocalDateTime.now());
+            // TODO: Save feedback to question or create feedback entity
+            questionRepository.save(question);
+        }
+    }
+      /**
+     * Convert Question entity to QuestionDTO
+     */
+    private QuestionDTO convertToDTO(Question question) {
+        QuestionDTO dto = new QuestionDTO();
+        dto.setQuestionId(question.getQuestionId());
+        dto.setContent(question.getContent());
+        dto.setStatus(question.getStatus());
+        dto.setDifficultyLevel(question.getDifficultyLevel());
+        dto.setUpdatedDate(question.getUpdatedAt() != null ? question.getUpdatedAt().toString() : "");
+        
+        // Set subject name from course
+        if (question.getCourse() != null) {
+            dto.setSubjectName(question.getCourse().getCourseName());
+        }
+        
+        // Set creator name
+        if (question.getCreatedBy() != null) {
+            dto.setCreatedByName(question.getCreatedBy().getFullName());
+        }
+        
+        return dto;
+    }
 }
