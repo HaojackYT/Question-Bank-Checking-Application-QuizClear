@@ -39,10 +39,10 @@
                         </div> <div class="form-group">
                             <label for="lecturer">Lecturer</label>
                             <select id="lecturer">
-                                <option th:each="lecturer : ${lecturers}"
-                                    th:value="${lecturer.userId}"
-                                    th:text="${lecturer.fullName}">Select
-                                    Lecturer</option>
+                                <option value="">Select Lecturer</option>
+                                <option value="1">Ash Abrahams</option>
+                                <option value="5">Daniel Evans</option>
+                                <option value="7">Frank Green</option>
                             </select>
                             <svg class="dropdown-arrow"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -54,10 +54,17 @@
                         <div class="form-group">
                             <label for="course">Course</label>
                             <select id="course">
-                                <option th:each="course : ${courses}"
-                                    th:value="${course.courseId}"
-                                    th:text="${course.courseName}">Select
-                                    Course</option>
+                                <option value="">Select Course</option>
+                                <option value="1">Introduction to Computer Science</option>
+                                <option value="2">Calculus II</option>
+                                <option value="3">Classical Mechanics</option>
+                                <option value="4">General Chemistry</option>
+                                <option value="5">Cell Biology</option>
+                                <option value="6">Data Structures</option>
+                                <option value="7">Linear Algebra</option>
+                                <option value="8">Electricity and Magnetism</option>
+                                <option value="9">Organic Chemistry</option>
+                                <option value="10">Genetics</option>
                             </select>
                             <svg class="dropdown-arrow"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -171,11 +178,14 @@
                                 </button>
                             </div> <div class="filter-dropdown">
                                 <select class="filter-select" id="statusFilter">
-                                    <option value>All Status</option>
-                                    <option
-                                        th:each="status : ${assignmentStatuses}"
-                                        th:value="${status}"
-                                        th:text="${status.description}">Status</option>
+                                    <option value="">All Status</option>
+                                    <option value="DRAFT">Draft - not assigned yet</option>
+                                    <option value="ASSIGNED">Assigned to examiner</option>
+                                    <option value="IN_PROGRESS">Exam creation in progress</option>
+                                    <option value="SUBMITTED">Exam submitted for review</option>
+                                    <option value="APPROVED">Exam approved</option>
+                                    <option value="REJECTED">Exam rejected</option>
+                                    <option value="PUBLISHED">Exam published</option>
                                 </select>
                                 <i class="fas fa-chevron-down"></i>
                             </div>

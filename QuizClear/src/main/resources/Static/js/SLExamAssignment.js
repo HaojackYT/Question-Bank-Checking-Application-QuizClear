@@ -1,63 +1,77 @@
-// SL Exam Assignment JavaScript with Subject Scope Filtering
+// SL Exam Assignment JavaScript
 // Handles all frontend interactions for Subject Leader Exam Assignment functionality
 
-// Global scope variables for Subject Leader
-let subjectLeaderScope = {
-    userId: null,
-    userRole: 'SUBJECT_LEADER',
-    managedSubjectIds: [],
-    accessibleDepartmentIds: [],
-    assignableLecturerIds: [],
-    subjectName: '',
-    canAssignToAll: false
-};
-
-// Assignment data for filtering
+// Global variables
 let allAssignmentsData = [];
 let availableLecturers = [];
 
-// Initialize page with subject scope awareness
-async function initializePageWithScope() {
-    try {
-        console.log('=== Initializing SL Exam Assignment with subject scope ===');
-        
-        // Load subject leader scope
-        await loadSubjectLeaderScope();
-        
-        // Load data filtered by subject scope
-        await loadDataWithSubjectScope();
-        
-        // Setup UI event listeners
-        setupEventListeners();
-        
-    } catch (error) {
-        console.error('Error initializing SL page:', error);
-        loadFallbackData();
-    }
+// DOM elements
+let modalOverlay, newAssignModal, detailsModalOverlay, detailsModal, searchInput;
+
+// Initialize page
+function initializePage() {
+    console.log('=== Initializing SL Exam Assignment ===');
+    
+    // Get DOM elements
+    modalOverlay = document.getElementById('newAssignModalOverlay');
+    newAssignModal = document.getElementById('newAssignModal');
+    detailsModalOverlay = document.getElementById('detailsModalOverlay');
+    detailsModal = document.getElementById('detailsModal');
+    searchInput = document.querySelector('.search-input');
+    
+    // Load assignments data
+    loadAssignments();
+    
+    // Setup event listeners
+    setupEventListeners();
 }
 
-// Load subject leader's scope (managed subjects)
-async function loadSubjectLeaderScope() {
-    try {
-        const response = await fetch('/api/user/current-scope', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (response.ok) {
-            subjectLeaderScope = await response.json();
-            console.log('Subject Leader scope loaded:', subjectLeaderScope);
-            
-            // Update scope indicator
-            updateSubjectScopeIndicator();
-        } else {
-            console.error('Failed to load Subject Leader scope');
-        }
-    } catch (error) {
-        console.error('Error loading Subject Leader scope:', error);
+// Setup event listeners
+function setupEventListeners() {
+    // Search functionality
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(performSearch, 300));
     }
+    
+    // Status filter
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) {
+        statusFilter.addEventListener('change', loadAssignments);
+    }
+    
+    // New assign button
+    const newAssignBtn = document.getElementById('newAssignBtn');
+    if (newAssignBtn) {
+        newAssignBtn.addEventListener('click', openNewAssignModal);
+    }
+    
+    // Assign button in modal
+    const assignButton = document.querySelector('.assign-button');
+    if (assignButton) {
+        assignButton.addEventListener('click', createAssignment);
+    }
+    
+    // Modal close buttons
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('close-modal-btn') || 
+            e.target.classList.contains('close-details-modal-btn') ||
+            e.target.classList.contains('modal-overlay')) {
+            closeAllModals();
+        }
+    });
+}
+
+// Debounce function for search
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
     // Close modals with ESC key
@@ -67,57 +81,39 @@ async function loadSubjectLeaderScope() {
         }
     });
 
-    // Functions
-    function initializePage() {
-        console.log('Initializing SL Exam Assignment page...');
-        loadDropdownData();
-    }
-
-    async function loadDropdownData() {
-        try {
-            // Load courses
-            const coursesResponse = await fetch('/subject-leader/exam-assignments/api/courses');
-            if (coursesResponse.ok) {
-                const courses = await coursesResponse.json();
-                populateCourseDropdown(courses);
-            }
-
-            // Load lecturers  
-            const lecturersResponse = await fetch('/subject-leader/exam-assignments/api/lecturers');
-            if (lecturersResponse.ok) {
-                const lecturers = await lecturersResponse.json();
-                populateLecturerDropdown(lecturers);
-            }
-        } catch (error) {
-            console.error('Error loading dropdown data:', error);
-            showNotification('Error loading form data', 'error');
+    // Modal functions
+    function openNewAssignModal() {
+        closeAllModals();
+        clearNewAssignForm();
+        if (modalOverlay && newAssignModal) {
+            modalOverlay.style.display = 'block';
+            newAssignModal.style.display = 'block';
+            document.body.classList.add('modal-open');
         }
     }
 
-    function populateCourseDropdown(courses) {
-        const courseSelect = document.getElementById('course');
-        if (courseSelect) {
-            courseSelect.innerHTML = '<option value="">Select Course</option>';
-            courses.forEach(course => {
-                const option = document.createElement('option');
-                option.value = course.courseId;
-                option.textContent = `${course.courseCode} - ${course.courseName}`;
-                courseSelect.appendChild(option);
-            });
+    function closeAllModals() {
+        if (modalOverlay && newAssignModal) {
+            modalOverlay.style.display = 'none';
+            newAssignModal.style.display = 'none';
         }
+        
+        if (detailsModalOverlay && detailsModal) {
+            detailsModalOverlay.style.display = 'none';
+            detailsModal.style.display = 'none';
+        }
+        
+        document.body.classList.remove('modal-open');
     }
 
-    function populateLecturerDropdown(lecturers) {
-        const lecturerSelect = document.getElementById('lecturer');
-        if (lecturerSelect) {
-            lecturerSelect.innerHTML = '<option value="">Select Lecturer</option>';
-            lecturers.forEach(lecturer => {
-                const option = document.createElement('option');
-                option.value = lecturer.userId;
-                option.textContent = lecturer.fullName;
-                lecturerSelect.appendChild(option);
-            });
-        }
+    function clearNewAssignForm() {
+        document.getElementById('examTitle').value = '';
+        document.getElementById('lecturer').value = '';
+        document.getElementById('course').value = '';
+        document.getElementById('noOfExams').value = '';
+        document.getElementById('structure').value = 'Multiple Choices';
+        document.getElementById('assignDate').value = '';
+        document.getElementById('dueDate').value = '';
     }
 
     async function loadAssignments() {
@@ -255,12 +251,12 @@ async function loadSubjectLeaderScope() {
         try {
             const formData = {
                 assignmentName: document.getElementById('examTitle').value,
-                description: '', // You might want to add a description field
+                description: 'Exam assignment created via Subject Leader dashboard',
                 courseId: parseInt(document.getElementById('course').value),
                 assignedToId: parseInt(document.getElementById('lecturer').value),
                 deadline: parseDateInput(document.getElementById('dueDate').value),
-                totalQuestions: parseInt(document.getElementById('noOfExams').value),
-                durationMinutes: 90, // Default or add field for this
+                totalQuestions: parseInt(document.getElementById('noOfExams').value) || 20,
+                durationMinutes: 90,
                 instructions: document.getElementById('structure').value + ' format exam'
             };
 
@@ -279,7 +275,7 @@ async function loadSubjectLeaderScope() {
             if (response.ok) {
                 const result = await response.json();
                 showNotification('Assignment created successfully', 'success');
-                closeNewAssignModal();
+                closeAllModals();
                 loadAssignments();
             } else {
                 const error = await response.json();
@@ -309,14 +305,19 @@ async function loadSubjectLeaderScope() {
 
     function parseDateInput(dateString) {
         if (!dateString) return null;
-        // Assuming format DD/MM/YY or DD/MM/YYYY
-        const parts = dateString.split('/');
-        if (parts.length === 3) {
-            let [day, month, year] = parts;
-            if (year.length === 2) {
-                year = '20' + year;
+        try {
+            // Assuming format DD/MM/YY or DD/MM/YYYY
+            const parts = dateString.split('/');
+            if (parts.length === 3) {
+                let [day, month, year] = parts;
+                if (year.length === 2) {
+                    year = '20' + year;
+                }
+                const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                return date.toISOString();
             }
-            return new Date(year, month - 1, day).toISOString();
+        } catch (e) {
+            console.error('Error parsing date:', e);
         }
         return null;
     }
@@ -433,6 +434,5 @@ async function loadSubjectLeaderScope() {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize page with scope awareness
-    initializePageWithScope();
+    initializePage();
 });
