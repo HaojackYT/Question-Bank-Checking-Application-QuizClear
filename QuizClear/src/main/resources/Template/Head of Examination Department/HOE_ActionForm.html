@@ -57,13 +57,14 @@
 
                             <div class="form-row">
                                 <label for="assign-date">Assign Date</label>
-                                <input type="text" id="assign-date" name="assignDate"
-                                    th:value="${#temporals.format(review.createdAt, 'dd/MM/yy')}" />
+                                <input type="text" id="assign-date" name="startDate"
+                                    th:value="${#temporals.format(review.createdAt, 'dd/MM/yy')}" required />
                             </div>
 
                             <div class="form-row">
-                                <input type="text" id="due-date" name="dueDate"
-                                    th:value="${#temporals.format(review.dueDate, 'dd/MM/yy')}" />
+                                <label for="due-date">Due Date</label>
+                                <input type="text" id="due-date" name="endDate"
+                                    th:value="${#temporals.format(review.dueDate, 'dd/MM/yy')}" required />
                             </div>
 
                             <div class="form-row" id="comments-row">
@@ -109,10 +110,10 @@
                                             </td>
                                             <td>
                                                 <div class="checkbox-container">
-                                                    <input type="checkbox" th:id="'select_' + ${exam.examId}"
-                                                        th:name="selectedExams" th:value="${exam.examId}"
-                                                        th:checked="${#lists.contains(assignedExamIds, exam.examId)}" />
-
+                                                    <input type="radio" th:id="'select_' + ${exam.examId}"
+                                                        name="exam.examId" th:value="${exam.examId}"
+                                                        th:checked="${review.exam != null and review.exam.examId == exam.examId}"
+                                                        required />
                                                     <label th:for="'select_' + ${exam.examId}"></label>
                                                 </div>
                                             </td>
@@ -127,7 +128,10 @@
                                     th:onclick="|location.href='@{/hoe/review-assignment}'|">
                                     Cancel
                                 </button>
-                                <button type="submit" class="btn btn-assign">Save</button>
+                                <button type="submit" class="btn btn-assign"
+                                    th:disabled="${review.status.name() == 'APPROVED'}">
+                                    Save
+                                </button>
                             </div>
                         </div>
                     </form>
