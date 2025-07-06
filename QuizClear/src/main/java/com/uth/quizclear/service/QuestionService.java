@@ -23,6 +23,11 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import org.springframework.data.jpa.domain.Specification; // <-- Quan trọng cho truy vấn động
+import jakarta.persistence.criteria.Join; // <-- Để Join tới các bảng liên kết
+import jakarta.persistence.criteria.Predicate; // <-- Để xây dựng các điều kiện
+import java.time.format.DateTimeFormatter;
+
 @Service
 public class QuestionService {
     
