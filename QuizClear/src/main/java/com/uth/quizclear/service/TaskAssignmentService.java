@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -289,62 +288,14 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getDescription(),
                 null
         );
-    }    // Phương thức gốc: Lấy task cho HED - Modified to return mock data for testing
+    }    // Phương thức gốc: Lấy task cho HED - Using real database data
     public List<TaskAssignmentDTO> getTasksForHED() {
-        // TODO: Replace with actual database query
-        // Return mock data for now
-        List<TaskAssignmentDTO> tasks = new ArrayList<>();
+        // Get all tasks from database
+        List<Tasks> allTasks = tasksRepository.findAll();
         
-        // Mock data using the correct constructor
-        tasks.add(new TaskAssignmentDTO(
-            1L, 
-            "Java Programming Assignment",
-            "Introduction to Computer Science", 
-            "CS101",
-            15, 
-            15, 
-            15, 
-            "Alexander Brooks",
-            "HED User",
-            "COMPLETED",
-            "2025-07-20",
-            "Create programming questions for Java basics",
-            "Good work completed"
-        ));
-        
-        tasks.add(new TaskAssignmentDTO(
-            2L, 
-            "Database Quiz",
-            "Database Management Systems", 
-            "CS201",
-            20, 
-            20, 
-            10, 
-            "Maria Garcia",
-            "HED User",
-            "ASSIGNED",
-            "2025-07-15",
-            "Create questions for database concepts",
-            "In progress"
-        ));
-        
-        tasks.add(new TaskAssignmentDTO(
-            3L, 
-            "OS Concepts Test",
-            "Operating Systems", 
-            "CS301",
-            25, 
-            25, 
-            0, 
-            "John Smith",
-            "HED User",
-            "PENDING",
-            "2025-07-10",
-            "Create questions for operating system concepts",
-            "Not started yet"
-        ));
-        
-        return tasks;
+        // Convert to DTOs
+        return allTasks.stream()
+                .map(this::convertToDTO)                .collect(Collectors.toList());
     }
 
     // Phương thức gốc: Lấy task cho HED với phân trang
@@ -376,5 +327,77 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                     return matches;
                 })
                 .collect(java.util.stream.Collectors.toList());
+    }
+
+    // Phương thức mới: Lấy task cho HED với filter
+    public List<TaskAssignmentDTO> getTasksForHEDWithFilter(String search, String status, String subject) {
+        List<Tasks> allTasks = tasksRepository.findAll();
+        
+        return allTasks.stream()
+                .filter(task -> {
+                    // Filter by search term (title or subject)
+                    if (search != null && !search.isEmpty()) {
+                        String searchLower = search.toLowerCase();
+                        String title = task.getTitle() != null ? task.getTitle().toLowerCase() : "";
+                        String subjectName = task.getCourse() != null && task.getCourse().getCourseName() != null 
+                                ? task.getCourse().getCourseName().toLowerCase() : "";
+                        if (!title.contains(searchLower) && !subjectName.contains(searchLower)) {
+                            return false;
+                        }
+                    }
+                    
+                    // Filter by status
+                    if (status != null && !status.isEmpty()) {
+                        String taskStatus = task.getStatus() != null ? task.getStatus().toString() : "";
+                        if (!taskStatus.toLowerCase().contains(status.toLowerCase())) {
+                            return false;
+                        }
+                    }
+                    
+                    // Filter by subject
+                    if (subject != null && !subject.isEmpty()) {
+                        String subjectName = task.getCourse() != null && task.getCourse().getCourseName() != null 
+                                ? task.getCourse().getCourseName().toLowerCase() : "";
+                        if (!subjectName.toLowerCase().contains(subject.toLowerCase())) {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                })
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Phương thức mới: Lấy task detail by ID cho HED
+    public TaskAssignmentDTO getTaskDetailForHED(Long taskId) {
+        Tasks task = tasksRepository.findById(Math.toIntExact(taskId))
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy task với id: " + taskId));
+        return convertToDTO(task);
+    }    // Phương thức mới: Join task
+    @Transactional
+    public void joinTask(Long taskId, Long hedId) {
+        Tasks task = tasksRepository.findById(Math.toIntExact(taskId))
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy task với id: " + taskId));
+        
+        // Update task status to indicate HED has joined
+        if (task.getStatus() == TaskStatus.pending) {
+            task.setStatus(TaskStatus.in_progress);
+            tasksRepository.save(task);
+        }
+    }
+
+    // Phương thức mới: Remove task  
+    @Transactional
+    public void removeTask(Long taskId) {
+        Tasks task = tasksRepository.findById(Math.toIntExact(taskId))
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy task với id: " + taskId));
+        
+        // Only allow removing completed tasks
+        if (task.getStatus() == TaskStatus.completed) {
+            tasksRepository.delete(task);
+        } else {
+            throw new IllegalStateException("Chỉ có thể xóa task đã hoàn thành");
+        }
     }
 }
