@@ -9,9 +9,29 @@
     <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
     <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
     <link rel="stylesheet" th:href="@{/Static/css/HED/HED_ExamManagement.css}">
-    <link rel="stylesheet" th:href="@{/Static/css/HED/HED_ApproveQuestion.css}">
-    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Approve_Question</title>
+    <link rel="stylesheet" th:href="@{/Static/css/HED/HED_ApproveQuestion.css}">    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Approve_Question</title>    <style>
+        .notification_item.hidden {
+            display: none;
+        }
+        
+        .notification-section .see-more {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .notification-section .see-more:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+        
+        #seeMoreBtn {
+            margin-top: 10px;
+            display: inline-block;
+        }
+    </style>
 </head>
 
 <body class="approve-question-page">
@@ -111,10 +131,12 @@
             </div>            <!-- Notification Section -->
             <div class="notification-section">
                 <h2>New Notification</h2>
-                <p class="notification-subtitle">Submission to be approved</p>
-                <div class="notification_items" id="notificationContainer">                    <!-- Dynamic notifications will be loaded here -->
+                <p class="notification-subtitle">Submission to be approved</p>                <div class="notification_items" id="notificationContainer">                    <!-- Dynamic notifications will be loaded here -->
                     <div th:if="${pendingExams != null and !pendingExams.isEmpty()}">
-                        <div th:each="question : ${pendingExams}" class="notification_item">
+                        <!-- Only show first 3 notifications initially -->
+                        <div th:each="question, iterStat : ${pendingExams}" 
+                             th:class="${iterStat.index < 3} ? 'notification_item' : 'notification_item hidden'"
+                             class="notification_item">
                             <input type="checkbox" checked>
                             <div class="notification-text">
                                 <strong th:text="'New Question: ' + ${question.createdByName} + ' has submitted a question for ' + ${question.subjectName}">
@@ -129,9 +151,12 @@
                             <strong>No pending approvals at this time</strong>
                             <p>All submissions have been processed</p>
                         </div>
-                    </div>
-                </div>
-                <a href="#" class="see-more" onclick="loadMoreNotifications()">See more...</a>
+                    </div>                </div>
+                <!-- Only show "See more" button if there are more than 3 notifications -->
+                <a href="#" class="see-more" onclick="toggleNotifications()" id="seeMoreBtn" 
+                   th:style="${pendingExams != null and #lists.size(pendingExams) > 3} ? 'display: inline-block;' : 'display: none;'">
+                   See more...
+                </a>
             </div>
 
             <!-- Search and Filter Section -->
@@ -226,15 +251,45 @@
                     <button class="next-btn">Next <i class="fa-solid fa-chevron-right"
                             style="padding: 0px 5px;"></i></button>
                 </div>            </div>            <script th:inline="javascript">
-                /*<![CDATA[*/                // Get department head ID from server (passed from controller)
+                /*<![CDATA[*/
+                
+                // Toggle notifications visibility - GLOBAL FUNCTION
+                function toggleNotifications() {
+                    console.log('toggleNotifications called');
+                    const hiddenNotifications = document.querySelectorAll('.notification_item.hidden');
+                    const seeMoreBtn = document.getElementById('seeMoreBtn');
+                    const allNotifications = document.querySelectorAll('.notification_item');
+                    
+                    console.log('Total notifications:', allNotifications.length);
+                    console.log('Hidden notifications:', hiddenNotifications.length);
+                    
+                    if (hiddenNotifications.length > 0) {
+                        // Show all hidden notifications
+                        console.log('Showing hidden notifications');
+                        hiddenNotifications.forEach(notification => {
+                            notification.classList.remove('hidden');
+                        });
+                        if (seeMoreBtn) seeMoreBtn.textContent = 'See less...';
+                    } else {
+                        // Hide notifications beyond first 3
+                        console.log('Hiding notifications beyond first 3');
+                        allNotifications.forEach((notification, index) => {
+                            if (index >= 3) {
+                                notification.classList.add('hidden');
+                            }
+                        });
+                        if (seeMoreBtn) seeMoreBtn.textContent = 'See more...';
+                    }
+                }
+                
+                // Get department head ID from server (passed from controller)
                 const hedId = /*[[${hedId}]]*/ null;
                 console.log("Using hedId:", hedId);
-                
-                // Check if user is authenticated
+                  // Check if user is authenticated
                 if (!hedId) {
                     console.error("User not authenticated or hedId not provided");
                     window.location.href = '/login';
-                    return;
+                    // Don't use return here - just redirect and continue
                 }
                 
                 // Load questions for approval from API
@@ -264,13 +319,16 @@
                                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                             }
                             return response.json();
-                        })
-                        .then(data => {
+                        })                        .then(data => {
                             console.log("API Response:", data);
                             if (data.error) {
                                 showError('Server error: ' + data.error);
                                 return;
                             }
+                            
+                            // Store questions data globally for notifications
+                            window.currentQuestions = data.questions || [];
+                            
                             updateQuestionsTable(data.questions || []);
                             updateNotifications(data.notifications || []);
                         })
@@ -381,13 +439,43 @@
                         tbody.appendChild(row);
                     });
                 }
-                
-                // Update notifications
+                  // Update notifications
                 function updateNotifications(notifications) {
                     const container = document.getElementById('notificationContainer');
                     if (!container) return;
                     
+                    // If no notifications provided, try to get from questions data
                     if (!notifications || notifications.length === 0) {
+                        // Try to get questions data and create notifications from them
+                        const questions = window.currentQuestions || [];
+                        if (questions.length > 0) {
+                            container.innerHTML = '';
+                            questions.slice(0, 10).forEach((question, index) => { // Limit to 10 notifications
+                                const item = document.createElement('div');
+                                item.className = index < 3 ? 'notification_item' : 'notification_item hidden';
+                                item.innerHTML = `
+                                    <input type="checkbox" checked>
+                                    <div class="notification-text">
+                                        <strong>New Question: ${question.createdByName || 'Unknown'} has submitted a question for ${question.subjectName || 'Unknown'}</strong>
+                                        <p>At: ${question.updatedDate || 'Recently'}</p>
+                                    </div>
+                                `;
+                                container.appendChild(item);
+                            });
+                            
+                            // Show/hide "See more" button
+                            const seeMoreBtn = document.getElementById('seeMoreBtn');
+                            if (seeMoreBtn) {
+                                if (questions.length > 3) {
+                                    seeMoreBtn.style.display = 'inline-block';
+                                } else {
+                                    seeMoreBtn.style.display = 'none';
+                                }
+                            }
+                            return;
+                        }
+                        
+                        // If no questions either, show no pending message
                         container.innerHTML = `
                             <div class="notification_item">
                                 <div class="notification-text">
@@ -396,13 +484,20 @@
                                 </div>
                             </div>
                         `;
+                        
+                        // Hide "See more" button
+                        const seeMoreBtn = document.getElementById('seeMoreBtn');
+                        if (seeMoreBtn) {
+                            seeMoreBtn.style.display = 'none';
+                        }
                         return;
                     }
                     
+                    // If notifications are provided, use them
                     container.innerHTML = '';
-                    notifications.forEach(notif => {
+                    notifications.forEach((notif, index) => {
                         const item = document.createElement('div');
-                        item.className = 'notification_item';
+                        item.className = index < 3 ? 'notification_item' : 'notification_item hidden';
                         item.innerHTML = `
                             <input type="checkbox" checked>
                             <div class="notification-text">
@@ -412,6 +507,16 @@
                         `;
                         container.appendChild(item);
                     });
+                    
+                    // Show/hide "See more" button
+                    const seeMoreBtn = document.getElementById('seeMoreBtn');
+                    if (seeMoreBtn) {
+                        if (notifications.length > 3) {
+                            seeMoreBtn.style.display = 'inline-block';
+                        } else {
+                            seeMoreBtn.style.display = 'none';
+                        }
+                    }
                 }
                 
                 // View question details
@@ -509,15 +614,13 @@
                     const modalStatus = document.getElementById('modalStatus');
                     modalStatus.textContent = question.status || 'Unknown';
                     modalStatus.className = `status-badge ${question.status ? question.status.toLowerCase() : 'unknown'}`;
-                    
-                    // Show modal
+                      // Show modal
                     modal.style.display = 'block';
                 }
                 
-                // Load more notifications
+                // Load more notifications (legacy function)
                 function loadMoreNotifications() {
-                    // Implementation for loading more notifications
-                    console.log('Loading more notifications...');
+                    toggleNotifications();
                 }
                 
                 // Initialize page
