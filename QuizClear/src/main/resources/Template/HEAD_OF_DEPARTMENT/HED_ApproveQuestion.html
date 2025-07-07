@@ -226,10 +226,16 @@
                     <button class="next-btn">Next <i class="fa-solid fa-chevron-right"
                             style="padding: 0px 5px;"></i></button>
                 </div>            </div>            <script th:inline="javascript">
-                /*<![CDATA[*/
-                // Get department head ID from server (passed from controller)
-                const hedId = /*[[${hedId}]]*/ 1;
+                /*<![CDATA[*/                // Get department head ID from server (passed from controller)
+                const hedId = /*[[${hedId}]]*/ null;
                 console.log("Using hedId:", hedId);
+                
+                // Check if user is authenticated
+                if (!hedId) {
+                    console.error("User not authenticated or hedId not provided");
+                    window.location.href = '/login';
+                    return;
+                }
                 
                 // Load questions for approval from API
                 function loadQuestionsForApproval() {

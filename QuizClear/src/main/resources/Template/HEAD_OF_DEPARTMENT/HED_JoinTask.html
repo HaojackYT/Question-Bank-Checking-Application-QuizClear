@@ -233,10 +233,16 @@
                     </div>
                 </div>            </div>            <!-- Load header and menu -->
             <script th:inline="javascript">
-                /*<![CDATA[*/
-                // Get department head ID from server (passed from controller)
-                const hedId = /*[[${hedId}]]*/ 1;
+                /*<![CDATA[*/                // Get department head ID from server (passed from controller)
+                const hedId = /*[[${hedId}]]*/ null;
                 console.log("Using hedId:", hedId);
+                
+                // Check if user is authenticated
+                if (!hedId) {
+                    console.error("User not authenticated or hedId not provided");
+                    window.location.href = '/login';
+                    return;
+                }
                 
                 // Load tasks data from API
                 function loadTasks() {
@@ -258,11 +264,15 @@
                     // Show loading state  
                     const tbody = document.querySelector('#taskTableBody');
                     tbody.innerHTML = '<tr><td colspan="7" class="loading">Loading tasks...</td></tr>';
-                    
-                    fetch(url)
+                      fetch(url)
                         .then(response => {
                             console.log("Response status:", response.status);
                             if (!response.ok) {
+                                if (response.status === 401) {
+                                    console.error("Authentication failed, redirecting to login");
+                                    window.location.href = '/login';
+                                    return;
+                                }
                                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                             }
                             return response.json();
