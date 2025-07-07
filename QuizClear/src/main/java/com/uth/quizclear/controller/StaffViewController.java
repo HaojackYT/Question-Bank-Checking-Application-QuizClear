@@ -97,10 +97,10 @@ public class StaffViewController {
         }
     }
 
-    @GetMapping("/staff/question-management")
-    public String staffQuestionManagement() {
-        return "Staff/staffQMQuestionBank";
-    }
+    // @GetMapping("/staff/question-management")
+    // public String staffQuestionManagement() {
+    //     return "Staff/staffQMQuestionBank";
+    // }
 
     @GetMapping("/staff/help")
     public String staffHelp() {
