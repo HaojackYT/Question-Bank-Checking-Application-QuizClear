@@ -83,7 +83,7 @@
                             <th>Deadline</th>
                             <th>
                                 <div class="dropdown">
-                                    <select id="subject-select">
+                                    <select id="status-select">
                                         <option value="all">All Status</option>
                                         <option value="pending">Pending</option>
                                         <option value="in_progress">In Progress</option>
@@ -111,7 +111,8 @@
                             <td>
                                 <i class="fa-solid fa-eye view-task" th:attr="data-task-id=${task.taskId}"
                                     style="margin-right: 50px; cursor: pointer;"></i>
-                                <a th:href="@{/lecturer/task/send-task/{taskId}(taskId=${task.taskId})}">
+
+                                <a th:href="@{/lecturer/task/show-task/{taskId}(taskId=${task.taskId})}">
                                     <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"></i>
                                 </a>
                             </td>
@@ -124,8 +125,6 @@
 <!-- ma nhung header vs menu -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const searchInput = document.querySelector('#search');
-        const statusSelect = document.getElementById('subject-select');
         const overlay = document.getElementById('overlay');
         const closeButton = document.querySelector('.modal .close');
         const acceptButton = document.querySelector('.modal .button-group button');
@@ -148,16 +147,6 @@
         }
         if (!statusSelect) {
             console.warn('Status select not found.');
-        }
-
-        // Hàm mở modal
-        function openModal() {
-            overlay.style.display = 'flex';
-        }
-
-        // Hàm đóng modal
-        function closeModal() {
-            overlay.style.display = 'none';
         }
 
         // Xử lý icon paper-plane và nút View
@@ -238,48 +227,20 @@
             });
         }
 
-        // Xử lý tìm kiếm
-        if (searchInput) {
-            searchInput.addEventListener('input', () => {
-                const searchText = searchInput.value.trim().toLowerCase();
-
-                rows.forEach(row => {
-                    const subject = row.querySelector('td:nth-child(1)').textContent.trim().toLowerCase();
-                    const description = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
-
-                    if (subject.includes(searchText) || description.includes(searchText)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-        }
-
-        // Xử lý lọc trạng thái
-        if (statusSelect) {
-            statusSelect.addEventListener('change', () => {
-                const selectedStatus = statusSelect.value.toLowerCase();
-
-                rows.forEach(row => {
-                    const statusDiv = row.querySelector('.status');
-                    const statusText = statusDiv ? statusDiv.textContent.trim().toLowerCase().replace(/\s+/g, '_') : '';
-
-                    if (selectedStatus === 'all' || statusText === selectedStatus) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-
-            });
-        }
-
         // Xử lý nút Close
         if (closeButton) {
             closeButton.addEventListener('click', closeModal);
         }
     });
+
+    function openModal() {
+        overlay.style.display = 'flex';
+    }
+
+    // Hàm đóng modal
+    function closeModal() {
+        overlay.style.display = 'none';
+    }
 
     // Xử lý load detail task
     function formatStatus(status) {
@@ -329,10 +290,52 @@
                 document.querySelector('.levels div:nth-child(3)').innerHTML = `<strong>Basic</strong><br>${task.totalBasicApplication}`;
                 document.querySelector('.levels div:nth-child(4)').innerHTML = `<strong>Advanced</strong><br>${task.totalAdvancedApplication}`;
 
+
+                openModal();
+
             } catch (err) {
                 alert('Error loading task: ' + err.message);
             }
         });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.querySelector('#search');
+        const statusSelect = document.querySelector('#status-select');
+        const rows = document.querySelectorAll('.course-table tbody tr');
+
+        function filterTable() {
+            const searchText = searchInput.value.trim().toLowerCase();
+            const selectedStatus = statusSelect.value.toLowerCase();
+
+            rows.forEach(row => {
+                const subject = row.querySelector('td:nth-child(1)').textContent.trim().toLowerCase();
+                const description = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+                const statusDiv = row.querySelector('td:nth-child(5) .status');
+                const statusTextRaw = statusDiv ? statusDiv.textContent.trim().toLowerCase() : '';
+                const statusText = statusTextRaw.replace(/\s+/g, '_'); // đổi "in progress" -> "in_progress"
+
+                const matchesSearch = subject.includes(searchText) || description.includes(searchText);
+                const matchesStatus = selectedStatus === 'all' || statusText === selectedStatus;
+
+                if (matchesSearch && matchesStatus) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            console.log({ searchText, selectedStatus });
+            console.log({ subject, description, statusText });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', filterTable);
+        }
+        if (statusSelect) {
+            statusSelect.addEventListener('change', filterTable);
+        }
+
+
     });
 </script>
 
