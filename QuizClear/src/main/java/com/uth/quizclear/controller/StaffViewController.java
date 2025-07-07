@@ -67,11 +67,9 @@ public class StaffViewController {
             model.addAttribute("error", "Error loading processing logs");
             return "Staff/staffLogContent";
         }
-    }
-
-    @GetMapping("/staff/profile")
+    }    @GetMapping("/staff/profile")
     public String staffProfile() {
-        return "Staff/profile";
+        return "redirect:/profile";
     }
 
     @GetMapping("/staff/logs")

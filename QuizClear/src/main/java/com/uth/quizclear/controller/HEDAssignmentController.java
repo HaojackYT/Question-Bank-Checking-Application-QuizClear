@@ -369,16 +369,10 @@ public class HEDAssignmentController {
         model.addAttribute("pendingApprovals", 8);
         model.addAttribute("completedTasks", 12);
         return "HEAD_OF_DEPARTMENT/HED_Dashboard";
-    }
-
-    // HED Profile
-    @GetMapping("/profile")    public String profile(Model model) {
-        // Add profile data
-        model.addAttribute("userName", "Head of Department");
-        model.addAttribute("email", "hed@university.edu");
-        model.addAttribute("department", "Computer Science");
-        
-        return "HEAD_OF_DEPARTMENT/HED_Profile";
+    }    // HED Profile - redirected to common ProfileController
+    @GetMapping("/profile")
+    public String profile() {
+        return "redirect:/profile";
     }
 
     // Helper method to get current authenticated user ID

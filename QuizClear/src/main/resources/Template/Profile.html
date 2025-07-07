@@ -10,6 +10,7 @@
     <link rel="stylesheet" th:href="@{/Static/css/profile.css}">
     <title>Profile</title>
 </head>
+</head>
 
 <body>
     <!--header-->
@@ -62,44 +63,39 @@
                             <label>Contact Address</label>
                             <span th:text="${user.contactAddress}">LOADING....</span>
                         </div>
-                    </div>
-
-                    <div class="settings">
+                    </div>                    <div class="settings">
                         <h2>Settings</h2>
                         <div class="setting-item">
                             <div class="container">
                                 <h3>Account</h3>
                                 <i class="fa-solid fa-user"></i>
                             </div>
-                            <a href="#">Update Profile</a>
-                            <a href="#">Change Password</a>
+                            <a href="#" onclick="alert('Update Profile functionality coming soon!')">Update Profile</a>
+                            <a href="#" onclick="alert('Change Password functionality coming soon!')">Change Password</a>
                         </div>
                         <div class="setting-item">
                             <div class="container">
-                                <h3>Preferences</h3>
-                                <i class="fa-solid fa-sliders"></i>
+                                <h3>System</h3>
+                                <i class="fa-solid fa-cog"></i>
                             </div>
-                            <a href="#">Notification</a>
-                            <a href="#">Language</a>
+                            <a th:href="@{/logout}">Logout</a>
+                            <a href="javascript:history.back()">Back to Dashboard</a>
                         </div>
                         <div class="setting-item">
                             <div class="container">
-                                <h3>Privacy & Security</h3>
-                                <i class="fa-solid fa-shield"></i>
+                                <h3>Information</h3>
+                                <i class="fa-solid fa-info-circle"></i>
                             </div>
-                        </div>
-                        <div class="setting-item">
-                            <a href="#">Delete My Account</a>
+                            <a href="#" onclick="showUserInfo()">User Details</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="work-info">
                     <h2>Work Information</h2>
-                    <div style="display: flex;flex-direction: row;justify-content: space-between;">
-                        <div class="info-item" style="width: 48%;">
-                            <label>Teacher's Code</label>
-                            <span>1001</span>
+                    <div style="display: flex;flex-direction: row;justify-content: space-between;">                        <div class="info-item" style="width: 48%;">
+                            <label>User ID</label>
+                            <span th:text="${user.userId}">LOADING....</span>
                         </div>
                         <div class="info-item" style="width: 48%;">
                             <label>Gmail</label>
