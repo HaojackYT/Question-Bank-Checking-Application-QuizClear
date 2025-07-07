@@ -81,10 +81,46 @@
             background-color: #ef4444;
             color: white;
         }
-        
-        .status-badge.unknown {
+          .status-badge.unknown {
             background-color: #6b7280;
             color: white;
+        }
+        
+        /* Modal footer button styles */
+        .close-modal-btn {
+            background-color: #6b7280;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+        
+        .close-modal-btn:hover {
+            background-color: #4b5563;
+        }
+        
+        .join-task-btn {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+        
+        .join-task-btn:hover {
+            background-color: #059669;
         }
     </style>
 </head>
@@ -293,27 +329,23 @@
                                 development technologies and best practices. Students will learn HTML, CSS, JavaScript,
                                 and
                                 various frameworks.</p>
-                        </div>
-
-                        <div class="details-section">
-                            <h3>Feedback</h3>
+                        </div>                        <div class="details-section">
+                            <h3>Notes</h3>
                             <textarea id="modalFeedback"
-                                placeholder="Enter your feedback about this course..."></textarea>
+                                placeholder="Add your notes about this task..." readonly></textarea>
                         </div>
 
                         <div class="see-more">
                             <a href="#" class="see-more-link">See more...</a>
                         </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button class="reject-btn">
-                            <i class="fas fa-times-circle"></i>
-                            <span>Reject</span>
+                    </div>                    <div class="modal-footer">
+                        <button class="close-modal-btn">
+                            <i class="fas fa-times"></i>
+                            <span>Close</span>
                         </button>
-                        <button class="approve-btn">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Approve</span>
+                        <button class="join-task-btn">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Join Task</span>
                         </button>
                     </div>
                 </div>            </div>            <!-- Load header and menu -->            <script th:inline="javascript">
@@ -720,59 +752,8 @@
                             console.error('Error:', error);
                             alert('Failed to remove task');
                         });
-                    }
-                }
-                
-                // Approve a task
-                function approveTask(taskId) {
-                    fetch(`/hed/api/tasks/${taskId}/approve`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ hedId: hedId })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            alert('Error: ' + data.error);
-                        } else {
-                            alert('Task approved successfully!');
-                            loadTasks(); // Reload to update the table
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Failed to approve task');
-                    });
-                }
-                
-                // Reject a task
-                function rejectTask(taskId, feedback) {
-                    fetch(`/hed/api/tasks/${taskId}/reject`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ 
-                            hedId: hedId,
-                            feedback: feedback 
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            alert('Error: ' + data.error);
-                        } else {
-                            alert('Task rejected with feedback!');
-                            loadTasks(); // Reload to update the table
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Failed to reject task');
-                    });
-                }                // Open task modal with details
+                    }                }
+                  // Open task modal with details
                 function openTaskModal(task) {
                     const modal = document.getElementById('courseDetailsModal');
                     if (!modal) return;
@@ -789,9 +770,31 @@
                     document.getElementById('modalDeadline').textContent = task.dueDate || 'N/A';
                     document.getElementById('modalDescription').textContent = task.description || 'No description available';
                     
+                    // Display existing notes/feedback if available
+                    const modalFeedback = document.getElementById('modalFeedback');
+                    if (modalFeedback) {
+                        modalFeedback.value = task.notes || task.feedback || '';
+                    }
+                    
                     const modalStatus = document.getElementById('modalStatus');
                     modalStatus.textContent = task.status || 'Unknown';
                     modalStatus.className = `status-badge ${task.status ? task.status.toLowerCase() : 'unknown'}`;
+                    
+                    // Show/hide Join Task button based on status
+                    const joinTaskBtn = modal.querySelector('.join-task-btn');
+                    if (joinTaskBtn) {
+                        if (task.status === 'ASSIGNED' || task.status === 'PENDING') {
+                            joinTaskBtn.style.display = 'flex';
+                            joinTaskBtn.innerHTML = '<i class="fas fa-user-plus"></i><span>Join Task</span>';
+                        } else if (task.status === 'IN_PROGRESS') {
+                            joinTaskBtn.style.display = 'flex';
+                            joinTaskBtn.innerHTML = '<i class="fas fa-play"></i><span>Continue Task</span>';
+                        } else if (task.status === 'COMPLETED') {
+                            joinTaskBtn.style.display = 'none'; // Can't join completed tasks
+                        } else {
+                            joinTaskBtn.style.display = 'none'; // Default to hidden
+                        }
+                    }
                     
                     // Show modal
                     modal.style.display = 'block';
@@ -850,35 +853,21 @@
                             if (e.target === modal) {
                                 modal.style.display = 'none';
                             }
-                        });
-                          // Approve/Reject buttons
-                        const approveBtn = modal.querySelector('.approve-btn');
-                        const rejectBtn = modal.querySelector('.reject-btn');
-                        
-                        if (approveBtn) {
-                            approveBtn.addEventListener('click', function() {
-                                const taskId = modal.getAttribute('data-task-id');
-                                if (taskId) {
-                                    approveTask(parseInt(taskId));
-                                }
+                        });                          // Modal action buttons
+                        const closeModalBtn = modal.querySelector('.close-modal-btn');
+                        const joinTaskBtn = modal.querySelector('.join-task-btn');
+                          if (closeModalBtn) {
+                            closeModalBtn.addEventListener('click', function() {
                                 modal.style.display = 'none';
                             });
                         }
-                        
-                        if (rejectBtn) {
-                            rejectBtn.addEventListener('click', function() {
+                          if (joinTaskBtn) {
+                            joinTaskBtn.addEventListener('click', function() {
                                 const taskId = modal.getAttribute('data-task-id');
-                                const feedback = modal.querySelector('#modalFeedback').value;
-                                
-                                if (feedback.trim() === '') {
-                                    alert('Please provide feedback before rejecting the task.');
-                                    return;
-                                }
-                                
                                 if (taskId) {
-                                    rejectTask(parseInt(taskId), feedback);
+                                    joinTask(parseInt(taskId));
+                                    modal.style.display = 'none';
                                 }
-                                modal.style.display = 'none';
                             });
                         }
                     }
