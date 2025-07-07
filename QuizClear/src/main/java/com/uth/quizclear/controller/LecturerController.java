@@ -15,6 +15,7 @@ import com.uth.quizclear.repository.UserRepository;
 import com.uth.quizclear.repository.SubjectRepository;
 import com.uth.quizclear.model.dto.UserBasicDTO;
 import com.uth.quizclear.service.AIService;
+import com.uth.quizclear.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.uth.quizclear.model.dto.LecTaskDTO;
@@ -114,12 +116,14 @@ public class LecturerController {
     private CLORepository cloRepository;
       @Autowired
     private UserRepository userRepository;    
-    
-    @Autowired
+      @Autowired
     private SubjectRepository subjectRepository;
     
     @Autowired
-    private AIService aiService;/**
+    private AIService aiService;
+    
+    @Autowired
+    private UserService userService;/**
      * Lecturer Question Management page
      */
     @GetMapping("/question-management")
@@ -149,7 +153,7 @@ public class LecturerController {
         
         // Get user from session
         Object userObj = session.getAttribute("user");
-        Long lecturerId = 1L; // Default fallback
+        Long lecturerId = null; // No default - must get real user ID
           if (userObj != null && userObj instanceof UserBasicDTO) {
             UserBasicDTO user = (UserBasicDTO) userObj;
             lecturerId = user.getUserId();
@@ -161,16 +165,48 @@ public class LecturerController {
             lecturerId = (Long) currentUserId;
         }
         
-        // Thêm các filter options từ database
+        // If still no lecturerId, get from authentication
+        if (lecturerId == null) {
+            try {
+                String email = authentication.getName();
+                Optional<User> userOpt = userService.findByEmail(email);
+                if (userOpt.isPresent()) {
+                    lecturerId = (long) userOpt.get().getUserId();
+                }
+            } catch (Exception e) {
+                return "error/500";
+            }
+        }        
+        // If still no lecturer ID, redirect to login
+        if (lecturerId == null) {
+            return "redirect:/login";
+        }
+        
+        // Get assigned subjects for this lecturer for filter dropdown
+        List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
+            lecturerId, 
+            SubjectRole.LECTURER
+        );
+        
+        // Add debug info
+        System.out.println("=== QUESTION MANAGEMENT DEBUG ===");
+        System.out.println("Lecturer ID: " + lecturerId);
+        System.out.println("User Email: " + authentication.getName());
+        System.out.println("Assigned subjects count: " + assignedSubjects.size());
+        for (Subject s : assignedSubjects) {
+            System.out.println("  - Subject: " + s.getSubjectName() + " (ID: " + s.getSubjectId() + ")");
+        }
+        
+        // Get all courses for backward compatibility
         List<Course> courses = courseRepository.findAll();
+        
         model.addAttribute("courses", courses);
+        model.addAttribute("subjects", assignedSubjects); // Add assigned subjects for filter
         model.addAttribute("lecturerId", lecturerId);
         model.addAttribute("userEmail", authentication.getName());
         
         return "Lecturer/lectureQuesManagement";
-    }
-
-    /**
+    }    /**
      * API endpoint để lấy questions của lecturer với filter
      */
     @GetMapping("/api/questions")
@@ -178,81 +214,108 @@ public class LecturerController {
     public ResponseEntity<Map<String, Object>> getQuestions(
             @RequestParam(required = false) String subject,
             @RequestParam(required = false) String status,
-            @RequestParam(required = false) String difficulty,            @RequestParam(required = false, defaultValue = "1") Long lecturerId) {        
+            @RequestParam(required = false) String difficulty,
+            @RequestParam(required = false) Long lecturerId,
+            HttpSession session,
+            Authentication authentication) {        
         try {
-            // Debug logging
+            // If lecturerId not provided, get from session/auth
+            if (lecturerId == null) {
+                Object userObj = session.getAttribute("user");
+                if (userObj != null && userObj instanceof UserBasicDTO) {
+                    UserBasicDTO user = (UserBasicDTO) userObj;
+                    lecturerId = user.getUserId();
+                }
+                
+                // Alternative: get from currentUserId set by ScopeInterceptor
+                if (lecturerId == null) {
+                    Object currentUserId = session.getAttribute("currentUserId");
+                    if (currentUserId != null && currentUserId instanceof Long) {
+                        lecturerId = (Long) currentUserId;
+                    }
+                }
+                
+                // If still null, get from authentication
+                if (lecturerId == null && authentication != null) {
+                    String email = authentication.getName();
+                    Optional<User> userOpt = userService.findByEmail(email);
+                    if (userOpt.isPresent()) {
+                        lecturerId = (long) userOpt.get().getUserId();
+                    }
+                }
+                
+                // If still null, return error
+                if (lecturerId == null) {
+                    Map<String, Object> errorResponse = new HashMap<>();
+                    errorResponse.put("error", "User not authenticated");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+                }
+            }
+              // Debug logging
             System.out.println("=== FILTER DEBUG ===");
             System.out.println("Subject parameter: " + subject);
             System.out.println("Status parameter: " + status);
             System.out.println("Difficulty parameter: " + difficulty);
             System.out.println("Lecturer ID: " + lecturerId);
-              // First get assigned subjects for the lecturer
-            List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
-                lecturerId, 
-                SubjectRole.LECTURER
-            );
+              // Simplified approach: Get all questions created by this lecturer
+            List<Question> questions = questionRepository.findByCreatedBy_UserId(lecturerId);
             
-            // Debug assigned subjects
-            System.out.println("Assigned subjects count: " + assignedSubjects.size());
-            for (Subject s : assignedSubjects) {
-                System.out.println("  - Subject ID: " + s.getSubjectId() + ", Name: " + s.getSubjectName());
-            }
-              // Map subjects to course names for filtering
-            List<String> allowedCourseNames = new ArrayList<>();
-            for (Subject assignedSubject : assignedSubjects) {
-                String courseName = mapSubjectToCourse(assignedSubject.getSubjectName());
-                if (courseName != null) {
-                    allowedCourseNames.add(courseName);
-                }
+            // Filter out soft-deleted questions (those marked with [DELETED])
+            questions = questions.stream()
+                .filter(q -> q.getContent() != null && !q.getContent().startsWith("[DELETED]"))
+                .collect(Collectors.toList());
+            
+            System.out.println("Total questions found for lecturer (after filtering deleted): " + questions.size());
+            
+            // Debug: Print found questions
+            for (Question q : questions) {
+                System.out.println("  - Question: " + q.getContent().substring(0, Math.min(50, q.getContent().length())) + "...");
+                System.out.println("    Course: " + (q.getCourse() != null ? q.getCourse().getCourseName() : "NULL"));
+                System.out.println("    Status: " + q.getStatus());
             }
             
-            List<Question> questions;
-            
-            // Only get questions from mapped courses
-            if (allowedCourseNames.isEmpty()) {
-                // No assigned subjects = no questions
-                questions = new ArrayList<>();
-            } else {
-                // Get all questions created by lecturer 
-                List<Question> allQuestions = questionRepository.findByCreatedBy_UserId(lecturerId);
+            // Apply subject filter if specified
+            if (subject != null && !subject.isEmpty() && !subject.equals("All subject")) {
+                System.out.println("Applying subject filter: " + subject);
                 
-                // Filter by assigned subjects (mapped to courses)
-                questions = allQuestions.stream()
-                    .filter(q -> allowedCourseNames.contains(q.getCourse().getCourseName()))
-                    .collect(Collectors.toList());
-                  // Apply subject filter if specified
-                if (subject != null && !subject.isEmpty() && !subject.equals("All subject")) {
-                    // Try to parse as subject ID first, then try as subject name
-                    Subject selectedSubject = null;
-                    
-                    try {
-                        // Try parsing as Long (subject ID)
-                        Long subjectId = Long.parseLong(subject);
-                        selectedSubject = assignedSubjects.stream()
-                            .filter(s -> s.getSubjectId().equals(subjectId))
-                            .findFirst()
-                            .orElse(null);
-                    } catch (NumberFormatException e) {
-                        // If not a number, try matching by subject name
-                        selectedSubject = assignedSubjects.stream()
-                            .filter(s -> s.getSubjectName().equalsIgnoreCase(subject.trim()))
-                            .findFirst()
-                            .orElse(null);
-                    }
-                    
-                    if (selectedSubject != null) {
-                        String selectedCourseName = mapSubjectToCourse(selectedSubject.getSubjectName());
-                        if (selectedCourseName != null) {
-                            questions = questions.stream()
-                                .filter(q -> selectedCourseName.equals(q.getCourse().getCourseName()))
-                                .collect(Collectors.toList());
-                        } else {
-                            questions = new ArrayList<>();
-                        }
+                // Get assigned subjects for the lecturer
+                List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
+                    lecturerId, 
+                    SubjectRole.LECTURER
+                );
+                
+                // Try to find matching subject
+                Subject selectedSubject = null;
+                try {
+                    // Try parsing as Long (subject ID)
+                    Long subjectId = Long.parseLong(subject);
+                    selectedSubject = assignedSubjects.stream()
+                        .filter(s -> s.getSubjectId().equals(subjectId))
+                        .findFirst()
+                        .orElse(null);
+                } catch (NumberFormatException e) {
+                    // If not a number, try matching by subject name
+                    selectedSubject = assignedSubjects.stream()
+                        .filter(s -> s.getSubjectName().equalsIgnoreCase(subject.trim()))
+                        .findFirst()
+                        .orElse(null);
+                }
+                
+                if (selectedSubject != null) {
+                    String selectedCourseName = mapSubjectToCourse(selectedSubject.getSubjectName());
+                    if (selectedCourseName != null) {
+                        questions = questions.stream()
+                            .filter(q -> q.getCourse() != null && selectedCourseName.equals(q.getCourse().getCourseName()))
+                            .collect(Collectors.toList());
+                        System.out.println("After subject filter: " + questions.size() + " questions");
                     } else {
-                        // If no matching subject found, return empty list
                         questions = new ArrayList<>();
+                        System.out.println("No course mapping found for subject: " + selectedSubject.getSubjectName());
                     }
+                } else {
+                    // If no matching subject found, return empty list
+                    questions = new ArrayList<>();
+                    System.out.println("No matching subject found for filter: " + subject);
                 }
             }
 
@@ -322,6 +385,7 @@ public class LecturerController {
                 questionMap.put("statusDisplay", getStatusDisplayText(q.getStatus()));
                 questionMap.put("statusClass", getStatusCssClass(q.getStatus()));
                 questionMap.put("canEdit", canEditByStatus(q.getStatus()));
+                questionMap.put("canBeDeleted", q.getStatus() != QuestionStatus.APPROVED); // Only allow deleting non-approved questions
                 questionMap.put("difficulty", q.getDifficultyLevel().toString());
                 
                 return questionMap;
@@ -391,30 +455,90 @@ public class LecturerController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(List.of());
         }
-    }
-
-    /**
+    }    /**
      * API endpoint để xóa question
      */
     @DeleteMapping("/api/questions/{questionId}")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> deleteQuestion(@PathVariable Long questionId) {
+    public ResponseEntity<Map<String, String>> deleteQuestion(@PathVariable Long questionId, Authentication authentication) {
         try {
-            Question question = questionRepository.findById(questionId)
+            // Lấy thông tin user hiện tại
+            String email = authentication.getName();
+            Optional<User> userOpt = userService.findByEmail(email);
+            if (!userOpt.isPresent()) {
+                Map<String, String> response = new HashMap<>();
+                response.put("error", "User not found");
+                return ResponseEntity.status(404).body(response);
+            }
+            User currentUser = userOpt.get();
+            Long currentUserId = (long) currentUser.getUserId();
+              Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new RuntimeException("Question not found"));
             
-            // Chỉ cho phép xóa nếu question chưa được approved
-            if (question.getStatus() == QuestionStatus.APPROVED) {
+            // Debug logging để kiểm tra user IDs
+            System.out.println("=== DELETE QUESTION DEBUG ===");
+            System.out.println("Current user ID: " + currentUserId + " (type: " + currentUserId.getClass().getSimpleName() + ")");
+            System.out.println("Question creator ID: " + question.getCreatedBy().getUserId() + " (type: " + question.getCreatedBy().getUserId().getClass().getSimpleName() + ")");
+            System.out.println("Are they equal? " + question.getCreatedBy().getUserId().equals(currentUserId));
+            System.out.println("Question ID: " + questionId);
+            System.out.println("Question content: " + question.getContent().substring(0, Math.min(50, question.getContent().length())));
+            
+            // Kiểm tra quyền: chỉ cho phép lecturer xóa question của chính họ
+            // Convert both to Long to ensure proper comparison
+            Long questionCreatorId = question.getCreatedBy().getUserId().longValue();
+            Long currentUserIdLong = currentUserId.longValue();
+              if (!questionCreatorId.equals(currentUserIdLong)) {
                 Map<String, String> response = new HashMap<>();
-                response.put("error", "Cannot delete approved questions");
+                response.put("error", "You can only delete your own questions. Creator: " + questionCreatorId + ", Current: " + currentUserIdLong);
+                return ResponseEntity.status(403).body(response);
+            }
+              // Chỉ cho phép xóa nếu question có status là DRAFT
+            if (question.getStatus() != QuestionStatus.DRAFT) {
+                Map<String, String> response = new HashMap<>();
+                String statusText = question.getStatus().toString().toLowerCase();
+                response.put("error", "Cannot delete " + statusText + " questions. Only draft questions can be deleted.");
                 return ResponseEntity.status(400).body(response);
+            }// Try to delete the question (soft delete if has foreign key constraints)
+            try {
+                questionRepository.deleteById(questionId);
+                System.out.println("Question " + questionId + " deleted successfully");
+                
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Question deleted successfully");
+                return ResponseEntity.ok(response);
+                
+            } catch (Exception dbError) {
+                // Handle database constraint errors with soft delete
+                System.err.println("Database error while deleting question: " + dbError.getMessage());
+                
+                if (dbError.getMessage().contains("foreign key constraint") || 
+                    dbError.getMessage().contains("duplicate_detections") ||
+                    dbError.getMessage().contains("constraint") ||
+                    dbError.getMessage().contains("Cannot delete or update a parent row")) {
+                    
+                    // Instead of hard delete, mark as deleted by changing status
+                    try {
+                        question.setStatus(QuestionStatus.DRAFT); // Mark as draft to hide from normal views
+                        question.setContent("[DELETED] " + question.getContent()); // Mark as deleted in content
+                        questionRepository.save(question);
+                        System.out.println("Question " + questionId + " marked as deleted (soft delete)");
+                        
+                        Map<String, String> response = new HashMap<>();
+                        response.put("message", "Question marked as deleted. It cannot be permanently removed because it is referenced in other records.");
+                        return ResponseEntity.ok(response);
+                        
+                    } catch (Exception softDeleteError) {
+                        Map<String, String> response = new HashMap<>();
+                        response.put("error", "Cannot delete question: it is being used in other parts of the system");
+                        return ResponseEntity.status(400).body(response);
+                    }
+                } else {
+                    Map<String, String> response = new HashMap<>();
+                    response.put("error", "Cannot delete question: " + dbError.getMessage());
+                    return ResponseEntity.status(400).body(response);
+                }
             }
             
-            questionRepository.deleteById(questionId);
-            
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Question deleted successfully");
-            return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
             response.put("error", "Failed to delete question: " + e.getMessage());
@@ -455,15 +579,41 @@ public class LecturerController {
      * Create new question page
      */
     @GetMapping("/create-question")
-    public String createQuestion(Model model, HttpSession session) {
+    public String createQuestion(Model model, HttpSession session, Authentication authentication) {
         // Get user from session
         Object userObj = session.getAttribute("user");
-        Long lecturerId = 1L; // Default fallback
+        Long lecturerId = null;
         
         if (userObj != null && userObj instanceof UserBasicDTO) {
             UserBasicDTO user = (UserBasicDTO) userObj;
             lecturerId = user.getUserId();
-        }          // Only load subjects that the lecturer is assigned to
+        }
+        
+        // Alternative: get from currentUserId set by ScopeInterceptor
+        if (lecturerId == null) {
+            Object currentUserId = session.getAttribute("currentUserId");
+            if (currentUserId != null && currentUserId instanceof Long) {
+                lecturerId = (Long) currentUserId;
+            }
+        }
+        
+        // If still no lecturerId, get from authentication
+        if (lecturerId == null && authentication != null) {
+            try {
+                String email = authentication.getName();
+                Optional<User> userOpt = userService.findByEmail(email);
+                if (userOpt.isPresent()) {
+                    lecturerId = (long) userOpt.get().getUserId();
+                }
+            } catch (Exception e) {
+                return "error/500";
+            }
+        }
+        
+        // If still no lecturer ID, redirect to login
+        if (lecturerId == null) {
+            return "redirect:/login";
+        }// Only load subjects that the lecturer is assigned to
         List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
             lecturerId, 
             SubjectRole.LECTURER
@@ -478,21 +628,45 @@ public class LecturerController {
         model.addAttribute("difficultyLevels", DifficultyLevel.values());
         
         return "Lecturer/lecturerQMNewQuestion";
-    }
-
-    /**
+    }    /**
      * Edit question page
      */
     @GetMapping("/edit-question")
     public String editQuestion(@RequestParam(value = "id", required = false) Long questionId, 
-                              Model model, HttpSession session) {
+                              Model model, HttpSession session, Authentication authentication) {
         // Get user from session
         Object userObj = session.getAttribute("user");
-        Long lecturerId = 1L; // Default fallback
+        Long lecturerId = null;
         
         if (userObj != null && userObj instanceof UserBasicDTO) {
             UserBasicDTO user = (UserBasicDTO) userObj;
             lecturerId = user.getUserId();
+        }
+        
+        // Alternative: get from currentUserId set by ScopeInterceptor
+        if (lecturerId == null) {
+            Object currentUserId = session.getAttribute("currentUserId");
+            if (currentUserId != null && currentUserId instanceof Long) {
+                lecturerId = (Long) currentUserId;
+            }
+        }
+        
+        // If still no lecturerId, get from authentication
+        if (lecturerId == null && authentication != null) {
+            try {
+                String email = authentication.getName();
+                Optional<User> userOpt = userService.findByEmail(email);
+                if (userOpt.isPresent()) {
+                    lecturerId = (long) userOpt.get().getUserId();
+                }
+            } catch (Exception e) {
+                return "error/500";
+            }
+        }
+        
+        // If still no lecturer ID, redirect to login
+        if (lecturerId == null) {
+            return "redirect:/login";
         }
         
         // Add necessary data for the form
@@ -518,16 +692,47 @@ public class LecturerController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> saveQuestion(
             @RequestBody Map<String, Object> questionData, 
-            HttpSession session) {
+            HttpSession session,
+            Authentication authentication) {
         try {
             
             // Get user from session
             Object userObj = session.getAttribute("user");
-            Long lecturerId = 1L; // Default fallback
+            Long lecturerId = null;
             
             if (userObj != null && userObj instanceof UserBasicDTO) {
                 UserBasicDTO user = (UserBasicDTO) userObj;
                 lecturerId = user.getUserId();
+            }
+            
+            // Alternative: get from currentUserId set by ScopeInterceptor
+            if (lecturerId == null) {
+                Object currentUserId = session.getAttribute("currentUserId");
+                if (currentUserId != null && currentUserId instanceof Long) {
+                    lecturerId = (Long) currentUserId;
+                }
+            }
+            
+            // If still no lecturerId, get from authentication
+            if (lecturerId == null && authentication != null) {
+                try {
+                    String email = authentication.getName();
+                    Optional<User> userOpt = userService.findByEmail(email);
+                    if (userOpt.isPresent()) {
+                        lecturerId = (long) userOpt.get().getUserId();
+                    }
+                } catch (Exception e) {
+                    Map<String, Object> errorResponse = new HashMap<>();
+                    errorResponse.put("error", "Authentication failed");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+                }
+            }
+            
+            // If still no lecturer ID, return error
+            if (lecturerId == null) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("error", "User not authenticated");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
             }
             
             // Get or create question
@@ -1595,39 +1800,72 @@ public class LecturerController {
     }
     
     /**
-     * API endpoint to get subjects assigned to current lecturer
-     */    @GetMapping("/api/assigned-subjects")
+     * API endpoint để lấy assigned subjects cho lecturer (for dropdown filter)
+     */
+    @GetMapping("/api/assigned-subjects")
     @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getAssignedSubjects(HttpSession session) {
+    public ResponseEntity<List<Map<String, Object>>> getAssignedSubjects(
+            HttpSession session,
+            Authentication authentication) {
         try {
-            // Get user from session
-            Object userObj = session.getAttribute("user");
-            Long lecturerId = 1L; // Default fallback
+            Long lecturerId = null;
             
+            // Get user from session first
+            Object userObj = session.getAttribute("user");
             if (userObj != null && userObj instanceof UserBasicDTO) {
                 UserBasicDTO user = (UserBasicDTO) userObj;
-                lecturerId = user.getUserId();            }
-              // Get assigned subjects
+                lecturerId = user.getUserId();
+            }
+            
+            // Alternative: get from currentUserId set by ScopeInterceptor
+            if (lecturerId == null) {
+                Object currentUserId = session.getAttribute("currentUserId");
+                if (currentUserId != null && currentUserId instanceof Long) {
+                    lecturerId = (Long) currentUserId;
+                }
+            }
+            
+            // If still no lecturerId, get from authentication
+            if (lecturerId == null && authentication != null && authentication.isAuthenticated()) {
+                try {
+                    String email = authentication.getName();
+                    Optional<User> userOpt = userService.findByEmail(email);
+                    if (userOpt.isPresent()) {
+                        lecturerId = (long) userOpt.get().getUserId();
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error getting user from authentication: " + e.getMessage());
+                }
+            }
+            
+            if (lecturerId == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ArrayList<>());
+            }
+            
+            // Get assigned subjects for this lecturer
             List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
                 lecturerId, 
                 SubjectRole.LECTURER
             );
-              // Prepare response - format expected by frontend
-            List<Map<String, Object>> subjectList = new ArrayList<>();
-            for (Subject subject : assignedSubjects) {
-                Map<String, Object> subjectMap = new HashMap<>();
-                subjectMap.put("subjectId", subject.getSubjectId());
-                subjectMap.put("subjectName", subject.getSubjectName());
-                subjectMap.put("subjectCode", subject.getSubjectCode());
-                subjectList.add(subjectMap);
-            }
             
-            // Return subjects array directly (frontend expects array, not wrapped object)
+            // Convert to simple map for JSON response
+            List<Map<String, Object>> subjectList = assignedSubjects.stream()
+                .map(subject -> {
+                    Map<String, Object> subjectMap = new HashMap<>();
+                    subjectMap.put("subjectId", subject.getSubjectId());
+                    subjectMap.put("subjectName", subject.getSubjectName());
+                    subjectMap.put("subjectCode", subject.getSubjectCode());
+                    return subjectMap;
+                })
+                .collect(Collectors.toList());
+                
+            System.out.println("API: Returning " + subjectList.size() + " assigned subjects for lecturer " + lecturerId);
+            
             return ResponseEntity.ok(subjectList);
             
         } catch (Exception e) {
-            // Return empty array on error to prevent frontend issues
-            return ResponseEntity.ok(new ArrayList<>());
+            System.err.println("Error getting assigned subjects: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
         }
     }
 
@@ -1710,8 +1948,7 @@ public class LecturerController {
         }
     }
 
-    
-    /**
+      /**
      * Helper method to map subject names to course names
      * This is a temporary solution until database relationships are properly aligned
      */
@@ -1738,7 +1975,30 @@ public class LecturerController {
                 return "Electricity and Magnetism";
             case "general chemistry":
                 return "General Chemistry";
+            case "organic chemistry":
+                return "Organic Chemistry";
+            case "cell biology":
+                return "Cell Biology";
+            case "genetics":
+                return "Genetics";
             default:
+                // If no exact mapping found, try partial matches
+                String lowerSubject = subjectName.toLowerCase();
+                if (lowerSubject.contains("biology") || lowerSubject.contains("cell")) {
+                    return "Cell Biology";
+                }
+                if (lowerSubject.contains("genetic")) {
+                    return "Genetics";
+                }
+                if (lowerSubject.contains("chemistry") || lowerSubject.contains("chem")) {
+                    return "General Chemistry";
+                }
+                if (lowerSubject.contains("programming") || lowerSubject.contains("computer")) {
+                    return "Introduction to Computer Science";
+                }
+                if (lowerSubject.contains("math") || lowerSubject.contains("calculus")) {
+                    return "Calculus II";
+                }
                 // If no mapping found, return null (no questions will be shown)
                 return null;
         }
@@ -1771,5 +2031,5 @@ public class LecturerController {
                 return courseName;
         }
     }
-}
+  }
 

@@ -710,8 +710,7 @@ public class QuestionService {
             // TODO: Save feedback to question or create feedback entity
             questionRepository.save(question);
         }
-    }
-      /**
+    }    /**
      * Convert Question entity to QuestionDTO
      */
     private QuestionDTO convertToDTO(Question question) {
@@ -720,7 +719,17 @@ public class QuestionService {
         dto.setContent(question.getContent());
         dto.setStatus(question.getStatus());
         dto.setDifficultyLevel(question.getDifficultyLevel());
-        dto.setUpdatedDate(question.getUpdatedAt() != null ? question.getUpdatedAt().toString() : "");
+        
+        // Format updated date properly
+        if (question.getUpdatedAt() != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            dto.setUpdatedDate(question.getUpdatedAt().format(formatter));
+        } else if (question.getCreatedAt() != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            dto.setUpdatedDate(question.getCreatedAt().format(formatter));
+        } else {
+            dto.setUpdatedDate("No date available");
+        }
         
         // Set subject name from course
         if (question.getCourse() != null) {

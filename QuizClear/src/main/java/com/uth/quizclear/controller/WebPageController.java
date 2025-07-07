@@ -268,11 +268,21 @@ public class WebPageController {
     public String hedApproveQuestions(HttpSession session, Model model) {
         // TODO: Implement proper authentication when ready
         return "HEAD_OF_DEPARTMENT/HED_ApproveQuestion";
-    }
-
-    @GetMapping("/hed-join-task")
-    public String hedJoinTask(HttpSession session, Model model) {
-        // TODO: Implement proper authentication when ready
+    }    @GetMapping("/hed-join-task")
+    public String hedJoinTask(org.springframework.security.core.Authentication authentication, Model model) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        
+        // Get current user ID
+        Long hedId = getCurrentUserIdFromAuth(authentication);
+        if (hedId == null) {
+            return "redirect:/login";
+        }
+        
+        // Add hedId for JavaScript
+        model.addAttribute("hedId", hedId);
+        
         return "HEAD_OF_DEPARTMENT/HED_JoinTask";
     }
 
@@ -844,8 +854,7 @@ public class WebPageController {
     private void setDefaultDashboardValues(Model model) {
         model.addAttribute("totalSubjects", 0);
         model.addAttribute("subjectsThisMonth", 0);
-        model.addAttribute("totalQuestions", 0);
-        model.addAttribute("questionsThisMonth", 0);
+        model.addAttribute("totalQuestions", 0);        model.addAttribute("questionsThisMonth", 0);
         model.addAttribute("duplicateQuestions", 0);
         model.addAttribute("examsCreated", 0);
         model.addAttribute("examsThisMonth", 0);
@@ -854,5 +863,20 @@ public class WebPageController {
         model.addAttribute("totalDuplicateWarnings", 0);
         model.addAttribute("barChart", createEmptyChart());
         model.addAttribute("pieChart", createEmptyChart());
+    }
+    
+    // Helper method to get current user ID from authentication
+    private Long getCurrentUserIdFromAuth(org.springframework.security.core.Authentication authentication) {
+        try {
+            if (authentication != null && authentication.isAuthenticated()) {
+                String email = authentication.getName();
+                return userService.findByEmail(email)
+                    .map(user -> (long) user.getUserId())
+                    .orElse(null);
+            }
+        } catch (Exception e) {
+            System.err.println("Could not get current user ID: " + e.getMessage());
+        }
+        return null;
     }
 }

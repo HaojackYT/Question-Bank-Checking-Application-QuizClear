@@ -3,35 +3,148 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../../Static/FontAwesome/css/all.css" />
-    <link rel="stylesheet" href="../../Static/header.css" />
-    <link rel="stylesheet" href="../../Static/web_styles.css" />
-    <link rel="stylesheet" href="../../Static/Menu-Staff.css" />
-    <link rel="stylesheet" href="../../Static/css/Staff/staffStatRp.css" />
+    <link rel="stylesheet" th:href="@{/Static/FontAwesome/css/all.css}" />
+    <link rel="stylesheet" th:href="@{/Static/header.css}" />
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
+    <link rel="stylesheet" th:href="@{/Static/css/staff/staffStatRp.css}" />
     <link
       href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../../Static/staffStatRp.css" />
     <title>Statistics & Reporting</title>
   </head>
 
   <body>
-    <!--header-->
+    <header class="header" th:insert="~{header_user :: header}"></header>
     <div id="header-placeholder"></div>
 
     <!-- body -->
     <div id="Container-body">
       <!-- Menu -->
-      <div id="menu-HTML"></div>
-
+      <div class="sidebar" th:insert="~{Menu-Staff :: menu}"></div>
       <!-- Main content -->
-      <div id="main">
-        <!-- noi dung duoc nhap trong day -->
-      </div>
+      <div class="main-content">
+        <div class="header-section">
+            <h1 class="page-title">Statistics & Reporting</h1>
+            <p class="page-description">
+                Comprehensive analytics and reports for question bank, exams, and creator performance
+            </p>
+            <div class="tab-navigation">
+                <button class="tab-button active" data-tab="question-bank">Question Bank</button>
+                <button class="tab-button" data-tab="exams">Exams</button>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" th:text="${#numbers.formatInteger(totalQuestions, 0, 'COMMA')}">0</div>
+                <div class="stat-label">Total Questions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" th:text="${#numbers.formatInteger(totalApproved, 0, 'COMMA')}">0</div>
+                <div class="stat-label">Approved</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" th:text="${#numbers.formatInteger(totalPending, 0, 'COMMA')}">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" th:text="${#numbers.formatInteger(totalRejected, 0, 'COMMA')}">0</div>
+                <div class="stat-label">Rejected</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" th:text="${#numbers.formatInteger(totalDuplicate, 0, 'COMMA')}">0</div>
+                <div class="stat-label">Duplicates</div>
+            </div>
+        </div>
+
+        <!-- Question Bank Tab -->
+        <div id="question-bank-content" class="tab-content">
+            <div class="chart-section">
+                <!-- Bar Chart: Questions by Subject -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Questions by Subject</h3>
+                    <table class="status-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Total</th>
+                                <th>Approved</th>
+                                <th>Pending</th>
+                                <th>Rejected</th>
+                                <th>Duplicate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="stat : ${questionBankStats}">
+                                <td th:text="${stat.subjectName}"></td>
+                                <td th:text="${stat.total}"></td>
+                                <td th:text="${stat.approved}"></td>
+                                <td th:text="${stat.pending}"></td>
+                                <td th:text="${stat.rejected}"></td>
+                                <td th:text="${stat.duplicate}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pie Chart: Difficulty Distribution -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Difficulty Distribution</h3>
+                    <table class="status-table">
+                        <thead>
+                            <tr>
+                                <th>Difficulty</th>
+                                <th>Count</th>
+                                <th>Percent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="diff : ${difficultyStats}">
+                                <td th:text="${diff.difficultyLevel}"></td>
+                                <td th:text="${diff.count}"></td>
+                                <td th:text="${#numbers.formatDecimal(diff.percent, 1, 1)} + '%'"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exams Tab -->
+        <div id="exams-content" class="tab-content" style="display: none">
+            <div class="chart-card">
+                <h3 class="chart-title">Exam Status by Subject</h3>
+                <table class="status-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Total</th>
+                            <th>Draft</th>
+                            <th>Pending</th>
+                            <th>Approved</th>
+                            <th>Rejected</th>
+                            <th>Approval Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="stat : ${examStatusStats}">
+                            <td th:text="${stat.subjectName}"></td>
+                            <td th:text="${stat.total}"></td>
+                            <td th:text="${stat.draft}"></td>
+                            <td th:text="${stat.pending}"></td>
+                            <td th:text="${stat.approved}"></td>
+                            <td th:text="${stat.rejected}"></td>
+                            <td th:text="${#numbers.formatDecimal(stat.approvalRate, 1, 1)} + '%'"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <!-- ma nhung header vs menu -->
+    <!-- ma nhung header vs menu
     <script>
       // Load header
       fetch("../../Template/header_user.html")
@@ -58,6 +171,7 @@
           script.src = "../../Static/js/staffStatRp.js";
           document.body.appendChild(script);
         });
-    </script>
+    </script> -->
+    <script th:src="@{/Static/js/staffStatRp.js}"></script>
   </body>
 </html>

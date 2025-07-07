@@ -261,9 +261,7 @@ public class UserService {
         }
 
         return summary;
-    }
-
-    public Optional<UserBasicDTO> getProfileByUserId(Long userId) {
+    }    public Optional<UserBasicDTO> getProfileByUserId(Long userId) {
         Optional<User> userOpt = userRepository.findById(userId);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
@@ -273,9 +271,9 @@ public class UserService {
                 user.getEmail(),
                 user.getRole() != null ? user.getRole().name() : null
             );
+            
+            // Set basic fields
             dto.setStatus(user.getStatus());
-            dto.setWorkPlace("Default Workplace");
-            dto.setQualification("Default Qualification");
             dto.setStart(user.getStart());
             dto.setEnd(user.getEnd());
             dto.setGender(user.getGender());
@@ -284,6 +282,43 @@ public class UserService {
             dto.setPhoneNumber(user.getPhoneNumber());
             dto.setHometown(user.getHometown());
             dto.setContactAddress(user.getContactAddress());
+            
+            // Set department - get from user's departments or default
+            try {
+                List<Department> userDepartments = getUserDepartments(userId);
+                if (!userDepartments.isEmpty()) {
+                    dto.setDepartment(userDepartments.get(0).getDepartmentName());
+                } else {
+                    // Set default department based on role
+                    switch (user.getRole()) {
+                        case HOD:
+                            dto.setDepartment("Computer Science Department");
+                            break;
+                        case HOED:
+                            dto.setDepartment("Examination Department");
+                            break;
+                        case SL:
+                            dto.setDepartment("Subject Leadership");
+                            break;
+                        case LEC:
+                            dto.setDepartment("Academic Department");
+                            break;
+                        case RD:
+                            dto.setDepartment("Research Department");
+                            break;
+                        default:
+                            dto.setDepartment("General Department");
+                            break;
+                    }
+                }
+            } catch (Exception e) {
+                dto.setDepartment("General Department");
+            }
+            
+            // Set work-related fields
+            dto.setWorkPlace(user.getWorkPlace() != null ? user.getWorkPlace() : "University Campus");
+            dto.setQualification(user.getQualification() != null ? user.getQualification() : "Bachelor's Degree");
+            
             return Optional.of(dto);
         }
         return Optional.empty();
