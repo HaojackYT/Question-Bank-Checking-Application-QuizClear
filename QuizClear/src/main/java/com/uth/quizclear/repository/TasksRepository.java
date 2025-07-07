@@ -1,6 +1,7 @@
 package com.uth.quizclear.repository;
 
 import com.uth.quizclear.model.dto.LecTaskDTO;
+import com.uth.quizclear.model.dto.SendQuesDTO;
 import com.uth.quizclear.model.entity.Tasks;
 import com.uth.quizclear.model.enums.TaskType;
 import com.uth.quizclear.model.enums.TaskStatus;
@@ -129,4 +130,28 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
                 WHERE t.taskId = :taskId
         """)
         Optional<LecTaskDTO> findTaskDTOById(@Param("taskId") Integer taskId);
+
+        // Get Questions List for Send Task
+        @Query("""
+                SELECT new com.uth.quizclear.model.dto.SendQuesDTO(
+                        q.questionId,
+                        q.course.courseName,
+                        q.content,
+                        q.answerKey,
+                        q.answerF1,
+                        q.answerF2,
+                        q.answerF3,
+                        q.difficultyLevel,
+                        q.createdAt
+                )
+                FROM Question q
+                WHERE q.taskId IS NULL
+                AND q.planId IS NULL
+                """)
+        List<SendQuesDTO> findQuesTask();
+
+                //     AND q.status = 'APPROVED'
+                // AND q.blockQuestion = 'ACTIVE'
+                // AND q.hiddenQuestion = false
+
 }

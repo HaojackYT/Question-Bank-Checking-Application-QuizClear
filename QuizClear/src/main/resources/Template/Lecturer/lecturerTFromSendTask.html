@@ -29,7 +29,7 @@
             <!-- noi dung duoc nhap trong day -->
             <!-- Page Header -->
             <div class="page-header">
-                <a href="lecturerTask">
+                <a th:href="@{/lecturer/task}">
                     <button class="back-btn">
                         <i class="fas fa-arrow-left"></i>
                     </button>
@@ -74,9 +74,9 @@
                     <div class="checkbox-list">
                         <div class="checkbox-item" th:each="q : ${questions}">
                             <span class="checkbox-text">
-                                <span th:text="${q.courseName}">Course</span> –
-                                <span th:text="${#strings.abbreviate(q.content, 40)}">Content</span> –
-                                <span th:text="${q.difficultyLevel}">Difficulty</span> –
+                                <span th:text="${q.courseName}">Course</span>
+                                <span th:text="${#strings.abbreviate(q.content, 60)}">Content</span>
+                                <span th:text="${q.difficultyLevel.value}">Difficulty</span>
                                 <span th:text="${#temporals.format(q.createdAt, 'dd/MM/yyyy')}">Date</span>
                             </span>
                             <div class="checkbox-container">
@@ -90,42 +90,19 @@
             </div>
 
 
-
             <div class="questions-list">
                 <h2 style="color: #141263">Question</h2>
-
-                <!-- <div class="question-box">
-                    <div class="question-header" onclick="toggleQuestion(this)">
-                        <i class="fas fa-chevron-up toggle-icon rotated"></i>
-                        <p>Write a SQL query to retrieve all customers who have made purchases totaling more than $1000.
-                            <span class="tag apply-basic">Apply (Basic)</span>
-                        </p>
-                    </div>
-                    <div class="question-content">
-                        <div class="correct-answer">
-                            <h4>Correct Answer</h4>
-                            <div class="answer-text">The correct answer</div>
-                        </div>
-                        <div class="incorrect-answers">
-                            <h4>Incorrect Answers</h4>
-                            <div class="answer-text">Incorrect answer</div>
-                            <div class="answer-text">Incorrect answer</div>
-                            <div class="answer-text">Incorrect answer</div>
-                        </div>
-                    </div>
-                </div> -->
                 <div class="question-box" th:each="q : ${questions}" th:attr="data-question-id=${q.questionId}"
                     style="display:none;">
                     <div class="question-header" onclick="toggleQuestion(this)">
                         <i class="fas fa-chevron-up toggle-icon rotated"></i>
-                        <p th:text="${q.content}">
-                            Sample question content
-                            <span class="tag"
-                                th:classappend="${q.difficultyLevel.value.toLowerCase().replace(' ', '-')}">
-                                <span th:text="${q.difficultyLevel.name()}">Difficulty</span>
-                            </span>
-                        </p>
+                        <p th:text="${q.content}"></p>
+                        <span class="tag" th:classappend="${q.difficultyLevel.name().toLowerCase().replace('_','-')}"
+                            th:text="${q.difficultyLevel}">
+                        </span>
+
                     </div>
+
                     <div class="question-content">
                         <div class="correct-answer">
                             <h4>Correct Answer</h4>
@@ -152,18 +129,161 @@
                     toggleIcon.classList.toggle('rotated');
                 }
             </script>
-            <script th:src="@{/Static/js/L_activeMenu.js}"></script>
-            <script>
+            <script th:inline="javascript">
+                // Lưu số lượng tối thiểu theo từng mức độ
+                const requiredCounts = {
+                    recognition: /*[[${task.totalRecognition}]]*/ 0,
+                    comprehension: /*[[${task.totalComprehension}]]*/ 0,
+                    "basic-application": /*[[${task.totalBasicApplication}]]*/ 0,
+                    "advanced-application": /*[[${task.totalAdvancedApplication}]]*/ 0
+                };
+
+                const totalQuestions = /*[[${task.totalQuestions}]]*/ 0;
+                const selectedQuestions = new Map();
+
                 function updateSelectedQuestions(checkbox) {
                     const questionId = checkbox.value;
-                    const questionBoxes = document.querySelectorAll('.question-box[data-question-id]');
-                    questionBoxes.forEach(box => {
-                        if (box.getAttribute('data-question-id') === questionId) {
-                            box.style.display = checkbox.checked ? 'block' : 'none';
+                    const box = document.querySelector(`.question-box[data-question-id='${questionId}']`);
+                    if (!box) return;
+
+                    const tagElement = box.querySelector('.tag');
+                    if (!tagElement) return;
+
+                    const difficultyClasses = ['recognition', 'comprehension', 'basic-application', 'advanced-application'];
+                    const difficulty = difficultyClasses.find(cls => tagElement.classList.contains(cls));
+                    if (!difficulty) return;
+
+                    // Đếm số lượng đã chọn theo từng độ khó
+                    const currentCounts = {
+                        recognition: 0,
+                        comprehension: 0,
+                        "basic-application": 0,
+                        "advanced-application": 0
+                    };
+                    for (const diff of selectedQuestions.values()) {
+                        if (currentCounts[diff] !== undefined) {
+                            currentCounts[diff]++;
                         }
-                    });
+                    }
+
+                    // Nếu vượt quá giới hạn, không cho chọn thêm
+                    if (checkbox.checked) {
+                        if (selectedQuestions.size >= totalQuestions) {
+                            alert("Bạn đã chọn đủ số lượng câu hỏi tổng cộng.");
+                            checkbox.checked = false;
+                            return;
+                        }
+
+                        if (currentCounts[difficulty] >= requiredCounts[difficulty]) {
+                            alert(`Bạn chỉ được chọn tối đa ${requiredCounts[difficulty]} câu cho độ khó ${difficulty.replace('-', ' ')}`);
+                            checkbox.checked = false;
+                            return;
+                        }
+
+                        selectedQuestions.set(questionId, difficulty);
+                        box.style.display = 'block';
+                    } else {
+                        selectedQuestions.delete(questionId);
+                        box.style.display = 'none';
+                    }
+
+                    updateStatistics();
+                    saveToSession();
+                    validateForm();
                 }
+
+
+                function updateStatistics() {
+                    const counts = {
+                        recognition: 0,
+                        comprehension: 0,
+                        "basic-application": 0,
+                        "advanced-application": 0
+                    };
+
+                    for (const diff of selectedQuestions.values()) {
+                        if (counts[diff] !== undefined) {
+                            counts[diff]++;
+                        }
+                    }
+
+                    const statValues = document.querySelectorAll(".info-right .stat .value");
+                    if (statValues.length < 5) return;
+
+                    statValues[0].textContent = `${selectedQuestions.size}/${getTotalRequired()}`;
+                    statValues[1].textContent = `${counts.recognition}/${requiredCounts.recognition}`;
+                    statValues[2].textContent = `${counts.comprehension}/${requiredCounts.comprehension}`;
+                    statValues[3].textContent = `${counts["basic-application"]}/${requiredCounts["basic-application"]}`;
+                    statValues[4].textContent = `${counts["advanced-application"]}/${requiredCounts["advanced-application"]}`;
+                }
+
+
+                function validateForm() {
+                    let valid = true;
+                    const counts = {
+                        recognition: 0,
+                        comprehension: 0,
+                        "basic-application": 0,
+                        "advanced-application": 0
+                    };
+
+                    for (const diff of selectedQuestions.values()) {
+                        if (counts[diff] !== undefined) {
+                            counts[diff]++;
+                        }
+                    }
+
+                    for (const diff in requiredCounts) {
+                        if (counts[diff] < requiredCounts[diff]) {
+                            valid = false;
+                            break;
+                        }
+                    }
+
+                    document.querySelector(".send-btn").disabled = !valid;
+                }
+
+
+                // Lưu lại tạm thời lựa chọn của người dùng 
+                function saveToSession() {
+                    sessionStorage.setItem("selectedQuestions", JSON.stringify(Array.from(selectedQuestions.entries())));
+                }
+
+                // Load lại lựa chọn
+                function restoreFromSession() {
+                    const saved = sessionStorage.getItem("selectedQuestions");
+                    if (!saved) return;
+
+                    const entries = JSON.parse(saved);
+                    for (const [id, diff] of entries) {
+                        const checkbox = document.querySelector(`input[type="checkbox"][value="${id}"]`);
+                        const box = document.querySelector(`.question-box[data-question-id='${id}']`);
+                        if (checkbox && box) {
+                            checkbox.checked = true;
+                            selectedQuestions.set(id, diff);
+                            box.style.display = 'block';
+                        }
+                    }
+
+                    updateStatistics();
+                    validateForm();
+                }
+
+
+                function getTotalRequired() {
+                    return requiredCounts.recognition +
+                        requiredCounts.comprehension +
+                        requiredCounts["basic-application"] +
+                        requiredCounts["advanced-application"];
+                }
+
+                // Khởi động
+                document.addEventListener("DOMContentLoaded", function () {
+                    restoreFromSession();
+                });
             </script>
+            <script th:src="@{/Static/js/L_activeMenu.js}"></script>
+
 </body>
 
 </html>

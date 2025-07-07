@@ -35,6 +35,8 @@ import java.util.stream.Collectors;
 
 import com.uth.quizclear.model.dto.LecTaskDTO;
 import com.uth.quizclear.model.dto.QuestionCreateDTO;
+import com.uth.quizclear.model.dto.QuestionDTO;
+import com.uth.quizclear.model.dto.SendQuesDTO;
 import com.uth.quizclear.service.TaskService;
 
 @Controller
@@ -925,8 +927,14 @@ public class LecturerController {
         if (currentUserId != null && currentUserId instanceof Long) {
             lecturerId = (Long) currentUserId;
         }
+        
         // Load tasks for the lecturer
         List<LecTaskDTO> tasks = taskService.getTasksByUserId(lecturerId);
+
+        for (LecTaskDTO task : tasks) {
+            String subject = mapCourseToSubject(task.getCourseName());
+            task.setCourseName(subject);
+        }
 
         model.addAttribute("tasks", tasks);
         model.addAttribute("lecturerId", lecturerId);
@@ -942,6 +950,28 @@ public class LecturerController {
         System.out.println("Received taskId: " + taskId);
         return taskService.getTaskDetailById(taskId);
     }
+
+    // Send Task page
+    @GetMapping("/task/show-task/{taskId}")
+    public String showTaskSendPage(@PathVariable("taskId") Integer taskId, Model model) {
+        // Lấy thông tin task theo taskId
+        LecTaskDTO taskInfo = taskService.getTaskDetailById(taskId);
+
+        // Lấy danh sách câu hỏi có thể chọn cho task này
+        List<SendQuesDTO> questionList = taskService.getQuesForSendTask();
+
+        if (questionList != null) {
+        for (SendQuesDTO q : questionList) {
+            System.out.println("Question ID: " + q.getQuestionId() + ", Difficulty: " + q.getDifficultyLevel());
+        }
+    }
+
+        model.addAttribute("task", taskInfo);
+        model.addAttribute("questions", questionList);
+
+        return "Lecturer/lecturerTFromSendTask";
+    }
+
 
     /**
      * Lecturer Task page (alternative URL mapping)

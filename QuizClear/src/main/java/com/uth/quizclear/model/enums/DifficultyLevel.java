@@ -39,4 +39,14 @@ public enum DifficultyLevel {
         }
         throw new IllegalArgumentException("Invalid difficulty level: " + value);
     }
+
+    @Override
+    public String toString() {
+        return switch (this) {
+            case RECOGNITION -> "Recognition";
+            case COMPREHENSION -> "Comprehension";
+            case BASIC_APPLICATION -> "Apply (Basic)";
+            case ADVANCED_APPLICATION -> "Apply (Advanced)";
+        };
+    }
 }
