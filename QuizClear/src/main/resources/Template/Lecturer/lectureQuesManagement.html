@@ -390,12 +390,15 @@
         </div>
     </div>
         </div> <!-- End Main content -->
-    </div> <!-- End Container-body -->
-
-    <script th:inline="javascript">
+    </div> <!-- End Container-body -->    <script th:inline="javascript">
         /*<![CDATA[*/
         // Get lecturer ID from server (passed from controller)
-        const lecturerId = /*[[${lecturerId}]]*/ 1;
+        const lecturerId = /*[[${lecturerId}]]*/ null;
+        if (!lecturerId) {
+            alert('User not authenticated. Please log in again.');
+            window.location.href = '/login';
+            throw new Error('No lecturer ID available');
+        }
         console.log("Using lecturerId:", lecturerId);
           // Header and menu are loaded via Thymeleaf fragments, no need for fetch// Load questions data from API
         function loadQuestions() {
