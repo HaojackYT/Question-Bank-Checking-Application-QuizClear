@@ -184,12 +184,12 @@
     color: #065f46;
 }
 
-.tag.apply-basic {
+.tag.basic-application {
     background-color: #e0c5f4;
     color: #6b21a8;
 }
 
-.tag.apply-advanced {
+.tag.advanced-application {
     background-color: #fed7aa;
     color: #b45309;
 }
