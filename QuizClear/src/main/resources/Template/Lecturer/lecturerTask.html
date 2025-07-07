@@ -96,7 +96,7 @@
                     </thead>
                     <tbody>
                         <tr th:each="task : ${tasks}">
-                            <td th:text="${task.cousres}">Subject Name</td>
+                            <td th:text="${task.courseName}">Subject Name</td>
                             <td th:text="${task.description}">Description</td>
                             <td th:text="${task.totalQuestions}">20</td>
                             <td th:text="${#temporals.format(task.dueDate, 'dd/MM/yyyy')}">20/05/2025</td>
@@ -111,8 +111,9 @@
                             <td>
                                 <i class="fa-solid fa-eye view-task" th:attr="data-task-id=${task.taskId}"
                                     style="margin-right: 50px; cursor: pointer;"></i>
-                                <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"
-                                    onclick="goToSendTask();"></i>
+                                <a th:href="@{/lecturer/task/send-task/{taskId}(taskId=${task.taskId})}">
+                                    <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"></i>
+                                </a>
                             </td>
                         </tr>
                     </tbody>
@@ -157,11 +158,6 @@
         // Hàm đóng modal
         function closeModal() {
             overlay.style.display = 'none';
-        }
-
-        // Hàm chuyển hướng đến trang gửi task
-        function goToSendTask() {
-            window.location.href = 'lecturerTFromSendTask';
         }
 
         // Xử lý icon paper-plane và nút View
@@ -321,12 +317,11 @@
                 const task = await response.json();
                 // Cập nhật modal
                 document.querySelector('.modal .modal-due').textContent = `Due: ${task.dueDate?.split('T')[0] || ''}`;
-                document.querySelector('.modal input[readonly][value]').value = task.cousres;
+                document.querySelector('.modal input[readonly][value]').value = task.courseName;
                 document.querySelectorAll('.modal input[readonly]')[1].value = task.description;
 
                 document.querySelector('.info-group div:nth-child(1)').innerHTML = `<strong>Total Question:</strong> ${task.totalQuestions}`;
                 document.querySelector('.info-group div:nth-child(2)').innerHTML = `<strong>Deadline:</strong> ${task.dueDate?.split('T')[0] || ''}`;
-                // Không bọc thêm span vì formatStatus đã trả về span rồi
                 document.querySelector('.info-group div:nth-child(3)').innerHTML = `<strong>Status:</strong> ${formatStatus(task.status)}`;
 
                 document.querySelector('.levels div:nth-child(1)').innerHTML = `<strong>Recognition</strong><br>${task.totalRecognition}`;
