@@ -257,11 +257,15 @@ public class LecturerController {
             System.out.println("Status parameter: " + status);
             System.out.println("Difficulty parameter: " + difficulty);
             System.out.println("Lecturer ID: " + lecturerId);
-            
-            // Simplified approach: Get all questions created by this lecturer
+              // Simplified approach: Get all questions created by this lecturer
             List<Question> questions = questionRepository.findByCreatedBy_UserId(lecturerId);
             
-            System.out.println("Total questions found for lecturer: " + questions.size());
+            // Filter out soft-deleted questions (those marked with [DELETED])
+            questions = questions.stream()
+                .filter(q -> q.getContent() != null && !q.getContent().startsWith("[DELETED]"))
+                .collect(Collectors.toList());
+            
+            System.out.println("Total questions found for lecturer (after filtering deleted): " + questions.size());
             
             // Debug: Print found questions
             for (Question q : questions) {
@@ -381,6 +385,7 @@ public class LecturerController {
                 questionMap.put("statusDisplay", getStatusDisplayText(q.getStatus()));
                 questionMap.put("statusClass", getStatusCssClass(q.getStatus()));
                 questionMap.put("canEdit", canEditByStatus(q.getStatus()));
+                questionMap.put("canBeDeleted", q.getStatus() != QuestionStatus.APPROVED); // Only allow deleting non-approved questions
                 questionMap.put("difficulty", q.getDifficultyLevel().toString());
                 
                 return questionMap;
@@ -450,30 +455,90 @@ public class LecturerController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(List.of());
         }
-    }
-
-    /**
+    }    /**
      * API endpoint để xóa question
      */
     @DeleteMapping("/api/questions/{questionId}")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> deleteQuestion(@PathVariable Long questionId) {
+    public ResponseEntity<Map<String, String>> deleteQuestion(@PathVariable Long questionId, Authentication authentication) {
         try {
-            Question question = questionRepository.findById(questionId)
+            // Lấy thông tin user hiện tại
+            String email = authentication.getName();
+            Optional<User> userOpt = userService.findByEmail(email);
+            if (!userOpt.isPresent()) {
+                Map<String, String> response = new HashMap<>();
+                response.put("error", "User not found");
+                return ResponseEntity.status(404).body(response);
+            }
+            User currentUser = userOpt.get();
+            Long currentUserId = (long) currentUser.getUserId();
+              Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new RuntimeException("Question not found"));
             
-            // Chỉ cho phép xóa nếu question chưa được approved
-            if (question.getStatus() == QuestionStatus.APPROVED) {
+            // Debug logging để kiểm tra user IDs
+            System.out.println("=== DELETE QUESTION DEBUG ===");
+            System.out.println("Current user ID: " + currentUserId + " (type: " + currentUserId.getClass().getSimpleName() + ")");
+            System.out.println("Question creator ID: " + question.getCreatedBy().getUserId() + " (type: " + question.getCreatedBy().getUserId().getClass().getSimpleName() + ")");
+            System.out.println("Are they equal? " + question.getCreatedBy().getUserId().equals(currentUserId));
+            System.out.println("Question ID: " + questionId);
+            System.out.println("Question content: " + question.getContent().substring(0, Math.min(50, question.getContent().length())));
+            
+            // Kiểm tra quyền: chỉ cho phép lecturer xóa question của chính họ
+            // Convert both to Long to ensure proper comparison
+            Long questionCreatorId = question.getCreatedBy().getUserId().longValue();
+            Long currentUserIdLong = currentUserId.longValue();
+              if (!questionCreatorId.equals(currentUserIdLong)) {
                 Map<String, String> response = new HashMap<>();
-                response.put("error", "Cannot delete approved questions");
+                response.put("error", "You can only delete your own questions. Creator: " + questionCreatorId + ", Current: " + currentUserIdLong);
+                return ResponseEntity.status(403).body(response);
+            }
+              // Chỉ cho phép xóa nếu question có status là DRAFT
+            if (question.getStatus() != QuestionStatus.DRAFT) {
+                Map<String, String> response = new HashMap<>();
+                String statusText = question.getStatus().toString().toLowerCase();
+                response.put("error", "Cannot delete " + statusText + " questions. Only draft questions can be deleted.");
                 return ResponseEntity.status(400).body(response);
+            }// Try to delete the question (soft delete if has foreign key constraints)
+            try {
+                questionRepository.deleteById(questionId);
+                System.out.println("Question " + questionId + " deleted successfully");
+                
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Question deleted successfully");
+                return ResponseEntity.ok(response);
+                
+            } catch (Exception dbError) {
+                // Handle database constraint errors with soft delete
+                System.err.println("Database error while deleting question: " + dbError.getMessage());
+                
+                if (dbError.getMessage().contains("foreign key constraint") || 
+                    dbError.getMessage().contains("duplicate_detections") ||
+                    dbError.getMessage().contains("constraint") ||
+                    dbError.getMessage().contains("Cannot delete or update a parent row")) {
+                    
+                    // Instead of hard delete, mark as deleted by changing status
+                    try {
+                        question.setStatus(QuestionStatus.DRAFT); // Mark as draft to hide from normal views
+                        question.setContent("[DELETED] " + question.getContent()); // Mark as deleted in content
+                        questionRepository.save(question);
+                        System.out.println("Question " + questionId + " marked as deleted (soft delete)");
+                        
+                        Map<String, String> response = new HashMap<>();
+                        response.put("message", "Question marked as deleted. It cannot be permanently removed because it is referenced in other records.");
+                        return ResponseEntity.ok(response);
+                        
+                    } catch (Exception softDeleteError) {
+                        Map<String, String> response = new HashMap<>();
+                        response.put("error", "Cannot delete question: it is being used in other parts of the system");
+                        return ResponseEntity.status(400).body(response);
+                    }
+                } else {
+                    Map<String, String> response = new HashMap<>();
+                    response.put("error", "Cannot delete question: " + dbError.getMessage());
+                    return ResponseEntity.status(400).body(response);
+                }
             }
             
-            questionRepository.deleteById(questionId);
-            
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Question deleted successfully");
-            return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
             response.put("error", "Failed to delete question: " + e.getMessage());
