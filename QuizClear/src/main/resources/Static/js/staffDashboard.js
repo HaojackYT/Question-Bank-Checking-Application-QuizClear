@@ -15,73 +15,133 @@ let currentUserScope = {
 // Load staff dashboard with scope filtering
 async function loadStaffDashboardWithScope() {
     try {
-        // First, get user scope
-        const scopeResponse = await fetch('/api/user/current-scope', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        console.log('=== Loading Staff Dashboard with Scope ===');
 
-        if (scopeResponse.ok) {
-            currentUserScope = await scopeResponse.json();
-            console.log('Staff dashboard scope initialized:', currentUserScope);
-        }
+        // Load dashboard statistics
+        await loadStaffStats();
+        
+        // Load chart data
+        await loadStaffChartData();
+        
+        // Load activities
+        await loadStaffActivities();
 
-        // Load dashboard data with scope parameters
-        const params = new URLSearchParams();
-        if (currentUserScope.accessibleDepartmentIds.length > 0) {
-            params.append('departmentIds', currentUserScope.accessibleDepartmentIds.join(','));
-        }
-        if (currentUserScope.accessibleSubjectIds.length > 0) {
-            params.append('subjectIds', currentUserScope.accessibleSubjectIds.join(','));
-        }
-        params.append('requestingUserId', currentUserScope.userId);
-        params.append('userRole', currentUserScope.userRole);
+        // Update scope indicator
+        updateScopeIndicator();
 
-        const dashboardResponse = await fetch(`/api/dashboard/staff?${params}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (dashboardResponse.ok) {
-            const data = await dashboardResponse.json();
-            updateDashboardDisplay(data);
-        } else {
-            console.error('Failed to load staff dashboard data');
-            loadFallbackDashboard();
-        }
     } catch (error) {
         console.error('Error loading staff dashboard:', error);
-        loadFallbackDashboard();
+        loadFallbackData();
+    }
+}
+
+// Load staff statistics with dynamic data
+async function loadStaffStats() {
+    try {
+        const response = await fetch('/api/dashboard/staff/stats', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Staff stats received:', data);
+            
+            // Update scope information
+            currentUserScope = {
+                ...currentUserScope,
+                ...data.scopeInfo
+            };
+            
+            // Update statistics display
+            updateStatsDisplay(data);
+            updateDashboardDisplay(data);
+        } else {
+            console.error('Failed to load staff stats:', response.status);
+            loadFallbackStats();
+        }
+    } catch (error) {
+        console.error('Error loading staff stats:', error);
+        loadFallbackStats();
+    }
+}
+
+// Load chart data for staff dashboard
+async function loadStaffChartData() {
+    try {
+        const response = await fetch('/api/dashboard/staff/chart-data', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Chart data received:', data);
+            
+            // Update charts
+            updateBarChart(data.barChart);
+            updatePieChart(data.pieChart);
+        } else {
+            console.error('Failed to load chart data:', response.status);
+            loadFallbackChartData();
+        }
+    } catch (error) {
+        console.error('Error loading chart data:', error);
+        loadFallbackChartData();
+    }
+}
+
+// Load recent activities
+async function loadStaffActivities() {
+    try {
+        const response = await fetch('/api/dashboard/staff/activities?limit=15', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Activities received:', data);
+            
+            // Update recent activities
+            updateRecentActivities(data.recentTasks);
+            updateDuplicateWarnings(data.duplicateWarnings);
+        } else {
+            console.error('Failed to load activities:', response.status);
+            loadFallbackActivities();
+        }
+    } catch (error) {
+        console.error('Error loading activities:', error);
+        loadFallbackActivities();
     }
 }
 
 // Update dashboard display with scope-filtered data
-function updateDashboardDisplay(data) {
+function updateStatsDisplay(data) {
     // Update overview statistics
     updateStatistics(data);
     
-    // Update charts with filtered data
-    updateBarChart(data.barChart);
-    updateLineChart(data.lineChart);
-    
-    // Update recent activities
-    updateRecentActivities(data.recentActivities);
-    
     // Add scope indicator
-    updateScopeIndicator(data.scopeInfo);
+    updateScopeIndicator();
+    
+    console.log('Stats display updated with dynamic data');
 }
 
-// Update statistics cards with scope awareness
+// Update statistics cards with dynamic data
 function updateStatistics(data) {
     const statCards = document.querySelectorAll('.stat-card');
     
     if (statCards[0]) {
-        statCards[0].querySelector('.stat-value').textContent = data.totalSubjects || 0;
-        statCards[0].querySelector('.stat-change').textContent = `+${data.subjectsThisMonth || 0} this month`;
+        const valueElement = statCards[0].querySelector('.stat-value');
+        const changeElement = statCards[0].querySelector('.stat-change');
+        if (valueElement) valueElement.textContent = data.totalSubjects || 0;
+        if (changeElement) changeElement.textContent = `+${data.subjectsThisMonth || 0} this month`;
         
         // Add scope indicator if filtered
         if (!currentUserScope.canViewAllData && currentUserScope.accessibleSubjectIds.length > 0) {
@@ -169,6 +229,44 @@ function updateBarChart(chartData) {
                     beginAtZero: true,
                     grid: { display: true, color: '#f0f0f0' },
                     ticks: { font: { size: 14 }, color: '#666' }
+                }
+            }
+        }    });
+}
+
+// Update pie chart with scope-filtered data
+function updatePieChart(chartData) {
+    if (window.pieChart && typeof window.pieChart.destroy === 'function') {
+        window.pieChart.destroy();
+    }
+    
+    const pieCtx = document.getElementById('pieChart').getContext('2d');
+    window.pieChart = new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: chartData.labels,
+            datasets: chartData.datasets.map(ds => ({
+                data: ds.data,
+                backgroundColor: ds.backgroundColors || ['#8979FF', '#FF928A', '#3CC3DF', '#FFAE4C']
+            }))
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { 
+                    display: true, 
+                    position: 'right',
+                    labels: {
+                        font: { size: 14 },
+                        color: '#3B2175'
+                    }
+                },
+                title: { 
+                    display: !currentUserScope.canViewAllData,
+                    text: 'Question difficulty distribution (Filtered)',
+                    font: { size: 12 },
+                    color: '#666'
                 }
             }
         }
@@ -296,31 +394,116 @@ function formatActivityTime(timestamp) {
     
     if (diffHours < 1) return 'Just now';
     if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-    return date.toLocaleDateString();
+    if (diffDays < 7) return `${diffDays}d ago`;    return date.toLocaleDateString();
 }
 
-// Fallback dashboard for when API fails
-function loadFallbackDashboard() {
-    // Implement fallback logic, e.g., load cached data, show error message, etc.
-    console.warn('Loading fallback dashboard data');
-    document.querySelectorAll('.stat-card').forEach(card => {
-        card.querySelector('.stat-value').textContent = 'N/A';
-        card.querySelector('.stat-change').textContent = '';
+// Update duplicate warnings display
+function updateDuplicateWarnings(warnings) {
+    const warningsContainer = document.querySelector('.duplicate-warning-container');
+    if (!warningsContainer) return;
+
+    const existingItems = warningsContainer.querySelectorAll('.duplicate-item');
+    existingItems.forEach(item => item.remove());
+
+    if (warnings.length === 0) {
+        let noWarningsMsg = warningsContainer.querySelector('.no-duplicates');
+        if (!noWarningsMsg) {
+            noWarningsMsg = document.createElement('div');
+            noWarningsMsg.className = 'no-duplicates';
+            noWarningsMsg.innerHTML = '<p>No duplicate questions found for this staff member.</p>';
+            warningsContainer.appendChild(noWarningsMsg);
+        }
+        return;
+    }
+
+    warnings.slice(0, 5).forEach((warning, index) => {
+        const warningElement = document.createElement('div');
+        warningElement.className = 'duplicate-item';
+        warningElement.style.top = `${14 + (index * 14)}rem`;
+        warningElement.innerHTML = `
+            <div class="duplicate-header">
+                <div class="similarity-text">${warning.similarityPercentage}% similar</div>
+                <div class="warning-icon">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#EF2A2D" stroke-width="2">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                        <path d="M12 9v4" />
+                        <path d="m12 17 .01 0" />
+                    </svg>
+                </div>
+            </div>
+            <div class="question-box">
+                <div class="question-text">${warning.question1}</div>
+            </div>
+            <div class="question-box">
+                <div class="question-text">${warning.question2}</div>
+            </div>
+        `;
+        warningsContainer.appendChild(warningElement);
     });
+}
+
+// Update dashboard display function
+function updateDashboardDisplay(data) {
+    // Update any additional dashboard elements
+    console.log('Dashboard display updated with:', data);
+}
+
+// Fallback functions for when API calls fail
+function loadFallbackData() {
+    loadFallbackStats();
+    loadFallbackChartData();
+    loadFallbackActivities();
+}
+
+function loadFallbackStats() {
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach(card => {
+        const valueElement = card.querySelector('.stat-value');
+        const changeElement = card.querySelector('.stat-change');
+        if (valueElement) valueElement.textContent = '0';
+        if (changeElement) changeElement.textContent = 'No data';
+    });
+}
+
+function loadFallbackChartData() {
+    const fallbackBarData = {
+        labels: ['No Data'],
+        datasets: [{
+            label: 'No Data Available',
+            data: [0],
+            backgroundColor: ['#e0e0e0']
+        }]
+    };
     
-    if (window.barChart) {
-        window.barChart.destroy();
-        document.getElementById('barChart').getContext('2d').clearRect(0, 0, 400, 400);
-    }
+    const fallbackPieData = {
+        labels: ['No Data'],
+        datasets: [{
+            data: [100],
+            backgroundColor: ['#e0e0e0']
+        }]
+    };
     
-    if (window.lineChart) {
-        window.lineChart.destroy();
-        document.getElementById('lineChart').getContext('2d').clearRect(0, 0, 400, 400);
-    }
-    
+    updateBarChart(fallbackBarData);
+    updatePieChart(fallbackPieData);
+}
+
+function loadFallbackActivities() {
     const activitiesContainer = document.getElementById('recent-activities');
     if (activitiesContainer) {
-        activitiesContainer.innerHTML = '<p class="no-activities">Unable to load activities</p>';
+        activitiesContainer.innerHTML = '<p class="no-activities">Unable to load recent activities</p>';
+    }
+    
+    const warningsContainer = document.querySelector('.duplicate-warning-container');
+    if (warningsContainer) {
+        const existingItems = warningsContainer.querySelectorAll('.duplicate-item');
+        existingItems.forEach(item => item.remove());
+        
+        let noWarningsMsg = warningsContainer.querySelector('.no-duplicates');
+        if (!noWarningsMsg) {
+            noWarningsMsg = document.createElement('div');
+            noWarningsMsg.className = 'no-duplicates';
+            noWarningsMsg.innerHTML = '<p>Unable to load duplicate warnings</p>';
+            warningsContainer.appendChild(noWarningsMsg);
+        }
     }
 }
