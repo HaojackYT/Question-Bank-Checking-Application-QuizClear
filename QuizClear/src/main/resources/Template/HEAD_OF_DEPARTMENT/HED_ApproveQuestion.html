@@ -31,6 +31,21 @@
             margin-top: 10px;
             display: inline-block;
         }
+        
+        /* Pagination button styles */
+        .prev-btn:disabled,
+        .next-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #e5e7eb;
+            color: #9ca3af;
+        }
+        
+        .prev-btn:disabled:hover,
+        .next-btn:disabled:hover {
+            background-color: #e5e7eb;
+            color: #9ca3af;
+        }
     </style>
 </head>
 
@@ -241,14 +256,13 @@
 
             <!-- Pagination -->
             <div class="pagination">
-                <i class="fa-solid fa-bullhorn" style="padding: 20px;"></i>
-                <p class="page-info" style="padding: 10px;">Total Pages:</p>
-                <p class="page-info">9</p>
-                <div class="page-controls">
-                    <button class="prev-btn"><i class="fa-solid fa-chevron-left" style="padding: 0px 5px;"></i>
+                <i class="fa-solid fa-bullhorn" style="padding: 20px;"></i>                <p class="page-info" style="padding: 10px;">Page:</p>
+                <p class="page-info" id="currentPageDisplay">1</p>
+                <p class="page-info" style="padding: 0px 5px;">of</p>
+                <p class="page-info" id="totalPagesDisplay">1</p>
+                <div class="page-controls">                    <button class="prev-btn" id="prevPageBtn" disabled><i class="fa-solid fa-chevron-left" style="padding: 0px 5px;"></i>
                         Previous</button>
-                    <input type="number" id="pageInput" value="1" min="1" style="width: 50px; text-align: center;">
-                    <button class="next-btn">Next <i class="fa-solid fa-chevron-right"
+                    <button class="next-btn" id="nextPageBtn" disabled>Next <i class="fa-solid fa-chevron-right"
                             style="padding: 0px 5px;"></i></button>
                 </div>            </div>            <script th:inline="javascript">
                 /*<![CDATA[*/
@@ -281,19 +295,27 @@
                         if (seeMoreBtn) seeMoreBtn.textContent = 'See more...';
                     }
                 }
-                
-                // Get department head ID from server (passed from controller)
+                  // Get department head ID from server (passed from controller)
                 const hedId = /*[[${hedId}]]*/ null;
                 console.log("Using hedId:", hedId);
+                
+                // Pagination variables
+                let currentPage = 1;
+                let totalQuestions = 0;
+                const questionsPerPage = 10;
+                let allQuestions = []; // Store all questions for pagination
                   // Check if user is authenticated
                 if (!hedId) {
                     console.error("User not authenticated or hedId not provided");
                     window.location.href = '/login';
                     // Don't use return here - just redirect and continue
                 }
-                
-                // Load questions for approval from API
-                function loadQuestionsForApproval() {
+                  // Load questions for approval with optional page reset
+                function loadQuestionsForApproval(resetToFirstPage = false) {
+                    if (resetToFirstPage) {
+                        currentPage = 1; // Reset to first page for new searches/filters
+                    }
+                    
                     const selects = document.querySelectorAll('.filter-controls select');
                     const status = selects[0] ? selects[0].value : '';
                     const subject = selects[1] ? selects[1].value : '';
@@ -326,10 +348,22 @@
                                 return;
                             }
                             
-                            // Store questions data globally for notifications
+                            // Store questions data globally for notifications and pagination
                             window.currentQuestions = data.questions || [];
+                            allQuestions = data.questions || [];
+                            totalQuestions = allQuestions.length;
                             
-                            updateQuestionsTable(data.questions || []);
+                            // Adjust current page if it's beyond the new total pages
+                            const totalPages = Math.ceil(totalQuestions / questionsPerPage);
+                            if (currentPage > totalPages && totalPages > 0) {
+                                currentPage = totalPages;
+                            } else if (totalPages === 0) {
+                                currentPage = 1;
+                            }
+                            // Don't reset to page 1 on reload unless necessary
+                            
+                            updatePagination();
+                            displayCurrentPage();
                             updateNotifications(data.notifications || []);
                         })
                         .catch(error => {
@@ -549,10 +583,11 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.error) {
-                                alert('Error: ' + data.error);
-                            } else {
+                                alert('Error: ' + data.error);                            } else {
                                 alert('Question approved successfully!');
+                                const currentPageToPreserve = currentPage; // Store current page
                                 loadQuestionsForApproval(); // Reload to update the table
+                                // Note: currentPage will be restored in loadQuestionsForApproval if still valid
                             }
                         })
                         .catch(error => {
@@ -585,16 +620,62 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.error) {
-                            alert('Error: ' + data.error);
-                        } else {
+                            alert('Error: ' + data.error);                        } else {
                             alert('Question rejected successfully!');
+                            const currentPageToPreserve = currentPage; // Store current page
                             loadQuestionsForApproval(); // Reload to update the table
+                            // Note: currentPage will be restored in loadQuestionsForApproval if still valid
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         alert('Failed to reject question');
                     });
+                }                  // Update pagination display and button states
+                function updatePagination() {
+                    const totalPages = Math.ceil(totalQuestions / questionsPerPage);
+                    
+                    // Update display
+                    document.getElementById('currentPageDisplay').textContent = currentPage;
+                    document.getElementById('totalPagesDisplay').textContent = totalPages;
+                    
+                    // Update button states
+                    const prevBtn = document.getElementById('prevPageBtn');
+                    const nextBtn = document.getElementById('nextPageBtn');
+                    
+                    prevBtn.disabled = currentPage <= 1;
+                    nextBtn.disabled = currentPage >= totalPages;
+                    
+                    console.log(`Pagination updated: ${currentPage}/${totalPages}, Total questions: ${totalQuestions}`);
+                }
+                
+                // Display questions for current page
+                function displayCurrentPage() {
+                    const startIndex = (currentPage - 1) * questionsPerPage;
+                    const endIndex = startIndex + questionsPerPage;
+                    const questionsToShow = allQuestions.slice(startIndex, endIndex);
+                    
+                    console.log(`Displaying page ${currentPage}: questions ${startIndex + 1}-${Math.min(endIndex, totalQuestions)} of ${totalQuestions}`);
+                    updateQuestionsTable(questionsToShow);
+                }
+                
+                // Go to previous page
+                function goToPreviousPage() {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        updatePagination();
+                        displayCurrentPage();
+                    }
+                }
+                
+                // Go to next page
+                function goToNextPage() {
+                    const totalPages = Math.ceil(totalQuestions / questionsPerPage);
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        updatePagination();
+                        displayCurrentPage();
+                    }
                 }                  // Open question modal with details
                 function openQuestionModal(question) {
                     const modal = document.getElementById('examDetailsModal');
@@ -622,23 +703,28 @@
                 function loadMoreNotifications() {
                     toggleNotifications();
                 }
-                
-                // Initialize page
+                  // Initialize page
                 document.addEventListener('DOMContentLoaded', function() {
                     loadSubjects();
-                    loadQuestionsForApproval();
+                    loadQuestionsForApproval(true); // Reset to first page on initial load
                     
                     // Add event listeners for filters and search
                     document.querySelectorAll('.filter-controls select').forEach(select => {
-                        select.addEventListener('change', loadQuestionsForApproval);
+                        select.addEventListener('change', function() {
+                            loadQuestionsForApproval(true); // Reset to first page when filters change
+                        });
                     });
                     
                     document.querySelector('.search-input').addEventListener('input', function() {
                         clearTimeout(this.searchTimeout);
-                        this.searchTimeout = setTimeout(loadQuestionsForApproval, 500); // Debounce search
+                        this.searchTimeout = setTimeout(function() {
+                            loadQuestionsForApproval(true); // Reset to first page when search changes
+                        }, 500); // Debounce search
                     });
                     
-                    document.querySelector('.search-btn').addEventListener('click', loadQuestionsForApproval);
+                    document.querySelector('.search-btn').addEventListener('click', function() {
+                        loadQuestionsForApproval(true); // Reset to first page when search button clicked
+                    });
                     
                     // Modal functionality
                     const modal = document.getElementById('examDetailsModal');
@@ -708,8 +794,19 @@
                                     });
                                 }
                                 modal.style.display = 'none';
-                            });
-                        }
+                            });                        }
+                    }
+                    
+                    // Pagination button event listeners
+                    const prevBtn = document.getElementById('prevPageBtn');
+                    const nextBtn = document.getElementById('nextPageBtn');
+                    
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', goToPreviousPage);
+                    }
+                    
+                    if (nextBtn) {
+                        nextBtn.addEventListener('click', goToNextPage);
                     }
                 });
                 /*]]>*/
