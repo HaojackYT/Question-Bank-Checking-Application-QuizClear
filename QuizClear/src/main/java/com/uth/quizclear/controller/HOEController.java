@@ -344,4 +344,104 @@ public class HOEController {
         // Trả về fragment Thymeleaf cho AJAX update
         return "Head of Examination Department/HOE_Approval :: approvals-table";
     }
+
+    /**
+     * API endpoint để approve exam review
+     */
+    @PostMapping("/approvals/approve")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> approveReview(
+            @RequestParam("reviewId") Long reviewId,
+            HttpSession session) {
+        
+        Map<String, String> response = new HashMap<>();
+        
+        try {
+            // Lấy thông tin user từ session
+            UserBasicDTO currentUser = (UserBasicDTO) session.getAttribute("user");
+            if (currentUser == null) {
+                response.put("status", "error");
+                response.put("message", "User not authenticated");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+
+            // Tìm exam review
+            Optional<ExamReview> reviewOpt = examReviewRepository.findById(reviewId);
+            if (reviewOpt.isEmpty()) {
+                response.put("status", "error");
+                response.put("message", "Review not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            ExamReview review = reviewOpt.get();
+            
+            // Cập nhật status thành APPROVED
+            review.setStatus(ExamReviewStatus.APPROVED);
+            review.setComments("Approved by Head of Examination Department");
+            
+            // Lưu vào database
+            examReviewRepository.save(review);
+            
+            response.put("status", "success");
+            response.put("message", "Review approved successfully");
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", "Error approving review: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
+     * API endpoint để decline exam review với lý do
+     */
+    @PostMapping("/approvals/decline")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> declineReview(
+            @RequestParam("reviewId") Long reviewId,
+            @RequestParam("reason") String reason,
+            HttpSession session) {
+        
+        Map<String, String> response = new HashMap<>();
+        
+        try {
+            // Lấy thông tin user từ session
+            UserBasicDTO currentUser = (UserBasicDTO) session.getAttribute("user");
+            if (currentUser == null) {
+                response.put("status", "error");
+                response.put("message", "User not authenticated");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+
+            // Tìm exam review
+            Optional<ExamReview> reviewOpt = examReviewRepository.findById(reviewId);
+            if (reviewOpt.isEmpty()) {
+                response.put("status", "error");
+                response.put("message", "Review not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            ExamReview review = reviewOpt.get();
+            
+            // Cập nhật status thành NEEDS_REVISION
+            review.setStatus(ExamReviewStatus.NEEDS_REVISION);
+            review.setComments("Needs revision: " + reason);
+            
+            // Lưu vào database
+            examReviewRepository.save(review);
+            
+            // TODO: Gửi thông báo cho lecturer/staff về việc cần sửa đổi
+            // Có thể tạo notification hoặc gửi email
+            
+            response.put("status", "success");
+            response.put("message", "Review declined and sent back for revision");
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", "Error declining review: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 }

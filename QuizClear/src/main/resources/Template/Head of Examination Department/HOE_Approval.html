@@ -398,28 +398,36 @@
 
         function approveExam(button, reviewId) {
             if (confirm('Are you sure you want to approve this review?')) {
-                // TODO: Implement AJAX call to approve endpoint
-                // fetch('/hoe/approvals/approve', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({ reviewId: reviewId })
-                // }).then(response => {
-                //     if (response.ok) {
-                //         location.reload(); // Reload page to see updated status
-                //     }
-                // });
+                // Gọi API thực để approve
+                const formData = new FormData();
+                formData.append('reviewId', reviewId);
                 
-                // For now, just update UI locally
-                const row = button.closest('tr');
-                const statusCell = row.querySelector('.status');
-                statusCell.textContent = 'Approved';
-                statusCell.className = 'status approved';
-                
-                // Hide action buttons
-                const actionsCell = row.cells[7];
-                actionsCell.innerHTML = '<div style="color: #6c757d; font-style: italic;">Processed</div>';
-                
-                alert('Review has been approved successfully.');
+                fetch('/hoe/approvals/approve', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Cập nhật UI
+                        const row = button.closest('tr');
+                        const statusCell = row.querySelector('.status');
+                        statusCell.textContent = 'Approved';
+                        statusCell.className = 'status approved';
+                        
+                        // Ẩn nút action
+                        const actionsCell = row.cells[7];
+                        actionsCell.innerHTML = '<div style="color: #6c757d; font-style: italic;">Processed</div>';
+                        
+                        alert('Review has been approved successfully.');
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while approving the review.');
+                });
             }
         }
 
@@ -432,24 +440,29 @@
                 return;
             }
 
-            // TODO: Implement AJAX call to decline endpoint
-            // fetch('/hoe/approvals/decline', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify({ reviewId: reviewId, reason: reason })
-            // }).then(response => {
-            //     if (response.ok) {
-            //         location.reload(); // Reload page to see updated status
-            //     }
-            // });
-
-            console.log('Decline review ID:', reviewId, 'Reason:', reason);
-
-            closeModal('declineModal');
-            alert('Review has been declined successfully.');
+            // Gọi API thực để decline
+            const formData = new FormData();
+            formData.append('reviewId', reviewId);
+            formData.append('reason', reason);
             
-            // For demo purposes, reload the page
-            // location.reload();        
+            fetch('/hoe/approvals/decline', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    closeModal('declineModal');
+                    alert('Review has been declined and sent back for revision.');
+                    location.reload(); // Tải lại trang để thấy cập nhật
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while declining the review.');
+            });
         }
 
         // New functions to work with data attributes (safe for Thymeleaf)
