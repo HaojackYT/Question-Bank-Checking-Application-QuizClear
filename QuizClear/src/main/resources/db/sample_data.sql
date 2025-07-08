@@ -846,3 +846,19 @@ INSERT INTO exam_assignments (
 ('CS101 Previous Semester Final', 'Final exam from previous semester for reference', 1, 1, 3, 'PUBLISHED', '2025-05-30 23:59:00', 35, 150, 'Comprehensive final covering all course topics.', '2025-05-01 09:00:00', '2025-05-25 16:30:00', '2025-05-28 11:20:00', '2025-05-29 08:00:00', 'Excellent comprehensive exam - published as reference material'),
 
 ('MATH201 Sample Midterm', 'Sample midterm for student practice', 2, 7, 8, 'PUBLISHED', '2025-05-15 23:59:00', 20, 90, 'Practice exam with solutions for student preparation.', '2025-04-20 10:30:00', '2025-05-12 14:45:00', '2025-05-14 09:30:00', '2025-05-15 16:00:00', 'Good practice material - published with detailed solutions');
+
+
+-- Bảng summary
+INSERT INTO summary (title, description, assigned_to, assigned_by, total_questions, feedback_status, status, created_at)
+VALUES
+('Midterm Report', 'Summary report for midterm exams', 2, 1, 50, 'Not received', 'Pending', '2025-06-01 09:00:00'),
+('Final Report', 'Final summary of the semester', 3, 1, 100, 'Received', 'Completed', '2025-07-01 10:00:00'),
+('Weekly Update', 'Weekly progress report', 4, 2, 20, 'Received', 'Draft', '2025-05-15 08:30:00'),
+('Project Summary', 'Summary for project evaluation', 5, 3, 30, 'Not received', 'Draft', '2025-06-10 14:20:00');
+
+
+-- Bảng câu hỏi theo từng Report
+INSERT INTO summary_report (summary_id, question_id)
+VALUES (1, 1),
+       (1, 2),
+       (1, 3);

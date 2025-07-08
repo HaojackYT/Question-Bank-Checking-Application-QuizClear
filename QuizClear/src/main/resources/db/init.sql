@@ -515,3 +515,27 @@ CREATE TABLE IF NOT EXISTS subject_question_targets (
   INDEX idx_target_subject (subject_id),
   INDEX idx_target_year (academic_year, semester)
 ) ENGINE=InnoDB;
+
+-- 25. Summary Report (bảng báo cáo của SL)
+CREATE TABLE IF NOT EXISTS summary (
+  summary_id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) DEFAULT NULL,
+  description TEXT DEFAULT NULL,
+  assigned_to INT DEFAULT 0,
+  assigned_by INT DEFAULT 0,
+  total_questions INT DEFAULT 0,
+  feedback_status ENUM('Not received', 'Received') DEFAULT 'Not received',
+  status ENUM('Completed', 'Draft', 'Pending') DEFAULT 'Draft',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (assigned_to) REFERENCES users(user_id),
+  FOREIGN KEY (assigned_by) REFERENCES users(user_id)
+) ENGINE=InnoDB;
+
+-- 26. Bảng lưu câu hỏi cho Sum Report
+CREATE TABLE IF NOT EXISTS summary_report (
+  report_id INT AUTO_INCREMENT PRIMARY KEY,
+  summary_id INT NOT NULL,
+  question_id INT NOT NULL,
+  FOREIGN KEY (summary_id) REFERENCES summary(summary_id) ON DELETE CASCADE,
+  FOREIGN KEY (question_id) REFERENCES questions(question_id)
+) ENGINE=InnoDB;
