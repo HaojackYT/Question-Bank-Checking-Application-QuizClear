@@ -972,13 +972,11 @@
 
             // Get current notes for resubmission
             const notesTextarea = document.querySelector('.info-field textarea');
-            const resubmitNotes = notesTextarea ? notesTextarea.value.trim() : '';
-
-            const confirmMessage = `Are you sure you want to resubmit this question for higher-level review?\n\n` +
+            const resubmitNotes = notesTextarea ? notesTextarea.value.trim() : '';            const confirmMessage = `Are you sure you want to resubmit this question for higher-level review?\n\n` +
                                  `This action will:\n` +
-                                 `• Send the question to Head of Education Department\n` +
+                                 `• Send the question to Head of Department\n` +
                                  `• Include your feedback notes for context\n` +
-                                 `• Change status to "SUBMITTED_FOR_REVIEW"\n\n` +
+                                 `• Change status to "ARCHIVED"\n\n` +
                                  `Current feedback notes:\n"${resubmitNotes || 'No notes provided'}"`;
 
             if (!confirm(confirmMessage)) {
@@ -999,21 +997,19 @@
                 body: JSON.stringify(resubmitData)
             })
             .then(response => response.json())
-            .then(data => {
-                if (data.success) {
+            .then(data => {                if (data.success) {
                     alert('✅ Question resubmitted successfully!\n\n' +
-                          'The question has been escalated to Head of Education Department ' +
+                          'The question has been escalated to Head of Department ' +
                           'for final review. You will be notified of their decision.');
                     
                     // Update status display
                     const statusInput = document.querySelector('.info-field input[readonly]');
                     if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
-                        statusInput.value = 'SUBMITTED_FOR_REVIEW';
-                    }
-                      // Optional: redirect back to feedback list
+                        statusInput.value = 'ARCHIVED';
+                    }                    // Optional: redirect back to feedback list
                     setTimeout(() => {
                         if (confirm('✅ Question resubmitted successfully!\n\n' +
-                                  'The question has been escalated to Head of Education Department for final review. ' +
+                                  'The question has been escalated to Head of Department for final review. ' +
                                   'It will no longer appear in your feedback list since it\'s now under higher-level review.\n\n' +
                                   'Do you want to return to feedback list?')) {
                             window.location.href = '/subject-leader/feedback';

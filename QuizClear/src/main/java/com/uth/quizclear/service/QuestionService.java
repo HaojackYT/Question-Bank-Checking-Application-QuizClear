@@ -23,9 +23,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import org.springframework.data.jpa.domain.Specification; // <-- Quan trọng cho truy vấn động
-import jakarta.persistence.criteria.Join; // <-- Để Join tới các bảng liên kết
-import jakarta.persistence.criteria.Predicate; // <-- Để xây dựng các điều kiện
+
 import java.time.format.DateTimeFormatter;
 
 @Service
@@ -600,8 +598,7 @@ public class QuestionService {
             // If specific status is requested, get questions with that status
             try {
                 QuestionStatus requestedStatus;
-                
-                // Map frontend values to backend enums
+                  // Map frontend values to backend enums
                 switch (status.toLowerCase()) {
                     case "approved":
                         requestedStatus = QuestionStatus.APPROVED;
@@ -612,6 +609,9 @@ public class QuestionService {
                         break;
                     case "rejected":
                         requestedStatus = QuestionStatus.REJECTED;
+                        break;
+                    case "archived":
+                        requestedStatus = QuestionStatus.ARCHIVED;
                         break;
                     default:
                         // Try direct enum conversion first
@@ -629,13 +629,13 @@ public class QuestionService {
                 allQuestions = hedScopeQuestions.stream()
                     .filter(q -> q.getStatus() == QuestionStatus.SUBMITTED)
                     .collect(Collectors.toList());
-            }
-        } else {
-            // If no status filter, get all questions that HED can review (SUBMITTED, APPROVED, REJECTED)
+            }        } else {
+            // If no status filter, get all questions that HED can review (SUBMITTED, APPROVED, REJECTED, ARCHIVED)
             allQuestions = hedScopeQuestions.stream()
                 .filter(q -> q.getStatus() == QuestionStatus.SUBMITTED || 
                            q.getStatus() == QuestionStatus.APPROVED || 
-                           q.getStatus() == QuestionStatus.REJECTED)
+                           q.getStatus() == QuestionStatus.REJECTED ||
+                           q.getStatus() == QuestionStatus.ARCHIVED)
                 .collect(Collectors.toList());
             logger.info("Found {} questions for HED {} review (all statuses)", allQuestions.size(), hedId);
         }
@@ -684,19 +684,16 @@ public class QuestionService {
     /**
      * Approve question by HED
      */
-    @Transactional
-    public void approveQuestionByHED(Long questionId, Long hedId) {
+    @Transactional    public void approveQuestionByHED(Long questionId, Long hedId) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy câu hỏi với id: " + questionId));
         
-        if (question.getStatus() == QuestionStatus.SUBMITTED) {
+        if (question.getStatus() == QuestionStatus.SUBMITTED || question.getStatus() == QuestionStatus.ARCHIVED) {
             question.setStatus(QuestionStatus.APPROVED);
             question.setUpdatedAt(LocalDateTime.now());
             questionRepository.save(question);
         }
-    }
-
-    /**
+    }    /**
      * Reject question by HED
      */
     @Transactional
@@ -704,13 +701,13 @@ public class QuestionService {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy câu hỏi với id: " + questionId));
         
-        if (question.getStatus() == QuestionStatus.SUBMITTED) {
+        if (question.getStatus() == QuestionStatus.SUBMITTED || question.getStatus() == QuestionStatus.ARCHIVED) {
             question.setStatus(QuestionStatus.REJECTED);
             question.setUpdatedAt(LocalDateTime.now());
             // TODO: Save feedback to question or create feedback entity
             questionRepository.save(question);
         }
-    }    /**
+    }/**
      * Convert Question entity to QuestionDTO
      */
     private QuestionDTO convertToDTO(Question question) {
