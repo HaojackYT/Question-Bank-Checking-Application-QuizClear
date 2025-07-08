@@ -70,4 +70,12 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     List<Exam> findRecentExamsBySubjectScope(@Param("subjectName") String subjectName, @Param("since") java.time.LocalDateTime since);
 
     Exam findByExamId(Long examId);
+
+    @Query("SELECT DISTINCT c.department FROM Course c WHERE c.department IS NOT NULL")
+    List<String> findAllDepartments();
+
+    @Query("SELECT e FROM Exam e JOIN e.course c WHERE "
+     + "(:status IS NULL OR e.examStatus = :status) "
+     + "AND (:department IS NULL OR c.department = :department)")
+List<Exam> findByStatusAndDepartment(@Param("status") ExamStatus status, @Param("department") String department);
 }

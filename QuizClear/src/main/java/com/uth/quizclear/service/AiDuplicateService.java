@@ -12,6 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
  
 @Service
 public class AiDuplicateService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AiDuplicateService.class);
 
     @Autowired
     private AiDuplicateCheckRepository aiDuplicateCheckRepository;
@@ -67,14 +71,15 @@ public class AiDuplicateService {
             Course course = courseRepository.findById(courseId)
                     .orElseThrow(() -> new RuntimeException("Course not found with id: " + courseId));
             User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-
-            // Check if already exists
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));            // Check if already exists
             Optional<AiDuplicateCheck> existingCheck = aiDuplicateCheckRepository
                     .findByQuestionContentAndCourse_CourseId(questionContent, courseId);
             
             if (existingCheck.isPresent()) {
-                return mapToDto(existingCheck.get());
+                AiDuplicateCheck existing = existingCheck.get();
+                // Cleanup old pending detections for this check
+                cleanupOldDetections(existing.getCheckId());
+                return mapToDto(existing);
             }
 
             // Create AI check record
@@ -98,10 +103,11 @@ public class AiDuplicateService {
                 aiCheck.setStatus(AiDuplicateCheck.Status.completed);
                 aiCheck = aiDuplicateCheckRepository.save(aiCheck);
                 return mapToDto(aiCheck);
-            }
-
-            // Call AI service for similarity analysis
+            }            // Call AI service for similarity analysis
             Map<String, Object> aiResponse = callAiService(questionContent, existingQuestions);
+            
+            // Cleanup old pending detections before creating new ones
+            cleanupOldDetections(aiCheck.getCheckId());
             
             // Process AI response
             processAiResponse(aiCheck, aiResponse, userId);
@@ -315,6 +321,22 @@ public class AiDuplicateService {
             result.put("error", e.getMessage());
             result.put("timestamp", LocalDateTime.now().toString());
             return result;
+        }
+    }
+
+    // =================== CLEANUP METHODS ===================
+
+    @Transactional
+    public void cleanupOldDetections(Long aiCheckId) {
+        try {
+            // Mark old pending detections as obsolete instead of deleting them
+            // This preserves audit trail while removing them from active workflow
+            duplicateDetectionRepository.markObsoleteByAiCheckIdAndStatusPending(
+                aiCheckId, LocalDateTime.now()
+            );
+        } catch (Exception e) {
+            logger.error("Error cleaning up old detections for AI check " + aiCheckId + ": " + e.getMessage(), e);
+            // Don't throw exception as this is cleanup operation
         }
     }
 

@@ -43,11 +43,9 @@ public class DuplicationStaffService {
     private ActivityLogRepository activityLogRepository;
     
     @Autowired
-    private UserRepository userRepository;
-
-    public List<DuplicateDetectionDTO> getAllDetections() {
+    private UserRepository userRepository;    public List<DuplicateDetectionDTO> getAllDetections() {
         try {
-            List<DuplicateDetection> detections = repository.findByStatus("PENDING");
+            List<DuplicateDetection> detections = repository.findActivePendingDetections();
             return convertToDTO(detections);
         } catch (Exception e) {
             return new ArrayList<>();
@@ -56,7 +54,7 @@ public class DuplicationStaffService {
 
     public List<DuplicateDetectionDTO> getDetectionsByStatus(String status) {
         try {
-            List<DuplicateDetection> detections = repository.findByStatus(status);
+            List<DuplicateDetection> detections = repository.findActiveByStatus(status);
             return convertToDTO(detections);
         } catch (Exception e) {
             return new ArrayList<>();
@@ -107,12 +105,10 @@ public class DuplicationStaffService {
         } catch (Exception e) {
             return new ArrayList<>();
         }
-    }
-
-    public List<UserBasicDTO> getSubmitterOptions() {
+    }    public List<UserBasicDTO> getSubmitterOptions() {
         try {
             // Get all detections and extract unique creators
-            List<DuplicateDetection> detections = repository.findByStatus("PENDING");
+            List<DuplicateDetection> detections = repository.findActivePendingDetections();
             List<UserBasicDTO> users = new ArrayList<>();
             java.util.Set<String> uniqueCreators = new java.util.HashSet<>();
             
@@ -140,17 +136,15 @@ public class DuplicationStaffService {
         } catch (Exception e) {
             return new ArrayList<>();
         }
-    }
-
-    public List<DuplicateDetectionDTO> getFilteredDetections(String subject, String submitter, String status) {
+    }    public List<DuplicateDetectionDTO> getFilteredDetections(String subject, String submitter, String status) {
         try {
             List<DuplicateDetection> detections;
             
             // Start with base query
             if (status != null && !status.trim().isEmpty()) {
-                detections = repository.findByStatus(status);
+                detections = repository.findActiveByStatus(status);
             } else {
-                detections = repository.findByStatus("PENDING");
+                detections = repository.findActivePendingDetections();
             }
             
             // Convert to DTO first, then filter
@@ -632,10 +626,9 @@ public class DuplicationStaffService {
             // Get total detections count directly from database
             long totalDetections = repository.count();
             System.out.println("Total detections from database: " + totalDetections);
-            
-            // Get high similarity detections count (>= 0.8)
-            List<DuplicateDetection> allDetections = repository.findByStatus("PENDING");
-            System.out.println("PENDING detections loaded: " + allDetections.size());
+              // Get high similarity detections count (>= 0.8)
+            List<DuplicateDetection> allDetections = repository.findActivePendingDetections();
+            System.out.println("Active PENDING detections loaded: " + allDetections.size());
             
             long highSimilarityCount = allDetections.stream()
                 .filter(d -> d.getSimilarityScore() != null && d.getSimilarityScore().doubleValue() >= 0.8)
@@ -668,11 +661,10 @@ public class DuplicationStaffService {
             return new HashMap<>();
         }
     }
-    
-    public List<Map<String, Object>> getSubjectStatisticsFromDatabase() {
+      public List<Map<String, Object>> getSubjectStatisticsFromDatabase() {
         try {
             List<Map<String, Object>> subjectStats = new ArrayList<>();
-            List<DuplicateDetection> allDetections = repository.findByStatus("PENDING");
+            List<DuplicateDetection> allDetections = repository.findActivePendingDetections();
             
             // Group by subject using database data
             Map<String, Integer> subjectTotals = new HashMap<>();
@@ -721,11 +713,10 @@ public class DuplicationStaffService {
             return new ArrayList<>();
         }
     }
-    
-    public List<Map<String, Object>> getCreatorStatisticsFromDatabase() {
+      public List<Map<String, Object>> getCreatorStatisticsFromDatabase() {
         try {
             List<Map<String, Object>> creatorStats = new ArrayList<>();
-            List<DuplicateDetection> allDetections = repository.findByStatus("PENDING");
+            List<DuplicateDetection> allDetections = repository.findActivePendingDetections();
             
             // Group by creator using database data
             Map<String, Integer> creatorTotals = new HashMap<>();

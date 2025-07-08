@@ -2,7 +2,6 @@ package com.uth.quizclear.repository;
 
 import com.uth.quizclear.model.entity.DuplicateDetection;
 import com.uth.quizclear.model.entity.Course;
-import com.uth.quizclear.model.enums.QuestionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,10 +13,16 @@ import java.util.List;
 
 @Repository
 public interface DuplicationStaffRepository extends JpaRepository<DuplicateDetection, Long> {
-    
-    // Use native query with String parameter to bypass converter
+      // Use native query with String parameter to bypass converter
     @Query(value = "SELECT * FROM duplicate_detections WHERE status = ?1", nativeQuery = true)
     List<DuplicateDetection> findByStatus(String status);
+    
+    // Find active detections (excluding obsolete ones)
+    @Query(value = "SELECT * FROM duplicate_detections WHERE status = ?1 AND status != 'obsolete' ORDER BY detected_at DESC", nativeQuery = true)
+    List<DuplicateDetection> findActiveByStatus(String status);
+
+    @Query(value = "SELECT * FROM duplicate_detections WHERE status = 'pending' AND status != 'obsolete' ORDER BY detected_at DESC", nativeQuery = true)
+    List<DuplicateDetection> findActivePendingDetections();
     
     // Derived query based on detectedBy
     List<DuplicateDetection> findByDetectedBy(Long detectedBy);
