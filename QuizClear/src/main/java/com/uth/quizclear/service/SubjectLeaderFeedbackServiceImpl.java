@@ -45,8 +45,8 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
         String department = subjectLeaderOpt.get().getDepartment();
         if (department == null || department.trim().isEmpty()) {
             return feedbackList;
-        }        // Get questions from the same department (submitted or with feedback)
-        List<Question> questionsWithFeedback = questionRepository.findSubmittedQuestionsByDepartment(department);        for (Question question : questionsWithFeedback) {
+        }        // Get questions from the same department that need Subject Leader review
+        List<Question> questionsWithFeedback = questionRepository.findQuestionsPendingReviewByDepartment(department);for (Question question : questionsWithFeedback) {
             // Only show questions that need Subject Leader action:
             // - SUBMITTED: newly submitted questions (may or may not have feedback)
             // - REJECTED: questions that were rejected and need SL action

@@ -113,13 +113,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
   @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department LIKE CONCAT('%', :subjectName, '%') AND q.status = :status")
   List<Question> findBySubjectScopeAndStatus(@Param("subjectName") String subjectName,
       @Param("status") QuestionStatus status);
-
-  // Enhanced queries for permission-based access using department name
-  @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department = :departmentName")
-  List<Question> findQuestionsAccessibleByDepartment(@Param("departmentName") String departmentName);
-
-  @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department LIKE CONCAT('%', :subjectName, '%')")
-  List<Question> findQuestionsAccessibleBySubject(@Param("subjectName") String subjectName);
+  // Note: Removed duplicate methods findQuestionsAccessibleByDepartment and findQuestionsAccessibleBySubject
+  // Use findByDepartmentScope and findBySubjectScope instead
 
   // Duplicate check scope queries
   @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department = :departmentName AND q.questionId != :excludeId AND q.status = 'APPROVED'")
@@ -154,8 +149,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
 
   @Query("SELECT q.questionId FROM Question q WHERE q.course.courseId IN :courseIds")
   List<Long> findQuestionIdsByCourseIds(@Param("courseIds") List<Long> courseIds);
-
-  // For Subject Leader: find all questions that are submitted (not draft) from same department
-  @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department = :department AND q.status != 'DRAFT'")
-  List<Question> findSubmittedQuestionsByDepartment(@Param("department") String department);
+  // For Subject Leader: find all questions that need review from same department
+  @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department = :department AND (q.status = 'SUBMITTED' OR q.status = 'REJECTED')")
+  List<Question> findQuestionsPendingReviewByDepartment(@Param("department") String department);
 }
