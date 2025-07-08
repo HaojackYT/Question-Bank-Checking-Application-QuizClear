@@ -46,10 +46,13 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
         if (department == null || department.trim().isEmpty()) {
             return feedbackList;
         }        // Get questions from the same department (submitted or with feedback)
-        List<Question> questionsWithFeedback = questionRepository.findSubmittedQuestionsByDepartment(department);          for (Question question : questionsWithFeedback) {
-            // Show questions that are submitted or have feedback (not DRAFT)
-            // AND still belong to the same department (not assigned to other departments)
-            if (question.getStatus() != null && question.getStatus() != QuestionStatus.DRAFT) {
+        List<Question> questionsWithFeedback = questionRepository.findSubmittedQuestionsByDepartment(department);        for (Question question : questionsWithFeedback) {
+            // Only show questions that need Subject Leader action:
+            // - SUBMITTED: newly submitted questions (may or may not have feedback)
+            // - REJECTED: questions that were rejected and need SL action
+            // Hide: DRAFT (not ready), APPROVED (already processed), ARCHIVED (sent to higher level)
+            if (question.getStatus() == QuestionStatus.SUBMITTED || question.getStatus() == QuestionStatus.REJECTED) {
+                
                 // Check if question still belongs to the same department
                 boolean belongsToSameDepartment = false;
                 if (question.getCreatedBy() != null && question.getCreatedBy().getDepartment() != null) {
@@ -270,8 +273,7 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
         }
     }
 
-    @Override
-    public boolean resubmitQuestion(Long feedbackId, Long subjectLeaderId) {
+    @Override    public boolean resubmitQuestion(Long feedbackId, Long subjectLeaderId) {
         Optional<Question> questionOpt = questionRepository.findById(feedbackId);
         if (!questionOpt.isPresent()) {
             return false;
@@ -280,8 +282,9 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
         Question question = questionOpt.get();
         
         try {
-            // Clear feedback and set status to submitted for re-review
+            // Clear feedback and set status to ARCHIVED (sent to higher authority)
             question.setFeedback(null);
+            question.setStatus(QuestionStatus.ARCHIVED); // Mark as archived (sent to higher level)
             question.setSubmittedAt(LocalDateTime.now());
             question.setUpdatedAt(LocalDateTime.now());
             questionRepository.save(question);

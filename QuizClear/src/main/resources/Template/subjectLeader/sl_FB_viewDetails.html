@@ -100,9 +100,21 @@
                                         </div>
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </div>                    <div class="action-buttons">
+                            </tbody>                        </table>
+                    </div>
+
+                    <!-- Correct Answer Explanation section -->
+                    <div class="explanation-section" id="explanationSection" style="margin-top: 20px; display: none;">
+                        <h3>Correct Answer Explanation</h3>
+                        <p class="section-subtitle">Explanation provided by the Lecturer</p>
+                        <div class="explanation-content">
+                            <div class="explanation-box">
+                                <span id="explanationText">No explanation provided.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
                         <button title="Edit Question Content" class="btn btn--edit"
                             onclick="openEditModal()">Edit</button>
                         <button title="Assign to Another Lecturer" class="btn btn--assign"
@@ -431,12 +443,29 @@
             if (optionA && data.answerF1) optionA.innerText = data.answerF1;
             if (optionB && data.answerF2) optionB.innerText = data.answerF2;
             if (optionC && data.answerF3) optionC.innerText = data.answerF3;
-            if (optionD && data.answerKey) optionD.innerText = data.answerKey;
-
-            // Update table header for question
+            if (optionD && data.answerKey) optionD.innerText = data.answerKey;            // Update table header for question
             const tableHeader = document.querySelector('.questions-table th');
             if (tableHeader) {
                 tableHeader.textContent = 'Question Content';
+            }
+
+            // Populate explanation
+            populateExplanation(data);
+        }
+
+        // Populate explanation content
+        function populateExplanation(data) {
+            const explanationSection = document.getElementById('explanationSection');
+            const explanationText = document.getElementById('explanationText');
+
+            if (explanationSection && explanationText) {
+                if (data.explanation && data.explanation.trim() !== '') {
+                    explanationText.innerText = data.explanation;
+                    explanationSection.style.display = 'block';
+                } else {
+                    explanationText.innerText = 'No explanation provided.';
+                    explanationSection.style.display = 'none';
+                }
             }
         }
 
