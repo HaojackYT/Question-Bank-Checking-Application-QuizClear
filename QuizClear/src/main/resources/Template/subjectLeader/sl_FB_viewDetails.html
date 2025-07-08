@@ -112,9 +112,11 @@
                                 <span id="explanationText">No explanation provided.</span>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="action-buttons">
+                    </div>                    <div class="action-buttons">
+                        <button title="Approve Question" class="btn btn--approve"
+                            onclick="approveQuestion()">Approve</button>
+                        <button title="Reject Question" class="btn btn--reject"
+                            onclick="rejectQuestion()">Reject</button>
                         <button title="Edit Question Content" class="btn btn--edit"
                             onclick="openEditModal()">Edit</button>
                         <button title="Assign to Another Lecturer" class="btn btn--assign"
@@ -1025,6 +1027,92 @@
             });
         }
         
+        // Approve question functionality
+        function approveQuestion() {
+            if (!currentFeedbackId) {
+                alert('Error: No question ID found');
+                return;
+            }
+            
+            if (!confirm('Are you sure you want to approve this question?\n\nThis action will mark the question as APPROVED and complete the review process.')) {
+                return;
+            }
+            
+            fetch(`/subject-leader/api/feedback/${currentFeedbackId}/approve`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ Question approved successfully!');
+                    // Update status display
+                    const statusInput = document.querySelector('.info-field input[readonly]');
+                    if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
+                        statusInput.value = 'APPROVED';
+                    }
+                    // Refresh page or redirect
+                    setTimeout(() => {
+                        window.location.href = '/subject-leader/feedback';
+                    }, 1500);
+                } else {
+                    alert('❌ Error approving question:\n' + (data.message || 'Unknown error occurred'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Network Error:\nFailed to approve question. Please check your connection and try again.');
+            });
+        }
+        
+        // Reject question functionality
+        function rejectQuestion() {
+            if (!currentFeedbackId) {
+                alert('Error: No question ID found');
+                return;
+            }
+            
+            const feedback = prompt('Please provide feedback for rejection (optional):');
+            if (feedback === null) {
+                return; // User cancelled
+            }
+            
+            if (!confirm('Are you sure you want to reject this question?\n\nThis will send it back to the lecturer for revision.')) {
+                return;
+            }
+            
+            fetch(`/subject-leader/api/feedback/${currentFeedbackId}/reject`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ feedback: feedback })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ Question rejected successfully!\n\nThe question has been returned to the lecturer for revision.');
+                    // Update status display
+                    const statusInput = document.querySelector('.info-field input[readonly]');
+                    if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
+                        statusInput.value = 'REJECTED';
+                    }
+                    // Refresh page or redirect
+                    setTimeout(() => {
+                        window.location.href = '/subject-leader/feedback';
+                    }, 1500);
+                } else {
+                    alert('❌ Error rejecting question:\n' + (data.message || 'Unknown error occurred'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Network Error:\nFailed to reject question. Please check your connection and try again.');
+            });
+        }
+
         // Close modals when clicking outside of them
         window.onclick = function (event) {
             const assignModal = document.getElementById('assignModal');

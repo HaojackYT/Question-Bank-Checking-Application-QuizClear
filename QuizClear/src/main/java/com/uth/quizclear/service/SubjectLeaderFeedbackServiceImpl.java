@@ -288,6 +288,70 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
             question.setSubmittedAt(LocalDateTime.now());
             question.setUpdatedAt(LocalDateTime.now());
             questionRepository.save(question);
+            return true;        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean approveQuestion(Long feedbackId, Long subjectLeaderId) {
+        Optional<Question> questionOpt = questionRepository.findById(feedbackId);
+        if (!questionOpt.isPresent()) {
+            return false;
+        }
+
+        Question question = questionOpt.get();
+        
+        try {
+            // Mark as approved by Subject Leader
+            question.setStatus(QuestionStatus.APPROVED);
+            question.setReviewedAt(LocalDateTime.now());
+            question.setApprovedAt(LocalDateTime.now());
+            question.setUpdatedAt(LocalDateTime.now());
+            
+            // Set reviewer/approver
+            Optional<User> slOpt = userRepository.findById(subjectLeaderId);
+            if (slOpt.isPresent()) {
+                question.setReviewer(slOpt.get());
+                question.setApprover(slOpt.get());
+            }
+            
+            questionRepository.save(question);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean rejectQuestion(Long feedbackId, Long subjectLeaderId, String feedback) {
+        Optional<Question> questionOpt = questionRepository.findById(feedbackId);
+        if (!questionOpt.isPresent()) {
+            return false;
+        }
+
+        Question question = questionOpt.get();
+        
+        try {
+            // Mark as rejected by Subject Leader
+            question.setStatus(QuestionStatus.REJECTED);
+            question.setReviewedAt(LocalDateTime.now());
+            question.setUpdatedAt(LocalDateTime.now());
+            question.setApprovedAt(null);
+            question.setApprover(null);
+            
+            // Set feedback if provided
+            if (feedback != null && !feedback.trim().isEmpty()) {
+                question.setFeedback(feedback);
+            }
+            
+            // Set reviewer
+            Optional<User> slOpt = userRepository.findById(subjectLeaderId);
+            if (slOpt.isPresent()) {
+                question.setReviewer(slOpt.get());
+            }
+            
+            questionRepository.save(question);
             return true;
         } catch (Exception e) {
             return false;
