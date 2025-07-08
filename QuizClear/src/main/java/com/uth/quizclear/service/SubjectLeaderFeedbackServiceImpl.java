@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -389,5 +390,44 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
         }
         
         return 3; // Low priority
+    }    @Override    public List<Map<String, Object>> getLecturersByDepartmentForAssignment(String department, Long excludeUserId) {
+        List<Map<String, Object>> lecturers = new ArrayList<>();
+        
+        System.out.println("=== DEBUG getLecturersByDepartmentForAssignment ===");
+        System.out.println("Department: " + department);
+        System.out.println("ExcludeUserId: " + excludeUserId);
+        
+        try {
+            // Find lecturers who have created questions in this department
+            List<User> questionCreators = questionRepository.findQuestionCreatorsByDepartment(department);
+            System.out.println("Question creators found: " + questionCreators.size());
+              for (User user : questionCreators) {
+                System.out.println("Found user: " + user.getFullName() + ", Role: " + user.getRole() + ", ID: " + user.getUserId());
+                
+                // Only include lecturers (exclude current Subject Leader and other roles)
+                if (user.getUserId() != null && 
+                    !user.getUserId().equals(excludeUserId) && 
+                    user.getRole() != null && 
+                    ("Lec".equalsIgnoreCase(user.getRole().toString()) || 
+                     "LEC".equalsIgnoreCase(user.getRole().toString()))) {
+                    
+                    System.out.println("Adding lecturer: " + user.getFullName());
+                    Map<String, Object> lecturerData = new HashMap<>();
+                    lecturerData.put("id", user.getUserId());
+                    lecturerData.put("name", user.getFullName());
+                    lecturerData.put("email", user.getEmail());
+                    lecturers.add(lecturerData);
+                } else {
+                    System.out.println("Excluding user: " + user.getFullName() + " (Role: " + user.getRole() + ", ID matches excludeId: " + user.getUserId().equals(excludeUserId) + ")");
+                }
+            }
+            
+            System.out.println("Final lecturers list size: " + lecturers.size());
+        } catch (Exception e) {
+            System.err.println("Error getting lecturers: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return lecturers;
     }
 }

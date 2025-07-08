@@ -118,9 +118,7 @@
                         <button title="Edit Question Content" class="btn btn--edit"
                             onclick="openEditModal()">Edit</button>
                         <button title="Assign to Another Lecturer" class="btn btn--assign"
-                            onclick="openAssignModal()">Assign</button>
-                        <button title="Resubmit for Higher Review" class="btn btn--resubmit"
-                            onclick="handleResubmit()">Resubmit</button>
+                            onclick="openAssignModal()">Assign</button>                        <button title="Resubmit for Higher Review" class="btn btn--resubmit">Resubmit</button>
                         <button title="Save Feedback Notes" class="btn btn--save-notes" 
                             onclick="saveFeedbackNotes()" 
                             id="saveNotesBtn" 
@@ -140,16 +138,11 @@
                 <h2 class="modal-title">Reassign Question</h2>
                 <p style="color: #666; margin-bottom: 20px;">Assign this question to another lecturer for revision</p>
 
-                <div class="modal-row">
-                    <div class="modal-item">
+                <div class="modal-row">                    <div class="modal-item">
                         <label class="modal-label">Target Department</label>
                         <select id="assignDepartment" class="modal-select" onchange="loadLecturersByDepartment()">
                             <option value="">Select Department</option>
-                            <option value="CS">Computer Science</option>
-                            <option value="MATH">Mathematics</option>
-                            <option value="PHYS">Physics</option>
-                            <option value="CHEM">Chemistry</option>
-                            <option value="BIO">Biology</option>
+                            <!-- This will be populated by JavaScript based on SL's accessible departments -->
                         </select>
                     </div>
                     <div class="modal-item">
@@ -178,7 +171,7 @@
 
                 <div class="modal-buttons">
                     <button class="modal-btn modal-btn--cancel" onclick="closeAssignModal()">Cancel</button>
-                    <button class="modal-btn modal-btn--assign" onclick="handleAssignment()">Reassign</button>
+                    <button class="modal-btn modal-btn--assign">Reassign</button>
                 </div>
             </div>
         </div>
@@ -266,6 +259,23 @@
                 loadFeedbackDetail(currentFeedbackId);
             } else {
                 showErrorMessage('No feedback ID provided');
+            }
+            
+            // Add event listeners for buttons
+            const assignButton = document.querySelector('.modal-btn--assign');
+            if (assignButton) {
+                assignButton.addEventListener('click', handleAssignment);
+            }
+
+            const resubmitButton = document.querySelector('.btn--resubmit');
+            if (resubmitButton) {
+                resubmitButton.addEventListener('click', handleResubmit);
+            }
+
+            const notesTextarea = document.querySelector('.info-field textarea');
+            if (notesTextarea) {
+                notesTextarea.addEventListener('input', markNotesAsModified);
+                notesTextarea.addEventListener('change', markNotesAsModified);
             }
         });// Load feedback detail data
         function loadFeedbackDetail(feedbackId) {
@@ -593,7 +603,7 @@
                 console.error('Error:', error);
                 alert('❌ Network Error:\nFailed to save notes. Please check your connection and try again.');
             });
-        }// Assign Modal functionality
+        }        // Assign Modal functionality
         function openAssignModal() {
             // Check if assigning is allowed for current status
             if (currentFeedbackData) {
@@ -610,20 +620,48 @@
             assignDateInput.value = formatDate(currentDate);
 
             // Reset form
-            document.getElementById('assignDepartment').value = '';
+            document.getElementById('assignDepartment').innerHTML = '<option value="">Loading departments...</option>';
             document.getElementById('assignLecturer').innerHTML = '<option value="">First select department</option>';
             document.getElementById('assignLecturer').disabled = true;
             document.getElementById('assignNotes').value = '';
+
+            // Load accessible departments
+            loadAccessibleDepartments();
 
             // Show the modal
             document.getElementById('assignModal').style.display = 'block';
         }
 
-        function closeAssignModal() {
-            document.getElementById('assignModal').style.display = 'none';
+        function loadAccessibleDepartments() {
+            const departmentSelect = document.getElementById('assignDepartment');
+            
+            fetch('/subject-leader/api/departments')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.departments) {
+                        departmentSelect.innerHTML = '<option value="">Select Department</option>';
+                        
+                        if (data.departments.length === 0) {
+                            departmentSelect.innerHTML += '<option value="">No departments available</option>';
+                        } else {
+                            data.departments.forEach(dept => {
+                                departmentSelect.innerHTML += `<option value="${dept.code}">${dept.name}</option>`;
+                            });
+                        }
+                    } else {
+                        departmentSelect.innerHTML = '<option value="">Error loading departments</option>';
+                        console.error('Error loading departments:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    departmentSelect.innerHTML = '<option value="">Error loading departments</option>';
+                });
         }
 
-        // Load lecturers based on selected department
+        function closeAssignModal() {
+            document.getElementById('assignModal').style.display = 'none';
+        }        // Load lecturers based on selected department
         function loadLecturersByDepartment() {
             const departmentSelect = document.getElementById('assignDepartment');
             const lecturerSelect = document.getElementById('assignLecturer');
@@ -634,37 +672,36 @@
                 return;
             }
 
-            // Mock data - in real app, this would fetch from API
-            const lecturersByDepartment = {
-                'CS': [
-                    { id: 1, name: 'Ash Abrahams', email: 'ash.abrahams@university.edu' },
-                    { id: 3, name: 'Brian Carter', email: 'brian.carter@university.edu' }
-                ],
-                'MATH': [
-                    { id: 7, name: 'Frank Green', email: 'frank.green@university.edu' },
-                    { id: 8, name: 'Grace Harris', email: 'grace.harris@university.edu' }
-                ],
-                'PHYS': [
-                    { id: 6, name: 'Emily Foster', email: 'emily.foster@university.edu' }
-                ],
-                'CHEM': [
-                    { id: 9, name: 'Henry Johnson', email: 'henry.johnson@university.edu' }
-                ],
-                'BIO': [
-                    { id: 5, name: 'Daniel Evans', email: 'daniel.evans@university.edu' },
-                    { id: 10, name: 'Isabella King', email: 'isabella.king@university.edu' }
-                ]
-            };
+            // Show loading state
+            lecturerSelect.innerHTML = '<option value="">Loading...</option>';
+            lecturerSelect.disabled = true;
 
-            const lecturers = lecturersByDepartment[departmentSelect.value] || [];
-            
-            lecturerSelect.innerHTML = '<option value="">Select Lecturer</option>';
-            lecturers.forEach(lecturer => {
-                lecturerSelect.innerHTML += `<option value="${lecturer.id}">${lecturer.name} (${lecturer.email})</option>`;
-            });
-            
-            lecturerSelect.disabled = false;
-        }        // Handle assignment submission
+            // Fetch lecturers from API (excluding current Subject Leader)
+            fetch(`/subject-leader/api/lecturers?department=${departmentSelect.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.lecturers) {
+                        lecturerSelect.innerHTML = '<option value="">Select Lecturer</option>';
+                        
+                        if (data.lecturers.length === 0) {
+                            lecturerSelect.innerHTML += '<option value="">No lecturers available</option>';
+                        } else {
+                            data.lecturers.forEach(lecturer => {
+                                lecturerSelect.innerHTML += `<option value="${lecturer.id}">${lecturer.name} (${lecturer.email})</option>`;
+                            });
+                        }
+                        
+                        lecturerSelect.disabled = false;
+                    } else {
+                        lecturerSelect.innerHTML = '<option value="">Error loading lecturers</option>';
+                        console.error('Error loading lecturers:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    lecturerSelect.innerHTML = '<option value="">Error loading lecturers</option>';
+                });
+        }// Handle assignment submission
         function handleAssignment() {
             // Get form values
             const departmentSelect = document.getElementById('assignDepartment');
@@ -1000,30 +1037,7 @@
             }
             if (event.target == editModal) {
                 editModal.style.display = 'none';
-            }
-        };
-        
-        // Add event listeners when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Assign button event listener
-            const assignButton = document.querySelector('.modal-btn--assign');
-            if (assignButton) {
-                assignButton.addEventListener('click', handleAssignment);
-            }
-
-            // Resubmit button event listener
-            const resubmitButton = document.querySelector('.btn--resubmit');
-            if (resubmitButton) {
-                resubmitButton.addEventListener('click', handleResubmit);
-            }
-
-            // Notes change event listener
-            const notesTextarea = document.querySelector('.info-field textarea');
-            if (notesTextarea) {
-                notesTextarea.addEventListener('input', markNotesAsModified);
-                notesTextarea.addEventListener('change', markNotesAsModified);
-            }
-        });
+            }        };
     </script>
     <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>

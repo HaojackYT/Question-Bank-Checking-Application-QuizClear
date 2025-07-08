@@ -45,4 +45,12 @@ public interface SubjectLeaderFeedbackService {
      * @return true if successful
      */
     boolean resubmitQuestion(Long feedbackId, Long subjectLeaderId);
+    
+    /**
+     * Get lecturers by department for assignment (excluding current Subject Leader)
+     * @param department The department name
+     * @param excludeUserId The Subject Leader ID to exclude
+     * @return List of available lecturers
+     */
+    List<Map<String, Object>> getLecturersByDepartmentForAssignment(String department, Long excludeUserId);
 }

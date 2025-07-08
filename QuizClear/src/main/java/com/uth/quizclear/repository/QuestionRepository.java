@@ -1,6 +1,7 @@
 package com.uth.quizclear.repository;
 
 import com.uth.quizclear.model.entity.Question;
+import com.uth.quizclear.model.entity.User;
 import com.uth.quizclear.model.enums.DifficultyLevel;
 import com.uth.quizclear.model.enums.QuestionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -151,5 +152,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
   List<Long> findQuestionIdsByCourseIds(@Param("courseIds") List<Long> courseIds);
   // For Subject Leader: find all questions that need review from same department
   @Query("SELECT q FROM Question q JOIN q.course c WHERE c.department = :department AND (q.status = 'SUBMITTED' OR q.status = 'REJECTED')")
-  List<Question> findQuestionsPendingReviewByDepartment(@Param("department") String department);
+  List<Question> findQuestionsPendingReviewByDepartment(@Param("department") String department);  // Find users who have created questions in a specific department (for assignment)
+  @Query("SELECT DISTINCT q.createdBy FROM Question q WHERE q.course.department = :department")
+  List<User> findQuestionCreatorsByDepartment(@Param("department") String department);
 }
