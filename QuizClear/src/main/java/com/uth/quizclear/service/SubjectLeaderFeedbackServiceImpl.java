@@ -47,12 +47,11 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
         if (department == null || department.trim().isEmpty()) {
             return feedbackList;
         }        // Get questions from the same department that need Subject Leader review
-        List<Question> questionsWithFeedback = questionRepository.findQuestionsPendingReviewByDepartment(department);for (Question question : questionsWithFeedback) {
+        List<Question> questionsWithFeedback = questionRepository.findQuestionsPendingReviewByDepartment(department);        for (Question question : questionsWithFeedback) {
             // Only show questions that need Subject Leader action:
-            // - SUBMITTED: newly submitted questions (may or may not have feedback)
-            // - REJECTED: questions that were rejected and need SL action
-            // Hide: DRAFT (not ready), APPROVED (already processed), ARCHIVED (sent to higher level)
-            if (question.getStatus() == QuestionStatus.SUBMITTED || question.getStatus() == QuestionStatus.REJECTED) {
+            // - SUBMITTED: newly submitted questions that need review
+            // Hide: DRAFT (not ready), REJECTED (returned to lecturer), APPROVED (already processed), ARCHIVED (sent to higher level)
+            if (question.getStatus() == QuestionStatus.SUBMITTED) {
                 
                 // Check if question still belongs to the same department
                 boolean belongsToSameDepartment = false;
