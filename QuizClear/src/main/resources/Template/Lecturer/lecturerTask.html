@@ -110,11 +110,14 @@
                             </td>
                             <td>
                                 <i class="fa-solid fa-eye view-task" th:attr="data-task-id=${task.taskId}"
-                                    style="margin-right: 50px; cursor: pointer;"></i>
+                                    style="margin-right: 50px; cursor: pointer;">
+                                </i>
 
-                                <a th:href="@{/lecturer/task/show-task/{taskId}(taskId=${task.taskId})}">
-                                    <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"></i>
-                                </a>
+                                <span th:if="${task.status.name() != 'completed'}">
+                                    <a th:href="@{/lecturer/task/show-task/{taskId}(taskId=${task.taskId})}">
+                                        <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"></i>
+                                    </a>
+                                </span>
                             </td>
                         </tr>
                     </tbody>
@@ -156,16 +159,18 @@
             const paperPlaneIcon = row.querySelector('.fa-paper-plane');
             const viewIcon = row.querySelector('.fa-eye');
 
-            // Vô hiệu hóa paper-plane nếu trạng thái là Not Received
+            // Vô hiệu hóa paper-plane
             if (statusText === 'not received') {
                 paperPlaneIcon.style.opacity = '0.5';
                 paperPlaneIcon.style.cursor = 'not-allowed';
                 paperPlaneIcon.removeAttribute('onclick');
+            } else if (statusText === 'completed') {
+                paperPlaneIcon.style.display = 'none';
             } else {
                 paperPlaneIcon.style.opacity = '1';
                 paperPlaneIcon.style.cursor = 'pointer';
                 paperPlaneIcon.onclick = goToSendTask;
-            }
+            }               
 
             // Thêm sự kiện cho nút View
             if (viewIcon) {
