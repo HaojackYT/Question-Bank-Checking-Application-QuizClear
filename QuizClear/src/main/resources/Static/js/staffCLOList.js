@@ -1,117 +1,309 @@
-// // Add interactive functionality
-// document.addEventListener('DOMContentLoaded', function() {
-//     const modal = document.getElementById('clo-modal');
-//     const modalTitle = document.getElementById('modal-title');
-//     const creatorLabel = document.getElementById('creator-label');
-//     const openBtn = document.querySelector('.new-clo-btn');
-//     const closeBtn = document.getElementById('close-modal');
-//     const editBtns = document.querySelectorAll('.action-btn.edit');
-//     const deleteBtns = document.querySelectorAll('.action-btn.delete');
-//     const toggleBtns = document.querySelectorAll('.toggle-btn');
-//     const menuElements = document.querySelectorAll('#Menu-Staff .elements');
+// CLO Management JavaScript Functions
 
-//     // Sidebar menu functionality
-//     menuElements.forEach(element => {
-//         element.addEventListener('click', function() {
-//             // Remove active class from all menu items
-//             menuElements.forEach(el => el.classList.remove('active'));
-//             // Add active class to clicked item
-//             this.classList.add('active');
-//         });
-//     });
+// Load recent activities on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadRecentActivities();
+    setupEventListeners();
+});
 
-//     // Open modal for creating new CLO
-//     openBtn.addEventListener('click', function(e) {
-//         e.preventDefault();
-//         modalTitle.textContent = 'Create CLO';
-//         creatorLabel.textContent = 'Created By *';
-//         modal.classList.add('show');
-//     });
+function setupEventListeners() {
+    // Search input enter key
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
 
-//     // Open modal for editing CLO
-//     editBtns.forEach(btn => {
-//         btn.addEventListener('click', function(e) {
-//             e.stopPropagation();
-//             modalTitle.textContent = 'Edit CLO';
-//             creatorLabel.textContent = 'Edited By *';
-//             modal.classList.add('show');
-//         });
-//     });
+    // Edit button event delegation
+    const cloTable = document.querySelector('.course-table');
+    if (cloTable) {
+        cloTable.addEventListener('click', function(event) {
+            const editButton = event.target.closest('.js-edit-button');
+            if (editButton) {
+                const row = editButton.closest('tr');
+                const cloId = row.getAttribute('data-clo-id');
+                if (cloId) {
+                    loadCLOForEdit(cloId);
+                } else {
+                    openModal();
+                }
+            }
+        });
+    }
+}
 
-//     // Close modal
-//     closeBtn.addEventListener('click', function() {
-//         modal.classList.remove('show');
-//     });
+// Modal functions
+function openModal() {
+    document.getElementById("modal").style.display = "flex";
+}
 
-//     // Close modal when clicking outside
-//     window.addEventListener('click', function(e) {
-//         if (e.target === modal) {
-//             modal.classList.remove('show');
-//         }
-//     });
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
+}
 
-//     // Toggle buttons functionality
-//     toggleBtns.forEach(btn => {
-//         btn.addEventListener('click', function() {
-//             toggleBtns.forEach(b => b.classList.remove('active'));
-//             this.classList.add('active');
-//         });
-//     });
+function openCreateModal() {
+    document.getElementById("modal-create").style.display = "flex";
+}
 
-//     // Search functionality
-//     const searchInput = document.querySelector('.search-input');
-//     searchInput.addEventListener('input', function() {
-//         console.log('Searching for:', this.value);
-//         // Add your search logic here
-//     });
+function closeCreateModal() {
+    document.getElementById("modal-create").style.display = "none";
+}
 
-//     // Delete button functionality
-//     deleteBtns.forEach(btn => {
-//         btn.addEventListener('click', function(e) {
-//             e.stopPropagation();
-//             if (confirm('Are you sure you want to delete this CLO?')) {
-//                 console.log('Delete CLO');
-//                 // Add your delete logic here
-//             }
-//         });
-//     });
+// Search functionality
+function performSearch() {
+    const keyword = document.getElementById('searchInput').value;
+    const currentUrl = new URL(window.location);
+    
+    if (keyword && keyword.trim()) {
+        currentUrl.searchParams.set('keyword', keyword.trim());
+    } else {
+        currentUrl.searchParams.delete('keyword');
+    }
+    currentUrl.searchParams.set('page', '0'); // Reset to first page
+    window.location.href = currentUrl.toString();
+}
 
-//     // Check buttons in activities
-//     const checkBtns = document.querySelectorAll('.check-btn');
-//     checkBtns.forEach(btn => {
-//         btn.addEventListener('click', function() {
-//             console.log('Check activity clicked');
-//             // Add your check logic here
-//         });
-//     });
+// Filter functionality
+function performFilter() {
+    const difficultyLevel = document.getElementById('difficultyFilter').value;
+    const currentUrl = new URL(window.location);
+    
+    if (difficultyLevel !== 'AllDepartment') {
+        currentUrl.searchParams.set('difficultyLevel', difficultyLevel);
+    } else {
+        currentUrl.searchParams.delete('difficultyLevel');
+    }
+    currentUrl.searchParams.set('page', '0'); // Reset to first page
+    window.location.href = currentUrl.toString();
+}
 
-//     // Form submission
-//     document.getElementById('clo-form').addEventListener('submit', function(e) {
-//         e.preventDefault();
-//         console.log('Form submitted');
-//         modal.classList.remove('show');
-//         // Add your form submission logic here
-//     });
+// Create CLO
+function submitCreateCLO(event) {
+    event.preventDefault();
+    
+    const courseId = document.getElementById('createCourseId').value;
+    if (!courseId || isNaN(courseId)) {
+        alert('Please enter a valid Course ID');
+        return;
+    }
+    
+    const formData = {
+        cloCode: document.getElementById('createCLOCode').value,
+        difficultyLevel: document.getElementById('createDifficultyLevel').value,
+        cloDescription: document.getElementById('createDescription').value,
+        weight: document.getElementById('createWeight').value || null,
+        cloNote: document.getElementById('createNotes').value,
+        course: {
+            courseId: parseInt(courseId)
+        }
+    };
 
-//     // Pagination functionality
-//     const paginationBtns = document.querySelectorAll('.pagination-btn');
-//     paginationBtns.forEach(btn => {
-//         btn.addEventListener('click', function() {
-//             if (!this.textContent.includes('Previous') && !this.textContent.includes('Next')) {
-//                 paginationBtns.forEach(b => b.classList.remove('active'));
-//                 this.classList.add('active');
-//             }
-//             console.log('Pagination clicked:', this.textContent);
-//             // Add your pagination logic here
-//         });
-//     });
+    fetch('/api/clos', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (response.ok) {
+            closeCreateModal();
+            showSuccessMessage('CLO created successfully');
+            setTimeout(() => window.location.reload(), 1000);
+        } else {
+            return response.text().then(text => {
+                throw new Error(text || 'Error creating CLO');
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error creating CLO: ' + error.message);
+    });
+}
 
-//     // Filter functionality
-//     const filterSelects = document.querySelectorAll('.filter-select');
-//     filterSelects.forEach(select => {
-//         select.addEventListener('change', function() {
-//             console.log('Filter changed:', this.value);
-//             // Add your filter logic here
-//         });
-//     });
-// });
+// Load CLO data for editing
+function loadCLOForEdit(cloId) {
+    fetch(`/api/clos/${cloId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('CLO not found');
+            }
+            return response.json();
+        })
+        .then(clo => {
+            document.getElementById('editCLOId').value = clo.cloId;
+            document.getElementById('editCLOCode').value = clo.cloCode || '';
+            document.getElementById('editDifficultyLevel').value = clo.difficultyLevel || 'Recognition';
+            document.getElementById('editDescription').value = clo.cloDescription || '';
+            document.getElementById('editWeight').value = clo.weight || '';
+            document.getElementById('editCourseId').value = clo.course ? clo.course.courseId : '';
+            document.getElementById('editNotes').value = clo.cloNote || '';
+            openModal();
+        })
+        .catch(error => {
+            console.error('Error loading CLO:', error);
+            alert('Error loading CLO data: ' + error.message);
+        });
+}
+
+// Edit CLO
+function submitEditCLO(event) {
+    event.preventDefault();
+    
+    const cloId = document.getElementById('editCLOId').value;
+    const courseId = document.getElementById('editCourseId').value;
+    
+    if (!courseId || isNaN(courseId)) {
+        alert('Please enter a valid Course ID');
+        return;
+    }
+    
+    const formData = {
+        cloCode: document.getElementById('editCLOCode').value,
+        difficultyLevel: document.getElementById('editDifficultyLevel').value,
+        cloDescription: document.getElementById('editDescription').value,
+        weight: document.getElementById('editWeight').value || null,
+        cloNote: document.getElementById('editNotes').value,
+        course: {
+            courseId: parseInt(courseId)
+        }
+    };
+
+    fetch(`/api/clos/${cloId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (response.ok) {
+            closeModal();
+            showSuccessMessage('CLO updated successfully');
+            setTimeout(() => window.location.reload(), 1000);
+        } else {
+            return response.text().then(text => {
+                throw new Error(text || 'Error updating CLO');
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating CLO: ' + error.message);
+    });
+}
+
+// Load recent activities
+function loadRecentActivities() {
+    fetch('/subject-management/api/clos/recent-activities')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load activities');
+            }
+            return response.json();
+        })
+        .then(activities => {
+            const container = document.getElementById('activities-container');
+            container.innerHTML = '';
+            
+            if (activities.length === 0) {
+                container.innerHTML = `
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <p class="activity-text"><strong>No recent activities</strong></p>
+                            <p class="activity-caption">No CLO activities in the last 30 days</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            activities.forEach(activity => {
+                const activityElement = document.createElement('div');
+                activityElement.className = 'activity-item';
+                activityElement.innerHTML = `
+                    <div class="activity-info">
+                        <p class="activity-text"><strong>${escapeHtml(activity.title)}</strong></p>
+                        <p class="activity-caption">${escapeHtml(activity.description)}</p>
+                    </div>
+                    <div class="check-btn" onclick="checkActivity(${activity.id})">Check</div>
+                `;
+                container.appendChild(activityElement);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading activities:', error);
+            const container = document.getElementById('activities-container');
+            container.innerHTML = `
+                <div class="activity-item">
+                    <div class="activity-info">
+                        <p class="activity-text"><strong>Error loading activities</strong></p>
+                        <p class="activity-caption">Please refresh the page to try again</p>
+                    </div>
+                </div>
+            `;
+        });
+}
+
+// Check activity
+function checkActivity(activityId) {
+    fetch(`/subject-management/api/clos/activities/${activityId}/check`, {
+        method: 'POST'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to check activity');
+        }
+        return response.json();
+    })
+    .then(result => {
+        if (result.success) {
+            showSuccessMessage('Activity checked successfully');
+            loadRecentActivities(); // Reload activities
+        } else {
+            alert('Error checking activity: ' + (result.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error checking activity: ' + error.message);
+    });
+}
+
+// Utility functions
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function showSuccessMessage(message) {
+    // Create a simple success notification
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 5px;
+        z-index: 10000;
+        font-weight: bold;
+    `;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        document.body.removeChild(notification);
+    }, 3000);
+}

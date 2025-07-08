@@ -74,15 +74,7 @@ public class CourseController {
         return "Staff/staffSMCourseList";
     }
 
-    @GetMapping("/clos")
-    public String showCLOListPage(Model model,
-    @RequestParam(defaultValue = "0") int page,
-    @RequestParam(defaultValue = "15") int size) {
-        
-        Page<CLODTO> cloPage = cloService.findCLOsForListPage(PageRequest.of(page, size));
-        model.addAttribute("cloPage", cloPage);
-        return "Staff/staffCLOList"; // Sử dụng file có sẵn
-    }
+
 
     @PostMapping("/courses/update")
     public String updateCourse(@RequestParam Long courseId,

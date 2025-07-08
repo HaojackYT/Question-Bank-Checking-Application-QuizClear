@@ -28,13 +28,27 @@ public class CLOController {
             @RequestParam(required = false) String difficultyLevel,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "cloCode") String sortBy, // Sửa từ "cloName" thành "cloCode"
+            @RequestParam(defaultValue = "cloCode") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir
     ) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<CLO> cloPage = cloService.getCLOs(keyword, department, difficultyLevel, pageable);
+        return new ResponseEntity<>(cloPage, HttpStatus.OK);
+    }
+    
+    @GetMapping("/search")
+    public ResponseEntity<Page<CLO>> searchCLOs(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String difficultyLevel,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "cloCode");
+        Pageable pageable = PageRequest.of(page, size, sort);
+        
+        Page<CLO> cloPage = cloService.getCLOs(keyword, null, difficultyLevel, pageable);
         return new ResponseEntity<>(cloPage, HttpStatus.OK);
     }    @GetMapping("/{id}")
     public ResponseEntity<CLO> getCLOById(@PathVariable Long id) {

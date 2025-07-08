@@ -11,6 +11,7 @@
     <link rel="stylesheet" th:href="@{/Static/css/staff/staffSMCourseList.css}">
     <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <script th:src="@{/Static/js/staffCLOList.js}"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
     </style>
@@ -31,15 +32,16 @@
                 <span class="close-button" onclick="closeModal()">&times;</span>
                 <h2>Edit CLO</h2>
 
-                <form>
+                <form id="editCLOForm" onsubmit="submitEditCLO(event)">
+                    <input type="hidden" id="editCLOId">
                     <div class="flex-row">
                         <div>
-                            <label>Course Name *</label>
-                            <input type="text" required>
+                            <label>CLO Code *</label>
+                            <input type="text" id="editCLOCode" required>
                         </div>
                         <div>
                             <label>Difficulty Level *</label>
-                            <select required>
+                            <select id="editDifficultyLevel" required>
                                 <option value="Recognition">Recognition</option>
                                 <option value="Comprehension">Comprehension</option>
                                 <option value="Basic Application">Basic Application</option>
@@ -49,24 +51,21 @@
                     </div>
 
                     <label>Description *</label>
-                    <textarea required rows="4"></textarea>
+                    <textarea id="editDescription" required rows="4"></textarea>
 
                     <div class="flex-row">
                         <div>
-                            <label>Edited By *</label>
-                            <input type="text" required>
+                            <label>Weight</label>
+                            <input type="number" id="editWeight" step="0.1" min="0" max="1">
                         </div>
                         <div>
-                            <label>Status *</label>
-                            <select required>
-                                <option value="Approved">Approved</option>
-                                <option value="Draft">Draft</option>
-                            </select>
+                            <label>Course ID</label>
+                            <input type="number" id="editCourseId">
                         </div>
                     </div>
 
                     <label>Notes</label>
-                    <textarea rows="3"></textarea>
+                    <textarea id="editNotes" rows="3"></textarea>
 
                     <button type="submit" class="save-button">Save</button>
                 </form>
@@ -79,15 +78,15 @@
                 <span class="close-button" onclick="closeCreateModal()">&times;</span>
                 <h2>Create CLO</h2>
 
-                <form>
+                <form id="createCLOForm" onsubmit="submitCreateCLO(event)">
                     <div class="flex-row">
                         <div>
-                            <label>Course Name *</label>
-                            <input type="text" required>
+                            <label>CLO Code *</label>
+                            <input type="text" id="createCLOCode" required>
                         </div>
                         <div>
                             <label>Difficulty Level *</label>
-                            <select required>
+                            <select id="createDifficultyLevel" required>
                                 <option value="Recognition">Recognition</option>
                                 <option value="Comprehension">Comprehension</option>
                                 <option value="Basic Application">Basic Application</option>
@@ -97,24 +96,21 @@
                     </div>
 
                     <label>Description *</label>
-                    <textarea required rows="4"></textarea>
+                    <textarea id="createDescription" required rows="4"></textarea>
 
                     <div class="flex-row">
                         <div>
-                            <label>Created By *</label>
-                            <input type="text" required>
+                            <label>Weight</label>
+                            <input type="number" id="createWeight" step="0.1" min="0" max="1">
                         </div>
                         <div>
-                            <label>Status *</label>
-                            <select required>
-                                <option value="Approved">Approved</option>
-                                <option value="Draft">Draft</option>
-                            </select>
+                            <label>Course ID *</label>
+                            <input type="number" id="createCourseId" required>
                         </div>
                     </div>
 
                     <label>Notes</label>
-                    <textarea rows="3"></textarea>
+                    <textarea id="createNotes" rows="3"></textarea>
 
                     <button type="submit" class="save-button">Save</button>
                 </form>
@@ -137,16 +133,18 @@
 
             <div class="search-filter-bar">
                 <div class="search-box">
-                    <input type="text" placeholder="Enter search content ..." class="search-input">
-                    <button class="search-btn">
+                    <input type="text" id="searchInput" placeholder="Enter search content ..." class="search-input" th:value="${currentKeyword}">
+                    <button class="search-btn" onclick="performSearch()">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
                 <div class="filter-dropdown">
-                    <select class="filter-select">
-                        <option value="AllDepartment">All Departments</option>
-                        <option value="IT">Information Technology</option>
-                        <option value="DB">Database</option>
+                    <select class="filter-select" id="difficultyFilter" onchange="performFilter()">
+                        <option value="AllDepartment" th:selected="${currentDifficultyLevel == null or currentDifficultyLevel == 'AllDepartment'}">All Difficulty Levels</option>
+                        <option value="Recognition" th:selected="${currentDifficultyLevel == 'Recognition'}">Recognition</option>
+                        <option value="Comprehension" th:selected="${currentDifficultyLevel == 'Comprehension'}">Comprehension</option>
+                        <option value="Basic Application" th:selected="${currentDifficultyLevel == 'Basic Application'}">Basic Application</option>
+                        <option value="Advanced Application" th:selected="${currentDifficultyLevel == 'Advanced Application'}">Advanced Application</option>
                     </select>
                     <i class="fas fa-chevron-down"></i>
                 </div>
@@ -168,7 +166,7 @@
                     <tr th:if="${cloPage.empty}">
                         <td colspan="7" style="text-align: center;">No CLOs found.</td>
                     </tr>
-                    <tr th:each="clo : ${cloPage.content}">
+                    <tr th:each="clo : ${cloPage.content}" th:attr="data-clo-id=${clo.cloId}">
                         <td th:text="${clo.cloCode} ?: 'N/A'">CLO1</td>
                         <td th:text="${clo.cloDescription} ?: 'No description'">Understand web fundamentals and core concepts</td>
                         <td th:text="${clo.courseName} ?: 'N/A'">Web Programming</td>
@@ -209,55 +207,29 @@
                 </div>
             </div>
 
-            <!-- Add Event Delegation for edit buttons -->
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const cloTable = document.querySelector('.course-table');
-                    if (cloTable) {
-                        cloTable.addEventListener('click', function(event) {
-                            const editButton = event.target.closest('.js-edit-button');
-                            if (editButton) {
-                                openModal();
-                            }
-                        });
-                    }
-                });
-            </script>
+
 
             <div class="activity">
                 <h2>Recent Activities</h2>
                 <p class="activities-subtitle">Activities related to CLOs in the last 30 days</p>
-                <div class="activity-item">
-                    <div class="activity-info">
-                        <p class="activity-text"><strong>New CLO: CLO1 – Apply OOP principles</strong></p>
-                        <p class="activity-caption">The CLO has been created by Nguyễn Văn A</p>
+                <div id="activities-container">
+                    <!-- Activities will be loaded dynamically -->
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <p class="activity-text"><strong>Loading activities...</strong></p>
+                            <p class="activity-caption">Please wait</p>
+                        </div>
                     </div>
-                    <div class="check-btn">Check</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ma nhung header vs menu -->
+    <!-- Load header and menu -->
     <script>
         // Load header và menu từ các endpoint có sẵn
         fetch('/header_user.html').then(res => res.text()).then(data => document.getElementById("header-placeholder").innerHTML = data);
         fetch('/Menu-Staff.html').then(res => res.text()).then(data => document.getElementById("menu-HTML").innerHTML = data);
-
-        function openModal() {
-            document.getElementById("modal").style.display = "flex";
-        }
-
-        function closeModal() {
-            document.getElementById("modal").style.display = "none";
-        }
-        function openCreateModal() {
-            document.getElementById("modal-create").style.display = "flex";
-        }
-
-        function closeCreateModal() {
-            document.getElementById("modal-create").style.display = "none";
-        }
     </script>
 </body>
 
