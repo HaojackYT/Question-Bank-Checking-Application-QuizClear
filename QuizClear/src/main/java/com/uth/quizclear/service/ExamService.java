@@ -669,4 +669,22 @@ public class ExamService {
         return examRepository.findById(examId).orElse(null);
     }
 
+
+    public List<ExamDTO> getFilteredExams(String status, String department) {
+        ExamStatus examStatus = null;
+        if (status != null && !status.isEmpty()) {
+            examStatus = ExamStatus.fromValue(status);
+        }
+        List<Exam> exams = examRepository.findByStatusAndDepartment(examStatus, (department == null || department.isEmpty()) ? null : department);
+        return exams.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    /**
+     * Get all departments
+     */
+    @Transactional(readOnly = true)
+    public List<String> getAllDepartments() {
+        return examRepository.findAllDepartments();
+    }
+
 }

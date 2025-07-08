@@ -57,6 +57,19 @@
                     </button>
                 </div>
             </div>
+            <form method="get" th:action="@{/staff/exams/all-exams}" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <select name="status">
+                    <option value="">Tất cả trạng thái</option>
+                    <option th:each="s : ${statuses}" th:value="${s.value}" th:text="${s.displayName}" 
+                        th:selected="${selectedStatus} == ${s.value}"></option>
+                </select>
+                <select name="department">
+                    <option value="">Tất cả bộ môn</option>
+                    <option th:each="d : ${departments}" th:value="${d}" th:text="${d}" 
+                        th:selected="${selectedDepartment} == ${d}"></option>
+                </select>
+                <button type="submit"><i class="fas fa-filter"></i> Lọc</button>
+            </form>
             <div class="tab-container">
                 <a class="tab" th:href="@{/staff/exams/all-exams}">All Exams</a>
                 <a class="tab" th:href="@{/staff/exams/pending-approval}">Pending Approval</a>
