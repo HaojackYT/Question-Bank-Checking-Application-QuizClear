@@ -166,8 +166,9 @@
                     <tr th:if="${cloPage.empty}">
                         <td colspan="7" style="text-align: center;">No CLOs found.</td>
                     </tr>
-                    <tr th:each="clo : ${cloPage.content}" th:attr="data-clo-id=${clo.cloId}">
-                        <td th:text="${clo.cloCode} ?: 'N/A'">CLO1</td>
+                    <tr th:each="clo : ${cloPage.content}" 
+                        th:attr="data-clo-id=${clo.cloId},data-clo-code=${clo.cloCode},data-clo-description=${clo.cloDescription},data-difficulty-level=${clo.difficultyLevel},data-weight=${clo.weight},data-course-id=${clo.courseId}">
+                        <td th:text="${clo.cloCode} ?: 'N/A'" th:title="'ID: ' + ${clo.cloId}">CLO1</td>
                         <td th:text="${clo.cloDescription} ?: 'No description'">Understand web fundamentals and core concepts</td>
                         <td th:text="${clo.courseName} ?: 'N/A'">Web Programming</td>
                         <td><span class="difficulty-badge" th:class="'difficulty-badge ' + ${clo.difficultyLevel?.toLowerCase()}" th:text="${clo.difficultyLevel}">Recognition</span></td>

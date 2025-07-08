@@ -71,7 +71,7 @@ public class CLOService {
     
     // Method được gọi từ CLOController.getCLOById()
     public CLO getCLOById(Long id) {
-        return cloRepository.findById(id)
+        return cloRepository.findByIdWithCourse(id)
                 .orElseThrow(() -> new RuntimeException("CLO not found with id: " + id));
     }
       // Method được gọi từ CLOController.createCLO()
