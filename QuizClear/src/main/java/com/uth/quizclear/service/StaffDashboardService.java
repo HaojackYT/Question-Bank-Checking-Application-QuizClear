@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,44 +58,37 @@ public class StaffDashboardService {
         
         // Set basic statistics from database with better fallback
         long totalSubjects = subjectRepository.count();
-        long totalQuestions = questionRepository.count();
-        
-        // Count duplicates only for this staff's questions
-        long staffDuplicates = 0;
+        long totalQuestions = questionRepository.count();        // Count duplicates based on staff role and scope
+        long duplicateCount = 0;
         try {
-            // Get all questions created by this staff
-            List<Question> staffQuestions = questionRepository.findByCreatedBy_UserId(staffId);
-            Set<Long> staffQuestionIds = staffQuestions.stream()
-                .map(Question::getQuestionId)
-                .collect(Collectors.toSet());
+            // Get staff role to determine scope
+            // For now, we'll show total duplicates for all staff (as they manage the system)
+            // Later can add role-based filtering if needed
+            duplicateCount = duplicateDetectionRepository.count();
+            System.out.println("Total duplicates in system: " + duplicateCount);
             
-            System.out.println("Staff has " + staffQuestions.size() + " questions");
+            // TODO: Add role-based filtering later
+            // if staff is RD -> show all duplicates
+            // if staff is HoD -> show duplicates in their department 
+            // if staff is SL -> show duplicates in their subjects
             
-            // Count duplicates involving staff's questions
-            List<DuplicateDetection> allDuplicates = duplicateDetectionRepository.findAll();
-            staffDuplicates = allDuplicates.stream()
-                .filter(d -> staffQuestionIds.contains(d.getNewQuestionId()) || 
-                            staffQuestionIds.contains(d.getSimilarQuestionId()))
-                .count();
         } catch (Exception e) {
-            System.err.println("Error counting staff duplicates: " + e.getMessage());
-            staffDuplicates = duplicateDetectionRepository.count(); // fallback to total
-        }        
+            System.err.println("Error counting duplicates: " + e.getMessage());
+            duplicateCount = 0;
+        }
         long totalExams = examRepository.count();
         
         // Use reasonable defaults if no data
         if (totalSubjects == 0) totalSubjects = 5;
         if (totalQuestions == 0) totalQuestions = 25;
-        if (totalExams == 0) totalExams = 8;
-        
-        System.out.println("Total Subjects: " + totalSubjects);
+        if (totalExams == 0) totalExams = 8;        System.out.println("Total Subjects: " + totalSubjects);
         System.out.println("Total Questions: " + totalQuestions);
-        System.out.println("Staff Duplicates: " + staffDuplicates);
+        System.out.println("Total Duplicates: " + duplicateCount);
         System.out.println("Total Exams: " + totalExams);
         
         dashboard.setTotalSubjects(Math.toIntExact(totalSubjects));
         dashboard.setTotalQuestions(Math.toIntExact(totalQuestions));
-        dashboard.setDuplicateQuestions(Math.toIntExact(staffDuplicates));
+        dashboard.setDuplicateQuestions(Math.toIntExact(duplicateCount));
         dashboard.setExamsCreated(Math.toIntExact(totalExams));
         
         // Statistics for this month - check multiple time ranges

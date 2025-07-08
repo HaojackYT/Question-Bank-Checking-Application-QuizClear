@@ -100,17 +100,26 @@
 
                 feedbackList.forEach((feedback, index) => {
                     const row = document.createElement('tr');
-                    
-                    // Format date
+                      // Format date - check multiple date fields
                     let formattedDate = 'N/A';
-                    if (feedback.submittedAt || feedback.reviewedAt) {
-                        const date = new Date(feedback.submittedAt || feedback.reviewedAt);
-                        formattedDate = date.toLocaleDateString('en-GB', {
+                    let dateToFormat = null;
+                    
+                    // Priority: submittedAt > createdAt > reviewedAt
+                    if (feedback.submittedAt) {
+                        dateToFormat = new Date(feedback.submittedAt);
+                    } else if (feedback.createdAt) {
+                        dateToFormat = new Date(feedback.createdAt);
+                    } else if (feedback.reviewedAt) {
+                        dateToFormat = new Date(feedback.reviewedAt);
+                    }
+                    
+                    if (dateToFormat && !isNaN(dateToFormat.getTime())) {
+                        formattedDate = dateToFormat.toLocaleDateString('en-GB', {
                             day: '2-digit',
                             month: '2-digit',
                             year: '2-digit'
                         });
-                    }                    // Determine status class and text based on actual status
+                    }// Determine status class and text based on actual status
                     let statusClass = 'submitted';
                     let statusText = 'SUBMITTED';
                     

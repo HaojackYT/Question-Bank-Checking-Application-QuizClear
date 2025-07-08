@@ -10,10 +10,10 @@ public class QuestionFeedbackDTO {
     private String courseCode;
     private String difficulty;
     private String status;
-    private String createdByName;
-    private String reviewedByName;
+    private String createdByName;    private String reviewedByName;
     private LocalDateTime submittedAt;
     private LocalDateTime reviewedAt;
+    private LocalDateTime createdAt;
     private String feedback;
     private boolean hasFeedback;
     private int priority; // 1=High, 2=Medium, 3=Low
@@ -70,10 +70,11 @@ public class QuestionFeedbackDTO {
     public void setReviewedByName(String reviewedByName) { this.reviewedByName = reviewedByName; }
 
     public LocalDateTime getSubmittedAt() { return submittedAt; }
-    public void setSubmittedAt(LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
-
-    public LocalDateTime getReviewedAt() { return reviewedAt; }
+    public void setSubmittedAt(LocalDateTime submittedAt) { this.submittedAt = submittedAt; }    public LocalDateTime getReviewedAt() { return reviewedAt; }
     public void setReviewedAt(LocalDateTime reviewedAt) { this.reviewedAt = reviewedAt; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
     public String getFeedback() { return feedback; }
     public void setFeedback(String feedback) { this.feedback = feedback; }

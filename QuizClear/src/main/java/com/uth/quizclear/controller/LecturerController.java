@@ -27,6 +27,7 @@ import org.springframework.security.core.Authentication;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
 import java.util.Map;
@@ -1867,30 +1868,59 @@ public class LecturerController {
             System.err.println("Error getting assigned subjects: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
         }
-    }
-
-    @PostMapping("/api/create_questions")
-    public ResponseEntity<?> createQuestion(@RequestBody @Valid QuestionCreateDTO dto, HttpSession session) {
+    }    @PostMapping("/api/create_questions")
+    public ResponseEntity<?> createQuestion(@RequestBody @Valid QuestionCreateDTO dto, 
+                                           BindingResult bindingResult, HttpSession session) {
         try {
+            // Check for validation errors first
+            if (bindingResult.hasErrors()) {
+                Map<String, String> errors = new HashMap<>();
+                bindingResult.getFieldErrors().forEach(error -> 
+                    errors.put(error.getField(), error.getDefaultMessage())
+                );
+                System.err.println("Validation errors: " + errors);
+                return ResponseEntity.badRequest().body(Map.of("error", "Validation failed", "details", errors));
+            }
+
+            // Log the incoming DTO for debugging
+            System.out.println("Received QuestionCreateDTO:");
+            System.out.println("Content: " + dto.getContent());
+            System.out.println("Answer Key: " + dto.getAnswerKey());
+            System.out.println("Course ID: " + dto.getCourseId());
+            System.out.println("Difficulty Level: " + dto.getDifficultyLevel());
+            System.out.println("Status: " + dto.getStatus());
+            System.out.println("CLO ID: " + dto.getCloId());
+
+            // Validate required fields before processing
+            if (dto.getCourseId() == null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Course ID is required"));
+            }
+            
+            if (dto.getDifficultyLevel() == null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Difficulty level is required"));
+            }
+
             Long cloId = dto.getCloId() != null ? dto.getCloId() : 1L;
             CLO clo = cloRepository.findById(cloId)
-                    .orElseThrow(() -> new RuntimeException("CLO not found"));
+                    .orElseThrow(() -> new RuntimeException("CLO not found with ID: " + cloId));
 
             Course course = courseRepository.findById(dto.getCourseId())
-                    .orElseThrow(() -> new RuntimeException("Course not found"));
+                    .orElseThrow(() -> new RuntimeException("Course not found with ID: " + dto.getCourseId()));
 
             Object userObj = session.getAttribute("user");
             Long creatorId;
 
             if (userObj != null && userObj instanceof UserBasicDTO) {
                 creatorId = ((UserBasicDTO) userObj).getUserId();
+                System.out.println("Creator ID from session: " + creatorId);
             } else {
                 // Nếu không có user trong session, dùng userId giả lập (chỉ dùng cho test)
                 creatorId = 1L;
+                System.out.println("Using fallback creator ID: " + creatorId);
             }
 
             User creator = userRepository.findById(creatorId)
-                    .orElseThrow(() -> new RuntimeException("Creator user not found"));
+                    .orElseThrow(() -> new RuntimeException("Creator user not found with ID: " + creatorId));
 
             // Khởi tạo câu hỏi
             Question question = new Question();
@@ -1925,14 +1955,9 @@ public class LecturerController {
                 question.setPlanId(dto.getPlanId());
             }
 
+            System.out.println("About to save question...");
             questionRepository.save(question);
-
-            // Log để debug
-            System.out.println("Question created successfully:");
-            System.out.println("ID: " + question.getQuestionId());
-            System.out.println("Content: " + question.getContent());
-            System.out.println("Task ID: " + question.getTaskId());
-            System.out.println("Plan ID: " + question.getPlanId());
+            System.out.println("Question saved successfully with ID: " + question.getQuestionId());
 
             // Trả về thông tin câu hỏi
             Map<String, Object> response = new HashMap<>();
@@ -1942,9 +1967,13 @@ public class LecturerController {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
+            System.err.println("Error creating question: " + e.getMessage());
             e.printStackTrace(); // log lỗi đầy đủ
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to create question: " + e.getMessage());
+            errorResponse.put("details", e.getClass().getSimpleName());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to create question: " + e.getMessage());
+                    .body(errorResponse);
         }
     }
 
