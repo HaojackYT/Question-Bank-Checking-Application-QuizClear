@@ -79,6 +79,74 @@ public class TaskAssignmentService {
     public Page<TaskAssignmentDTO> getAllTaskAssignments(Pageable pageable) {
         Page<Tasks> tasksPage = tasksRepository.findAll(pageable);
         return tasksPage.map(this::mapToDTOExtended);
+    }    // Phương thức mới: Lấy tasks theo department cho HoD
+    public Page<TaskAssignmentDTO> getTaskAssignmentsByDepartment(String department, Pageable pageable) {
+        List<Tasks> departmentTasks = tasksRepository.findTasksByDepartmentImproved(department);
+        
+        // Convert List to Page manually
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), departmentTasks.size());
+          // Handle empty list case
+        if (departmentTasks.isEmpty() || start >= departmentTasks.size()) {
+            return new PageImpl<>(java.util.Collections.emptyList(), pageable, departmentTasks.size());
+        }
+        
+        List<Tasks> pageContent = departmentTasks.subList(start, end);
+        Page<Tasks> tasksPage = new PageImpl<>(pageContent, pageable, departmentTasks.size());
+        return tasksPage.map(this::mapToDTOExtended);
+    }
+
+    // Phương thức mới: Lấy tasks theo department với filters
+    public Page<TaskAssignmentDTO> getTaskAssignmentsByDepartmentWithFilters(String department, String search, String status, String subject, int page, int size) {
+        List<Tasks> departmentTasks = tasksRepository.findTasksByDepartmentImproved(department);
+        
+        // Apply filters
+        List<Tasks> filteredTasks = departmentTasks.stream()
+                .filter(task -> {
+                    // Filter by search term (title or course name)
+                    if (search != null && !search.isEmpty()) {
+                        String searchLower = search.toLowerCase();
+                        String title = task.getTitle() != null ? task.getTitle().toLowerCase() : "";
+                        String courseName = task.getCourse() != null && task.getCourse().getCourseName() != null 
+                                ? task.getCourse().getCourseName().toLowerCase() : "";
+                        if (!title.contains(searchLower) && !courseName.contains(searchLower)) {
+                            return false;
+                        }
+                    }
+                    
+                    // Filter by status
+                    if (status != null && !status.isEmpty()) {
+                        String taskStatus = task.getStatus() != null ? task.getStatus().toString().toLowerCase() : "";
+                        if (!taskStatus.equals(status.toLowerCase())) {
+                            return false;
+                        }
+                    }
+                    
+                    // Filter by course/subject (by courseId)
+                    if (subject != null && !subject.isEmpty()) {
+                        Long courseId = task.getCourse() != null ? task.getCourse().getCourseId() : null;
+                        if (courseId == null || !courseId.toString().equals(subject)) {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                })
+                .collect(Collectors.toList());
+        
+        // Manual pagination
+        Pageable pageable = PageRequest.of(page, size);
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), filteredTasks.size());
+        
+        // Handle empty list case
+        if (filteredTasks.isEmpty() || start >= filteredTasks.size()) {
+            return new PageImpl<>(java.util.Collections.emptyList(), pageable, filteredTasks.size());
+        }
+        
+        List<Tasks> pageContent = filteredTasks.subList(start, end);
+        Page<Tasks> tasksPage = new PageImpl<>(pageContent, pageable, filteredTasks.size());
+        return tasksPage.map(this::mapToDTOExtended);
     }
 
     // // Phương thức sửa: Lấy task với tìm kiếm và lọc theo courseId
@@ -219,6 +287,19 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
     // Phương thức gốc: Lấy danh sách khóa học
     public List<Map<String, Object>> getCourses() {
         return courseRepository.findAll().stream()
+                .map(course -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", course.getCourseId());
+                    map.put("name", course.getCourseName());
+                    return map;
+                })
+                .collect(Collectors.toList());
+    }
+
+    // Phương thức mới: Lấy danh sách khóa học theo department
+    public List<Map<String, Object>> getCoursesByDepartment(String department) {
+        return courseRepository.findAll().stream()
+                .filter(course -> department.equals(course.getDepartment()))
                 .map(course -> {
                     Map<String, Object> map = new HashMap<>();
                     map.put("id", course.getCourseId());

@@ -363,11 +363,9 @@
                 console.error('Error fetching lecturers:', error);
                 showError(`Failed to load lecturers: ${error.message}`);
             }
-        }
-
-        async function loadCourses() {
+        }        async function loadCourses() {
     try {
-        const courses = await fetchWithErrorHandling(`${BASE_URL}/api/hed/courses`);
+        const courses = await fetchWithErrorHandling(`${BASE_URL}/hed/api/courses`);
         console.log('Courses loaded:', courses);
         if (!Array.isArray(courses) || courses.length === 0) {
             showError('No courses available');
@@ -378,10 +376,10 @@
         modalSelect.innerHTML = '<option value="">Select Course</option>';
         filterSelect.innerHTML = '<option value="">All Courses</option>';
         courses.forEach(course => {
-            if (course.courseId && course.courseName) {
+            if (course.id && course.name) {
                 const option = document.createElement('option');
-                option.value = course.courseId;
-                option.textContent = course.courseName;
+                option.value = course.id;
+                option.textContent = course.name;
                 modalSelect.appendChild(option);
                 filterSelect.appendChild(option.cloneNode(true));
             } else {
@@ -546,7 +544,7 @@
     const courseValue = document.getElementById('course-filter').value;
     console.log('Loading assignments with:', { searchValue, statusValue, courseValue });
     // Thay courseId thành subject để khớp với backend
-    fetchWithErrorHandling(`${BASE_URL}/api/hed/assignments?search=${encodeURIComponent(searchValue)}&status=${statusValue}&subject=${courseValue}&page=${page}&size=${pageSize}&_=${new Date().getTime()}`)
+    fetchWithErrorHandling(`${BASE_URL}/hed/api/assignments?search=${encodeURIComponent(searchValue)}&status=${statusValue}&subject=${courseValue}&page=${page}&size=${pageSize}&_=${new Date().getTime()}`)
         .then(data => {
             console.log('Assignments response:', data);
             updateTable(data.content || []);

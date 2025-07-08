@@ -37,25 +37,45 @@ public class HEDAssignmentController {
     private CourseService courseService;
 
     @Autowired
-    private UserService userService;
-
-    @GetMapping("/assignments")
+    private UserService userService;    @GetMapping("/assignments")
     public String showAssignmentManagement(Model model) {
-        Page<TaskAssignmentDTO> tasks = taskAssignmentService.getAllTaskAssignments(PageRequest.of(0, 5));
+        // Get current user's department
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        String userDepartment = userService.getUserDepartment(currentUsername);
+        
+        // Get tasks filtered by department
+        Page<TaskAssignmentDTO> tasks = taskAssignmentService.getTaskAssignmentsByDepartment(
+            userDepartment, PageRequest.of(0, 5));
+        
         model.addAttribute("assignments", tasks.getContent());
         model.addAttribute("totalPages", tasks.getTotalPages());
         model.addAttribute("currentPage", 0);
+        model.addAttribute("userDepartment", userDepartment);
         return "HEAD_OF_DEPARTMENT/HED_AssignmentManagement";
-    }
-
-    @GetMapping("/api/assignments")
+    }    @GetMapping("/api/assignments")
     @ResponseBody
     public Page<TaskAssignmentDTO> getAssignments(
-            @RequestParam(defaultValue = "") String search,            @RequestParam(defaultValue = "") String status,
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "") String status,
             @RequestParam(defaultValue = "") String subject,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
-        return taskAssignmentService.getAllTaskAssignments(search, status, subject, page, size);
+        
+        // Get current user's department
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        String userDepartment = userService.getUserDepartment(currentUsername);
+        
+        // If no filters applied, return by department only
+        if (search.isEmpty() && status.isEmpty() && subject.isEmpty()) {
+            return taskAssignmentService.getTaskAssignmentsByDepartment(
+                userDepartment, PageRequest.of(page, size));
+        }
+        
+        // Apply filters with department constraint
+        return taskAssignmentService.getTaskAssignmentsByDepartmentWithFilters(
+            userDepartment, search, status, subject, page, size);
     }
 
     // API endpoint for HED Join Task page
@@ -174,12 +194,16 @@ public class HEDAssignmentController {
     @ResponseBody
     public List<Map<String, Object>> getLecturers() {
         return taskAssignmentService.getLecturers();
-    }
-
-    @GetMapping("/api/courses")
+    }    @GetMapping("/api/courses")
     @ResponseBody
     public List<Map<String, Object>> getCourses() {
-        return taskAssignmentService.getCourses();
+        // Get current user's department
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        String userDepartment = userService.getUserDepartment(currentUsername);
+        
+        // Return courses for this department only
+        return taskAssignmentService.getCoursesByDepartment(userDepartment);
     }
 
     @GetMapping("/courses")
