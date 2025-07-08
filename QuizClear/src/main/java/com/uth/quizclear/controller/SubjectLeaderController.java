@@ -67,14 +67,15 @@ public class SubjectLeaderController {
     
     /**
      * Helper method to get userId from email (temporary solution)
-     */
-    private Long getUserIdFromEmail(String email) {
+     */    private Long getUserIdFromEmail(String email) {
         // This is a temporary solution - in real app, you'd query database
         // For Subject Leader testing, use fixed ID based on email
         if ("brian.carter@university.edu".equals(email)) {
-            return 3L; // Brian Carter - Subject Leader
+            return 3L; // Brian Carter - Subject Leader (Computer Science)
+        } else if ("grace.harris@university.edu".equals(email)) {
+            return 8L; // Grace Harris - Subject Leader (Mathematics)
         }
-        return 3L; // Default for testing
+        return 3L; // Default fallback to Brian Carter for testing
     }
       // View pages
     @GetMapping("/dashboard")
