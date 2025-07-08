@@ -207,9 +207,7 @@
                 <div class="filter-controls">                    <div class="filter-dropdown">
                         <select class="filter-select">
                             <option value="">All Status</option>
-                            <option value="APPROVED">Approved</option>
-                            <option value="SUBMITTED">Submitted</option>
-                            <option value="REJECTED">Rejected</option>
+                            <option value="ARCHIVED">Archived (Resubmitted by SL)</option>
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div>
@@ -454,10 +452,9 @@
                     tbody.innerHTML = '';
                       questions.forEach(question => {
                         const row = document.createElement('tr');
-                        row.setAttribute('data-exam-id', question.questionId);
-                          // Determine action buttons based on status
+                        row.setAttribute('data-exam-id', question.questionId);                        // Determine action buttons based on status - HoD only handles ARCHIVED questions
                         let actionButtons = '';
-                        if (question.status === 'SUBMITTED' || question.status === 'PENDING' || question.status === 'ARCHIVED') {
+                        if (question.status === 'ARCHIVED') {
                             actionButtons = `
                                 <button class="action-btn view-btn" title="View" onclick="viewQuestion(${question.questionId})">
                                     <i class="fas fa-eye"></i>

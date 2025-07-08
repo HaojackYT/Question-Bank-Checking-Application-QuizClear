@@ -155,11 +155,10 @@ public class QuestionService {
                     .filter(q -> q.getStatus() == QuestionStatus.SUBMITTED)
                     .filter(q -> q.getCreatedBy() != null && !q.getCreatedBy().equals(userId))
                     .collect(Collectors.toList());
-                
-            case HOD:
-                // Heads of Department review questions approved by Subject Leaders
+                  case HOD:
+                // Heads of Department review questions resubmitted by Subject Leaders (ARCHIVED status)
                 return questionsForReview.stream()
-                    .filter(q -> q.getStatus() == QuestionStatus.APPROVED || q.getStatus() == QuestionStatus.SUBMITTED)
+                    .filter(q -> q.getStatus() == QuestionStatus.ARCHIVED)
                     .collect(Collectors.toList());
                 
             case HOED:
@@ -270,10 +269,9 @@ public class QuestionService {
                     );
                 }
                 break;
-                
-            case HOD:
-                // Heads of Department can review questions in their departments
-                if ((question.getStatus() == QuestionStatus.SUBMITTED || question.getStatus() == QuestionStatus.APPROVED)) {
+                  case HOD:
+                // Heads of Department can review questions resubmitted by Subject Leaders (ARCHIVED status)
+                if (question.getStatus() == QuestionStatus.ARCHIVED) {
                     if (question.getCourse() != null && question.getCourse().getDepartment() != null) {
                         List<Department> userDepartments = userService.getUserDepartments(userId);
                         return userDepartments.stream().anyMatch(dept -> 
@@ -630,14 +628,11 @@ public class QuestionService {
                     .filter(q -> q.getStatus() == QuestionStatus.SUBMITTED)
                     .collect(Collectors.toList());
             }        } else {
-            // If no status filter, get all questions that HED can review (SUBMITTED, APPROVED, REJECTED, ARCHIVED)
+            // If no status filter, only show ARCHIVED questions for HoD (resubmitted by SL)
             allQuestions = hedScopeQuestions.stream()
-                .filter(q -> q.getStatus() == QuestionStatus.SUBMITTED || 
-                           q.getStatus() == QuestionStatus.APPROVED || 
-                           q.getStatus() == QuestionStatus.REJECTED ||
-                           q.getStatus() == QuestionStatus.ARCHIVED)
+                .filter(q -> q.getStatus() == QuestionStatus.ARCHIVED)
                 .collect(Collectors.toList());
-            logger.info("Found {} questions for HED {} review (all statuses)", allQuestions.size(), hedId);
+            logger.info("Found {} ARCHIVED questions for HoD {} review", allQuestions.size(), hedId);
         }
         
         List<QuestionDTO> filteredQuestions = allQuestions.stream()
