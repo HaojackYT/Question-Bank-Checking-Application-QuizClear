@@ -3,11 +3,16 @@ package com.uth.quizclear.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Service;
 
 import com.uth.quizclear.model.dto.LecTaskDTO;
 import com.uth.quizclear.model.dto.SendQuesDTO;
+import com.uth.quizclear.model.entity.Question;
+import com.uth.quizclear.model.entity.Tasks;
+import com.uth.quizclear.model.enums.TaskStatus;
 import com.uth.quizclear.repository.CourseRepository;
+import com.uth.quizclear.repository.QuestionRepository;
 import com.uth.quizclear.repository.TasksRepository;
 import com.uth.quizclear.repository.UserRepository;
 
@@ -19,6 +24,9 @@ public class TaskService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     // Lấy tất cả task + plan (debug)
     public List<LecTaskDTO> getAllTasksWithPlan() {
@@ -48,6 +56,26 @@ public class TaskService {
             question.setCourseName(subject);
         }
         return questions;
+    }
+
+    // Gửi câu hỏi theo Task
+     public void assignQuestionsToTask(Long taskId, List<Long> questionIds) {
+        Tasks task = tasksRepository.findById(Math.toIntExact(taskId))
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+        Long planId = task.getPlan().getPlanId();
+
+        List<Question> questions = questionRepository.findAllById(questionIds);
+
+        for (Question question : questions) {
+            question.setTaskId(taskId);
+            question.setPlanId(planId);
+        }
+
+        questionRepository.saveAll(questions);
+
+        task.setStatus(TaskStatus.completed);
+        tasksRepository.save(task);
     }
 
 
