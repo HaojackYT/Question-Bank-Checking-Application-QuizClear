@@ -1,7 +1,6 @@
 package com.uth.quizclear.model.enums;
 
 import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
 
 // @Converter(autoApply = false) // Temporarily disabled to avoid conflicts
 public class DuplicateDetectionStatusConverter implements AttributeConverter<DuplicateDetectionStatus, String> {

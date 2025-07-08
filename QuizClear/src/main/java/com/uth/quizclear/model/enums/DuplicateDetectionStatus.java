@@ -6,7 +6,8 @@ public enum DuplicateDetectionStatus {
     ACCEPTED("accepted", "Accepted"), 
     REJECTED("rejected", "Rejected"),
     SENT_BACK("sent_back", "Sent Back"),
-    MERGED("merged", "Merged");
+    MERGED("merged", "Merged"),
+    OBSOLETE("obsolete", "Obsolete"); // New status for outdated detections
 
     private final String value;
     private final String displayName;

@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>QuizClear - Staff Dashboard</title>
+        <link rel="icon" href="data:;base64,=">
         <link rel="stylesheet" th:href="@{/Static/css/staff/staffDashboard.css}">
         <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
         <link rel="stylesheet" th:href="@{/Static/header.css}">
@@ -17,7 +18,8 @@
         <div id="Container-body">
             <div class="sidebar" th:insert="~{Menu-Staff :: menu}"></div>
             <div id="main">
-                <div class="stats-container">
+                <div class="dashboard-container">
+                    <div class="stats-container">
                     <div class="stat-card">
                         <div class="stat-title">Total subjects</div>
                         <div class="stat-value" th:text="${totalSubjects}">12</div>
@@ -123,13 +125,12 @@
                         </div>
                         <div class="see-more" th:if="${totalDuplicateWarnings > 5}">See more...</div>
                     </div>
-                    
-                    <!-- Show message if no duplicates -->
+                      <!-- Show message if no duplicates -->
                     <div th:if="${duplicateWarnings == null or duplicateWarnings.isEmpty()}" class="no-duplicates">
                         <p>No duplicate questions found for this staff member.</p>
                     </div>
                 </div>
-                <div style="height: 140rem;"></div>
+                </div> <!-- Close dashboard-container -->
             </div>
         </div>        <!-- Inline Thymeleaf JS for Chart.js -->
         <script th:inline="javascript">

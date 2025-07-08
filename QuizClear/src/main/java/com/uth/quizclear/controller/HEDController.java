@@ -72,19 +72,12 @@ public class HEDController {
         model.addAttribute("tasks", tasks);
         
         return "HEAD_OF_DEPARTMENT/HED_JoinTask";
-    }
-
-    /**
-     * HED Profile page
+    }    /**
+     * HED Profile page - redirected to common ProfileController
      */
     @GetMapping("/profile")
-    public String profile(Model model) {
-        // Add user profile data - replace with real service calls later
-        model.addAttribute("userName", "Head of Department");
-        model.addAttribute("email", "hed@university.edu");
-        model.addAttribute("department", "Computer Science");
-        
-        return "HEAD_OF_DEPARTMENT/HED_Profile";
+    public String profile() {
+        return "redirect:/profile";
     }
 
     /**

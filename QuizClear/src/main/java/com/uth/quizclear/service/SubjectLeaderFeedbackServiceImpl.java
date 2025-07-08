@@ -46,31 +46,41 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
         if (department == null || department.trim().isEmpty()) {
             return feedbackList;
         }        // Get questions from the same department (submitted or with feedback)
-        List<Question> questionsWithFeedback = questionRepository.findSubmittedQuestionsByDepartment(department);
-          for (Question question : questionsWithFeedback) {
+        List<Question> questionsWithFeedback = questionRepository.findSubmittedQuestionsByDepartment(department);          for (Question question : questionsWithFeedback) {
             // Show questions that are submitted or have feedback (not DRAFT)
+            // AND still belong to the same department (not assigned to other departments)
             if (question.getStatus() != null && question.getStatus() != QuestionStatus.DRAFT) {
-                QuestionFeedbackDTO dto = new QuestionFeedbackDTO();
-                dto.setId(question.getQuestionId());
-                dto.setType("question");
-                dto.setTitle("Question " + question.getQuestionId() + ": " + 
-                           (question.getContent().length() > 50 ? 
-                            question.getContent().substring(0, 50) + "..." : 
-                            question.getContent()));
-                dto.setCourseName(question.getCourse() != null ? question.getCourse().getCourseName() : "Unknown Course");
-                dto.setCourseCode(question.getCourse() != null ? question.getCourse().getCourseCode() : "Unknown Code");
-                dto.setDifficulty(question.getDifficultyLevel() != null ? question.getDifficultyLevel().toString() : "Unknown");
-                dto.setStatus(question.getStatus() != null ? question.getStatus().toString() : "Unknown");                dto.setCreatedByName(question.getCreatedBy() != null ? question.getCreatedBy().getFullName() : "Unknown");
-                dto.setReviewedByName(question.getReviewer() != null ? question.getReviewer().getFullName() : null);
-                dto.setSubmittedAt(question.getSubmittedAt());
-                dto.setReviewedAt(question.getReviewedAt());                dto.setFeedback(question.getFeedback());
-                dto.setHasFeedback(question.getFeedback() != null && !question.getFeedback().trim().isEmpty());
+                // Check if question still belongs to the same department
+                boolean belongsToSameDepartment = false;
+                if (question.getCreatedBy() != null && question.getCreatedBy().getDepartment() != null) {
+                    belongsToSameDepartment = department.equals(question.getCreatedBy().getDepartment());
+                }
                 
-                // Set priority based on status and age
-                int priority = calculatePriority(question.getStatus().toString(), question.getSubmittedAt());
-                dto.setPriority(priority);
-                
-                feedbackList.add(dto);
+                // Only show questions that still belong to the same department
+                if (belongsToSameDepartment) {
+                    QuestionFeedbackDTO dto = new QuestionFeedbackDTO();
+                    dto.setId(question.getQuestionId());
+                    dto.setType("question");
+                    dto.setTitle("Question " + question.getQuestionId() + ": " + 
+                               (question.getContent().length() > 50 ? 
+                                question.getContent().substring(0, 50) + "..." : 
+                                question.getContent()));
+                    dto.setCourseName(question.getCourse() != null ? question.getCourse().getCourseName() : "Unknown Course");
+                    dto.setCourseCode(question.getCourse() != null ? question.getCourse().getCourseCode() : "Unknown Code");
+                    dto.setDifficulty(question.getDifficultyLevel() != null ? question.getDifficultyLevel().toString() : "Unknown");
+                    dto.setStatus(question.getStatus() != null ? question.getStatus().toString() : "Unknown");                    dto.setCreatedByName(question.getCreatedBy() != null ? question.getCreatedBy().getFullName() : "Unknown");
+                    dto.setReviewedByName(question.getReviewer() != null ? question.getReviewer().getFullName() : null);
+                    dto.setSubmittedAt(question.getSubmittedAt());
+                    dto.setReviewedAt(question.getReviewedAt());
+                    dto.setCreatedAt(question.getCreatedAt());dto.setFeedback(question.getFeedback());
+                    dto.setHasFeedback(question.getFeedback() != null && !question.getFeedback().trim().isEmpty());
+                    
+                    // Set priority based on status and age
+                    int priority = calculatePriority(question.getStatus().toString(), question.getSubmittedAt());
+                    dto.setPriority(priority);
+                    
+                    feedbackList.add(dto);
+                }
             }
         }
 
@@ -200,9 +210,7 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
         } catch (Exception e) {
             return false;
         }
-    }
-
-    @Override
+    }    @Override
     public boolean assignQuestion(Long feedbackId, Map<String, Object> assignmentData, Long subjectLeaderId) {
         Optional<Question> questionOpt = questionRepository.findById(feedbackId);
         if (!questionOpt.isPresent()) {
@@ -211,16 +219,53 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
 
         Question question = questionOpt.get();
         
-        // TODO: Create a task assignment for the lecturer
-        // This would involve creating a Task entity and assigning it to the specified lecturer
-        // For now, we'll just update the question's status
-        
         try {
-            // Update question status to indicate it's been assigned for revision
+            // Get the target lecturer ID from assignment data
+            Object lecturerIdObj = assignmentData.get("assignToLecturerId");
+            if (lecturerIdObj != null) {
+                Long lecturerId = null;
+                if (lecturerIdObj instanceof Integer) {
+                    lecturerId = ((Integer) lecturerIdObj).longValue();
+                } else if (lecturerIdObj instanceof Long) {
+                    lecturerId = (Long) lecturerIdObj;
+                } else if (lecturerIdObj instanceof String) {
+                    lecturerId = Long.parseLong((String) lecturerIdObj);
+                }
+                
+                if (lecturerId != null) {
+                    // Find the target lecturer
+                    Optional<User> lecturerOpt = userRepository.findById(lecturerId);
+                    if (lecturerOpt.isPresent()) {
+                        // Transfer ownership to the new lecturer
+                        question.setCreatedBy(lecturerOpt.get());
+                        
+                        // Reset status to allow lecturer to work on it
+                        question.setStatus(QuestionStatus.DRAFT);
+                        
+                        // Clear previous review data
+                        question.setReviewer(null);
+                        question.setReviewedAt(null);
+                        
+                        // Add assignment notes to feedback
+                        String instructions = (String) assignmentData.get("instructions");
+                        String assignmentFeedback = "Question reassigned by Subject Leader for revision.\n" +
+                                                   "Instructions: " + (instructions != null ? instructions : "Please review and improve this question.");
+                        
+                        if (question.getFeedback() != null && !question.getFeedback().trim().isEmpty()) {
+                            question.setFeedback(question.getFeedback() + "\n\n" + assignmentFeedback);
+                        } else {
+                            question.setFeedback(assignmentFeedback);
+                        }
+                    }
+                }
+            }
+            
+            // Update timestamps
             question.setUpdatedAt(LocalDateTime.now());
             questionRepository.save(question);
             return true;
         } catch (Exception e) {
+            System.err.println("Error assigning question: " + e.getMessage());
             return false;
         }
     }

@@ -114,6 +114,11 @@
                             id="saveNotesBtn" 
                             style="background: #28a745; display: none;">Save Notes</button>
                     </div>
+                    
+                    <!-- Status-dependent action message -->
+                    <div id="actionMessage" class="action-message" style="display: none; text-align: center; padding: 1rem; margin: 1rem 0; background-color: #f8f9fa; border-radius: 0.5rem; color: #6c757d; font-style: italic;">
+                        <!-- Message will be populated by JavaScript based on status -->
+                    </div>
                 </div>
             </div>
         </div>        <!-- Modal for New Assignment -->
@@ -303,22 +308,30 @@
                                    data.title.substring(0, 50) + '...' : 
                                    (data.title || 'No content');
                 contentInput.value = shortContent;
-            }
-
-            // Created Date field
+            }            // Created Date field
             const dateInput = infoInputs[3];
             if (dateInput) {
                 let formattedDate = 'N/A';
-                if (data.submittedAt || data.createdAt) {
-                    const date = new Date(data.submittedAt || data.createdAt);
-                    formattedDate = date.toLocaleDateString('en-GB', {
+                let dateToFormat = null;
+                
+                // Priority: submittedAt > createdAt > reviewedAt
+                if (data.submittedAt) {
+                    dateToFormat = new Date(data.submittedAt);
+                } else if (data.createdAt) {
+                    dateToFormat = new Date(data.createdAt);
+                } else if (data.reviewedAt) {
+                    dateToFormat = new Date(data.reviewedAt);
+                }
+                
+                if (dateToFormat && !isNaN(dateToFormat.getTime())) {
+                    formattedDate = dateToFormat.toLocaleDateString('en-GB', {
                         day: '2-digit',
                         month: '2-digit',
                         year: '2-digit'
                     });
                 }
                 dateInput.value = formattedDate;
-            }            // Status field
+            }// Status field
             const statusInput = infoInputs[4];
             if (statusInput) {
                 // Display the actual status from backend
@@ -328,13 +341,78 @@
             if (notesTextarea) {
                 notesTextarea.value = data.feedback || '';
                 notesTextarea.setAttribute('data-original', data.feedback || '');
-            }
-
-            // Update question content if it's a question
+            }            // Update question content if it's a question
             if (data.type === 'question') {
                 populateQuestionContent(data);
             } else if (data.type === 'exam') {
                 populateExamContent(data);
+            }
+            
+            // Update action buttons based on status
+            updateActionButtons(data.status);
+        }
+          // Update action buttons based on feedback status
+        function updateActionButtons(status) {
+            const editBtn = document.querySelector('.btn--edit');
+            const assignBtn = document.querySelector('.btn--assign');
+            const resubmitBtn = document.querySelector('.btn--resubmit');
+            const actionMessage = document.getElementById('actionMessage');
+            
+            // Hide all buttons by default
+            if (editBtn) editBtn.style.display = 'none';
+            if (assignBtn) assignBtn.style.display = 'none';
+            if (resubmitBtn) resubmitBtn.style.display = 'none';
+            if (actionMessage) actionMessage.style.display = 'none';
+            
+            // Show buttons based on status
+            if (status) {
+                const upperStatus = status.toUpperCase();
+                
+                switch(upperStatus) {
+                    case 'REJECTED':
+                        // For rejected: can edit and reassign
+                        if (editBtn) editBtn.style.display = 'inline-block';
+                        if (assignBtn) assignBtn.style.display = 'inline-block';
+                        if (actionMessage) {
+                            actionMessage.innerHTML = '📝 This question was rejected. You can edit it directly or assign it to another lecturer for revision.';
+                            actionMessage.style.display = 'block';
+                            actionMessage.style.borderLeft = '4px solid #dc3545';
+                        }
+                        break;
+                        
+                    case 'SUBMITTED':
+                    case 'SUBMITTED_FOR_REVIEW':
+                        // For submitted: can edit, assign, or resubmit for higher review
+                        if (editBtn) editBtn.style.display = 'inline-block';
+                        if (assignBtn) assignBtn.style.display = 'inline-block';
+                        if (resubmitBtn) resubmitBtn.style.display = 'inline-block';
+                        if (actionMessage) {
+                            actionMessage.innerHTML = '⏳ This question is awaiting review. You can edit, reassign, or escalate it for higher-level review.';
+                            actionMessage.style.display = 'block';
+                            actionMessage.style.borderLeft = '4px solid #ffc107';
+                        }
+                        break;
+                        
+                    case 'APPROVED':
+                        // For approved: no actions needed (already processed)
+                        if (actionMessage) {
+                            actionMessage.innerHTML = '✅ This question has been approved. No further actions are required.';
+                            actionMessage.style.display = 'block';
+                            actionMessage.style.borderLeft = '4px solid #28a745';
+                        }
+                        break;
+                        
+                    default:
+                        // For unknown status: show all options
+                        if (editBtn) editBtn.style.display = 'inline-block';
+                        if (assignBtn) assignBtn.style.display = 'inline-block';
+                        if (resubmitBtn) resubmitBtn.style.display = 'inline-block';
+                        if (actionMessage) {
+                            actionMessage.innerHTML = '❓ Status unknown. All actions are available.';
+                            actionMessage.style.display = 'block';
+                            actionMessage.style.borderLeft = '4px solid #6c757d';
+                        }
+                }
             }
         }
 
@@ -488,6 +566,15 @@
             });
         }// Assign Modal functionality
         function openAssignModal() {
+            // Check if assigning is allowed for current status
+            if (currentFeedbackData) {
+                const status = currentFeedbackData.status ? currentFeedbackData.status.toUpperCase() : '';
+                if (status === 'APPROVED') {
+                    alert('Cannot reassign an approved question. The question has already been processed.');
+                    return;
+                }
+            }
+            
             // Set Assign Date to current date
             const assignDateInput = document.getElementById('assignDate');
             const currentDate = new Date();
@@ -613,16 +700,22 @@
                           `for revision. They will receive a notification with ` +
                           `your instructions and the due date.`);
                     closeAssignModal();
-                    
-                    // Update status display
+                      // Update status display
                     const statusInput = document.querySelector('.info-field input[readonly]');
                     if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
-                        statusInput.value = 'ASSIGNED';
+                        statusInput.value = 'REASSIGNED';
                     }
                     
-                    // Optional: redirect back to feedback list
+                    // Update current feedback data
+                    if (currentFeedbackData) {
+                        currentFeedbackData.status = 'REASSIGNED';
+                    }
+                      // Optional: redirect back to feedback list
                     setTimeout(() => {
-                        if (confirm('Question assigned successfully! Do you want to return to feedback list?')) {
+                        if (confirm('✅ Question assigned successfully!\n\n' +
+                                  'The question has been reassigned to another lecturer for revision. ' +
+                                  'It will no longer appear in your feedback list since it\'s now under the assigned lecturer\'s responsibility.\n\n' +
+                                  'Do you want to return to feedback list?')) {
                             window.location.href = '/subject-leader/feedback';
                         }
                     }, 1500);
@@ -635,12 +728,17 @@
                 console.error('Error:', error);
                 alert('❌ Network Error:\nFailed to assign question. Please check your connection and try again.');
             });
-        }
-
-        // Edit Modal functionality
+        }        // Edit Modal functionality
         function openEditModal() {
             if (!currentFeedbackData || currentFeedbackData.type !== 'question') {
                 alert('Edit is only available for questions');
+                return;
+            }
+            
+            // Check if editing is allowed for current status
+            const status = currentFeedbackData.status ? currentFeedbackData.status.toUpperCase() : '';
+            if (status === 'APPROVED') {
+                alert('Cannot edit an approved question. The question has already been processed.');
                 return;
             }
 
@@ -767,26 +865,43 @@
                         currentFeedbackData.answerKey = questionData.answerKey;
                         currentFeedbackData.status = 'APPROVED';
                     }
-                    
-                    // Optional: redirect back to feedback list after a delay
+                      // Optional: redirect back to feedback list after a delay
                     setTimeout(() => {
-                        if (confirm('Question approved successfully! Do you want to return to feedback list?')) {
+                        if (confirm('✅ Question approved successfully!\n\n' +
+                                  'The question has been edited and automatically approved. ' +
+                                  'It will no longer appear in your pending feedback list since it has been processed.\n\n' +
+                                  'Do you want to return to feedback list?')) {
                             window.location.href = '/subject-leader/feedback';
                         }
                     }, 1000);
                     
                 } else {
                     alert('❌ Error updating question:\n' + (data.message || 'Unknown error occurred'));
-                }
-            })            .catch(error => {
+                }            })
+            .catch(error => {
                 console.error('Error:', error);
                 alert('❌ Network Error:\nFailed to update question. Please check your connection and try again.');
             });
-        }        // Resubmit functionality
+        }
+
+        // Resubmit functionality
         function handleResubmit() {
             if (!currentFeedbackId) {
                 alert('Error: No question ID found');
                 return;
+            }
+            
+            // Check if resubmitting is allowed for current status
+            if (currentFeedbackData) {
+                const status = currentFeedbackData.status ? currentFeedbackData.status.toUpperCase() : '';
+                if (status === 'APPROVED') {
+                    alert('Cannot resubmit an approved question. The question has already been processed.');
+                    return;
+                }
+                if (status === 'REJECTED') {
+                    alert('This question was rejected. Please edit it or reassign it instead of resubmitting.');
+                    return;
+                }
             }
 
             // Get current notes for resubmission
@@ -829,15 +944,16 @@
                     if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
                         statusInput.value = 'SUBMITTED_FOR_REVIEW';
                     }
-                    
-                    // Optional: redirect back to feedback list
+                      // Optional: redirect back to feedback list
                     setTimeout(() => {
-                        if (confirm('Do you want to return to feedback list?')) {
+                        if (confirm('✅ Question resubmitted successfully!\n\n' +
+                                  'The question has been escalated to Head of Education Department for final review. ' +
+                                  'It will no longer appear in your feedback list since it\'s now under higher-level review.\n\n' +
+                                  'Do you want to return to feedback list?')) {
                             window.location.href = '/subject-leader/feedback';
                         }
                     }, 1500);
-                    
-                } else {
+                      } else {
                     alert('❌ Error resubmitting question:\n' + (data.message || 'Unknown error occurred'));
                 }
             })
@@ -845,17 +961,20 @@
                 console.error('Error:', error);
                 alert('❌ Network Error:\nFailed to resubmit question. Please check your connection and try again.');
             });
-        }// Close modals when clicking outside of them
+        }
+        
+        // Close modals when clicking outside of them
         window.onclick = function (event) {
             const assignModal = document.getElementById('assignModal');
-            const editModal = document.getElementById('editModal');
-            if (event.target == assignModal) {
+            const editModal = document.getElementById('editModal');            if (event.target == assignModal) {
                 assignModal.style.display = 'none';
             }
             if (event.target == editModal) {
                 editModal.style.display = 'none';
             }
-        }        // Add event listeners when page loads
+        };
+        
+        // Add event listeners when page loads
         document.addEventListener('DOMContentLoaded', function() {
             // Assign button event listener
             const assignButton = document.querySelector('.modal-btn--assign');

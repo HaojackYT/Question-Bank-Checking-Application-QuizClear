@@ -51,13 +51,15 @@ public class HEDAssignmentController {
     @GetMapping("/api/assignments")
     @ResponseBody
     public Page<TaskAssignmentDTO> getAssignments(
-            @RequestParam(defaultValue = "") String search,
-            @RequestParam(defaultValue = "") String status,
+            @RequestParam(defaultValue = "") String search,            @RequestParam(defaultValue = "") String status,
             @RequestParam(defaultValue = "") String subject,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
         return taskAssignmentService.getAllTaskAssignments(search, status, subject, page, size);
-    }    // Thêm endpoint mới cho /hed/api/tasks    @GetMapping("/api/tasks")
+    }
+
+    // API endpoint for HED Join Task page
+    @GetMapping("/api/tasks")
     @ResponseBody
     public ResponseEntity<?> getTasks(
             @RequestParam(defaultValue = "") String search,
@@ -70,6 +72,9 @@ public class HEDAssignmentController {
             // Use current user if hedId not provided
             if (hedId == null) {
                 hedId = getCurrentUserId();
+                if (hedId == null) {
+                    return ResponseEntity.status(401).body(Map.of("error", "User not authenticated"));
+                }
             }
             
             List<TaskAssignmentDTO> tasks = taskAssignmentService.getTasksForHEDWithFilter(search, status, subject);
@@ -196,8 +201,7 @@ public class HEDAssignmentController {
             model.addAttribute("pendingExams", pendingQuestions);
             
             // Get distinct subjects that this HED manages
-            List<String> subjects = getSubjectsForHED(hedId);
-            model.addAttribute("subjects", subjects);
+            List<String> subjects = getSubjectsForHED(hedId);            model.addAttribute("subjects", subjects);
             
         } catch (Exception e) {
             logger.error("Error loading approve questions page for HED {}: ", hedId, e);
@@ -206,10 +210,17 @@ public class HEDAssignmentController {
         }
         
         return "HEAD_OF_DEPARTMENT/HED_ApproveQuestion";
-    }// HED Join Task page
+    }
+
+    // HED Join Task page
     @GetMapping("/join-task")
     public String joinTask(Model model) {
         Long hedId = getCurrentUserId();
+        
+        // Check if user is authenticated
+        if (hedId == null) {
+            return "redirect:/login";
+        }
         
         // Add hedId for JavaScript
         model.addAttribute("hedId", hedId);
@@ -358,16 +369,13 @@ public class HEDAssignmentController {
         model.addAttribute("pendingApprovals", 8);
         model.addAttribute("completedTasks", 12);
         return "HEAD_OF_DEPARTMENT/HED_Dashboard";
+    }    // HED Profile - redirected to common ProfileController
+    @GetMapping("/profile")
+    public String profile() {
+        return "redirect:/profile";
     }
 
-    // HED Profile
-    @GetMapping("/profile")
-    public String profile(Model model) {
-        // Add profile data
-        model.addAttribute("userName", "Head of Department");
-        model.addAttribute("email", "hed@university.edu");
-        model.addAttribute("department", "Computer Science");        return "HEAD_OF_DEPARTMENT/HED_Profile";
-    }    // Helper method to get current authenticated user ID
+    // Helper method to get current authenticated user ID
     private Long getCurrentUserId() {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -381,9 +389,9 @@ public class HEDAssignmentController {
             logger.warn("Could not get current user ID: {}", e.getMessage());
         }
         
-        // Fallback for development/testing
-        logger.warn("Using fallback user ID 2 (Alexander Brooks - Mathematics HOD)");
-        return 2L; // Alexander Brooks - Mathematics HOD as fallback
+        // No fallback - return null if user is not authenticated
+        logger.warn("User is not authenticated, returning null for user ID");
+        return null;
     }
 }
 

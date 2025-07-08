@@ -23,6 +23,11 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import org.springframework.data.jpa.domain.Specification; // <-- Quan trọng cho truy vấn động
+import jakarta.persistence.criteria.Join; // <-- Để Join tới các bảng liên kết
+import jakarta.persistence.criteria.Predicate; // <-- Để xây dựng các điều kiện
+import java.time.format.DateTimeFormatter;
+
 @Service
 public class QuestionService {
     
@@ -705,8 +710,7 @@ public class QuestionService {
             // TODO: Save feedback to question or create feedback entity
             questionRepository.save(question);
         }
-    }
-      /**
+    }    /**
      * Convert Question entity to QuestionDTO
      */
     private QuestionDTO convertToDTO(Question question) {
@@ -715,7 +719,17 @@ public class QuestionService {
         dto.setContent(question.getContent());
         dto.setStatus(question.getStatus());
         dto.setDifficultyLevel(question.getDifficultyLevel());
-        dto.setUpdatedDate(question.getUpdatedAt() != null ? question.getUpdatedAt().toString() : "");
+        
+        // Format updated date properly
+        if (question.getUpdatedAt() != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            dto.setUpdatedDate(question.getUpdatedAt().format(formatter));
+        } else if (question.getCreatedAt() != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            dto.setUpdatedDate(question.getCreatedAt().format(formatter));
+        } else {
+            dto.setUpdatedDate("No date available");
+        }
         
         // Set subject name from course
         if (question.getCourse() != null) {

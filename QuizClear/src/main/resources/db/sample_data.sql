@@ -779,3 +779,70 @@ INSERT INTO exam_questions (
 (3, 9, 1, 1.00),
 (3, 10, 2, 1.00),
 (3, 11, 3, 1.00);
+
+-- =================================================================
+-- DỮ LIỆU MẪU CHO EXAM ASSIGNMENTS (SL EXAM ASSIGNMENT FEATURE)
+-- =================================================================
+
+-- Thêm dữ liệu mẫu cho bảng exam_assignments
+INSERT INTO exam_assignments (
+    assignment_name, description, course_id, assigned_to, assigned_by, 
+    status, deadline, total_questions, duration_minutes, instructions,
+    created_at, submitted_at, approved_at, feedback
+) VALUES
+-- Brian Carter (SL CS) assigns exam creation tasks to Ash Abrahams (Lecturer CS)
+('CS101 Midterm Exam 2025', 'Create comprehensive midterm examination for Introduction to Computer Science covering OOP concepts, data types, and basic algorithms', 1, 1, 3, 'IN_PROGRESS', '2025-07-15 23:59:00', 25, 90, 'Include 10 recognition, 8 comprehension, 5 basic application, and 2 advanced application questions. Focus on Java programming fundamentals.', '2025-06-20 09:00:00', NULL, NULL, NULL),
+
+('CS201 Final Exam 2025', 'Develop final examination for Data Structures course focusing on trees, graphs, and algorithm complexity', 6, 1, 3, 'ASSIGNED', '2025-07-20 23:59:00', 30, 120, 'Create balanced exam with emphasis on practical implementation and theoretical understanding. Include coding problems.', '2025-06-25 14:30:00', NULL, NULL, NULL),
+
+('CS101 Quiz Series', 'Create weekly quiz questions for ongoing assessment throughout semester', 1, 1, 3, 'SUBMITTED', '2025-07-01 23:59:00', 15, 45, 'Short quiz format with quick assessment questions covering weekly topics.', '2025-06-15 10:00:00', '2025-06-30 16:20:00', NULL, 'Submitted for review - good variety of question types'),
+
+('CS201 Practice Exam', 'Develop practice examination to help students prepare for final exam', 6, 1, 3, 'APPROVED', '2025-06-25 23:59:00', 20, 90, 'Mirror the difficulty and format of actual final exam but with different questions.', '2025-06-10 11:00:00', '2025-06-22 14:15:00', '2025-06-24 10:30:00', 'Excellent practice exam - approved for student use'),
+
+-- Grace Harris (SL Math) assigns exam creation tasks to Frank Green (Lecturer Math)
+('MATH201 Calculus Midterm', 'Create midterm examination for Calculus II covering integration techniques and applications', 2, 7, 8, 'IN_PROGRESS', '2025-07-18 23:59:00', 22, 100, 'Focus on integration by parts, partial fractions, and real-world applications. Include both computational and conceptual questions.', '2025-06-22 08:30:00', NULL, NULL, NULL),
+
+('MATH301 Linear Algebra Final', 'Develop comprehensive final exam for Linear Algebra course', 7, 7, 8, 'ASSIGNED', '2025-07-25 23:59:00', 28, 120, 'Cover vector spaces, eigenvalues, matrix operations, and linear transformations. Balance theory with computation.', '2025-06-28 15:45:00', NULL, NULL, NULL),
+
+('MATH201 Quiz Collection', 'Create series of short quizzes for continuous assessment', 2, 7, 8, 'SUBMITTED', '2025-07-05 23:59:00', 12, 30, 'Quick assessment format focusing on key concepts from each chapter.', '2025-06-18 09:15:00', '2025-07-03 11:30:00', NULL, 'Quiz series submitted - awaiting SL review'),
+
+('MATH301 Practice Problems', 'Develop additional practice problems for student self-study', 7, 7, 8, 'APPROVED', '2025-06-30 23:59:00', 18, 75, 'Supplementary problems to reinforce lecture material and prepare for exams.', '2025-06-12 13:20:00', '2025-06-28 16:45:00', '2025-06-29 09:10:00', 'Good variety of problems - approved for distribution'),
+
+-- Cross-department assignments (HoED assigns directly when no SL available)
+('PHYS301 Mechanics Exam', 'Create examination for Classical Mechanics course', 3, 1, 6, 'DRAFT', '2025-07-22 23:59:00', 24, 110, 'Cover Newton laws, energy conservation, and rotational dynamics. Include both theoretical and problem-solving questions.', '2025-07-01 10:00:00', NULL, NULL, NULL),
+
+('CHEM101 General Chemistry Quiz', 'Develop quiz for General Chemistry fundamentals', 4, 5, 9, 'IN_PROGRESS', '2025-07-12 23:59:00', 16, 60, 'Focus on atomic structure, chemical bonding, and basic stoichiometry.', '2025-06-26 14:00:00', NULL, NULL, NULL),
+
+('BIO201 Cell Biology Midterm', 'Create midterm exam for Cell Biology course', 5, 5, 10, 'SUBMITTED', '2025-07-16 23:59:00', 26, 95, 'Cover cellular structure, organelle functions, and basic cellular processes.', '2025-06-20 11:30:00', '2025-07-02 15:20:00', NULL, 'Comprehensive exam submitted - covers all required topics'),
+
+-- Additional assignments for more realistic data
+('CS101 Supplementary Questions', 'Create additional questions for question bank expansion', 1, 1, 3, 'REJECTED', '2025-06-20 23:59:00', 20, 60, 'Expand existing question bank with more diverse problem types.', '2025-06-05 09:00:00', '2025-06-18 14:30:00', NULL, 'Questions too basic for university level - please revise to match course standards'),
+
+('MATH201 Advanced Problems', 'Develop challenging problems for advanced students', 2, 7, 8, 'PUBLISHED', '2025-06-15 23:59:00', 14, 90, 'Create problems that challenge top-performing students beyond standard curriculum.', '2025-05-28 10:15:00', '2025-06-12 16:00:00', '2025-06-14 11:45:00', 'Excellent advanced problems - published for use'),
+
+-- Recent assignments to show current activity
+('CS201 Algorithm Analysis Exam', 'Create exam focusing on algorithm complexity and analysis', 6, 1, 3, 'ASSIGNED', '2025-07-30 23:59:00', 32, 135, 'Emphasize Big-O notation, algorithm comparison, and optimization techniques.', '2025-07-03 08:00:00', NULL, NULL, NULL),
+
+('MATH301 Matrix Theory Quiz', 'Develop quiz on advanced matrix operations and properties', 7, 7, 8, 'DRAFT', '2025-07-10 23:59:00', 10, 40, 'Quick assessment on eigenvalues, diagonalization, and matrix decomposition.', '2025-07-02 16:30:00', NULL, NULL, NULL);
+
+-- Cập nhật một số assignment với thời gian thực tế hơn
+UPDATE exam_assignments SET 
+    submitted_at = '2025-07-01 14:20:00',
+    status = 'SUBMITTED'
+WHERE assignment_name = 'CS101 Midterm Exam 2025';
+
+UPDATE exam_assignments SET 
+    approved_at = '2025-07-02 10:15:00',
+    status = 'APPROVED',
+    feedback = 'Well-structured exam with good balance of difficulty levels - approved for use'
+WHERE assignment_name = 'MATH201 Quiz Collection';
+
+-- Thêm một số assignment đã hoàn thành để có dữ liệu đa dạng
+INSERT INTO exam_assignments (
+    assignment_name, description, course_id, assigned_to, assigned_by, 
+    status, deadline, total_questions, duration_minutes, instructions,
+    created_at, submitted_at, approved_at, published_at, feedback
+) VALUES
+('CS101 Previous Semester Final', 'Final exam from previous semester for reference', 1, 1, 3, 'PUBLISHED', '2025-05-30 23:59:00', 35, 150, 'Comprehensive final covering all course topics.', '2025-05-01 09:00:00', '2025-05-25 16:30:00', '2025-05-28 11:20:00', '2025-05-29 08:00:00', 'Excellent comprehensive exam - published as reference material'),
+
+('MATH201 Sample Midterm', 'Sample midterm for student practice', 2, 7, 8, 'PUBLISHED', '2025-05-15 23:59:00', 20, 90, 'Practice exam with solutions for student preparation.', '2025-04-20 10:30:00', '2025-05-12 14:45:00', '2025-05-14 09:30:00', '2025-05-15 16:00:00', 'Good practice material - published with detailed solutions');

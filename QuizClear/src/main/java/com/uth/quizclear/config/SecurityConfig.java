@@ -38,6 +38,7 @@ public class SecurityConfig {    @Autowired
                         .requestMatchers("/", "/login", "/logout", "/error").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/health", "/actuator/**").permitAll()
+                        .requestMatchers("/staff/**").authenticated()
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/dashboard/**").authenticated()
                         .requestMatchers("/lecturer/**").authenticated()

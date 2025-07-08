@@ -1,31 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-     <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}" />
-        <link rel="stylesheet" th:href="@{/Static/header.css}" />
-        <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
-        <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}" />
+    <link rel="stylesheet" th:href="@{/Static/header.css}" />
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" th:href="@{/Static/css/staff/staffSubmissionTable.css}" />
     <link rel="stylesheet" th:href="@{/Static/css/staff/staffQMQuestionPlanning.css}" />
     <title>Question Planning</title>
-    
 </head>
 
 <body>
-    <!--header-->
-    <div th:replace="~{/Template/header_user.html}"></div>
+    <div th:replace="~{header_user}"></div> <div id="Container-body" style="display: flex; min-height: 100vh;">
+        <div th:replace="~{Menu-Staff}" style="height: 100vh; min-height: 100vh;"></div> <div id="main" style="flex: 1;">
 
-    <!-- body -->
-    <div id="Container-body">
-        <!-- Menu -->
-        <div th:replace="~{/Template/Menu-Staff.html}"></div>
-
-        <!-- Main content -->
-        <div id="main">
+        <div id="main" style="flex: 1;">
             <div class="main-content-wrapper">
                 <div class="page-title">
                     <h1>Question Management</h1>
@@ -33,26 +26,26 @@
                 </div>
 
                 <div class="tab-buttons">
-                    <button class="tab-button" onclick="location.href='staffQuestionBank.html'">
+                    <a th:href="@{/staff/questions/bank}" class="tab-button">
                         <i class="fas fa-folder"></i>
                         Question Bank
-                    </button>
-                    <button class="tab-button" onclick="location.href='staffSubmissionTable.html'">
+                    </a>
+                    <a th:href="@{/staff/questions/submission-table}" class="tab-button">
                         <i class="fas fa-table"></i>
                         Submission Table
-                    </button>
-                    <button class="tab-button active">
+                    </a>
+                    <a th:href="@{/staff/questions/planning}" class="tab-button active">
                         <i class="fas fa-calendar-alt"></i>
                         Question Planning
-                    </button>
-                    <button class="tab-button" onclick="location.href='staffDuplicationCheck.html'">
+                    </a>
+                    <a th:href="@{/staff/questions/duplication-check}" class="tab-button">
                         <i class="fas fa-search"></i>
                         Duplication Check
-                    </button>
-                    <button class="tab-button" onclick="location.href='staffQMReportsStatistics.html'">
+                    </a>
+                    <a th:href="@{/staff/questions/reports-statistics}" class="tab-button">
                         <i class="fas fa-chart-bar"></i>
                         Reports & Statistics
-                    </button>
+                    </a>
                 </div>
 
                 <div class="action-bar">
@@ -68,6 +61,7 @@
                             <option>Computer Science</option>
                             <option>Information Technology</option>
                             <option>Life Sciences</option>
+                            <option>Mathematics</option>
                         </select>
                         <select class="filter-select">
                             <option>Filter by Status</option>
@@ -83,7 +77,6 @@
                 </div>
 
                 <div class="subject-cards">
-                    <!-- Programming Card -->
                     <div class="subject-card">
                         <div class="subject-header">
                             <div class="subject-title">Programming</div>
@@ -160,7 +153,6 @@
                         </div>
                     </div>
 
-                    <!-- Networking Card -->
                     <div class="subject-card">
                         <div class="subject-header">
                             <div class="subject-title">Networking</div>
@@ -237,7 +229,6 @@
                         </div>
                     </div>
 
-                    <!-- Biology Card -->
                     <div class="subject-card">
                         <div class="subject-header">
                             <div class="subject-title">Biology</div>
@@ -318,7 +309,6 @@
         </div>
     </div>
 
-    <!-- Create Question Plan Modal -->
     <div id="createModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -429,7 +419,6 @@
         </div>
     </div>
 
-    <!-- View Details Modal -->
     <div id="viewModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -527,7 +516,6 @@
         </div>
     </div>
 
-    <!-- ma nhung header vs menu -->
     <script>
         // Đã dùng th:replace cho header và menu, không cần fetch thủ công nữa
 

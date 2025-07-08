@@ -67,11 +67,9 @@ public class StaffViewController {
             model.addAttribute("error", "Error loading processing logs");
             return "Staff/staffLogContent";
         }
-    }
-
-    @GetMapping("/staff/profile")
+    }    @GetMapping("/staff/profile")
     public String staffProfile() {
-        return "Staff/profile";
+        return "redirect:/profile";
     }
 
     @GetMapping("/staff/logs")
@@ -97,10 +95,10 @@ public class StaffViewController {
         }
     }
 
-    @GetMapping("/staff/question-management")
-    public String staffQuestionManagement() {
-        return "Staff/staffQMQuestionBank";
-    }
+    // @GetMapping("/staff/question-management")
+    // public String staffQuestionManagement() {
+    //     return "Staff/staffQMQuestionBank";
+    // }
 
     @GetMapping("/staff/help")
     public String staffHelp() {

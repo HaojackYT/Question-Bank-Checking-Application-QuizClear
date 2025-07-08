@@ -1,361 +1,328 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}" />
-        <link rel="stylesheet" th:href="@{/Static/header.css}" />
-        <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
-        <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
-        <link rel="stylesheet" th:href="@{/Static/css/staff/staffSubmissionTable.css}" />
-        
-        <link
-            href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
-            rel="stylesheet" />
-        <title>Staff Submission Table</title>
-    </head>
-    <body>
-        <!-- Header -->
-        <div id="header-placeholder"></div>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}" />
+    <link rel="stylesheet" th:href="@{/Static/header.css}" />
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
+    <link rel="stylesheet" th:href="@{/Static/css/staff/staffSubmissionTable.css}" />
+    
+    <link
+        href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
+        rel="stylesheet" />
+    <title>Staff Submission Table</title>
+</head>
+<body>
+    <div th:replace="~{header_user}"></div> <div id="Container-body" style="display: flex; min-height: 100vh;">
+        <div th:replace="~{Menu-Staff}" style="height: 100vh; min-height: 100vh;"></div> <div id="main" style="flex: 1;">
+            <div class="main-content-wrapper">
+                <div class="page-title">
+                    <h1>Question Management</h1>
+                    <p>Manage, review, and organize questions in the
+                        question bank</p>
+                </div>
 
-        <!-- Body -->
-        <div id="Container-body">
-            <!-- Menu -->
-            <div id="menu-HTML"></div>
+                <div class="tab-buttons">
+                    <a th:href="@{/staff/questions/bank}" class="tab-button active"> <i class="fas fa-folder"></i>
+                        Question Bank
+                    </a>
+                    <a th:href="@{/staff/questions/submission-table}" class="tab-button"> <i class="fas fa-table"></i>
+                        Submission Table
+                    </a>
+                    <a th:href="@{/staff/questions/planning}" class="tab-button"> <i class="fas fa-calendar-alt"></i>
+                        Question Planning
+                    </a>
+                    <a th:href="@{/staff/questions/duplication-check}" class="tab-button"> <i class="fas fa-search"></i>
+                        Duplication Check
+                    </a>
+                    <a th:href="@{/staff/questions/reports-statistics}" class="tab-button"> <i class="fas fa-chart-bar"></i>
+                        Reports & Statistics
+                    </a>
+                </div>
 
-            <!-- Main content -->
-            <div id="main">
-                <div class="main-content-wrapper">
-                    <div class="page-title">
-                        <h1>Question Management</h1>
-                        <p>Manage, review, and organize questions in the
-                            question bank</p>
+                <div class="search-section">
+                    <input type="text" placeholder="Search questions..."
+                        class="search-input" />
+                </div>
+
+                <div class="filter-bar">
+                    <select class="filter-select">
+                        <option>Subject</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>CLO</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Difficulty</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Creator</option>
+                    </select>
+                </div>
+
+                <table class="submission-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Question Content</th>
+                            <th>Subject</th>
+                            <th>Department</th>
+                            <th>Submitter</th>
+                            <th>Submitted At</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-id="S1001"
+                            data-content="What are the key differences between procedural and object-oriented programming paradigms?"
+                            data-subject="Programming"
+                            data-department="Computer Science"
+                            data-submitter="Dr. Nguyen"
+                            data-status="Pending" data-has-warning="true">
+                            <td>S1001</td>
+                            <td>
+                                <i
+                                    class="fas fa-exclamation-triangle warning-icon"></i>
+                                What are the key differences between
+                                procedural ...
+                            </td>
+                            <td>Programming</td>
+                            <td>Computer Science</td>
+                            <td>Dr. Nguyen</td>
+                            <td>2023-05-15</td>
+                            <td><span
+                                    class="status pending">Pending</span></td>
+                            <td class="action-icons">
+                                <i class="fas fa-eye view-details"></i>
+                                <i class="fas fa-check"></i>
+                                <i class="fas fa-times"></i>
+                            </td>
+                        </tr>
+                        <tr data-id="S1002"
+                            data-content="Explain the concept of polymorphism in object-oriented programming and provide examples."
+                            data-subject="Programming"
+                            data-department="Computer Science"
+                            data-submitter="Dr. Tran" data-status="Pending">
+                            <td>S1002</td>
+                            <td>Explain the concept of polymorphism in
+                                ...</td>
+                            <td>Programming</td>
+                            <td>Computer Science</td>
+                            <td>Dr. Tran</td>
+                            <td>2023-05-16</td>
+                            <td><span
+                                    class="status pending">Pending</span></td>
+                            <td class="action-icons">
+                                <i class="fas fa-eye view-details"></i>
+                                <i class="fas fa-check"></i>
+                                <i class="fas fa-times"></i>
+                            </td>
+                        </tr>
+                        <tr data-id="S1003"
+                            data-content="Describe the OSI model and its layers in computer networking."
+                            data-subject="Networking"
+                            data-department="Information Technology"
+                            data-submitter="Dr. Le" data-status="Approved">
+                            <td>S1003</td>
+                            <td>Describe the OSI model and its layers in
+                                computer</td>
+                            <td>Networking</td>
+                            <td>Information Technology</td>
+                            <td>Dr. Le</td>
+                            <td>2023-05-17</td>
+                            <td><span
+                                    class="status approved">Approved</span></td>
+                            <td class="action-icons">
+                                <i class="fas fa-eye view-details"></i>
+                                <i class="fas fa-check"></i>
+                                <i class="fas fa-times"></i>
+                            </td>
+                        </tr>
+                        <tr data-id="S1004"
+                            data-content="What is the role of enzymes in biological reactions?"
+                            data-subject="Biology"
+                            data-department="Life Sciences"
+                            data-submitter="Dr. Pham"
+                            data-status="Rejected">
+                            <td>S1004</td>
+                            <td>What is the role of enzymes in biological
+                                reactions?</td>
+                            <td>Biology</td>
+                            <td>Life Sciences</td>
+                            <td>Dr. Pham</td>
+                            <td>2023-05-18</td>
+                            <td><span
+                                    class="status rejected">Rejected</span></td>
+                            <td class="action-icons">
+                                <i class="fas fa-eye view-details"></i>
+                                <i class="fas fa-check"></i>
+                                <i class="fas fa-times"></i>
+                            </td>
+                        </tr>
+                        <tr data-id="S1005"
+                            data-content="Solve the following differential equation: dy/dx = 2x + 3"
+                            data-subject="Mathematics"
+                            data-department="Mathematics"
+                            data-submitter="Dr. Hoang"
+                            data-status="Pending">
+                            <td>S1005</td>
+                            <td>Solve the following differential equation:
+                                dy/dx = 2x +</td>
+                            <td>Mathematics</td>
+                            <td>Mathematics</td>
+                            <td>Dr. Hoang</td>
+                            <td>2023-05-19</td>
+                            <td><span
+                                    class="status pending">Pending</span></td>
+                            <td class="action-icons">
+                                <i class="fas fa-eye view-details"></i>
+                                <i class="fas fa-check"></i>
+                                <i class="fas fa-times"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    <div class="pagination-info">
+                        <i class="fas fa-thumbtack"></i>
+                        <span>Total Pages : 9</span>
                     </div>
-
-                    <div class="tab-buttons">
-                        <button class="tab-button">
-                            <i class="fas fa-folder"></i>
-                            Question Bank
-                        </button>
-                        <button class="tab-button active">
-                            <i class="fas fa-table"></i>
-                            Submission Table
-                        </button>
-                        <button class="tab-button">
-                            <i class="fas fa-calendar-alt"></i>
-                            Question Planning
-                        </button>
-                        <button class="tab-button">
-                            <i class="fas fa-search"></i>
-                            Duplication Check
-                        </button>
-                        <button class="tab-button">
-                            <i class="fas fa-chart-bar"></i>
-                            Reports & Statistics
-                        </button>
-                    </div>
-
-                    <div class="search-section">
-                        <input type="text" placeholder="Search questions..."
-                            class="search-input" />
-                    </div>
-
-                    <div class="filter-bar">
-                        <select class="filter-select">
-                            <option>Subject</option>
-                        </select>
-                        <select class="filter-select">
-                            <option>CLO</option>
-                        </select>
-                        <select class="filter-select">
-                            <option>Difficulty</option>
-                        </select>
-                        <select class="filter-select">
-                            <option>Creator</option>
-                        </select>
-                    </div>
-
-                    <table class="submission-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Question Content</th>
-                                <th>Subject</th>
-                                <th>Department</th>
-                                <th>Submitter</th>
-                                <th>Submitted At</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr data-id="S1001"
-                                data-content="What are the key differences between procedural and object-oriented programming paradigms?"
-                                data-subject="Programming"
-                                data-department="Computer Science"
-                                data-submitter="Dr. Nguyen"
-                                data-status="Pending" data-has-warning="true">
-                                <td>S1001</td>
-                                <td>
-                                    <i
-                                        class="fas fa-exclamation-triangle warning-icon"></i>
-                                    What are the key differences between
-                                    procedural ...
-                                </td>
-                                <td>Programming</td>
-                                <td>Computer Science</td>
-                                <td>Dr. Nguyen</td>
-                                <td>2023-05-15</td>
-                                <td><span
-                                        class="status pending">Pending</span></td>
-                                <td class="action-icons">
-                                    <i class="fas fa-eye view-details"></i>
-                                    <i class="fas fa-check"></i>
-                                    <i class="fas fa-times"></i>
-                                </td>
-                            </tr>
-                            <tr data-id="S1002"
-                                data-content="Explain the concept of polymorphism in object-oriented programming and provide examples."
-                                data-subject="Programming"
-                                data-department="Computer Science"
-                                data-submitter="Dr. Tran" data-status="Pending">
-                                <td>S1002</td>
-                                <td>Explain the concept of polymorphism in
-                                    ...</td>
-                                <td>Programming</td>
-                                <td>Computer Science</td>
-                                <td>Dr. Tran</td>
-                                <td>2023-05-16</td>
-                                <td><span
-                                        class="status pending">Pending</span></td>
-                                <td class="action-icons">
-                                    <i class="fas fa-eye view-details"></i>
-                                    <i class="fas fa-check"></i>
-                                    <i class="fas fa-times"></i>
-                                </td>
-                            </tr>
-                            <tr data-id="S1003"
-                                data-content="Describe the OSI model and its layers in computer networking."
-                                data-subject="Networking"
-                                data-department="Information Technology"
-                                data-submitter="Dr. Le" data-status="Approved">
-                                <td>S1003</td>
-                                <td>Describe the OSI model and its layers in
-                                    computer</td>
-                                <td>Networking</td>
-                                <td>Information Technology</td>
-                                <td>Dr. Le</td>
-                                <td>2023-05-17</td>
-                                <td><span
-                                        class="status approved">Approved</span></td>
-                                <td class="action-icons">
-                                    <i class="fas fa-eye view-details"></i>
-                                    <i class="fas fa-check"></i>
-                                    <i class="fas fa-times"></i>
-                                </td>
-                            </tr>
-                            <tr data-id="S1004"
-                                data-content="What is the role of enzymes in biological reactions?"
-                                data-subject="Biology"
-                                data-department="Life Sciences"
-                                data-submitter="Dr. Pham"
-                                data-status="Rejected">
-                                <td>S1004</td>
-                                <td>What is the role of enzymes in biological
-                                    reactions?</td>
-                                <td>Biology</td>
-                                <td>Life Sciences</td>
-                                <td>Dr. Pham</td>
-                                <td>2023-05-18</td>
-                                <td><span
-                                        class="status rejected">Rejected</span></td>
-                                <td class="action-icons">
-                                    <i class="fas fa-eye view-details"></i>
-                                    <i class="fas fa-check"></i>
-                                    <i class="fas fa-times"></i>
-                                </td>
-                            </tr>
-                            <tr data-id="S1005"
-                                data-content="Solve the following differential equation: dy/dx = 2x + 3"
-                                data-subject="Mathematics"
-                                data-department="Mathematics"
-                                data-submitter="Dr. Hoang"
-                                data-status="Pending">
-                                <td>S1005</td>
-                                <td>Solve the following differential equation:
-                                    dy/dx = 2x +</td>
-                                <td>Mathematics</td>
-                                <td>Mathematics</td>
-                                <td>Dr. Hoang</td>
-                                <td>2023-05-19</td>
-                                <td><span
-                                        class="status pending">Pending</span></td>
-                                <td class="action-icons">
-                                    <i class="fas fa-eye view-details"></i>
-                                    <i class="fas fa-check"></i>
-                                    <i class="fas fa-times"></i>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="pagination">
-                        <div class="pagination-info">
-                            <i class="fas fa-thumbtack"></i>
-                            <span>Total Pages : 9</span>
-                        </div>
-                        <div class="pagination-controls">
-                            <button class="pagination-btn">&lt;
-                                Previous</button>
-                            <span class="current-page">1</span>
-                            <button class="pagination-btn">Next &gt;</button>
-                        </div>
+                    <div class="pagination-controls">
+                        <button class="pagination-btn">&lt;
+                            Previous</button>
+                        <span class="current-page">1</span>
+                        <button class="pagination-btn">Next &gt;</button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Modal for Submission Details -->
-        <div id="submissionDetailsModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Submission Details</h2>
-                    <span class="close-modal">&times;</span>
+    <div id="submissionDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Submission Details</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="detail-row">
+                    <div class="detail-label">ID</div>
+                    <div id="modal-id" class="detail-value">S1001</div>
                 </div>
-                <div class="modal-body">
-                    <div class="detail-row">
-                        <div class="detail-label">ID</div>
-                        <div id="modal-id" class="detail-value">S1001</div>
-                    </div>
 
-                    <div class="detail-row">
-                        <div class="detail-label">Question Content</div>
-                        <div id="modal-content" class="detail-value">What are
-                            the key differences between procedural and
-                            object-oriented programming paradigms?</div>
-                    </div>
+                <div class="detail-row">
+                    <div class="detail-label">Question Content</div>
+                    <div id="modal-content" class="detail-value">What are
+                        the key differences between procedural and
+                        object-oriented programming paradigms?</div>
+                </div>
 
-                    <div id="duplicate-warning" class="warning-box">
-                        <div class="warning-header">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            Potential Duplicate Detected
-                        </div>
-                        <div class="warning-content">
-                            This question appears similar to existing question
-                            Q1002:
-                            "Explain the concept of inheritance in object-oriented programming."
-                        </div>
+                <div id="duplicate-warning" class="warning-box">
+                    <div class="warning-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Potential Duplicate Detected
                     </div>
-
-                    <div class="detail-grid">
-                        <div class="detail-column">
-                            <div class="detail-label">Subject</div>
-                            <div id="modal-subject"
-                                class="detail-value">Programming</div>
-                        </div>
-                        <div class="detail-column">
-                            <div class="detail-label">Department</div>
-                            <div id="modal-department"
-                                class="detail-value">Computer Science</div>
-                        </div>
-                    </div>
-
-                    <div class="detail-grid">
-                        <div class="detail-column">
-                            <div class="detail-label">Submitter</div>
-                            <div id="modal-submitter" class="detail-value">Dr.
-                                Nguyen</div>
-                        </div>
-                        <div class="detail-column">
-                            <div class="detail-label">Status</div>
-                            <div id="modal-status" class="detail-value">
-                                <span class="status pending">Pending</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="detail-row">
-                        <div class="detail-label">Feedback</div>
-                        <textarea id="feedback-textarea"
-                            placeholder="Enter feedback for the submitter..."></textarea>
+                    <div class="warning-content">
+                        This question appears similar to existing question
+                        Q1002:
+                        "Explain the concept of inheritance in object-oriented programming."
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary"><i
+
+                <div class="detail-grid">
+                    <div class="detail-column">
+                        <div class="detail-label">Subject</div>
+                        <div id="modal-subject"
+                            class="detail-value">Programming</div>
+                    </div>
+                    <div class="detail-column">
+                        <div class="detail-label">Department</div>
+                        <div id="modal-department"
+                            class="detail-value">Computer Science</div>
+                    </div>
+                </div>
+
+                <div class="detail-grid">
+                    <div class="detail-column">
+                        <div class="detail-label">Submitter</div>
+                        <div id="modal-submitter" class="detail-value">Dr.
+                            Nguyen</div>
+                    </div>
+                    <div class="detail-column">
+                        <div class="detail-label">Status</div>
+                        <div id="modal-status" class="detail-value">
+                            <span class="status pending">Pending</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Feedback</div>
+                    <textarea id="feedback-textarea"
+                        placeholder="Enter feedback for the submitter..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary"><i
                             class="fas fa-arrow-left"></i> Send Back</button>
-                    <button class="btn btn-danger"><i class="fas fa-times"></i>
-                        Reject</button>
-                    <button class="btn btn-success"><i class="fas fa-check"></i>
-                        Approve</button>
-                </div>
+                <button class="btn btn-danger"><i class="fas fa-times"></i>
+                    Reject</button>
+                <button class="btn btn-success"><i class="fas fa-check"></i>
+                    Approve</button>
             </div>
         </div>
+    </div>
 
-        <!-- Auto-load menu and header -->
-        <script>
-            fetch('../../Template/header_user.html')
-              .then(res => res.text())
-              .then(data => document.getElementById('header-placeholder').innerHTML = data);
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var modal = document.getElementById('submissionDetailsModal');
+            var closeBtn = document.querySelector('.close-modal');
+            var viewButtons = document.querySelectorAll('.view-details');
 
-            fetch('../../Template/Menu-Staff.html')
-              .then(res => res.text())
-              .then(data => document.getElementById('menu-HTML').innerHTML = data);
-              
-            // Modal functionality
-            document.addEventListener('DOMContentLoaded', function() {
-                const modal = document.getElementById('submissionDetailsModal');
-                const closeBtn = document.querySelector('.close-modal');
-                const viewButtons = document.querySelectorAll('.view-details');
-                
-                // Close modal when clicking X
-                closeBtn.addEventListener('click', function() {
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
                     modal.style.display = 'none';
-                });
-                
-                // Close modal when clicking outside
-                window.addEventListener('click', function(event) {
-                    if (event.target === modal) {
-                        modal.style.display = 'none';
-                    }
-                });
-                
-                // Open modal when clicking eye icon
-                viewButtons.forEach(button => {
-                    button.addEventListener('click', function() {
-                        const row = this.closest('tr');
-                        
-                        // Get data from row
-                        const id = row.getAttribute('data-id');
-                        const content = row.getAttribute('data-content');
-                        const subject = row.getAttribute('data-subject');
-                        const department = row.getAttribute('data-department');
-                        const submitter = row.getAttribute('data-submitter');
-                        const status = row.getAttribute('data-status');
-                        const hasWarning = row.getAttribute('data-has-warning') === 'true';
-                        
-                        // Populate modal with data
-                        document.getElementById('modal-id').textContent = id;
-                        document.getElementById('modal-content').textContent = content;
-                        document.getElementById('modal-subject').textContent = subject;
-                        document.getElementById('modal-department').textContent = department;
-                        document.getElementById('modal-submitter').textContent = submitter;
-                        
-                        // Set status with appropriate class
-                        const statusElement = document.getElementById('modal-status');
-                        statusElement.innerHTML = `<span class="status ${status.toLowerCase()}">${status}</span>`;
-                        
-                        // Show/hide warning box
-                        const warningBox = document.getElementById('duplicate-warning');
-                        warningBox.style.display = hasWarning ? 'block' : 'none';
-                        
-                        // Clear feedback textarea
-                        document.getElementById('feedback-textarea').value = '';
-                        
-                        // Show modal
-                        modal.style.display = 'block';
-                    });
+                }
+            });
+
+            viewButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var row = this.closest('tr');
+
+                    var id = row.getAttribute('data-id');
+                    var content = row.getAttribute('data-content');
+                    var subject = row.getAttribute('data-subject');
+                    var department = row.getAttribute('data-department');
+                    var submitter = row.getAttribute('data-submitter');
+                    var status = row.getAttribute('data-status');
+                    var hasWarning = row.getAttribute('data-has-warning') === 'true';
+
+                    document.getElementById('modal-id').textContent = id;
+                    document.getElementById('modal-content').textContent = content;
+                    document.getElementById('modal-subject').textContent = subject;
+                    document.getElementById('modal-department').textContent = department;
+                    document.getElementById('modal-submitter').textContent = submitter;
+
+                    var statusElement = document.getElementById('modal-status');
+                    statusElement.innerHTML = '<span class="status ' + status.toLowerCase() + '">' + status + '</span>';
+
+                    var warningBox = document.getElementById('duplicate-warning');
+                    warningBox.style.display = hasWarning ? 'block' : 'none';
+
+                    document.getElementById('feedback-textarea').value = '';
+
+                    modal.style.display = 'block';
                 });
             });
-        </script>
-    </body>
+        });
+    </script>
+</body>
 </html>

@@ -6,6 +6,7 @@ import com.uth.quizclear.model.entity.Course;
 import com.uth.quizclear.model.entity.User;
 import com.uth.quizclear.model.enums.ExamAssignmentStatus;
 import com.uth.quizclear.model.enums.UserRole;
+import com.uth.quizclear.model.enums.Status;
 import com.uth.quizclear.repository.CourseRepository;
 import com.uth.quizclear.repository.UserRepository;
 import com.uth.quizclear.service.ExamAssignmentService;
@@ -65,8 +66,11 @@ public class SLExamAssignmentController {
 
             // Get available courses
             List<Course> courses = courseRepository.findAll();
+            log.info("Found {} courses", courses.size());
+            
             // Get available lecturers
-            List<User> lecturers = userRepository.findByRole(UserRole.LEC);
+            List<User> lecturers = userRepository.findByRoleAndStatus(UserRole.LEC, Status.ACTIVE);
+            log.info("Found {} lecturers", lecturers.size());
 
             // Add to model
             model.addAttribute("assignments", assignments);
@@ -331,7 +335,7 @@ public class SLExamAssignmentController {
     @ResponseBody
     public ResponseEntity<List<User>> getLecturers() {
         try {
-            List<User> lecturers = userRepository.findByRole(UserRole.LEC);
+            List<User> lecturers = userRepository.findActiveUsersByRole(UserRole.LEC);
             return ResponseEntity.ok(lecturers);
 
         } catch (Exception e) {

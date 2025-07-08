@@ -1,215 +1,203 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}" />
-        <link rel="stylesheet" th:href="@{/Static/header.css}" />
-        <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
-        <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
-        <link rel="stylesheet" th:href="@{/Static/css/staff/staffQMQuestionBank.css}" />
-        <link
-            href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
-            rel="stylesheet">
-        <!-- Nếu cần thêm file css riêng, hãy dùng th:href tương tự trên -->
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-        <title>Template</title>
-    </head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}" />
+    <link rel="stylesheet" th:href="@{/Static/header.css}" />
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
+    <link rel="stylesheet" th:href="@{/Static/css/staff/staffQMQuestionBank.css}" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
+        rel="stylesheet">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <title>Template</title>
+</head>
 
-    <body>
-        <!--header-->
-        <div th:replace="~{/Template/header_user.html}"></div>
+<body>
 
-        <!-- body -->
-        <div id="Container-body">
-            <!-- Menu -->
-            <div th:replace="~{/Template/Menu-Staff.html}"></div>
-
-            <!-- Main content -->
-            <div id="main">
-                <div class="main-content-wrapper">
-                    <div class="page-title">
-                        <h1>Question Management</h1>
-                        <p>Manage, review, and organize questions in the
-                            question bank</p>
-                    </div>
-
-                    <div class="tab-buttons">
-                        <button class="tab-button active">
-                            <i class="fas fa-folder"></i>
-                            Question Bank
-                        </button>
-                        <button class="tab-button">
-                            <i class="fas fa-table"></i>
-                            Submission Table
-                        </button>
-                        <button class="tab-button">
-                            <i class="fas fa-calendar-alt"></i>
-                            Question Planning
-                        </button>
-                        <button class="tab-button">
-                            <i class="fas fa-search"></i>
-                            Duplication Check
-                        </button>
-                        <button class="tab-button">
-                            <i class="fas fa-chart-bar"></i>
-                            Reports & Statistics
-                        </button>
-                    </div>
-
-                    <div class="search-export-section">
-                        <input type="text" placeholder="Search questions..."
-                            class="search-input" />
-                        <button class="export-btn">
-                            <i class="fas fa-download"></i>
-                            Export
-                        </button>
-                    </div>
-
-                    <div class="filter-bar">
-                        <select class="filter-select">
-                            <option>Subject</option>
-                            <option>Computer Science</option>
-                            <option>Mathematics</option>
-                            <option>Biology</option>
-                        </select>
-                        <select class="filter-select">
-                            <option>CLO</option>
-                            <option>CLO1</option>
-                            <option>CLO2</option>
-                            <option>CLO3</option>
-                        </select>
-                        <select class="filter-select">
-                            <option>Difficulty</option>
-                            <option>Easy</option>
-                            <option>Advanced</option>
-                            <option>Comprehension</option>
-                        </select>
-                        <select class="filter-select">
-                            <option>Creator</option>
-                            <option>Dr. Nguyen</option>
-                            <option>Dr. Tran</option>
-                            <option>Dr. Hoang</option>
-                        </select>
-                    </div>
-
-                    <table class="question-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Question Content</th>
-                                <th>Subject</th>
-                                <th>CLO</th>
-                                <th>Difficulty</th>
-                                <th>Creator</th>
-                                <th>Created At</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr data-id="Q1001"
-                                data-content="What is the primary function of an operating system?"
-                                data-subject="Computer Science" data-clo="CLO1"
-                                data-difficulty="Recognition"
-                                data-creator="Dr. Nguyen">
-                                <td>Q1001</td>
-                                <td>What is the primary function ...</td>
-                                <td>Computer Science</td>
-                                <td>CLO1</td>
-                                <td>Recognition</td>
-                                <td>Dr. Nguyen</td>
-                                <td>2023-05-15</td>
-                                <td class="action-icons">
-                                    <i class="fas fa-eye view-details"></i>
-                                    <i class="fas fa-lock"></i>
-                                </td>
-                            </tr>
-                            <tr data-id="Q1002"
-                                data-content="Explain the concept of inheritance in object-oriented programming."
-                                data-subject="Programming" data-clo="CLO2"
-                                data-difficulty="Advanced"
-                                data-creator="Dr. Tran">
-                                <td>Q1002</td>
-                                <td>Explain the concept of inhe ...</td>
-                                <td>Programming</td>
-                                <td>CLO2</td>
-                                <td>Advanced</td>
-                                <td>Dr. Tran</td>
-                                <td>2023-05-16</td>
-                                <td class="action-icons">
-                                    <i class="fas fa-eye view-details"></i>
-                                    <i class="fas fa-lock"></i>
-                                </td>
-                            </tr>
-                            <tr data-id="Q1003"
-                                data-content="What is the difference between TCP and UDP protocols?"
-                                data-subject="Networking" data-clo="CLO3"
-                                data-difficulty="Comprehension"
-                                data-creator="Dr. Le">
-                                <td>Q1003</td>
-                                <td>What is the difference between ...</td>
-                                <td>Networking</td>
-                                <td>CLO3</td>
-                                <td>Comprehension</td>
-                                <td>Dr. Le</td>
-                                <td>2023-05-17</td>
-                                <td class="action-icons">
-                                    <i class="fas fa-eye view-details"></i>
-                                    <i class="fas fa-lock"></i>
-                                </td>
-                            </tr>
-                            <tr data-id="Q1004"
-                                data-content="Describe the process of photosynthesis in plants."
-                                data-subject="Biology" data-clo="CLO1"
-                                data-difficulty="Easy" data-creator="Dr. Pham">
-                                <td>Q1004</td>
-                                <td>Describe the process of photo...</td>
-                                <td>Biology</td>
-                                <td>CLO1</td>
-                                <td>Easy</td>
-                                <td>Dr. Pham</td>
-                                <td>2023-05-18</td>
-                                <td class="action-icons">
-                                    <i class="fas fa-eye view-details"></i>
-                                    <i class="fas fa-lock"></i>
-                                </td>
-                            </tr>
-                            <tr data-id="Q1005"
-                                data-content="Solve the equation: 2x + 5 = 15"
-                                data-subject="Mathematics" data-clo="CLO2"
-                                data-difficulty="Easy" data-creator="Dr. Hoang">
-                                <td>Q1005</td>
-                                <td>Solve the equation: 2x + 5 = 15</td>
-                                <td>Mathematics</td>
-                                <td>CLO2</td>
-                                <td>Easy</td>
-                                <td>Dr. Hoang</td>
-                                <td>2023-05-19</td>
-                                <td class="action-icons">
-                                    <i class="fas fa-eye view-details"></i>
-                                    <i class="fas fa-lock"></i>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="pagination">
-                        <div class="pagination-info">
-                            <i class="fas fa-thumbtack"></i>
-                            <span>Total Pages : 9</span>
-                        </div>
-                        <div class="pagination-controls">
-                            <button class="pagination-btn">&lt;
-                                Previous</button>
-                            <span class="current-page">1</span>
-                            <button class="pagination-btn">Next &gt;</button>
-                        </div>
-                    </div>
+    <div th:replace="~{header_user}"></div>
+    <div id="Container-body" style="display: flex; min-height: 100vh;">
+        <div th:replace="~{Menu-Staff}" style="height: 100vh; min-height: 100vh;"></div>
+        <div id="main" style="flex: 1;">
+            <div class="main-content-wrapper">
+                <div class="page-title">
+                    <h1>Question Management</h1>
+                    <p>Manage, review, and organize questions in the
+                        question bank</p>
                 </div>
 
-                <!-- Modal for Question Details -->
+                <div class="tab-buttons">
+                    <a th:href="@{/staff/questions/bank}" class="tab-button active"> <i class="fas fa-folder"></i>
+                        Question Bank
+                    </a>
+                    <a th:href="@{/staff/questions/submission-table}" class="tab-button"> <i class="fas fa-table"></i>
+                        Submission Table
+                    </a>
+                    <a th:href="@{/staff/questions/planning}" class="tab-button"> <i class="fas fa-calendar-alt"></i>
+                        Question Planning
+                    </a>
+                    <a th:href="@{/staff/questions/duplication-check}" class="tab-button"> <i class="fas fa-search"></i>
+                        Duplication Check
+                    </a>
+                    <a th:href="@{/staff/questions/reports-statistics}" class="tab-button"> <i class="fas fa-chart-bar"></i>
+                        Reports & Statistics
+                    </a>
+                </div>
+
+                <div class="search-export-section">
+                    <input type="text" placeholder="Search questions..."
+                        class="search-input" />
+                    <button class="export-btn">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </button>
+                </div>
+
+                <div class="filter-bar">
+                    <select class="filter-select">
+                        <option>Subject</option>
+                        <option>Computer Science</option>
+                        <option>Mathematics</option>
+                        <option>Biology</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>CLO</option>
+                        <option>CLO1</option>
+                        <option>CLO2</option>
+                        <option>CLO3</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Difficulty</option>
+                        <option>Easy</option>
+                        <option>Advanced</option>
+                        <option>Comprehension</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Creator</option>
+                        <option>Dr. Nguyen</option>
+                        <option>Dr. Tran</option>
+                        <option>Dr. Hoang</option>
+                    </select>
+                </div>
+
+                <table class="question-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Question Content</th>
+                            <th>Subject</th>
+                            <th>CLO</th>
+                            <th>Difficulty</th>
+                            <th>Creator</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-id="Q1001"
+                            data-content="What is the primary function of an operating system?"
+                            data-subject="Computer Science" data-clo="CLO1"
+                            data-difficulty="Recognition"
+                            data-creator="Dr. Nguyen">
+                            <td>Q1001</td>
+                            <td>What is the primary function ...</td>
+                            <td>Computer Science</td>
+                            <td>CLO1</td>
+                            <td>Recognition</td>
+                            <td>Dr. Nguyen</td>
+                            <td>2023-05-15</td>
+                            <td class="action-icons">
+                                <i class="fas fa-eye view-details"></i>
+                                <i class="fas fa-lock"></i>
+                            </td>
+                        </tr>
+                        <tr data-id="Q1002"
+                            data-content="Explain the concept of inheritance in object-oriented programming."
+                            data-subject="Programming" data-clo="CLO2"
+                            data-difficulty="Advanced"
+                            data-creator="Dr. Tran">
+                            <td>Q1002</td>
+                            <td>Explain the concept of inhe ...</td>
+                            <td>Programming</td>
+                            <td>CLO2</td>
+                            <td>Advanced</td>
+                            <td>Dr. Tran</td>
+                            <td>2023-05-16</td>
+                            <td class="action-icons">
+                                <i class="fas fa-eye view-details"></i>
+                                <i class="fas fa-lock"></i>
+                            </td>
+                        </tr>
+                        <tr data-id="Q1003"
+                            data-content="What is the difference between TCP and UDP protocols?"
+                            data-subject="Networking" data-clo="CLO3"
+                            data-difficulty="Comprehension"
+                            data-creator="Dr. Le">
+                            <td>Q1003</td>
+                            <td>What is the difference between ...</td>
+                            <td>Networking</td>
+                            <td>CLO3</td>
+                            <td>Comprehension</td>
+                            <td>Dr. Le</td>
+                            <td>2023-05-17</td>
+                            <td class="action-icons">
+                                <i class="fas fa-eye view-details"></i>
+                                <i class="fas fa-lock"></i>
+                            </td>
+                        </tr>
+                        <tr data-id="Q1004"
+                            data-content="Describe the process of photosynthesis in plants."
+                            data-subject="Biology" data-clo="CLO1"
+                            data-difficulty="Easy" data-creator="Dr. Pham">
+                            <td>Q1004</td>
+                            <td>Describe the process of photo...</td>
+                            <td>Biology</td>
+                            <td>CLO1</td>
+                            <td>Easy</td>
+                            <td>Dr. Pham</td>
+                            <td>2023-05-18</td>
+                            <td class="action-icons">
+                                <i class="fas fa-eye view-details"></i>
+                                <i class="fas fa-lock"></i>
+                            </td>
+                        </tr>
+                        <tr data-id="Q1005"
+                            data-content="Solve the equation: 2x + 5 = 15"
+                            data-subject="Mathematics" data-clo="CLO2"
+                            data-difficulty="Easy" data-creator="Dr. Hoang">
+                            <td>Q1005</td>
+                            <td>Solve the equation: 2x + 5 = 15</td>
+                            <td>Mathematics</td>
+                            <td>CLO2</td>
+                            <td>Easy</td>
+                            <td>Dr. Hoang</td>
+                            <td>2023-05-19</td>
+                            <td class="action-icons">
+                                <i class="fas fa-eye view-details"></i>
+                                <i class="fas fa-lock"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    <div class="pagination-info">
+                        <i class="fas fa-thumbtack"></i>
+                        <span>Total Pages : 9</span>
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="pagination-btn">&lt;
+                            Previous</button>
+                        <span class="current-page">1</span>
+                        <button class="pagination-btn">Next &gt;</button>
+                    </div>
+                </div>
+            </div>
+
                 <div class="modal" id="questionModal">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -260,39 +248,25 @@
             </div>
         </div>
 
-        <!-- Auto-load menu and header -->
         <script>
-            fetch('../../Template/header_user.html')
-              .then(res => res.text())
-              .then(data => document.getElementById('header-placeholder').innerHTML = data);
-
-            fetch('../../Template/Menu-Staff.html')
-              .then(res => res.text())
-              .then(data => document.getElementById('menu-HTML').innerHTML = data);
-              
-            // Modal functionality
             document.addEventListener('DOMContentLoaded', function() {
                 const modal = document.getElementById('questionModal');
                 const closeBtn = document.querySelector('.close-modal');
                 const viewButtons = document.querySelectorAll('.view-details');
-                
                 // Close modal when clicking X
                 closeBtn.addEventListener('click', function() {
                     modal.style.display = 'none';
                 });
-                
                 // Close modal when clicking outside
                 window.addEventListener('click', function(event) {
                     if (event.target === modal) {
                         modal.style.display = 'none';
                     }
                 });
-                
                 // Open modal when clicking eye icon
                 viewButtons.forEach(button => {
                     button.addEventListener('click', function() {
                         const row = this.closest('tr');
-                        
                         // Get data from row
                         const id = row.getAttribute('data-id');
                         const content = row.getAttribute('data-content');
@@ -300,14 +274,12 @@
                         const clo = row.getAttribute('data-clo');
                         const difficulty = row.getAttribute('data-difficulty');
                         const creator = row.getAttribute('data-creator');
-                        
                         // Populate modal with data
                         document.getElementById('modal-question-content').value = content;
                         document.getElementById('modal-subject').value = subject;
                         document.getElementById('modal-clo').value = clo;
                         document.getElementById('modal-difficulty').value = difficulty;
                         document.getElementById('modal-creator').value = creator;
-                        
                         // Show modal
                         modal.style.display = 'block';
                     });

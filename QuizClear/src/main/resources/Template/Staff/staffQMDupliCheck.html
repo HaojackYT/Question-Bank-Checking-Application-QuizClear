@@ -1,54 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../static/fontawesome/css/all.css">
-    <link rel="stylesheet" href="../../static/header.css">
-    <link rel="stylesheet" href="../../static/web_styles.css">
-    <link rel="stylesheet" href="../../static/Menu-Staff.css">
-    <link rel="stylesheet" href="../../static/css/staff/staffQMDupliCheck.css">
-    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}"> <link rel="stylesheet" th:href="@{/Static/header.css}"> <link rel="stylesheet" th:href="@{/Static/web_styles.css}"> <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}"> <link rel="stylesheet" th:href="@{/Static/css/staff/staffQMDupliCheck.css}"> <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Duplication Check</title>
 </head>
 
 <body>
-    <!--header-->
-    <div id="header-placeholder"></div>
-
-    <!-- body -->
-    <div id="Container-body">
-        <!-- Menu -->
-        <div id="menu-HTML"></div>
-
-
-        <!-- Main content -->
-        <div id="main">
+    <div th:replace="~{header_user}"></div> <div id="Container-body" style="display: flex; min-height: 100vh;">
+        <div th:replace="~{Menu-Staff}" style="height: 100vh; min-height: 100vh;"></div> <div id="main" style="flex: 1;">
             <div class="title">Question Management</div>
             <div class="subtitle">Manage, review, and organize questions in the question bank</div>
 
             <div class="tabs">
-                <button class="tab" onclick="location.href='staffQuestionBank.html'"><i class="fa-regular fa-file"
-                        style="padding:0px 5px" ;></i>
+                <a th:href="@{/staff/questions/bank}" class="tab">
+                    <i class="fa-regular fa-file" style="padding:0px 5px"></i>
                     Question Bank
-                </button>
-                <button class="tab" onclick="location.href='submission.html'"><i class="fa-regular fa-folder-closed"
-                        style="padding:0px 5px" ;></i>
+                </a>
+                <a th:href="@{/staff/questions/submission-table}" class="tab">
+                    <i class="fa-regular fa-folder-closed" style="padding:0px 5px"></i>
                     Submission Table
-                </button>
-                <button class="tab" onclick="location.href='planning.html'"><i class="fa-regular fa-calendar"
-                        style="padding:0px 5px" ;></i>
+                </a>
+                <a th:href="@{/staff/questions/planning}" class="tab">
+                    <i class="fa-regular fa-calendar" style="padding:0px 5px"></i>
                     Question Planning
-                </button>
-                <button class="tab active"><i class="fa-solid fa-magnifying-glass"
-                        style="color: #ffffff; padding:0px 5px" ;></i> Duplication Check</button>
-                <button class="tab" onclick="location.href='statistics.html'"><i class="fa-solid fa-chart-line"
-                        style="padding:0px 5px" ;></i>
+                </a>
+                <a th:href="@{/staff/questions/duplication-check}" class="tab active">
+                    <i class="fa-solid fa-magnifying-glass" style="color: #ffffff; padding:0px 5px"></i> Duplication Check
+                </a>
+                <a th:href="@{/staff/questions/reports-statistics}" class="tab">
+                    <i class="fa-solid fa-chart-line" style="padding:0px 5px"></i>
                     Reports & Statistics
-                </button>
+                </a>
                 <div class="line"></div>
             </div>
+            
             <div class="main-content">
                 <div class="content">
                     <h3>Automatic Duplication Detection</h3>
@@ -122,23 +108,6 @@
             </div>
         </div>
     </div>
-    <!-- footer -->
-    <!-- ma nhung header vs menu -->
-    <script>
-        fetch("../header_user.html")
-            .then((response) => response.text())
-            .then((data) => {
-                document.getElementById("header-placeholder").innerHTML = data;
-            });
-
-        fetch("../Menu-Staff.html")
-            .then((response) => response.text())
-            .then((data) => {
-                document.getElementById("menu-HTML").innerHTML = data;
-            });
-    </script>
-
-
-</body>
+    </body>
 
 </html>

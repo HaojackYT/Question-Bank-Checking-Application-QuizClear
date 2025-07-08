@@ -11,7 +11,7 @@ body {
 }
 
 .main-content {
-  padding: 1.875rem;
+  padding: 30px;
   width: 100%;
   margin: 0;
   box-sizing: border-box;
@@ -19,34 +19,34 @@ body {
 }
 
 .header-section {
-  margin-bottom: 1.875rem;
+  margin-bottom: 30px;
 }
 
 .page-title {
-  font-size: 2rem;
+  font-size: 32px;
   font-weight: bold;
   color: #1e293b;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 }
 
 .page-description {
-  font-size: 1rem;
+  font-size: 16px;
   color: #64748b;
-  margin-bottom: 0.5rem;
+  margin-bottom: 24px;
 }
 
 .tab-navigation {
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   border-bottom: 1px solid #e2e8f0;
-  margin-bottom: 2rem;
+  margin-bottom: 32px;
 }
 
 .tab-button {
-  padding: 0.75rem 1.5rem;
+  padding: 12px 24px;
   background: none;
   border: none;
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 500;
   color: #64748b;
   cursor: pointer;
@@ -65,41 +65,41 @@ body {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
 .stat-card {
   background: white;
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid #e2e8f0;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .stat-card:hover {
-  transform: translateY(-0.125rem);
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .stat-value {
-  font-size: 2rem;
+  font-size: 32px;
   font-weight: 700;
   color: #1e293b;
-  margin-bottom: 0.25rem;
+  margin-bottom: 4px;
 }
 
 .stat-label {
-  font-size: 0.875rem;
+  font-size: 14px;
   color: #64748b;
   font-weight: 500;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 }
 
 .stat-change {
-  font-size: 0.75rem;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -114,77 +114,77 @@ body {
 .chart-section {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
 .chart-card {
   background: white;
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid #e2e8f0;
 }
 
 .chart-title {
-  font-size: 1.125rem;
+  font-size: 18px;
   font-weight: 600;
   color: #1e293b;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 }
 
 .chart-subtitle {
-  font-size: 0.875rem;
+  font-size: 14px;
   color: #64748b;
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px;
 }
 
 .chart-container {
   position: relative;
-  height: 18.75rem;
+  height: 300px;
   width: 100%;
 }
 
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 16px;
+  margin-top: 16px;
   justify-content: center;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.75rem;
+  gap: 8px;
+  font-size: 12px;
   color: #64748b;
 }
 
 .legend-color {
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 0.125rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
 }
 
 .pie-legend {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 1rem;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .pie-legend-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.875rem;
+  font-size: 14px;
 }
 
 .pie-legend-label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .pie-legend-value {
@@ -194,18 +194,18 @@ body {
 
 .table-container {
   overflow-x: auto;
-  margin-top: 1rem;
+  margin-top: 16px;
 }
 
 .status-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  font-size: 14px;
 }
 
 .status-table th {
   background-color: #f8fafc;
-  padding: 0.75rem 1rem;
+  padding: 12px 16px;
   text-align: left;
   font-weight: 600;
   color: #475569;
@@ -214,7 +214,7 @@ body {
 }
 
 .status-table td {
-  padding: 0.75rem 1rem;
+  padding: 12px 16px;
   border-bottom: 1px solid #f1f5f9;
   color: #334155;
 }
@@ -224,17 +224,17 @@ body {
 }
 
 .progress-bar {
-  width: 6.25rem;
-  height: 0.5rem;
+  width: 100px;
+  height: 8px;
   background-color: #e2e8f0;
-  border-radius: 0.25rem;
+  border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
   background-color: #6366f1;
-  border-radius: 0.25rem;
+  border-radius: 4px;
   transition: width 0.3s ease;
 }
 
@@ -245,12 +245,15 @@ body {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(0.625rem);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+.main-content {
+  padding: 16px;
 }
 
 .chart-section {
@@ -258,19 +261,19 @@ body {
 }
 
 .stats-grid {
-  grid-template-columns: repeat(auto-fit, minmax(9.375rem, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
 }
 
 .stat-card {
-  padding: 1rem;
+  padding: 16px;
 }
 
 .loading {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 12.5rem;
+  height: 200px;
   color: #64748b;
 }
 
@@ -278,53 +281,26 @@ body {
   background-color: #fef2f2;
   border: 1px solid #fecaca;
   color: #dc2626;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  margin-bottom: 1.5rem;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
 }
 
 #menu-HTML {
-  width: 15.625rem !important;
+  width: 250px !important;
   flex-shrink: 0 !important;
 }
 
 #main {
-  padding: 1.875rem !important;
-  box-sizing: border-box;
-  width: 100%;
-  overflow: visible;
+  margin-top: 30px !important;
+  flex-grow: 1 !important;
+  padding: 0 !important;
+  overflow: auto;
 }
 
+/* Ghi đè .main-content nếu cần mở rộng */
 .main-content {
-  padding: 1.875rem;
-  margin: 0;
-  box-sizing: border-box;
-  width: 100%;
-  flex: 1;
-}
-
-.main-content,
-#main {
-  padding-top: 0.9375rem !important;
-}
-
-.header-section {
-  margin-bottom: 1.875rem !important;
-  margin-top: 0 !important;
-}
-
-.tab-navigation {
-  margin-top: 1.875rem !important;
-  margin-bottom: 1.875rem !important;
-}
-
-.tab-content {
-  padding-top: 0 !important;
-  padding-bottom: 1.875rem !important;
-}
-
-.stat-value,
-.stat-label,
-.stat-change {
-  transition: opacity 0.2s ease-in-out;
+  max-width: unset !important;
+  margin: 0 !important;
+  width: 100% !important;
 }

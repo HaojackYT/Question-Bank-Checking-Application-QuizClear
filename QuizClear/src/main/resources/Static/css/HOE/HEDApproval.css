@@ -121,6 +121,8 @@ tr:hover {
 .status.approved { background: #43A047; }
 .status.declined { background: #E53935; }
 .status.new { background: #FB8C00; }
+.status.needs_revision { background: #dc3545; color: white; }
+.status.needs-revision { background: #dc3545; color: white; }
 
 /* Buttons */
 
