@@ -282,6 +282,37 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                     return map;
                 })
                 .collect(Collectors.toList());
+    }    // Phương thức mới: Lấy danh sách giảng viên theo phòng ban
+    public List<Map<String, Object>> getLecturersByDepartment(String department) {
+        System.out.println("=== TaskAssignmentService.getLecturersByDepartment DEBUG ===");
+        System.out.println("Requested department: " + department);
+        
+        if (department == null || department.trim().isEmpty()) {
+            System.out.println("Department is null or empty, falling back to all lecturers");
+            return getLecturers(); // Fallback to all lecturers if no department specified
+        }
+        
+        List<User> users = userRepository.findUsersByRoleAndDepartment(UserRole.LEC, department);
+        System.out.println("Found " + users.size() + " users with role LEC and department " + department);
+        
+        for (User user : users) {
+            System.out.println("  - " + user.getFullName() + " (ID: " + user.getUserId() + ", Dept: " + user.getDepartment() + ", Role: " + user.getRole() + ")");
+        }
+        
+        List<Map<String, Object>> result = users.stream()
+                .map(user -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", user.getUserId().longValue());
+                    map.put("name", user.getFullName());
+                    map.put("department", user.getDepartment());
+                    return map;
+                })
+                .collect(Collectors.toList());
+        
+        System.out.println("Returning " + result.size() + " lecturers");
+        System.out.println("=== END TaskAssignmentService.getLecturersByDepartment DEBUG ===");
+        
+        return result;
     }
 
     // Phương thức gốc: Lấy danh sách khóa học

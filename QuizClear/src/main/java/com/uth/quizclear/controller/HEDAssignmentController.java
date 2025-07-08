@@ -188,13 +188,30 @@ public class HEDAssignmentController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", "Error updating question status: " + e.getMessage()));
         }
-    }
-
-    @GetMapping("/api/lecturers")
+    }    @GetMapping("/api/lecturers")
     @ResponseBody
     public List<Map<String, Object>> getLecturers() {
-        return taskAssignmentService.getLecturers();
-    }    @GetMapping("/api/courses")
+        // Debug logging
+        System.out.println("=== GET LECTURERS DEBUG ===");
+        
+        // Get current user's department
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        System.out.println("Current user: " + currentUsername);
+        
+        String userDepartment = userService.getUserDepartment(currentUsername);
+        System.out.println("User department: " + userDepartment);
+        
+        // Return lecturers for this department only
+        List<Map<String, Object>> lecturers = taskAssignmentService.getLecturersByDepartment(userDepartment);
+        System.out.println("Found " + lecturers.size() + " lecturers for department: " + userDepartment);
+        for (Map<String, Object> lecturer : lecturers) {
+            System.out.println("  - " + lecturer.get("name") + " (ID: " + lecturer.get("id") + ", Dept: " + lecturer.get("department") + ")");
+        }
+        System.out.println("=== END GET LECTURERS DEBUG ===");
+        
+        return lecturers;
+    }@GetMapping("/api/courses")
     @ResponseBody
     public List<Map<String, Object>> getCourses() {
         // Get current user's department

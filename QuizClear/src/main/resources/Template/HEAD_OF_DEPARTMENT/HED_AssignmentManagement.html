@@ -346,16 +346,16 @@
             const detailsModal = document.getElementById('detailsModal');
             if (event.target === newAssignModal) closeNewAssignModal();
             if (event.target === detailsModal) closeDetailsModal();
-        };
-
-        // Load dynamic data
+        };        // Load dynamic data
         async function loadLecturers() {
             try {
-                const lecturers = await fetchWithErrorHandling(`${BASE_URL}/api/hed/lecturers`);
+                const lecturers = await fetchWithErrorHandling(`${BASE_URL}/hed/api/lecturers`);
+                console.log('Lecturers loaded:', lecturers);
                 const select = document.getElementById('lecturer-select');
                 select.innerHTML = '<option value="">Select Lecturer</option>';
                 lecturers.forEach(lecturer => {
-                    const option = document.createElement('option');                    option.value = lecturer.id;
+                    const option = document.createElement('option');
+                    option.value = lecturer.id;
                     option.textContent = lecturer.name || 'Unknown';
                     select.appendChild(option);
                 });
@@ -363,7 +363,7 @@
                 console.error('Error fetching lecturers:', error);
                 showError(`Failed to load lecturers: ${error.message}`);
             }
-        }        async function loadCourses() {
+        }async function loadCourses() {
     try {
         const courses = await fetchWithErrorHandling(`${BASE_URL}/hed/api/courses`);
         console.log('Courses loaded:', courses);
