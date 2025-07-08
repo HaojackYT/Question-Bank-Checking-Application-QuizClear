@@ -12,10 +12,10 @@ public interface SubjectLeaderFeedbackService {
      * @return List of feedback DTOs
      */
     List<QuestionFeedbackDTO> getFeedbackForSubjectLeader(Long subjectLeaderId);
-    
-    /**
+      /**
      * Get detailed feedback for a specific question or exam
      * @param feedbackId The ID of the question or exam
+     * @param type The type of feedback (question or exam)
      * @return Detailed feedback DTO
      */
     QuestionFeedbackDetailDTO getFeedbackDetail(Long feedbackId, String type);

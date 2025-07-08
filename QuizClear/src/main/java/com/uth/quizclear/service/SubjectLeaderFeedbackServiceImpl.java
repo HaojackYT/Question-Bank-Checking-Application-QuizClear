@@ -42,12 +42,15 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
         if (!subjectLeaderOpt.isPresent()) {
             return feedbackList;
         }
-        
-        String department = subjectLeaderOpt.get().getDepartment();
+          String department = subjectLeaderOpt.get().getDepartment();
         if (department == null || department.trim().isEmpty()) {
             return feedbackList;
-        }        // Get questions from the same department that need Subject Leader review
-        List<Question> questionsWithFeedback = questionRepository.findQuestionsPendingReviewByDepartment(department);        for (Question question : questionsWithFeedback) {
+        }
+        
+        // Get questions from the same department that need Subject Leader review
+        List<Question> questionsWithFeedback = questionRepository.findQuestionsPendingReviewByDepartment(department);
+        
+        for (Question question : questionsWithFeedback) {
             // Only show questions that need Subject Leader action:
             // - SUBMITTED: newly submitted questions that need review
             // Hide: DRAFT (not ready), REJECTED (returned to lecturer), APPROVED (already processed), ARCHIVED (sent to higher level)
