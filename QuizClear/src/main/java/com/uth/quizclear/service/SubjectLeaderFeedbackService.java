@@ -37,14 +37,30 @@ public interface SubjectLeaderFeedbackService {
      * @return true if successful
      */
     boolean assignQuestion(Long feedbackId, Map<String, Object> assignmentData, Long subjectLeaderId);
-    
-    /**
+      /**
      * Resubmit question for review after revision
      * @param feedbackId The question ID
      * @param subjectLeaderId The subject leader resubmitting
      * @return true if successful
      */
     boolean resubmitQuestion(Long feedbackId, Long subjectLeaderId);
+    
+    /**
+     * Approve question as Subject Leader
+     * @param feedbackId The question ID
+     * @param subjectLeaderId The subject leader approving
+     * @return true if successful
+     */
+    boolean approveQuestion(Long feedbackId, Long subjectLeaderId);
+    
+    /**
+     * Reject question as Subject Leader
+     * @param feedbackId The question ID
+     * @param subjectLeaderId The subject leader rejecting
+     * @param feedback The rejection feedback
+     * @return true if successful
+     */
+    boolean rejectQuestion(Long feedbackId, Long subjectLeaderId, String feedback);
     
     /**
      * Get lecturers by department for assignment (excluding current Subject Leader)

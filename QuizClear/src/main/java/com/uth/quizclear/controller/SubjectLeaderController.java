@@ -466,10 +466,87 @@ public class SubjectLeaderController {
                 return ResponseEntity.ok(Map.of("success", true, "message", "Question resubmitted successfully"));
             } else {
                 return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Failed to resubmit question"));
+            }        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body(Map.of("success", false, "message", "Error resubmitting question: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/api/feedback/{feedbackId}/approve")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> approveQuestion(
+            @PathVariable Long feedbackId,
+            HttpSession session) {
+        
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
+        
+        if (userId == null || roleObj == null) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        // Handle both String and UserRole enum cases
+        String roleStr = null;
+        if (roleObj instanceof String) {
+            roleStr = (String) roleObj;
+        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+        }
+        
+        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        try {
+            boolean success = feedbackService.approveQuestion(feedbackId, userId);
+            if (success) {
+                return ResponseEntity.ok(Map.of("success", true, "message", "Question approved successfully"));
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Failed to approve question"));
             }
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
-                .body(Map.of("success", false, "message", "Error resubmitting question: " + e.getMessage()));
+                .body(Map.of("success", false, "message", "Error approving question: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/api/feedback/{feedbackId}/reject")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> rejectQuestion(
+            @PathVariable Long feedbackId,
+            @RequestBody Map<String, String> requestBody,
+            HttpSession session) {
+        
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
+        
+        if (userId == null || roleObj == null) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        // Handle both String and UserRole enum cases
+        String roleStr = null;
+        if (roleObj instanceof String) {
+            roleStr = (String) roleObj;
+        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+        }
+        
+        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        try {
+            String feedback = requestBody.get("feedback");
+            boolean success = feedbackService.rejectQuestion(feedbackId, userId, feedback);
+            if (success) {
+                return ResponseEntity.ok(Map.of("success", true, "message", "Question rejected successfully"));
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Failed to reject question"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body(Map.of("success", false, "message", "Error rejecting question: " + e.getMessage()));
         }
     }    @GetMapping("/summary-report")
     public String summaryReportPage(org.springframework.security.core.Authentication authentication, Model model) {

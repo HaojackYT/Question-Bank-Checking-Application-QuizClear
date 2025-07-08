@@ -47,12 +47,11 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
         if (department == null || department.trim().isEmpty()) {
             return feedbackList;
         }        // Get questions from the same department that need Subject Leader review
-        List<Question> questionsWithFeedback = questionRepository.findQuestionsPendingReviewByDepartment(department);for (Question question : questionsWithFeedback) {
+        List<Question> questionsWithFeedback = questionRepository.findQuestionsPendingReviewByDepartment(department);        for (Question question : questionsWithFeedback) {
             // Only show questions that need Subject Leader action:
-            // - SUBMITTED: newly submitted questions (may or may not have feedback)
-            // - REJECTED: questions that were rejected and need SL action
-            // Hide: DRAFT (not ready), APPROVED (already processed), ARCHIVED (sent to higher level)
-            if (question.getStatus() == QuestionStatus.SUBMITTED || question.getStatus() == QuestionStatus.REJECTED) {
+            // - SUBMITTED: newly submitted questions that need review
+            // Hide: DRAFT (not ready), REJECTED (returned to lecturer), APPROVED (already processed), ARCHIVED (sent to higher level)
+            if (question.getStatus() == QuestionStatus.SUBMITTED) {
                 
                 // Check if question still belongs to the same department
                 boolean belongsToSameDepartment = false;
@@ -288,6 +287,70 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
             question.setStatus(QuestionStatus.ARCHIVED); // Mark as archived (sent to higher level)
             question.setSubmittedAt(LocalDateTime.now());
             question.setUpdatedAt(LocalDateTime.now());
+            questionRepository.save(question);
+            return true;        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean approveQuestion(Long feedbackId, Long subjectLeaderId) {
+        Optional<Question> questionOpt = questionRepository.findById(feedbackId);
+        if (!questionOpt.isPresent()) {
+            return false;
+        }
+
+        Question question = questionOpt.get();
+        
+        try {
+            // Mark as approved by Subject Leader
+            question.setStatus(QuestionStatus.APPROVED);
+            question.setReviewedAt(LocalDateTime.now());
+            question.setApprovedAt(LocalDateTime.now());
+            question.setUpdatedAt(LocalDateTime.now());
+            
+            // Set reviewer/approver
+            Optional<User> slOpt = userRepository.findById(subjectLeaderId);
+            if (slOpt.isPresent()) {
+                question.setReviewer(slOpt.get());
+                question.setApprover(slOpt.get());
+            }
+            
+            questionRepository.save(question);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean rejectQuestion(Long feedbackId, Long subjectLeaderId, String feedback) {
+        Optional<Question> questionOpt = questionRepository.findById(feedbackId);
+        if (!questionOpt.isPresent()) {
+            return false;
+        }
+
+        Question question = questionOpt.get();
+        
+        try {
+            // Mark as rejected by Subject Leader
+            question.setStatus(QuestionStatus.REJECTED);
+            question.setReviewedAt(LocalDateTime.now());
+            question.setUpdatedAt(LocalDateTime.now());
+            question.setApprovedAt(null);
+            question.setApprover(null);
+            
+            // Set feedback if provided
+            if (feedback != null && !feedback.trim().isEmpty()) {
+                question.setFeedback(feedback);
+            }
+            
+            // Set reviewer
+            Optional<User> slOpt = userRepository.findById(subjectLeaderId);
+            if (slOpt.isPresent()) {
+                question.setReviewer(slOpt.get());
+            }
+            
             questionRepository.save(question);
             return true;
         } catch (Exception e) {
