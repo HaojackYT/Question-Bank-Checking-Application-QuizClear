@@ -51,7 +51,7 @@ public class UserDepartmentAssignment {
 
     @NotNull(message = "Role is required")
     @Convert(converter = UserRoleConverter.class)
-    @Column(name = "role", nullable = false)
+    @Column(name = "role_in_department", nullable = false)
     private UserRole role;
 
     @Convert(converter = StatusConverter.class)
@@ -59,7 +59,7 @@ public class UserDepartmentAssignment {
     @Builder.Default
     private Status status = Status.ACTIVE;
 
-    @Column(name = "assigned_date", nullable = false)
+    @Column(name = "assigned_at", nullable = false)
     @Builder.Default
     private LocalDateTime assignedDate = LocalDateTime.now();
 

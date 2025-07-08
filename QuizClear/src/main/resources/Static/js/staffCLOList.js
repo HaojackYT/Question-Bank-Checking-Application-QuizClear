@@ -25,10 +25,10 @@ function setupEventListeners() {
             if (editButton) {
                 const row = editButton.closest('tr');
                 const cloId = row.getAttribute('data-clo-id');
-                if (cloId) {
-                    loadCLOForEdit(cloId);
+                if (cloId && cloId !== 'null') {
+                    loadCLOForEdit(row); // Truyền row thay vì cloId
                 } else {
-                    openModal();
+                    alert('Không tìm thấy thông tin CLO');
                 }
             }
         });
@@ -125,29 +125,24 @@ function submitCreateCLO(event) {
     });
 }
 
-// Load CLO data for editing
-function loadCLOForEdit(cloId) {
-    fetch(`/api/clos/${cloId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('CLO not found');
-            }
-            return response.json();
-        })
-        .then(clo => {
-            document.getElementById('editCLOId').value = clo.cloId;
-            document.getElementById('editCLOCode').value = clo.cloCode || '';
-            document.getElementById('editDifficultyLevel').value = clo.difficultyLevel || 'Recognition';
-            document.getElementById('editDescription').value = clo.cloDescription || '';
-            document.getElementById('editWeight').value = clo.weight || '';
-            document.getElementById('editCourseId').value = clo.course ? clo.course.courseId : '';
-            document.getElementById('editNotes').value = clo.cloNote || '';
-            openModal();
-        })
-        .catch(error => {
-            console.error('Error loading CLO:', error);
-            alert('Error loading CLO data: ' + error.message);
-        });
+// Load CLO data for editing from data attributes
+function loadCLOForEdit(row) {
+    const cloId = row.getAttribute('data-clo-id');
+    const cloCode = row.getAttribute('data-clo-code');
+    const cloDescription = row.getAttribute('data-clo-description');
+    const difficultyLevel = row.getAttribute('data-difficulty-level');
+    const weight = row.getAttribute('data-weight');
+    const courseId = row.getAttribute('data-course-id');
+    
+    document.getElementById('editCLOId').value = cloId || '';
+    document.getElementById('editCLOCode').value = cloCode || '';
+    document.getElementById('editDifficultyLevel').value = difficultyLevel || 'Recognition';
+    document.getElementById('editDescription').value = cloDescription || '';
+    document.getElementById('editWeight').value = weight || '';
+    document.getElementById('editCourseId').value = courseId || '';
+    document.getElementById('editNotes').value = ''; // Notes không có trong data
+    
+    openModal();
 }
 
 // Edit CLO
@@ -289,17 +284,17 @@ function escapeHtml(text) {
 function showSuccessMessage(message) {
     // Create a simple success notification
     const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #28a745;
-        color: white;
-        padding: 15px 20px;
-        border-radius: 5px;
-        z-index: 10000;
-        font-weight: bold;
-    `;
+    notification.style.cssText = [
+        'position: fixed',
+        'top: 20px',
+        'right: 20px',
+        'background: #28a745',
+        'color: white',
+        'padding: 15px 20px',
+        'border-radius: 5px',
+        'z-index: 10000',
+        'font-weight: bold'
+    ].join(';') + ';';
     notification.textContent = message;
     document.body.appendChild(notification);
     

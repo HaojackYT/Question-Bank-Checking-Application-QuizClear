@@ -52,8 +52,12 @@ public class CLOController {
         return new ResponseEntity<>(cloPage, HttpStatus.OK);
     }    @GetMapping("/{id}")
     public ResponseEntity<CLO> getCLOById(@PathVariable Long id) {
-        CLO clo = cloService.getCLOById(id);
-        return new ResponseEntity<>(clo, HttpStatus.OK);
+        try {
+            CLO clo = cloService.getCLOById(id);
+            return ResponseEntity.ok(clo);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping

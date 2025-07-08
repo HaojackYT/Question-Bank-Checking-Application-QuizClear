@@ -33,4 +33,7 @@ public interface CLORepository extends JpaRepository<CLO, Long> {
     
     @Query("SELECT c FROM CLO c WHERE CAST(c.difficultyLevel AS string) = :difficultyLevel")
     Page<CLO> findByDifficultyLevel(@Param("difficultyLevel") String difficultyLevel, Pageable pageable);
+    
+    @Query("SELECT c FROM CLO c LEFT JOIN FETCH c.course WHERE c.cloId = :id")
+    Optional<CLO> findByIdWithCourse(@Param("id") Long id);
 }
