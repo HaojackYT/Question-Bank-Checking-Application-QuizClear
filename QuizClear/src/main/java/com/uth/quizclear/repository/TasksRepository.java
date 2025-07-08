@@ -19,6 +19,8 @@ import java.util.Optional;
 
 @Repository
 public interface TasksRepository extends JpaRepository<Tasks, Integer> {
+    // Thêm hàm đếm task theo trạng thái
+    List<Tasks> findByStatus(com.uth.quizclear.model.enums.TaskStatus status);
 
         List<Tasks> findByTaskType(TaskType taskType);
 
