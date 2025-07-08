@@ -308,22 +308,30 @@
                                    data.title.substring(0, 50) + '...' : 
                                    (data.title || 'No content');
                 contentInput.value = shortContent;
-            }
-
-            // Created Date field
+            }            // Created Date field
             const dateInput = infoInputs[3];
             if (dateInput) {
                 let formattedDate = 'N/A';
-                if (data.submittedAt || data.createdAt) {
-                    const date = new Date(data.submittedAt || data.createdAt);
-                    formattedDate = date.toLocaleDateString('en-GB', {
+                let dateToFormat = null;
+                
+                // Priority: submittedAt > createdAt > reviewedAt
+                if (data.submittedAt) {
+                    dateToFormat = new Date(data.submittedAt);
+                } else if (data.createdAt) {
+                    dateToFormat = new Date(data.createdAt);
+                } else if (data.reviewedAt) {
+                    dateToFormat = new Date(data.reviewedAt);
+                }
+                
+                if (dateToFormat && !isNaN(dateToFormat.getTime())) {
+                    formattedDate = dateToFormat.toLocaleDateString('en-GB', {
                         day: '2-digit',
                         month: '2-digit',
                         year: '2-digit'
                     });
                 }
                 dateInput.value = formattedDate;
-            }            // Status field
+            }// Status field
             const statusInput = infoInputs[4];
             if (statusInput) {
                 // Display the actual status from backend
