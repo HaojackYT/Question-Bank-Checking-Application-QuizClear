@@ -33,7 +33,7 @@ body {
 /* Statistics Cards */
 .stats-container {
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
   margin-bottom: 2rem;
   flex-wrap: wrap;
   justify-content: center;
@@ -257,7 +257,7 @@ body {
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 4px rgba(18, 3, 104, 0.1);
-  margin-bottom: 1rem;
+  margin-top: -5rem;
 }
 
 .count-value {
