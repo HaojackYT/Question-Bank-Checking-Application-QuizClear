@@ -116,22 +116,46 @@ public class HEDAssignmentController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
-    }
-
-    @PostMapping("/api/assignments")
+    }    @PostMapping("/api/assignments")
     @ResponseBody
     public ResponseEntity<?> createAssignment(@RequestBody Map<String, Object> request) {
+        System.out.println("=== CREATE ASSIGNMENT DEBUG ===");
+        System.out.println("Received request to create assignment");
+        System.out.println("Request data: " + request);
+        
         try {
+            Long lecturerId = Long.parseLong(request.get("lecturerId").toString());
+            Long courseId = Long.parseLong(request.get("courseId").toString());
+            Integer totalQuestions = Integer.parseInt(request.get("totalQuestions").toString());
+            String title = request.get("title").toString();
+            String description = request.get("description").toString();
+            String dueDate = request.get("dueDate").toString();
+            
+            System.out.println("Parsed data:");
+            System.out.println("  - Lecturer ID: " + lecturerId);
+            System.out.println("  - Course ID: " + courseId);
+            System.out.println("  - Total Questions: " + totalQuestions);
+            System.out.println("  - Title: " + title);
+            System.out.println("  - Description: " + description);
+            System.out.println("  - Due Date: " + dueDate);
+            
             taskAssignmentService.createTaskAssignment(
-                    Long.parseLong(request.get("lecturerId").toString()),
-                    Long.parseLong(request.get("courseId").toString()),
-                    Integer.parseInt(request.get("totalQuestions").toString()),
-                    request.get("title").toString(),
-                    request.get("description").toString(),
-                    request.get("dueDate").toString()
+                    lecturerId,
+                    courseId,
+                    totalQuestions,
+                    title,
+                    description,
+                    dueDate
             );
+            
+            System.out.println("Assignment created successfully");
+            System.out.println("=== END CREATE ASSIGNMENT DEBUG ===");
+            
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            System.out.println("Error creating assignment: " + e.getMessage());
+            e.printStackTrace();
+            System.out.println("=== END CREATE ASSIGNMENT DEBUG (ERROR) ===");
             return ResponseEntity.badRequest().body(Map.of("error", "Error creating assignment: " + e.getMessage()));
         }
     }

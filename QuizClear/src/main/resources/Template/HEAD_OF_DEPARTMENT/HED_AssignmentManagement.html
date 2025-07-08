@@ -501,8 +501,7 @@
                 title: document.getElementById('title').value,
                 description: document.getElementById('description').value,
                 dueDate: dueDate
-            };
-            fetchWithErrorHandling(`${BASE_URL}/api/hed/assignments`, {
+            };            fetchWithErrorHandling(`${BASE_URL}/hed/api/assignments`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
