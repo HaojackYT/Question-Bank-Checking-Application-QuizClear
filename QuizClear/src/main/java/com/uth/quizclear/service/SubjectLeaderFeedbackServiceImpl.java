@@ -71,7 +71,8 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
                     dto.setStatus(question.getStatus() != null ? question.getStatus().toString() : "Unknown");                    dto.setCreatedByName(question.getCreatedBy() != null ? question.getCreatedBy().getFullName() : "Unknown");
                     dto.setReviewedByName(question.getReviewer() != null ? question.getReviewer().getFullName() : null);
                     dto.setSubmittedAt(question.getSubmittedAt());
-                    dto.setReviewedAt(question.getReviewedAt());                    dto.setFeedback(question.getFeedback());
+                    dto.setReviewedAt(question.getReviewedAt());
+                    dto.setCreatedAt(question.getCreatedAt());dto.setFeedback(question.getFeedback());
                     dto.setHasFeedback(question.getFeedback() != null && !question.getFeedback().trim().isEmpty());
                     
                     // Set priority based on status and age

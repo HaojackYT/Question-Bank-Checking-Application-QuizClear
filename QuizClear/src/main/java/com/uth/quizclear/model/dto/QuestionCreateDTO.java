@@ -24,10 +24,7 @@ public class QuestionCreateDTO {
     private DifficultyLevel difficultyLevel; // Enum type
 
     @NotNull(message = "Course ID is required")
-    private Long courseId;
-
-    @NotNull(message = "Status is required")
-    private QuestionStatus status;
+    private Long courseId;    private QuestionStatus status;
 
     // @NotNull(message = "CLO ID is required")
     private Long cloId;
@@ -134,14 +131,12 @@ public class QuestionCreateDTO {
 
     // Contructors
     public QuestionCreateDTO() {
-    }
-
-    public QuestionCreateDTO(@NotBlank(message = "Question content is required") String content,
+    }    public QuestionCreateDTO(@NotBlank(message = "Question content is required") String content,
             @NotBlank(message = "Correct answer is required") String answerKey, String answerF1, String answerF2,
             String answerF3, String explanation,
             @NotNull(message = "Difficulty level is required") DifficultyLevel difficultyLevel,
             @NotNull(message = "Course ID is required") Long courseId,
-            @NotNull(message = "Status is required") QuestionStatus status, Long cloId, Long taskId, Long planId) {
+            QuestionStatus status, Long cloId, Long taskId, Long planId) {
         this.content = content;
         this.answerKey = answerKey;
         this.answerF1 = answerF1;
