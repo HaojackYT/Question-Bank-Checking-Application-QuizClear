@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -38,6 +39,8 @@ import java.util.stream.Collectors;
 
 import com.uth.quizclear.model.dto.LecTaskDTO;
 import com.uth.quizclear.model.dto.QuestionCreateDTO;
+import com.uth.quizclear.model.dto.QuestionDTO;
+import com.uth.quizclear.model.dto.SendQuesDTO;
 import com.uth.quizclear.service.TaskService;
 
 @Controller
@@ -46,6 +49,7 @@ public class LecturerController {
 
     @Autowired
     private QuestionRepository questionRepository;
+
     // Dynamic mapping for lecturer exam creation page - clean URLs only
     @GetMapping("/lectureEETaskExamCreateExam")
     public String lectureEETaskExamCreateExam(Model model, HttpSession session, Authentication authentication) {
@@ -110,21 +114,23 @@ public class LecturerController {
         model.addAttribute("difficultyLevels", DifficultyLevel.values());
         return "Lecturer/lecturerQMNewQuestion";
     }
-    
+
     @Autowired
     private CourseRepository courseRepository;
-      @Autowired
+    @Autowired
     private CLORepository cloRepository;
-      @Autowired
-    private UserRepository userRepository;    
-      @Autowired
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private SubjectRepository subjectRepository;
-    
+
     @Autowired
     private AIService aiService;
-    
+
     @Autowired
-    private UserService userService;/**
+    private UserService userService;
+
+    /**
      * Lecturer Question Management page
      */
     @GetMapping("/question-management")
@@ -133,39 +139,39 @@ public class LecturerController {
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
-        
+
         // Check if user has lecturer permissions (allow higher roles too)
         boolean hasAccess = authentication.getAuthorities().stream()
                 .anyMatch(a -> {
                     String auth = a.getAuthority();
-                    return auth.equals("LEC") || auth.equals("ROLE_LEC") ||
-                           auth.equals("Lec") || auth.equals("ROLE_Lec") ||
-                           auth.equals("SL") || auth.equals("ROLE_SL") ||
-                           auth.equals("HOD") || auth.equals("ROLE_HOD") ||
-                           auth.equals("HoD") || auth.equals("ROLE_HoD") ||
-                           auth.equals("HOED") || auth.equals("ROLE_HOED") ||
-                           auth.equals("HoED") || auth.equals("ROLE_HoED") ||
-                           auth.equals("RD") || auth.equals("ROLE_RD");
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC")
+                            || auth.equals("Lec") || auth.equals("ROLE_Lec")
+                            || auth.equals("SL") || auth.equals("ROLE_SL")
+                            || auth.equals("HOD") || auth.equals("ROLE_HOD")
+                            || auth.equals("HoD") || auth.equals("ROLE_HoD")
+                            || auth.equals("HOED") || auth.equals("ROLE_HOED")
+                            || auth.equals("HoED") || auth.equals("ROLE_HoED")
+                            || auth.equals("RD") || auth.equals("ROLE_RD");
                 });
-        
+
         if (!hasAccess) {
             return "error/403";
         }
-        
+
         // Get user from session
         Object userObj = session.getAttribute("user");
         Long lecturerId = null; // No default - must get real user ID
-          if (userObj != null && userObj instanceof UserBasicDTO) {
+        if (userObj != null && userObj instanceof UserBasicDTO) {
             UserBasicDTO user = (UserBasicDTO) userObj;
             lecturerId = user.getUserId();
         }
-        
+
         // Alternative: get from currentUserId set by ScopeInterceptor
         Object currentUserId = session.getAttribute("currentUserId");
         if (currentUserId != null && currentUserId instanceof Long) {
             lecturerId = (Long) currentUserId;
         }
-        
+
         // If still no lecturerId, get from authentication
         if (lecturerId == null) {
             try {
@@ -177,18 +183,18 @@ public class LecturerController {
             } catch (Exception e) {
                 return "error/500";
             }
-        }        
+        }
         // If still no lecturer ID, redirect to login
         if (lecturerId == null) {
             return "redirect:/login";
         }
-        
+
         // Get assigned subjects for this lecturer for filter dropdown
         List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
-            lecturerId, 
-            SubjectRole.LECTURER
+                lecturerId,
+                SubjectRole.LECTURER
         );
-        
+
         // Add debug info
         System.out.println("=== QUESTION MANAGEMENT DEBUG ===");
         System.out.println("Lecturer ID: " + lecturerId);
@@ -197,17 +203,19 @@ public class LecturerController {
         for (Subject s : assignedSubjects) {
             System.out.println("  - Subject: " + s.getSubjectName() + " (ID: " + s.getSubjectId() + ")");
         }
-        
+
         // Get all courses for backward compatibility
         List<Course> courses = courseRepository.findAll();
-        
+
         model.addAttribute("courses", courses);
         model.addAttribute("subjects", assignedSubjects); // Add assigned subjects for filter
         model.addAttribute("lecturerId", lecturerId);
         model.addAttribute("userEmail", authentication.getName());
-        
+
         return "Lecturer/lectureQuesManagement";
-    }    /**
+    }
+
+    /**
      * API endpoint để lấy questions của lecturer với filter
      */
     @GetMapping("/api/questions")
@@ -218,7 +226,7 @@ public class LecturerController {
             @RequestParam(required = false) String difficulty,
             @RequestParam(required = false) Long lecturerId,
             HttpSession session,
-            Authentication authentication) {        
+            Authentication authentication) {
         try {
             // If lecturerId not provided, get from session/auth
             if (lecturerId == null) {
@@ -227,7 +235,7 @@ public class LecturerController {
                     UserBasicDTO user = (UserBasicDTO) userObj;
                     lecturerId = user.getUserId();
                 }
-                
+
                 // Alternative: get from currentUserId set by ScopeInterceptor
                 if (lecturerId == null) {
                     Object currentUserId = session.getAttribute("currentUserId");
@@ -235,7 +243,7 @@ public class LecturerController {
                         lecturerId = (Long) currentUserId;
                     }
                 }
-                
+
                 // If still null, get from authentication
                 if (lecturerId == null && authentication != null) {
                     String email = authentication.getName();
@@ -244,7 +252,7 @@ public class LecturerController {
                         lecturerId = (long) userOpt.get().getUserId();
                     }
                 }
-                
+
                 // If still null, return error
                 if (lecturerId == null) {
                     Map<String, Object> errorResponse = new HashMap<>();
@@ -252,62 +260,62 @@ public class LecturerController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
                 }
             }
-              // Debug logging
+            // Debug logging
             System.out.println("=== FILTER DEBUG ===");
             System.out.println("Subject parameter: " + subject);
             System.out.println("Status parameter: " + status);
             System.out.println("Difficulty parameter: " + difficulty);
             System.out.println("Lecturer ID: " + lecturerId);
-              // Simplified approach: Get all questions created by this lecturer
+            // Simplified approach: Get all questions created by this lecturer
             List<Question> questions = questionRepository.findByCreatedBy_UserId(lecturerId);
-            
+
             // Filter out soft-deleted questions (those marked with [DELETED])
             questions = questions.stream()
-                .filter(q -> q.getContent() != null && !q.getContent().startsWith("[DELETED]"))
-                .collect(Collectors.toList());
-            
+                    .filter(q -> q.getContent() != null && !q.getContent().startsWith("[DELETED]"))
+                    .collect(Collectors.toList());
+
             System.out.println("Total questions found for lecturer (after filtering deleted): " + questions.size());
-            
+
             // Debug: Print found questions
             for (Question q : questions) {
                 System.out.println("  - Question: " + q.getContent().substring(0, Math.min(50, q.getContent().length())) + "...");
                 System.out.println("    Course: " + (q.getCourse() != null ? q.getCourse().getCourseName() : "NULL"));
                 System.out.println("    Status: " + q.getStatus());
             }
-            
+
             // Apply subject filter if specified
             if (subject != null && !subject.isEmpty() && !subject.equals("All subject")) {
                 System.out.println("Applying subject filter: " + subject);
-                
+
                 // Get assigned subjects for the lecturer
                 List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
-                    lecturerId, 
-                    SubjectRole.LECTURER
+                        lecturerId,
+                        SubjectRole.LECTURER
                 );
-                
+
                 // Try to find matching subject
                 Subject selectedSubject = null;
                 try {
                     // Try parsing as Long (subject ID)
                     Long subjectId = Long.parseLong(subject);
                     selectedSubject = assignedSubjects.stream()
-                        .filter(s -> s.getSubjectId().equals(subjectId))
-                        .findFirst()
-                        .orElse(null);
+                            .filter(s -> s.getSubjectId().equals(subjectId))
+                            .findFirst()
+                            .orElse(null);
                 } catch (NumberFormatException e) {
                     // If not a number, try matching by subject name
                     selectedSubject = assignedSubjects.stream()
-                        .filter(s -> s.getSubjectName().equalsIgnoreCase(subject.trim()))
-                        .findFirst()
-                        .orElse(null);
+                            .filter(s -> s.getSubjectName().equalsIgnoreCase(subject.trim()))
+                            .findFirst()
+                            .orElse(null);
                 }
-                
+
                 if (selectedSubject != null) {
                     String selectedCourseName = mapSubjectToCourse(selectedSubject.getSubjectName());
                     if (selectedCourseName != null) {
                         questions = questions.stream()
-                            .filter(q -> q.getCourse() != null && selectedCourseName.equals(q.getCourse().getCourseName()))
-                            .collect(Collectors.toList());
+                                .filter(q -> q.getCourse() != null && selectedCourseName.equals(q.getCourse().getCourseName()))
+                                .collect(Collectors.toList());
                         System.out.println("After subject filter: " + questions.size() + " questions");
                     } else {
                         questions = new ArrayList<>();
@@ -325,8 +333,8 @@ public class LecturerController {
                 try {
                     QuestionStatus questionStatus = QuestionStatus.valueOf(status.toUpperCase());
                     questions = questions.stream()
-                        .filter(q -> q.getStatus() == questionStatus)
-                        .collect(Collectors.toList());
+                            .filter(q -> q.getStatus() == questionStatus)
+                            .collect(Collectors.toList());
                 } catch (IllegalArgumentException e) {
                     // Ignore invalid status
                 }
@@ -356,12 +364,12 @@ public class LecturerController {
                             // Try to parse as enum
                             diffLevel = DifficultyLevel.valueOf(difficulty.toUpperCase().replace(" ", "_"));
                     }
-                    
+
                     if (diffLevel != null) {
                         final DifficultyLevel finalDiffLevel = diffLevel;
                         questions = questions.stream()
-                            .filter(q -> q.getDifficultyLevel() == finalDiffLevel)
-                            .collect(Collectors.toList());
+                                .filter(q -> q.getDifficultyLevel() == finalDiffLevel)
+                                .collect(Collectors.toList());
                     }
                 } catch (IllegalArgumentException e) {
                     // Ignore invalid difficulty
@@ -373,14 +381,20 @@ public class LecturerController {
                 questionMap.put("subject", mapCourseToSubject(q.getCourse().getCourseName()));
                 questionMap.put("question", q.getContent());
                 questionMap.put("correctAnswer", q.getAnswerKey());
-                
+
                 // Combine other answers
                 StringBuilder otherAnswers = new StringBuilder();
-                if (q.getAnswerF1() != null) otherAnswers.append("• ").append(q.getAnswerF1()).append("<br>");
-                if (q.getAnswerF2() != null) otherAnswers.append("• ").append(q.getAnswerF2()).append("<br>");
-                if (q.getAnswerF3() != null) otherAnswers.append("• ").append(q.getAnswerF3());
+                if (q.getAnswerF1() != null) {
+                    otherAnswers.append("• ").append(q.getAnswerF1()).append("<br>");
+                }
+                if (q.getAnswerF2() != null) {
+                    otherAnswers.append("• ").append(q.getAnswerF2()).append("<br>");
+                }
+                if (q.getAnswerF3() != null) {
+                    otherAnswers.append("• ").append(q.getAnswerF3());
+                }
                 questionMap.put("otherAnswers", otherAnswers.toString());
-                
+
                 // Set actual status with proper display text and styling
                 questionMap.put("status", q.getStatus().toString().toLowerCase());
                 questionMap.put("statusDisplay", getStatusDisplayText(q.getStatus()));
@@ -388,7 +402,7 @@ public class LecturerController {
                 questionMap.put("canEdit", canEditByStatus(q.getStatus()));
                 questionMap.put("canBeDeleted", q.getStatus() != QuestionStatus.APPROVED); // Only allow deleting non-approved questions
                 questionMap.put("difficulty", q.getDifficultyLevel().toString());
-                
+
                 return questionMap;
             }).collect(Collectors.toList());
 
@@ -398,15 +412,15 @@ public class LecturerController {
             difficultyStats.put("comprehension", 0);
             difficultyStats.put("basic_application", 0);
             difficultyStats.put("advanced_application", 0);
-            
+
             for (Question q : questions) {
                 String diffKey = q.getDifficultyLevel().toString().toLowerCase().replace(" ", "_");
                 difficultyStats.put(diffKey, difficultyStats.getOrDefault(diffKey, 0) + 1);
             }
-            
+
             // Calculate completion rate
-            long completedQuestions = questions.stream().mapToLong(q -> 
-                q.getStatus() == QuestionStatus.APPROVED ? 1 : 0).sum();
+            long completedQuestions = questions.stream().mapToLong(q
+                    -> q.getStatus() == QuestionStatus.APPROVED ? 1 : 0).sum();
             int completionRate = questions.isEmpty() ? 0 : (int) ((completedQuestions * 100) / questions.size());
 
             Map<String, Object> response = new HashMap<>();
@@ -414,16 +428,19 @@ public class LecturerController {
             response.put("difficultyStats", difficultyStats);
             response.put("completionRate", completionRate);
             response.put("totalQuestions", questions.size());
-            
+
             return ResponseEntity.ok(response);
-            
+
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "Failed to load questions: " + e.getMessage());
             return ResponseEntity.status(500).body(errorResponse);
         }
-    }    /**
-     * API endpoint để lấy danh sách subjects cho filter (deprecated - use /api/assigned-subjects)
+    }
+
+    /**
+     * API endpoint để lấy danh sách subjects cho filter (deprecated - use
+     * /api/assigned-subjects)
      */
     @GetMapping("/api/subjects")
     @ResponseBody
@@ -436,27 +453,29 @@ public class LecturerController {
                 UserBasicDTO user = (UserBasicDTO) userObj;
                 lecturerId = user.getUserId();
             }
-            
+
             // Alternative: get from currentUserId set by ScopeInterceptor
             Object currentUserId = session.getAttribute("currentUserId");
             if (currentUserId != null && currentUserId instanceof Long) {
                 lecturerId = (Long) currentUserId;
             }
-              // Get only assigned subjects
+            // Get only assigned subjects
             List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
-                lecturerId, SubjectRole.LECTURER
+                    lecturerId, SubjectRole.LECTURER
             );
-            
+
             List<String> subjects = assignedSubjects.stream()
                     .map(Subject::getSubjectName)
                     .distinct()
                     .collect(Collectors.toList());
-                    
+
             return ResponseEntity.ok(subjects);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(List.of());
         }
-    }    /**
+    }
+
+    /**
      * API endpoint để xóa question
      */
     @DeleteMapping("/api/questions/{questionId}")
@@ -473,9 +492,9 @@ public class LecturerController {
             }
             User currentUser = userOpt.get();
             Long currentUserId = (long) currentUser.getUserId();
-              Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new RuntimeException("Question not found"));
-            
+            Question question = questionRepository.findById(questionId)
+                    .orElseThrow(() -> new RuntimeException("Question not found"));
+
             // Debug logging để kiểm tra user IDs
             System.out.println("=== DELETE QUESTION DEBUG ===");
             System.out.println("Current user ID: " + currentUserId + " (type: " + currentUserId.getClass().getSimpleName() + ")");
@@ -483,17 +502,17 @@ public class LecturerController {
             System.out.println("Are they equal? " + question.getCreatedBy().getUserId().equals(currentUserId));
             System.out.println("Question ID: " + questionId);
             System.out.println("Question content: " + question.getContent().substring(0, Math.min(50, question.getContent().length())));
-            
+
             // Kiểm tra quyền: chỉ cho phép lecturer xóa question của chính họ
             // Convert both to Long to ensure proper comparison
             Long questionCreatorId = question.getCreatedBy().getUserId().longValue();
             Long currentUserIdLong = currentUserId.longValue();
-              if (!questionCreatorId.equals(currentUserIdLong)) {
+            if (!questionCreatorId.equals(currentUserIdLong)) {
                 Map<String, String> response = new HashMap<>();
                 response.put("error", "You can only delete your own questions. Creator: " + questionCreatorId + ", Current: " + currentUserIdLong);
                 return ResponseEntity.status(403).body(response);
             }
-              // Chỉ cho phép xóa nếu question có status là DRAFT
+            // Chỉ cho phép xóa nếu question có status là DRAFT
             if (question.getStatus() != QuestionStatus.DRAFT) {
                 Map<String, String> response = new HashMap<>();
                 String statusText = question.getStatus().toString().toLowerCase();
@@ -503,31 +522,31 @@ public class LecturerController {
             try {
                 questionRepository.deleteById(questionId);
                 System.out.println("Question " + questionId + " deleted successfully");
-                
+
                 Map<String, String> response = new HashMap<>();
                 response.put("message", "Question deleted successfully");
                 return ResponseEntity.ok(response);
-                
+
             } catch (Exception dbError) {
                 // Handle database constraint errors with soft delete
                 System.err.println("Database error while deleting question: " + dbError.getMessage());
-                
-                if (dbError.getMessage().contains("foreign key constraint") || 
-                    dbError.getMessage().contains("duplicate_detections") ||
-                    dbError.getMessage().contains("constraint") ||
-                    dbError.getMessage().contains("Cannot delete or update a parent row")) {
-                    
+
+                if (dbError.getMessage().contains("foreign key constraint")
+                        || dbError.getMessage().contains("duplicate_detections")
+                        || dbError.getMessage().contains("constraint")
+                        || dbError.getMessage().contains("Cannot delete or update a parent row")) {
+
                     // Instead of hard delete, mark as deleted by changing status
                     try {
                         question.setStatus(QuestionStatus.DRAFT); // Mark as draft to hide from normal views
                         question.setContent("[DELETED] " + question.getContent()); // Mark as deleted in content
                         questionRepository.save(question);
                         System.out.println("Question " + questionId + " marked as deleted (soft delete)");
-                        
+
                         Map<String, String> response = new HashMap<>();
                         response.put("message", "Question marked as deleted. It cannot be permanently removed because it is referenced in other records.");
                         return ResponseEntity.ok(response);
-                        
+
                     } catch (Exception softDeleteError) {
                         Map<String, String> response = new HashMap<>();
                         response.put("error", "Cannot delete question: it is being used in other parts of the system");
@@ -539,7 +558,7 @@ public class LecturerController {
                     return ResponseEntity.status(400).body(response);
                 }
             }
-            
+
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
             response.put("error", "Failed to delete question: " + e.getMessage());
@@ -553,21 +572,21 @@ public class LecturerController {
     @PutMapping("/api/questions/{questionId}/status")
     @ResponseBody
     public ResponseEntity<Map<String, String>> updateQuestionStatus(
-            @PathVariable Long questionId, 
+            @PathVariable Long questionId,
             @RequestBody Map<String, String> request) {
         try {
             Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new RuntimeException("Question not found"));
-            
+                    .orElseThrow(() -> new RuntimeException("Question not found"));
+
             String action = request.get("action");
             if ("save".equals(action)) {
                 question.setStatus(QuestionStatus.SUBMITTED);
             } else if ("drop".equals(action)) {
                 question.setStatus(QuestionStatus.DRAFT);
             }
-            
+
             questionRepository.save(question);
-            
+
             Map<String, String> response = new HashMap<>();
             response.put("message", "Question status updated successfully");
             return ResponseEntity.ok(response);
@@ -576,7 +595,9 @@ public class LecturerController {
             response.put("error", "Failed to update question status: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
         }
-    }    /**
+    }
+
+    /**
      * Create new question page
      */
     @GetMapping("/create-question")
@@ -584,12 +605,12 @@ public class LecturerController {
         // Get user from session
         Object userObj = session.getAttribute("user");
         Long lecturerId = null;
-        
+
         if (userObj != null && userObj instanceof UserBasicDTO) {
             UserBasicDTO user = (UserBasicDTO) userObj;
             lecturerId = user.getUserId();
         }
-        
+
         // Alternative: get from currentUserId set by ScopeInterceptor
         if (lecturerId == null) {
             Object currentUserId = session.getAttribute("currentUserId");
@@ -597,7 +618,7 @@ public class LecturerController {
                 lecturerId = (Long) currentUserId;
             }
         }
-        
+
         // If still no lecturerId, get from authentication
         if (lecturerId == null && authentication != null) {
             try {
@@ -610,40 +631,42 @@ public class LecturerController {
                 return "error/500";
             }
         }
-        
+
         // If still no lecturer ID, redirect to login
         if (lecturerId == null) {
             return "redirect:/login";
         }// Only load subjects that the lecturer is assigned to
         List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
-            lecturerId, 
-            SubjectRole.LECTURER
+                lecturerId,
+                SubjectRole.LECTURER
         );
-        
+
         // Get courses related to assigned subjects (if needed)
         List<Course> courses = courseRepository.findAll(); // Keep for backward compatibility
-        
+
         model.addAttribute("subjects", assignedSubjects);
         model.addAttribute("courses", courses);
         model.addAttribute("lecturerId", lecturerId);
         model.addAttribute("difficultyLevels", DifficultyLevel.values());
-        
+
         return "Lecturer/lecturerQMNewQuestion";
-    }    /**
+    }
+
+    /**
      * Edit question page
      */
     @GetMapping("/edit-question")
-    public String editQuestion(@RequestParam(value = "id", required = false) Long questionId, 
-                              Model model, HttpSession session, Authentication authentication) {
+    public String editQuestion(@RequestParam(value = "id", required = false) Long questionId,
+            Model model, HttpSession session, Authentication authentication) {
         // Get user from session
         Object userObj = session.getAttribute("user");
         Long lecturerId = null;
-        
+
         if (userObj != null && userObj instanceof UserBasicDTO) {
             UserBasicDTO user = (UserBasicDTO) userObj;
             lecturerId = user.getUserId();
         }
-        
+
         // Alternative: get from currentUserId set by ScopeInterceptor
         if (lecturerId == null) {
             Object currentUserId = session.getAttribute("currentUserId");
@@ -651,7 +674,7 @@ public class LecturerController {
                 lecturerId = (Long) currentUserId;
             }
         }
-        
+
         // If still no lecturerId, get from authentication
         if (lecturerId == null && authentication != null) {
             try {
@@ -664,18 +687,18 @@ public class LecturerController {
                 return "error/500";
             }
         }
-        
+
         // If still no lecturer ID, redirect to login
         if (lecturerId == null) {
             return "redirect:/login";
         }
-        
+
         // Add necessary data for the form
         List<Course> courses = courseRepository.findAll();
         model.addAttribute("courses", courses);
         model.addAttribute("lecturerId", lecturerId);
         model.addAttribute("difficultyLevels", DifficultyLevel.values());
-          // If questionId is provided, load the question data for editing
+        // If questionId is provided, load the question data for editing
         if (questionId != null) {
             Question question = questionRepository.findById(questionId).orElse(null);
             if (question != null) {
@@ -684,28 +707,30 @@ public class LecturerController {
             }
         } else {
         }
-        
+
         return "Lecturer/L_QManager_editQuestion";
-    }    /**
+    }
+
+    /**
      * API endpoint để save/create question
      */
     @PostMapping("/api/questions")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> saveQuestion(
-            @RequestBody Map<String, Object> questionData, 
+            @RequestBody Map<String, Object> questionData,
             HttpSession session,
             Authentication authentication) {
         try {
-            
+
             // Get user from session
             Object userObj = session.getAttribute("user");
             Long lecturerId = null;
-            
+
             if (userObj != null && userObj instanceof UserBasicDTO) {
                 UserBasicDTO user = (UserBasicDTO) userObj;
                 lecturerId = user.getUserId();
             }
-            
+
             // Alternative: get from currentUserId set by ScopeInterceptor
             if (lecturerId == null) {
                 Object currentUserId = session.getAttribute("currentUserId");
@@ -713,7 +738,7 @@ public class LecturerController {
                     lecturerId = (Long) currentUserId;
                 }
             }
-            
+
             // If still no lecturerId, get from authentication
             if (lecturerId == null && authentication != null) {
                 try {
@@ -728,36 +753,36 @@ public class LecturerController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
                 }
             }
-            
+
             // If still no lecturer ID, return error
             if (lecturerId == null) {
                 Map<String, Object> errorResponse = new HashMap<>();
                 errorResponse.put("error", "User not authenticated");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
             }
-            
+
             // Get or create question
             Question question;
             Object questionIdObj = questionData.get("questionId");
             Long questionId = null;
-            
+
             if (questionIdObj != null && !questionIdObj.toString().trim().isEmpty()) {
                 try {
                     questionId = Long.parseLong(questionIdObj.toString());
                 } catch (NumberFormatException e) {
                 }
             }
-                  if (questionId != null) {
+            if (questionId != null) {
                 question = questionRepository.findById(questionId)
-                    .orElseThrow(() -> new RuntimeException("Question not found"));
-                    
+                        .orElseThrow(() -> new RuntimeException("Question not found"));
+
                 // Verify question belongs to current lecturer (skip for demo)
                 // if (!question.getCreatedBy().getUserId().equals(lecturerId)) {
                 //     throw new RuntimeException("Unauthorized access to question");
                 // }
             } else {
                 question = new Question();
-                
+
                 // Set required fields for new question
                 // Set createdBy
                 User creator = userRepository.findById(lecturerId).orElse(null);
@@ -767,23 +792,23 @@ public class LecturerController {
                     creator.setUserId(lecturerId);
                 }
                 question.setCreatedBy(creator);
-                
+
                 // Set course (use first available course)
                 List<Course> courses = courseRepository.findAll();
                 if (!courses.isEmpty()) {
                     question.setCourse(courses.get(0));
                 }
-                
+
                 // Set CLO (use first available CLO)
                 List<CLO> clos = cloRepository.findAll();
                 if (!clos.isEmpty()) {
                     question.setClo(clos.get(0));
                 }
-                
+
                 // Set default values
                 question.setDifficultyLevel(DifficultyLevel.RECOGNITION);
             }
-            
+
             // Update question data
             if (questionData.get("content") != null) {
                 question.setContent(questionData.get("content").toString());
@@ -803,21 +828,21 @@ public class LecturerController {
             if (questionData.get("explanation") != null) {
                 question.setExplanation(questionData.get("explanation").toString());
             }
-              // Set course and CLO if not already set
+            // Set course and CLO if not already set
             if (question.getCourse() == null) {
                 List<Course> courses = courseRepository.findAll();
                 if (!courses.isEmpty()) {
                     question.setCourse(courses.get(0)); // Use first available course
                 }
             }
-            
+
             if (question.getClo() == null) {
                 List<CLO> clos = cloRepository.findAll();
                 if (!clos.isEmpty()) {
                     question.setClo(clos.get(0)); // Use first available CLO
                 }
             }
-            
+
             if (question.getCreatedBy() == null) {
                 User creator = userRepository.findById(lecturerId).orElse(null);
                 if (creator == null) {
@@ -827,11 +852,11 @@ public class LecturerController {
                 }
                 question.setCreatedBy(creator);
             }
-              // Set difficulty (use default for demo)
+            // Set difficulty (use default for demo)
             if (question.getDifficultyLevel() == null) {
                 question.setDifficultyLevel(DifficultyLevel.RECOGNITION);
             }
-            
+
             // Handle subjectId to link question with subject
             if (questionData.get("subjectId") != null && !questionData.get("subjectId").toString().trim().isEmpty()) {
                 try {
@@ -839,25 +864,25 @@ public class LecturerController {
                     Subject subject = subjectRepository.findById(subjectId).orElse(null);
                     if (subject != null) {                        // Verify lecturer has permission to create questions for this subject
                         List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
-                            lecturerId, 
-                            SubjectRole.LECTURER
+                                lecturerId,
+                                SubjectRole.LECTURER
                         );
-                        
+
                         boolean hasPermission = assignedSubjects.stream()
-                            .anyMatch(s -> s.getSubjectId().equals(subjectId));
-                            
+                                .anyMatch(s -> s.getSubjectId().equals(subjectId));
+
                         if (hasPermission) {
                             // For now, we'll store subject info in the course field or add custom logic
                             // Since Question entity might not have direct Subject relationship
                             // We can store subject info in a custom way or update the entity
-                            
+
                             // Find or create a course related to this subject for compatibility
                             Course relatedCourse = courseRepository.findAll().stream()
-                                .filter(c -> c.getCourseName().contains(subject.getSubjectName()) || 
-                                           c.getDepartment().equals(subject.getDepartment().getDepartmentName()))
-                                .findFirst()
-                                .orElse(courseRepository.findAll().get(0)); // Fallback to first course
-                                
+                                    .filter(c -> c.getCourseName().contains(subject.getSubjectName())
+                                    || c.getDepartment().equals(subject.getDepartment().getDepartmentName()))
+                                    .findFirst()
+                                    .orElse(courseRepository.findAll().get(0)); // Fallback to first course
+
                             question.setCourse(relatedCourse);
                         } else {
                             throw new RuntimeException("Lecturer does not have permission to create questions for this subject");
@@ -873,65 +898,66 @@ public class LecturerController {
                     }
                 }
             }
-            
+
             // Set status based on action
-            String action = questionData.get("action") != null ? 
-                questionData.get("action").toString() : "draft";
-            
-            
+            String action = questionData.get("action") != null
+                    ? questionData.get("action").toString() : "draft";
+
             if ("submit".equals(action)) {
                 question.setStatus(QuestionStatus.SUBMITTED);
             } else {
                 question.setStatus(QuestionStatus.DRAFT);
             }
-            
+
             Question savedQuestion = questionRepository.save(question);
-            
+
             Map<String, Object> response = new HashMap<>();
             response.put("message", action.equals("submit") ? "Question submitted successfully" : "Question saved as draft successfully");
             response.put("questionId", savedQuestion.getQuestionId());
             response.put("status", savedQuestion.getStatus().toString());
             return ResponseEntity.ok(response);
-            
+
         } catch (Exception e) {
             System.err.println("Error saving question: " + e.getMessage());
             e.printStackTrace();
-            
+
             Map<String, Object> response = new HashMap<>();
             response.put("error", "Failed to save question: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
         }
-    }    /**
+    }
+
+    /**
      * Check for duplicate questions using AI service
-     */    
+     */
     @PostMapping("/api/check-duplicate")
-    @ResponseBody    
+    @ResponseBody
     public ResponseEntity<Map<String, Object>> checkDuplicate(@RequestBody Map<String, Object> questionData, HttpSession session) {
         try {
             // Get user from session for permission check
             Object userObj = session.getAttribute("user");
             Long lecturerId = 1L; // Default fallback
-            
+
             if (userObj != null && userObj instanceof UserBasicDTO) {
                 UserBasicDTO user = (UserBasicDTO) userObj;
                 lecturerId = user.getUserId();
             }
-            
+
             Map<String, Object> response = new HashMap<>();
-            
+
             // Validate subjectId permission
             Object subjectIdObj = questionData.get("subjectId");
             if (subjectIdObj != null && !subjectIdObj.toString().trim().isEmpty()) {
                 try {
                     Long subjectId = Long.parseLong(subjectIdObj.toString());                      // Check if lecturer has permission for this subject
                     List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
-                        lecturerId, 
-                        SubjectRole.LECTURER
+                            lecturerId,
+                            SubjectRole.LECTURER
                     );
-                    
+
                     boolean hasPermission = assignedSubjects.stream()
-                        .anyMatch(s -> s.getSubjectId().equals(subjectId));
-                        
+                            .anyMatch(s -> s.getSubjectId().equals(subjectId));
+
                     if (!hasPermission) {
                         response.put("error", "You don't have permission to create questions for this subject");
                         return ResponseEntity.status(403).body(response);
@@ -941,11 +967,11 @@ public class LecturerController {
                     return ResponseEntity.badRequest().body(response);
                 }
             }
-              // Get question data
+            // Get question data
             String questionTitle = (String) questionData.get("questionTitle");
             Object questionIdObj = questionData.get("questionId"); // Check if editing existing question
             Long currentQuestionId = null;
-            
+
             if (questionIdObj != null) {
                 if (questionIdObj instanceof Number) {
                     currentQuestionId = ((Number) questionIdObj).longValue();
@@ -958,12 +984,12 @@ public class LecturerController {
                     }
                 }
             }
-            
+
             if (questionTitle == null || questionTitle.trim().isEmpty()) {
                 response.put("error", "Question title is required");
                 return ResponseEntity.badRequest().body(response);
             }
-              // Get existing questions from database to compare
+            // Get existing questions from database to compare
             List<Map<String, Object>> existingQuestions = new ArrayList<>();
             try {
                 // Fetch existing questions from database
@@ -973,7 +999,7 @@ public class LecturerController {
                     if (currentQuestionId != null && q.getQuestionId().equals(currentQuestionId)) {
                         continue;
                     }
-                    
+
                     Map<String, Object> questionMap = new HashMap<>();
                     questionMap.put("id", q.getQuestionId());
                     questionMap.put("content", q.getContent());
@@ -983,22 +1009,22 @@ public class LecturerController {
                 // If can't fetch questions, continue with empty list
                 existingQuestions = new ArrayList<>();
             }
-            
+
             // Call AI service for real duplicate detection
             try {
                 Map<String, Object> aiResponse = aiService.checkDuplicate(questionTitle, existingQuestions);
-                  if (aiResponse.containsKey("error")) {
+                if (aiResponse.containsKey("error")) {
                     // AI service failed, return basic response
                     response.put("duplicatePercent", 0);
                     response.put("similarQuestions", new ArrayList<>());
                     response.put("status", "warning");
                     response.put("message", "AI service temporarily unavailable");
-                    response.put("debug", "AI service error: " + aiResponse.get("error"));                } else {
+                    response.put("debug", "AI service error: " + aiResponse.get("error"));
+                } else {
                     // Process AI response
                     int duplicatesFound = (Integer) aiResponse.getOrDefault("duplicates_found", 0);
                     List<?> similarQuestions = (List<?>) aiResponse.getOrDefault("similar_questions", new ArrayList<>());
-                    
-                    
+
                     // Calculate percentage - if any duplicates found, show percentage
                     int duplicatePercent = 0;
                     if (duplicatesFound > 0 && !similarQuestions.isEmpty()) {
@@ -1015,7 +1041,7 @@ public class LecturerController {
                         }
                     } else {
                     }
-                    
+
                     response.put("duplicatePercent", duplicatePercent);
                     response.put("similarQuestions", similarQuestions);
                     response.put("status", "success");
@@ -1023,7 +1049,7 @@ public class LecturerController {
                     response.put("duplicatesFound", duplicatesFound);
                     response.put("debug", "AI Response: " + aiResponse.toString());
                 }
-                  } catch (Exception aiError) {
+            } catch (Exception aiError) {
                 // Fallback if AI service fails
                 response.put("duplicatePercent", 0);
                 response.put("similarQuestions", new ArrayList<>());
@@ -1031,7 +1057,7 @@ public class LecturerController {
                 response.put("message", "AI service error: " + aiError.getMessage());
                 response.put("debug", "Exception: " + aiError.getClass().getSimpleName() + " - " + aiError.getMessage());
             }
-            
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
@@ -1049,25 +1075,25 @@ public class LecturerController {
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
-        
+
         // Check if user has lecturer permissions (allow higher roles too)
         boolean hasAccess = authentication.getAuthorities().stream()
                 .anyMatch(a -> {
                     String auth = a.getAuthority();
-                    return auth.equals("LEC") || auth.equals("ROLE_LEC") ||
-                           auth.equals("Lec") || auth.equals("ROLE_Lec") ||
-                           auth.equals("SL") || auth.equals("ROLE_SL") ||
-                           auth.equals("HOD") || auth.equals("ROLE_HOD") ||
-                           auth.equals("HoD") || auth.equals("ROLE_HoD") ||
-                           auth.equals("HOED") || auth.equals("ROLE_HOED") ||
-                           auth.equals("HoED") || auth.equals("ROLE_HoED") ||
-                           auth.equals("RD") || auth.equals("ROLE_RD");
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC")
+                            || auth.equals("Lec") || auth.equals("ROLE_Lec")
+                            || auth.equals("SL") || auth.equals("ROLE_SL")
+                            || auth.equals("HOD") || auth.equals("ROLE_HOD")
+                            || auth.equals("HoD") || auth.equals("ROLE_HoD")
+                            || auth.equals("HOED") || auth.equals("ROLE_HOED")
+                            || auth.equals("HoED") || auth.equals("ROLE_HoED")
+                            || auth.equals("RD") || auth.equals("ROLE_RD");
                 });
-        
+
         if (!hasAccess) {
             return "error/403";
         }
-        
+
         // Get user from session
         Object userObj = session.getAttribute("user");
         Long lecturerId = 1L; // Default fallback
@@ -1075,49 +1101,50 @@ public class LecturerController {
             UserBasicDTO user = (UserBasicDTO) userObj;
             lecturerId = user.getUserId();
         }
-        
+
         // Alternative: get from currentUserId set by ScopeInterceptor
         Object currentUserId = session.getAttribute("currentUserId");
         if (currentUserId != null && currentUserId instanceof Long) {
             lecturerId = (Long) currentUserId;
         }
-        
+
         model.addAttribute("lecturerId", lecturerId);
         model.addAttribute("userEmail", authentication.getName());
-        
+
         return "Lecturer/lecturerFeedback";
     }
-    
+
     /**
      * Lecturer Task page
      */
     @Autowired
     private TaskService taskService;
+
     @GetMapping("/task")
     public String lecturerTask(Model model, HttpSession session, Authentication authentication) {
         // Check authentication
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
-        
+
         // Check if user has lecturer permissions (allow higher roles too)
         boolean hasAccess = authentication.getAuthorities().stream()
                 .anyMatch(a -> {
                     String auth = a.getAuthority();
-                    return auth.equals("LEC") || auth.equals("ROLE_LEC") ||
-                           auth.equals("Lec") || auth.equals("ROLE_Lec") ||
-                           auth.equals("SL") || auth.equals("ROLE_SL") ||
-                           auth.equals("HOD") || auth.equals("ROLE_HOD") ||
-                           auth.equals("HoD") || auth.equals("ROLE_HoD") ||
-                           auth.equals("HOED") || auth.equals("ROLE_HOED") ||
-                           auth.equals("HoED") || auth.equals("ROLE_HoED") ||
-                           auth.equals("RD") || auth.equals("ROLE_RD");
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC")
+                            || auth.equals("Lec") || auth.equals("ROLE_Lec")
+                            || auth.equals("SL") || auth.equals("ROLE_SL")
+                            || auth.equals("HOD") || auth.equals("ROLE_HOD")
+                            || auth.equals("HoD") || auth.equals("ROLE_HoD")
+                            || auth.equals("HOED") || auth.equals("ROLE_HOED")
+                            || auth.equals("HoED") || auth.equals("ROLE_HoED")
+                            || auth.equals("RD") || auth.equals("ROLE_RD");
                 });
-        
+
         if (!hasAccess) {
             return "error/403";
         }
-        
+
         // Get user from session
         Object userObj = session.getAttribute("user");
         Long lecturerId = 1L; // Default fallback
@@ -1125,19 +1152,27 @@ public class LecturerController {
             UserBasicDTO user = (UserBasicDTO) userObj;
             lecturerId = user.getUserId();
         }
-        
+
         // Alternative: get from currentUserId set by ScopeInterceptor
         Object currentUserId = session.getAttribute("currentUserId");
         if (currentUserId != null && currentUserId instanceof Long) {
             lecturerId = (Long) currentUserId;
         }
+
+        Long user = (Long) session.getAttribute("userId");
+
         // Load tasks for the lecturer
-        List<LecTaskDTO> tasks = taskService.getTasksByUserId(lecturerId);
+        List<LecTaskDTO> tasks = taskService.getTasksByUserId(user);
+
+        for (LecTaskDTO task : tasks) {
+            String subject = mapCourseToSubject(task.getCourseName());
+            task.setCourseName(subject);
+        }
 
         model.addAttribute("tasks", tasks);
         model.addAttribute("lecturerId", lecturerId);
         model.addAttribute("userEmail", authentication.getName());
-        
+
         return "Lecturer/lecturerTask";
     }
 
@@ -1147,6 +1182,44 @@ public class LecturerController {
     public LecTaskDTO getTaskDetail(@PathVariable("taskId") Integer taskId) {
         System.out.println("Received taskId: " + taskId);
         return taskService.getTaskDetailById(taskId);
+    }
+
+    // Send Task page
+    @GetMapping("/task/show-task/{taskId}")
+    public String showTaskSendPage(@PathVariable("taskId") Integer taskId, Model model) {
+        // Lấy thông tin task theo taskId
+        LecTaskDTO taskInfo = taskService.getTaskDetailById(taskId);
+
+        // Lấy danh sách câu hỏi có thể chọn cho task này
+        List<SendQuesDTO> questionList = taskService.getQuesForSendTask();
+
+        if (questionList != null) {
+            for (SendQuesDTO q : questionList) {
+                System.out.println("Question ID: " + q.getQuestionId() + ", Difficulty: " + q.getDifficultyLevel());
+            }
+        }
+
+        model.addAttribute("task", taskInfo);
+        model.addAttribute("questions", questionList);
+
+        return "Lecturer/lecturerTFromSendTask";
+    }
+
+    // Send Ques by Task
+    @PostMapping("/task/send-task/{taskId}")
+    public String assignQuestionsToTask(
+            @PathVariable Long taskId,
+            @RequestParam("questionIds") List<Long> questionIds,
+            RedirectAttributes redirectAttributes) {
+        try {
+            taskService.assignQuestionsToTask(taskId, questionIds);
+            redirectAttributes.addFlashAttribute("success", "Questions assigned successfully");
+        } catch (Exception e) {
+            // Log lỗi để debug
+            System.err.println("Error assigning questions to task: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Failed to assign questions");
+        }
+        return "redirect:/lecturer/task";
     }
 
     /**
@@ -1167,25 +1240,25 @@ public class LecturerController {
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
         }
-        
+
         // Check if user has lecturer permissions (allow higher roles too)
         boolean hasAccess = authentication.getAuthorities().stream()
                 .anyMatch(a -> {
                     String auth = a.getAuthority();
-                    return auth.equals("LEC") || auth.equals("ROLE_LEC") ||
-                           auth.equals("Lec") || auth.equals("ROLE_Lec") ||
-                           auth.equals("SL") || auth.equals("ROLE_SL") ||
-                           auth.equals("HOD") || auth.equals("ROLE_HOD") ||
-                           auth.equals("HoD") || auth.equals("ROLE_HoD") ||
-                           auth.equals("HOED") || auth.equals("ROLE_HOED") ||
-                           auth.equals("HoED") || auth.equals("ROLE_HoED") ||
-                           auth.equals("RD") || auth.equals("ROLE_RD");
+                    return auth.equals("LEC") || auth.equals("ROLE_LEC")
+                            || auth.equals("Lec") || auth.equals("ROLE_Lec")
+                            || auth.equals("SL") || auth.equals("ROLE_SL")
+                            || auth.equals("HOD") || auth.equals("ROLE_HOD")
+                            || auth.equals("HoD") || auth.equals("ROLE_HoD")
+                            || auth.equals("HOED") || auth.equals("ROLE_HOED")
+                            || auth.equals("HoED") || auth.equals("ROLE_HoED")
+                            || auth.equals("RD") || auth.equals("ROLE_RD");
                 });
-        
+
         if (!hasAccess) {
             return "error/403";
         }
-        
+
         // Get user from session
         Object userObj = session.getAttribute("user");
         Long lecturerId = 1L; // Default fallback
@@ -1193,16 +1266,16 @@ public class LecturerController {
             UserBasicDTO user = (UserBasicDTO) userObj;
             lecturerId = user.getUserId();
         }
-        
+
         // Alternative: get from currentUserId set by ScopeInterceptor
         Object currentUserId = session.getAttribute("currentUserId");
         if (currentUserId != null && currentUserId instanceof Long) {
             lecturerId = (Long) currentUserId;
         }
-        
+
         model.addAttribute("lecturerId", lecturerId);
         model.addAttribute("userEmail", authentication.getName());
-        
+
         return "Lecturer/lecturerEETaskExam";
     }
 
@@ -1248,17 +1321,18 @@ public class LecturerController {
         // Add dynamic data from database here
         return "Lecturer/L-EXE_FeedbackEXam";
     }
-    
+
     /**
-     * API endpoint để lấy thông tin chi tiết về status và difficulty của một câu hỏi
+     * API endpoint để lấy thông tin chi tiết về status và difficulty của một
+     * câu hỏi
      */
     @GetMapping("/api/questions/{questionId}/details")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getQuestionDetails(@PathVariable Long questionId) {
         try {
             Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new RuntimeException("Question not found"));
-            
+                    .orElseThrow(() -> new RuntimeException("Question not found"));
+
             Map<String, Object> details = new HashMap<>();
             details.put("id", question.getQuestionId());
             details.put("content", question.getContent());
@@ -1269,14 +1343,20 @@ public class LecturerController {
             details.put("difficulty", question.getDifficultyLevel().toString());
             details.put("difficultyDisplay", getDifficultyDisplay(question.getDifficultyLevel()));
             details.put("createdBy", question.getCreatedBy().getUserId());
-            
+
             // Thêm thông tin về answers
             List<String> otherAnswers = new ArrayList<>();
-            if (question.getAnswerF1() != null) otherAnswers.add(question.getAnswerF1());
-            if (question.getAnswerF2() != null) otherAnswers.add(question.getAnswerF2());
-            if (question.getAnswerF3() != null) otherAnswers.add(question.getAnswerF3());
+            if (question.getAnswerF1() != null) {
+                otherAnswers.add(question.getAnswerF1());
+            }
+            if (question.getAnswerF2() != null) {
+                otherAnswers.add(question.getAnswerF2());
+            }
+            if (question.getAnswerF3() != null) {
+                otherAnswers.add(question.getAnswerF3());
+            }
             details.put("otherAnswers", otherAnswers);
-            
+
             return ResponseEntity.ok(details);
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
@@ -1284,32 +1364,47 @@ public class LecturerController {
             return ResponseEntity.status(500).body(errorResponse);
         }
     }
-      /**
+
+    /**
      * Helper method để convert status thành display text (Vietnamese)
      */
     private String getStatusDisplay(QuestionStatus status) {
         switch (status) {
-            case DRAFT: return "Bản nháp";
-            case SUBMITTED: return "Đã gửi";
-            case APPROVED: return "Đã phê duyệt";
-            case REJECTED: return "Bị từ chối";
-            case ARCHIVED: return "Đã lưu trữ";
-            case DECLINED: return "Đã từ chối";
-            default: return status.toString();
+            case DRAFT:
+                return "Bản nháp";
+            case SUBMITTED:
+                return "Đã gửi";
+            case APPROVED:
+                return "Đã phê duyệt";
+            case REJECTED:
+                return "Bị từ chối";
+            case ARCHIVED:
+                return "Đã lưu trữ";
+            case DECLINED:
+                return "Đã từ chối";
+            default:
+                return status.toString();
         }
     }
-      /**
+
+    /**
      * Helper method để convert difficulty thành display text
-     */    private String getDifficultyDisplay(DifficultyLevel difficulty) {
+     */
+    private String getDifficultyDisplay(DifficultyLevel difficulty) {
         switch (difficulty) {
-            case RECOGNITION: return "Remember";
-            case COMPREHENSION: return "Understand";
-            case BASIC_APPLICATION: return "Apply (Ba)";
-            case ADVANCED_APPLICATION: return "Apply (Ad)";
-            default: return difficulty.toString();
+            case RECOGNITION:
+                return "Remember";
+            case COMPREHENSION:
+                return "Understand";
+            case BASIC_APPLICATION:
+                return "Apply (Ba)";
+            case ADVANCED_APPLICATION:
+                return "Apply (Ad)";
+            default:
+                return difficulty.toString();
         }
     }
-    
+
     /**
      * API endpoint để lấy danh sách difficulty levels cho dropdown
      */
@@ -1339,7 +1434,7 @@ public class LecturerController {
             @RequestParam String content) {
         try {
             List<Question> questions = questionRepository.findByContentContainingIgnoreCase(content);
-            
+
             List<Map<String, Object>> results = questions.stream().map(q -> {
                 Map<String, Object> questionMap = new HashMap<>();
                 questionMap.put("id", q.getQuestionId());
@@ -1352,13 +1447,13 @@ public class LecturerController {
                 questionMap.put("difficultyDisplay", getDifficultyDisplay(q.getDifficultyLevel()));
                 return questionMap;
             }).collect(Collectors.toList());
-            
+
             return ResponseEntity.ok(results);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(List.of());
         }
     }
-    
+
     /**
      * API endpoint để tìm câu hỏi theo từ khóa cụ thể
      */
@@ -1371,31 +1466,31 @@ public class LecturerController {
         try {
             List<Question> allQuestions = questionRepository.findAll();
             List<Question> matchedQuestions = new ArrayList<>();
-            
+
             // Tìm kiếm câu hỏi theo từ khóa
             if (keyword != null && !keyword.trim().isEmpty()) {
                 matchedQuestions = allQuestions.stream()
-                    .filter(q -> q.getContent() != null && 
-                                q.getContent().toLowerCase().contains(keyword.toLowerCase()))
-                    .collect(Collectors.toList());
+                        .filter(q -> q.getContent() != null
+                        && q.getContent().toLowerCase().contains(keyword.toLowerCase()))
+                        .collect(Collectors.toList());
             }
-            
+
             // Lọc thêm theo subject nếu có
             if (subject != null && !subject.trim().isEmpty()) {
                 matchedQuestions = matchedQuestions.stream()
-                    .filter(q -> q.getCourse() != null && 
-                                q.getCourse().getCourseName().toLowerCase().contains(subject.toLowerCase()))
-                    .collect(Collectors.toList());
+                        .filter(q -> q.getCourse() != null
+                        && q.getCourse().getCourseName().toLowerCase().contains(subject.toLowerCase()))
+                        .collect(Collectors.toList());
             }
-            
+
             // Lọc thêm theo correct answer nếu có
             if (correctAnswer != null && !correctAnswer.trim().isEmpty()) {
                 matchedQuestions = matchedQuestions.stream()
-                    .filter(q -> q.getAnswerKey() != null && 
-                                q.getAnswerKey().toLowerCase().contains(correctAnswer.toLowerCase()))
-                    .collect(Collectors.toList());
+                        .filter(q -> q.getAnswerKey() != null
+                        && q.getAnswerKey().toLowerCase().contains(correctAnswer.toLowerCase()))
+                        .collect(Collectors.toList());
             }
-            
+
             // Convert to response format
             List<Map<String, Object>> questionData = matchedQuestions.stream().map(q -> {
                 Map<String, Object> questionMap = new HashMap<>();
@@ -1407,27 +1502,33 @@ public class LecturerController {
                 questionMap.put("statusDisplay", getStatusDisplay(q.getStatus()));
                 questionMap.put("difficulty", q.getDifficultyLevel().toString());
                 questionMap.put("difficultyDisplay", getDifficultyDisplay(q.getDifficultyLevel()));
-                
+
                 // Thêm other answers
                 List<String> otherAnswers = new ArrayList<>();
-                if (q.getAnswerF1() != null) otherAnswers.add(q.getAnswerF1());
-                if (q.getAnswerF2() != null) otherAnswers.add(q.getAnswerF2());
-                if (q.getAnswerF3() != null) otherAnswers.add(q.getAnswerF3());
+                if (q.getAnswerF1() != null) {
+                    otherAnswers.add(q.getAnswerF1());
+                }
+                if (q.getAnswerF2() != null) {
+                    otherAnswers.add(q.getAnswerF2());
+                }
+                if (q.getAnswerF3() != null) {
+                    otherAnswers.add(q.getAnswerF3());
+                }
                 questionMap.put("otherAnswers", otherAnswers);
-                
+
                 return questionMap;
             }).collect(Collectors.toList());
-            
+
             Map<String, Object> response = new HashMap<>();
             response.put("found", !questionData.isEmpty());
             response.put("totalMatched", questionData.size());
             response.put("questions", questionData);
             response.put("searchCriteria", Map.of(
-                "keyword", keyword != null ? keyword : "",
-                "subject", subject != null ? subject : "",
-                "correctAnswer", correctAnswer != null ? correctAnswer : ""
+                    "keyword", keyword != null ? keyword : "",
+                    "subject", subject != null ? subject : "",
+                    "correctAnswer", correctAnswer != null ? correctAnswer : ""
             ));
-            
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
@@ -1446,19 +1547,19 @@ public class LecturerController {
         try {
             // Tìm câu hỏi về Java primitive data type
             List<Question> javaQuestions = questionRepository.findAll().stream()
-                .filter(q -> q.getContent() != null && 
-                            (q.getContent().toLowerCase().contains("primitive data type") ||
-                             q.getContent().toLowerCase().contains("primitive") && q.getContent().toLowerCase().contains("java")) &&
-                            q.getAnswerKey() != null && q.getAnswerKey().toLowerCase().contains("string"))
-                .collect(Collectors.toList());
-            
+                    .filter(q -> q.getContent() != null
+                    && (q.getContent().toLowerCase().contains("primitive data type")
+                    || q.getContent().toLowerCase().contains("primitive") && q.getContent().toLowerCase().contains("java"))
+                    && q.getAnswerKey() != null && q.getAnswerKey().toLowerCase().contains("string"))
+                    .collect(Collectors.toList());
+
             Map<String, Object> response = new HashMap<>();
             response.put("found", !javaQuestions.isEmpty());
             response.put("totalFound", javaQuestions.size());
-            
+
             if (!javaQuestions.isEmpty()) {
                 Question targetQuestion = javaQuestions.get(0); // Lấy câu đầu tiên
-                
+
                 Map<String, Object> questionInfo = new HashMap<>();
                 questionInfo.put("id", targetQuestion.getQuestionId());
                 questionInfo.put("content", targetQuestion.getContent());
@@ -1468,38 +1569,44 @@ public class LecturerController {
                 questionInfo.put("statusDisplay", getStatusDisplay(targetQuestion.getStatus()));
                 questionInfo.put("difficulty", targetQuestion.getDifficultyLevel().toString());
                 questionInfo.put("difficultyDisplay", getDifficultyDisplay(targetQuestion.getDifficultyLevel()));
-                
+
                 // Kiểm tra other answers có chứa int, boolean, double không
                 List<String> otherAnswers = new ArrayList<>();
-                if (targetQuestion.getAnswerF1() != null) otherAnswers.add(targetQuestion.getAnswerF1());
-                if (targetQuestion.getAnswerF2() != null) otherAnswers.add(targetQuestion.getAnswerF2());
-                if (targetQuestion.getAnswerF3() != null) otherAnswers.add(targetQuestion.getAnswerF3());
+                if (targetQuestion.getAnswerF1() != null) {
+                    otherAnswers.add(targetQuestion.getAnswerF1());
+                }
+                if (targetQuestion.getAnswerF2() != null) {
+                    otherAnswers.add(targetQuestion.getAnswerF2());
+                }
+                if (targetQuestion.getAnswerF3() != null) {
+                    otherAnswers.add(targetQuestion.getAnswerF3());
+                }
                 questionInfo.put("otherAnswers", otherAnswers);
-                
+
                 // Verify this is the right question
                 boolean hasIntBooleanDouble = otherAnswers.stream()
-                    .anyMatch(answer -> answer.toLowerCase().contains("int") ||
-                                       answer.toLowerCase().contains("boolean") ||
-                                       answer.toLowerCase().contains("double"));
+                        .anyMatch(answer -> answer.toLowerCase().contains("int")
+                        || answer.toLowerCase().contains("boolean")
+                        || answer.toLowerCase().contains("double"));
                 questionInfo.put("isTargetQuestion", hasIntBooleanDouble);
-                
+
                 response.put("question", questionInfo);
-                
+
                 // Status analysis
                 response.put("statusAnalysis", Map.of(
-                    "isInDatabase", true,
-                    "currentStatus", targetQuestion.getStatus().toString(),
-                    "statusMeaning", getStatusDisplay(targetQuestion.getStatus()),
-                    "canBeDeleted", targetQuestion.getStatus() != QuestionStatus.APPROVED,
-                    "canBeEdited", targetQuestion.getStatus() != QuestionStatus.APPROVED
+                        "isInDatabase", true,
+                        "currentStatus", targetQuestion.getStatus().toString(),
+                        "statusMeaning", getStatusDisplay(targetQuestion.getStatus()),
+                        "canBeDeleted", targetQuestion.getStatus() != QuestionStatus.APPROVED,
+                        "canBeEdited", targetQuestion.getStatus() != QuestionStatus.APPROVED
                 ));
             } else {
                 response.put("statusAnalysis", Map.of(
-                    "isInDatabase", false,
-                    "message", "Câu hỏi về Java primitive data type chưa có trong database"
+                        "isInDatabase", false,
+                        "message", "Câu hỏi về Java primitive data type chưa có trong database"
                 ));
             }
-            
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
@@ -1508,7 +1615,7 @@ public class LecturerController {
             return ResponseEntity.status(500).body(errorResponse);
         }
     }
-    
+
     /**
      * API endpoint để test query trực tiếp trong database
      */
@@ -1518,16 +1625,16 @@ public class LecturerController {
             @RequestParam(required = false, defaultValue = "all") String queryType) {
         try {
             Map<String, Object> response = new HashMap<>();
-            
+
             switch (queryType.toLowerCase()) {
                 case "java-primitive":
                     // Query tìm câu hỏi Java primitive data type
                     List<Question> javaQuestions = questionRepository.findAll().stream()
-                        .filter(q -> q.getContent() != null && 
-                                    q.getContent().toLowerCase().contains("primitive") &&
-                                    q.getContent().toLowerCase().contains("java"))
-                        .collect(Collectors.toList());
-                    
+                            .filter(q -> q.getContent() != null
+                            && q.getContent().toLowerCase().contains("primitive")
+                            && q.getContent().toLowerCase().contains("java"))
+                            .collect(Collectors.toList());
+
                     response.put("queryType", "Java Primitive Data Type Questions");
                     response.put("totalFound", javaQuestions.size());
                     response.put("questions", javaQuestions.stream().map(q -> {
@@ -1538,24 +1645,30 @@ public class LecturerController {
                         qMap.put("correctAnswer", q.getAnswerKey());
                         qMap.put("status", q.getStatus().toString());
                         qMap.put("difficulty", q.getDifficultyLevel().toString());
-                        
+
                         List<String> otherAnswers = new ArrayList<>();
-                        if (q.getAnswerF1() != null) otherAnswers.add(q.getAnswerF1());
-                        if (q.getAnswerF2() != null) otherAnswers.add(q.getAnswerF2());
-                        if (q.getAnswerF3() != null) otherAnswers.add(q.getAnswerF3());
+                        if (q.getAnswerF1() != null) {
+                            otherAnswers.add(q.getAnswerF1());
+                        }
+                        if (q.getAnswerF2() != null) {
+                            otherAnswers.add(q.getAnswerF2());
+                        }
+                        if (q.getAnswerF3() != null) {
+                            otherAnswers.add(q.getAnswerF3());
+                        }
                         qMap.put("otherAnswers", otherAnswers);
-                        
+
                         return qMap;
                     }).collect(Collectors.toList()));
                     break;
-                    
+
                 case "string-answer":
                     // Query tìm câu hỏi có correct answer là "String"
                     List<Question> stringQuestions = questionRepository.findAll().stream()
-                        .filter(q -> q.getAnswerKey() != null && 
-                                    q.getAnswerKey().toLowerCase().trim().equals("string"))
-                        .collect(Collectors.toList());
-                    
+                            .filter(q -> q.getAnswerKey() != null
+                            && q.getAnswerKey().toLowerCase().trim().equals("string"))
+                            .collect(Collectors.toList());
+
                     response.put("queryType", "Questions with 'String' as correct answer");
                     response.put("totalFound", stringQuestions.size());
                     response.put("questions", stringQuestions.stream().map(q -> {
@@ -1565,18 +1678,18 @@ public class LecturerController {
                         qMap.put("subject", q.getCourse() != null ? q.getCourse().getCourseName() : "N/A");
                         qMap.put("correctAnswer", q.getAnswerKey());
                         qMap.put("status", q.getStatus().toString());
-                        
+
                         return qMap;
                     }).collect(Collectors.toList()));
                     break;
-                    
+
                 case "computer-science":
                     // Query tìm câu hỏi Introduction to Computer Science
                     List<Question> csQuestions = questionRepository.findAll().stream()
-                        .filter(q -> q.getCourse() != null && 
-                                    q.getCourse().getCourseName().toLowerCase().contains("computer science"))
-                        .collect(Collectors.toList());
-                    
+                            .filter(q -> q.getCourse() != null
+                            && q.getCourse().getCourseName().toLowerCase().contains("computer science"))
+                            .collect(Collectors.toList());
+
                     response.put("queryType", "Introduction to Computer Science Questions");
                     response.put("totalFound", csQuestions.size());
                     response.put("questions", csQuestions.stream().limit(10).map(q -> {
@@ -1586,20 +1699,20 @@ public class LecturerController {
                         qMap.put("subject", q.getCourse().getCourseName());
                         qMap.put("correctAnswer", q.getAnswerKey());
                         qMap.put("status", q.getStatus().toString());
-                        
+
                         return qMap;
                     }).collect(Collectors.toList()));
                     break;
-                    
+
                 case "exact-match":
                     // Query chính xác cho câu hỏi bạn đề cập
                     List<Question> exactQuestions = questionRepository.findAll().stream()
-                        .filter(q -> q.getContent() != null && 
-                                    q.getContent().toLowerCase().contains("which of the following is not a primitive data type in java") &&
-                                    q.getAnswerKey() != null && 
-                                    q.getAnswerKey().toLowerCase().equals("string"))
-                        .collect(Collectors.toList());
-                    
+                            .filter(q -> q.getContent() != null
+                            && q.getContent().toLowerCase().contains("which of the following is not a primitive data type in java")
+                            && q.getAnswerKey() != null
+                            && q.getAnswerKey().toLowerCase().equals("string"))
+                            .collect(Collectors.toList());
+
                     response.put("queryType", "Exact Match for Java Primitive Question");
                     response.put("totalFound", exactQuestions.size());
                     response.put("questions", exactQuestions.stream().map(q -> {
@@ -1612,44 +1725,50 @@ public class LecturerController {
                         qMap.put("statusDisplay", getStatusDisplay(q.getStatus()));
                         qMap.put("difficulty", q.getDifficultyLevel().toString());
                         qMap.put("difficultyDisplay", getDifficultyDisplay(q.getDifficultyLevel()));
-                        
+
                         List<String> otherAnswers = new ArrayList<>();
-                        if (q.getAnswerF1() != null) otherAnswers.add(q.getAnswerF1());
-                        if (q.getAnswerF2() != null) otherAnswers.add(q.getAnswerF2());
-                        if (q.getAnswerF3() != null) otherAnswers.add(q.getAnswerF3());
+                        if (q.getAnswerF1() != null) {
+                            otherAnswers.add(q.getAnswerF1());
+                        }
+                        if (q.getAnswerF2() != null) {
+                            otherAnswers.add(q.getAnswerF2());
+                        }
+                        if (q.getAnswerF3() != null) {
+                            otherAnswers.add(q.getAnswerF3());
+                        }
                         qMap.put("otherAnswers", otherAnswers);
-                        
+
                         // Kiểm tra có chứa int, boolean, double không
                         boolean hasCorrectOptions = otherAnswers.stream()
-                            .anyMatch(answer -> answer.toLowerCase().contains("int") ||
-                                               answer.toLowerCase().contains("boolean") ||
-                                               answer.toLowerCase().contains("double"));
+                                .anyMatch(answer -> answer.toLowerCase().contains("int")
+                                || answer.toLowerCase().contains("boolean")
+                                || answer.toLowerCase().contains("double"));
                         qMap.put("hasCorrectOptions", hasCorrectOptions);
-                        
+
                         return qMap;
                     }).collect(Collectors.toList()));
                     break;
-                    
+
                 case "all":
                 default:
                     // Query tổng quan
                     List<Question> allQuestions = questionRepository.findAll();
                     long totalQuestions = allQuestions.size();
-                    
+
                     // Thống kê theo status
                     Map<String, Long> statusStats = allQuestions.stream()
-                        .collect(Collectors.groupingBy(
-                            q -> q.getStatus().toString(),
-                            Collectors.counting()
-                        ));
-                    
+                            .collect(Collectors.groupingBy(
+                                    q -> q.getStatus().toString(),
+                                    Collectors.counting()
+                            ));
+
                     // Thống kê theo subject
                     Map<String, Long> subjectStats = allQuestions.stream()
-                        .collect(Collectors.groupingBy(
-                            q -> q.getCourse() != null ? q.getCourse().getCourseName() : "N/A",
-                            Collectors.counting()
-                        ));
-                    
+                            .collect(Collectors.groupingBy(
+                                    q -> q.getCourse() != null ? q.getCourse().getCourseName() : "N/A",
+                                    Collectors.counting()
+                            ));
+
                     response.put("queryType", "Database Overview");
                     response.put("totalQuestions", totalQuestions);
                     response.put("statusStatistics", statusStats);
@@ -1664,12 +1783,12 @@ public class LecturerController {
                     }).collect(Collectors.toList()));
                     break;
             }
-            
+
             response.put("timestamp", java.time.LocalDateTime.now().toString());
             response.put("success", true);
-            
+
             return ResponseEntity.ok(response);
-            
+
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "Database query failed: " + e.getMessage());
@@ -1687,52 +1806,52 @@ public class LecturerController {
     public ResponseEntity<Map<String, Object>> getDatabaseStats() {
         try {
             Map<String, Object> response = new HashMap<>();
-            
+
             // Lấy tất cả câu hỏi
             List<Question> allQuestions = questionRepository.findAll();
-            
+
             // Thống kê chi tiết
             response.put("totalQuestions", allQuestions.size());
-            
+
             // Tìm câu hỏi có "primitive" và "java"
             List<Question> primitiveQuestions = allQuestions.stream()
-                .filter(q -> q.getContent() != null && 
-                            q.getContent().toLowerCase().contains("primitive") &&
-                            q.getContent().toLowerCase().contains("java"))
-                .collect(Collectors.toList());
-            
+                    .filter(q -> q.getContent() != null
+                    && q.getContent().toLowerCase().contains("primitive")
+                    && q.getContent().toLowerCase().contains("java"))
+                    .collect(Collectors.toList());
+
             response.put("primitiveJavaQuestions", primitiveQuestions.size());
-            
+
             // Tìm câu hỏi có correct answer là "String"
             List<Question> stringAnswerQuestions = allQuestions.stream()
-                .filter(q -> q.getAnswerKey() != null && 
-                            q.getAnswerKey().toLowerCase().trim().equals("string"))
-                .collect(Collectors.toList());
-            
+                    .filter(q -> q.getAnswerKey() != null
+                    && q.getAnswerKey().toLowerCase().trim().equals("string"))
+                    .collect(Collectors.toList());
+
             response.put("stringAnswerQuestions", stringAnswerQuestions.size());
-            
+
             // Tìm câu hỏi Computer Science
             List<Question> csQuestions = allQuestions.stream()
-                .filter(q -> q.getCourse() != null && 
-                            q.getCourse().getCourseName().toLowerCase().contains("computer science"))
-                .collect(Collectors.toList());
-            
+                    .filter(q -> q.getCourse() != null
+                    && q.getCourse().getCourseName().toLowerCase().contains("computer science"))
+                    .collect(Collectors.toList());
+
             response.put("computerScienceQuestions", csQuestions.size());
-            
+
             // Kết hợp tất cả điều kiện
             List<Question> targetQuestions = allQuestions.stream()
-                .filter(q -> q.getContent() != null && 
-                            q.getContent().toLowerCase().contains("primitive") &&
-                            q.getContent().toLowerCase().contains("java") &&
-                            q.getAnswerKey() != null && 
-                            q.getAnswerKey().toLowerCase().trim().equals("string") &&
-                            q.getCourse() != null && 
-                            q.getCourse().getCourseName().toLowerCase().contains("computer science"))
-                .collect(Collectors.toList());
-            
+                    .filter(q -> q.getContent() != null
+                    && q.getContent().toLowerCase().contains("primitive")
+                    && q.getContent().toLowerCase().contains("java")
+                    && q.getAnswerKey() != null
+                    && q.getAnswerKey().toLowerCase().trim().equals("string")
+                    && q.getCourse() != null
+                    && q.getCourse().getCourseName().toLowerCase().contains("computer science"))
+                    .collect(Collectors.toList());
+
             response.put("targetQuestionFound", !targetQuestions.isEmpty());
             response.put("targetQuestionCount", targetQuestions.size());
-            
+
             if (!targetQuestions.isEmpty()) {
                 Question target = targetQuestions.get(0);
                 Map<String, Object> questionDetails = new HashMap<>();
@@ -1743,55 +1862,75 @@ public class LecturerController {
                 questionDetails.put("status", target.getStatus().toString());
                 questionDetails.put("statusDisplay", getStatusDisplay(target.getStatus()));
                 questionDetails.put("difficulty", target.getDifficultyLevel().toString());
-                
+
                 List<String> otherAnswers = new ArrayList<>();
-                if (target.getAnswerF1() != null) otherAnswers.add(target.getAnswerF1());
-                if (target.getAnswerF2() != null) otherAnswers.add(target.getAnswerF2());
-                if (target.getAnswerF3() != null) otherAnswers.add(target.getAnswerF3());
+                if (target.getAnswerF1() != null) {
+                    otherAnswers.add(target.getAnswerF1());
+                }
+                if (target.getAnswerF2() != null) {
+                    otherAnswers.add(target.getAnswerF2());
+                }
+                if (target.getAnswerF3() != null) {
+                    otherAnswers.add(target.getAnswerF3());
+                }
                 questionDetails.put("otherAnswers", otherAnswers);
-                
+
                 response.put("questionDetails", questionDetails);
             }
-            
+
             return ResponseEntity.ok(response);
-            
+
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "Failed to get database stats: " + e.getMessage());
             return ResponseEntity.status(500).body(errorResponse);
         }
     }
-    
+
     /**
      * Helper method để convert status thành display text cho UI
      */
     private String getStatusDisplayText(QuestionStatus status) {
         switch (status) {
-            case DRAFT: return "Draft";
-            case SUBMITTED: return "Submitted";
-            case APPROVED: return "Approved";
-            case REJECTED: return "Rejected";
-            case ARCHIVED: return "Archived";
-            case DECLINED: return "Declined";
-            default: return status.toString();
+            case DRAFT:
+                return "Draft";
+            case SUBMITTED:
+                return "Submitted";
+            case APPROVED:
+                return "Approved";
+            case REJECTED:
+                return "Rejected";
+            case ARCHIVED:
+                return "Archived";
+            case DECLINED:
+                return "Declined";
+            default:
+                return status.toString();
         }
     }
-    
+
     /**
      * Helper method để lấy CSS class cho status styling
      */
     private String getStatusCssClass(QuestionStatus status) {
         switch (status) {
-            case DRAFT: return "draft";
-            case SUBMITTED: return "submitted";
-            case APPROVED: return "approved";
-            case REJECTED: return "rejected";
-            case ARCHIVED: return "archived";
-            case DECLINED: return "declined";
-            default: return "default";
+            case DRAFT:
+                return "draft";
+            case SUBMITTED:
+                return "submitted";
+            case APPROVED:
+                return "approved";
+            case REJECTED:
+                return "rejected";
+            case ARCHIVED:
+                return "archived";
+            case DECLINED:
+                return "declined";
+            default:
+                return "default";
         }
     }
-    
+
     /**
      * Helper method để kiểm tra có thể edit theo status không
      */
@@ -1799,7 +1938,7 @@ public class LecturerController {
         // Chỉ có thể edit khi status là DRAFT hoặc REJECTED
         return status == QuestionStatus.DRAFT || status == QuestionStatus.REJECTED;
     }
-    
+
     /**
      * API endpoint để lấy assigned subjects cho lecturer (for dropdown filter)
      */
@@ -1810,14 +1949,14 @@ public class LecturerController {
             Authentication authentication) {
         try {
             Long lecturerId = null;
-            
+
             // Get user from session first
             Object userObj = session.getAttribute("user");
             if (userObj != null && userObj instanceof UserBasicDTO) {
                 UserBasicDTO user = (UserBasicDTO) userObj;
                 lecturerId = user.getUserId();
             }
-            
+
             // Alternative: get from currentUserId set by ScopeInterceptor
             if (lecturerId == null) {
                 Object currentUserId = session.getAttribute("currentUserId");
@@ -1825,7 +1964,7 @@ public class LecturerController {
                     lecturerId = (Long) currentUserId;
                 }
             }
-            
+
             // If still no lecturerId, get from authentication
             if (lecturerId == null && authentication != null && authentication.isAuthenticated()) {
                 try {
@@ -1838,45 +1977,47 @@ public class LecturerController {
                     System.err.println("Error getting user from authentication: " + e.getMessage());
                 }
             }
-            
+
             if (lecturerId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ArrayList<>());
             }
-            
+
             // Get assigned subjects for this lecturer
             List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
-                lecturerId, 
-                SubjectRole.LECTURER
+                    lecturerId,
+                    SubjectRole.LECTURER
             );
-            
+
             // Convert to simple map for JSON response
             List<Map<String, Object>> subjectList = assignedSubjects.stream()
-                .map(subject -> {
-                    Map<String, Object> subjectMap = new HashMap<>();
-                    subjectMap.put("subjectId", subject.getSubjectId());
-                    subjectMap.put("subjectName", subject.getSubjectName());
-                    subjectMap.put("subjectCode", subject.getSubjectCode());
-                    return subjectMap;
-                })
-                .collect(Collectors.toList());
-                
+                    .map(subject -> {
+                        Map<String, Object> subjectMap = new HashMap<>();
+                        subjectMap.put("subjectId", subject.getSubjectId());
+                        subjectMap.put("subjectName", subject.getSubjectName());
+                        subjectMap.put("subjectCode", subject.getSubjectCode());
+                        return subjectMap;
+                    })
+                    .collect(Collectors.toList());
+
             System.out.println("API: Returning " + subjectList.size() + " assigned subjects for lecturer " + lecturerId);
-            
+
             return ResponseEntity.ok(subjectList);
-            
+
         } catch (Exception e) {
             System.err.println("Error getting assigned subjects: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
         }
-    }    @PostMapping("/api/create_questions")
-    public ResponseEntity<?> createQuestion(@RequestBody @Valid QuestionCreateDTO dto, 
-                                           BindingResult bindingResult, HttpSession session) {
+    }
+
+    @PostMapping("/api/create_questions")
+    public ResponseEntity<?> createQuestion(@RequestBody @Valid QuestionCreateDTO dto,
+            BindingResult bindingResult, HttpSession session) {
         try {
             // Check for validation errors first
             if (bindingResult.hasErrors()) {
                 Map<String, String> errors = new HashMap<>();
-                bindingResult.getFieldErrors().forEach(error -> 
-                    errors.put(error.getField(), error.getDefaultMessage())
+                bindingResult.getFieldErrors().forEach(error
+                        -> errors.put(error.getField(), error.getDefaultMessage())
                 );
                 System.err.println("Validation errors: " + errors);
                 return ResponseEntity.badRequest().body(Map.of("error", "Validation failed", "details", errors));
@@ -1895,12 +2036,13 @@ public class LecturerController {
             if (dto.getCourseId() == null) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Course ID is required"));
             }
-            
+
             if (dto.getDifficultyLevel() == null) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Difficulty level is required"));
             }
 
             Long cloId = dto.getCloId() != null ? dto.getCloId() : 1L;
+
             CLO clo = cloRepository.findById(cloId)
                     .orElseThrow(() -> new RuntimeException("CLO not found with ID: " + cloId));
 
@@ -1918,7 +2060,6 @@ public class LecturerController {
                 creatorId = 1L;
                 System.out.println("Using fallback creator ID: " + creatorId);
             }
-
             User creator = userRepository.findById(creatorId)
                     .orElseThrow(() -> new RuntimeException("Creator user not found with ID: " + creatorId));
 
@@ -1938,7 +2079,7 @@ public class LecturerController {
             } else {
                 question.setStatus(dto.getStatus());
             }
-            
+
             if (clo != null) {
                 question.setClo(clo);
             }
@@ -1977,13 +2118,15 @@ public class LecturerController {
         }
     }
 
-      /**
-     * Helper method to map subject names to course names
-     * This is a temporary solution until database relationships are properly aligned
+    /**
+     * Helper method to map subject names to course names This is a temporary
+     * solution until database relationships are properly aligned
      */
     private String mapSubjectToCourse(String subjectName) {
-        if (subjectName == null) return null;
-        
+        if (subjectName == null) {
+            return null;
+        }
+
         // Map subjects to their corresponding course names
         switch (subjectName.toLowerCase()) {
             case "programming fundamentals":
@@ -2032,13 +2175,15 @@ public class LecturerController {
                 return null;
         }
     }
-    
+
     /**
      * Helper method to map course names back to subject names for display
      */
     private String mapCourseToSubject(String courseName) {
-        if (courseName == null) return courseName;
-        
+        if (courseName == null) {
+            return courseName;
+        }
+
         // Map course names back to subject names for UI display
         switch (courseName.toLowerCase()) {
             case "introduction to computer science":
@@ -2060,5 +2205,4 @@ public class LecturerController {
                 return courseName;
         }
     }
-  }
-
+}

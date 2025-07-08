@@ -53,4 +53,14 @@ public enum DifficultyLevel {
                 java.util.Arrays.toString(DifficultyLevel.values()));
         }
     }
+
+    @Override
+    public String toString() {
+        return switch (this) {
+            case RECOGNITION -> "Recognition";
+            case COMPREHENSION -> "Comprehension";
+            case BASIC_APPLICATION -> "Apply (Basic)";
+            case ADVANCED_APPLICATION -> "Apply (Advanced)";
+        };
+    }
 }

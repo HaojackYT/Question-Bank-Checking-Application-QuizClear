@@ -62,6 +62,7 @@ public interface ExamReviewRepository extends JpaRepository<ExamReview, Long> {
             er.dueDate)
         FROM ExamReview er
         WHERE er.reviewType = :reviewType
+        ORDER BY er.createdAt DESC
         """)
     List<HoEDReviewExamDTO> findAllByReviewType(@Param("reviewType") ReviewType reviewType);
 

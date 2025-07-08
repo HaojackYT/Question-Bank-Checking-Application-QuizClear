@@ -9,7 +9,7 @@ public class LecTaskDTO {
 
     // Task
     private Integer taskId;
-    private String cousreName;
+    private String courseName;
     private String description;
     private LocalDateTime dueDate;
     private TaskStatus status;
@@ -33,12 +33,12 @@ public class LecTaskDTO {
         this.taskId = taskId;
     }
 
-    public String getCousres() {
-        return cousreName;
+    public String getCourseName() {
+        return courseName;
     }
 
-    public void setCousres(String cousreName) {
-        this.cousreName = cousreName;
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     public String getDescription() {
@@ -117,11 +117,11 @@ public class LecTaskDTO {
     public LecTaskDTO() {
     }
 
-    public LecTaskDTO(Integer taskId, String cousreName, String description, LocalDateTime dueDate, TaskStatus status,
+    public LecTaskDTO(Integer taskId, String courseName, String description, LocalDateTime dueDate, TaskStatus status,
             Long planId, Integer totalQuestions, Integer totalRecognition, Integer totalComprehension,
             Integer totalBasicApplication, Integer totalAdvancedApplication) {
         this.taskId = taskId;
-        this.cousreName = cousreName;
+        this.courseName = courseName;
         this.description = description;
         this.dueDate = dueDate;
         this.status = status;
@@ -133,10 +133,10 @@ public class LecTaskDTO {
         this.totalAdvancedApplication = totalAdvancedApplication;
     }
 
-    public LecTaskDTO(String cousreName, String description, LocalDateTime dueDate, TaskStatus status, Long planId,
+    public LecTaskDTO(String courseName, String description, LocalDateTime dueDate, TaskStatus status, Long planId,
             Integer totalQuestions, Integer totalRecognition, Integer totalComprehension, Integer totalBasicApplication,
             Integer totalAdvancedApplication) {
-        this.cousreName = cousreName;
+        this.courseName = courseName;
         this.description = description;
         this.dueDate = dueDate;
         this.status = status;
@@ -151,10 +151,11 @@ public class LecTaskDTO {
     // toString 
     @Override
     public String toString() {
-        return "LecTaskDTO [taskId=" + taskId + ", cousreName=" + cousreName + ", description=" + description + ", dueDate="
+        return "LecTaskDTO [taskId=" + taskId + ", courseName=" + courseName + ", description=" + description + ", dueDate="
                 + dueDate + ", status=" + status + ", planId=" + planId + ", totalQuestions=" + totalQuestions
                 + ", totalRecognition=" + totalRecognition + ", totalComprehension=" + totalComprehension
                 + ", totalBasicApplication=" + totalBasicApplication + ", totalAdvancedApplication="
                 + totalAdvancedApplication + "]";
     }
+
 }
