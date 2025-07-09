@@ -232,16 +232,20 @@
                             <td>
                                 <span th:class="'status-badge ' + ${#strings.toLowerCase(task.status)}" 
                                       th:text="${task.status}">Status</span>
-                            </td>
-                            <td>
+                            </td>                            <td>
                                 <button class="action-btn view-btn" title="View" 
                                         th:onclick="'viewTask(' + ${task.taskId} + ')'">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button th:if="${task.status == 'ASSIGNED' or task.status == 'PENDING'}" 
-                                        class="action-btn edit-btn" title="Join Task" 
+                                <button th:if="${task.status == 'PENDING' or task.status == 'pending'}" 
+                                        class="action-btn edit-btn" title="Join Task (Start Progress)" 
                                         th:onclick="'joinTask(' + ${task.taskId} + ')'">
                                     <i class="fas fa-user-plus"></i>
+                                </button>
+                                <button th:if="${task.status == 'CANCELLED' or task.status == 'cancelled'}" 
+                                        class="action-btn edit-btn" title="Resume Task" 
+                                        th:onclick="'joinTask(' + ${task.taskId} + ')'">
+                                    <i class="fas fa-redo"></i>
                                 </button>
                                 <button th:if="${task.status == 'COMPLETED'}" 
                                         class="action-btn delete-btn" title="Remove" 
@@ -707,10 +711,9 @@
                             alert('Failed to load task details');
                         });
                 }
-                
-                // Join a task
+                  // Join a task
                 function joinTask(taskId) {
-                    if (confirm('Are you sure you want to join this task?')) {
+                    if (confirm('Are you sure you want to join this task? This will change the status from PENDING to IN_PROGRESS.')) {
                         fetch(`/hed/api/tasks/${taskId}/join`, {
                             method: 'POST',
                             headers: {
@@ -723,7 +726,7 @@
                             if (data.error) {
                                 alert('Error: ' + data.error);
                             } else {
-                                alert('Successfully joined the task!');
+                                alert('Successfully joined the task! Status changed to IN_PROGRESS.');
                                 loadTasks(); // Reload to update the table
                             }
                         })
@@ -779,18 +782,23 @@
                     const modalStatus = document.getElementById('modalStatus');
                     modalStatus.textContent = task.status || 'Unknown';
                     modalStatus.className = `status-badge ${task.status ? task.status.toLowerCase() : 'unknown'}`;
-                    
-                    // Show/hide Join Task button based on status
+                      // Show/hide Join Task button based on status
                     const joinTaskBtn = modal.querySelector('.join-task-btn');
                     if (joinTaskBtn) {
-                        if (task.status === 'ASSIGNED' || task.status === 'PENDING') {
+                        if (task.status === 'PENDING' || task.status === 'pending') {
                             joinTaskBtn.style.display = 'flex';
-                            joinTaskBtn.innerHTML = '<i class="fas fa-user-plus"></i><span>Join Task</span>';
-                        } else if (task.status === 'IN_PROGRESS') {
+                            joinTaskBtn.innerHTML = '<i class="fas fa-user-plus"></i><span>Join Task (Start Progress)</span>';
+                            joinTaskBtn.title = 'Join this task to start progress';
+                        } else if (task.status === 'CANCELLED' || task.status === 'cancelled') {
                             joinTaskBtn.style.display = 'flex';
-                            joinTaskBtn.innerHTML = '<i class="fas fa-play"></i><span>Continue Task</span>';
-                        } else if (task.status === 'COMPLETED') {
+                            joinTaskBtn.innerHTML = '<i class="fas fa-redo"></i><span>Resume Task</span>';
+                            joinTaskBtn.title = 'Resume this cancelled task';
+                        } else if (task.status === 'IN_PROGRESS' || task.status === 'in_progress') {
+                            joinTaskBtn.style.display = 'none'; // Already joined
+                        } else if (task.status === 'COMPLETED' || task.status === 'completed') {
                             joinTaskBtn.style.display = 'none'; // Can't join completed tasks
+                        } else if (task.status === 'APPROVED' || task.status === 'approved') {
+                            joinTaskBtn.style.display = 'none'; // Can't join approved tasks
                         } else {
                             joinTaskBtn.style.display = 'none'; // Default to hidden
                         }

@@ -443,8 +443,8 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getTotalQuestions(),
                 task.getTotalQuestions(),
                 countCompletedQuestions(task),
-                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
+                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
                 getVirtualDisplayStatus(task),
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
                 task.getDescription() != null ? task.getDescription() : "No description provided",
@@ -460,14 +460,14 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getTotalQuestions(),
                 task.getTotalQuestions(),
                 countCompletedQuestions(task),
-                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
+                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
                 getVirtualDisplayStatus(task),
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
                 task.getDescription() != null ? task.getDescription() : "No description provided",
                 "No feedback yet"
         );
-    }    // Phương thức mới: Chuyển Tasks thành DTO
+    }// Phương thức mới: Chuyển Tasks thành DTO
     private TaskAssignmentDTO convertToDTO(Tasks task) {
         return new TaskAssignmentDTO(
                 task.getTaskId().longValue(),
@@ -477,8 +477,8 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getTotalQuestions(),
                 task.getTotalQuestions(),
                 countCompletedQuestions(task),
-                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
+                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
                 getVirtualDisplayStatus(task),
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
                 task.getDescription() != null ? task.getDescription() : "No description provided",
@@ -587,9 +587,14 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy task với id: " + taskId));
         
         // Update task status to indicate HED has joined
-        if (task.getStatus() == TaskStatus.pending) {
+        if (task.getStatus() == TaskStatus.pending || task.getStatus() == TaskStatus.cancelled) {
             task.setStatus(TaskStatus.in_progress);
             tasksRepository.save(task);
+            System.out.println("Task " + taskId + " status changed from " + 
+                (task.getStatus() == TaskStatus.pending ? "PENDING" : "CANCELLED") + 
+                " to IN_PROGRESS by HED " + hedId);
+        } else {
+            throw new IllegalStateException("Task must be in PENDING or CANCELLED status to join. Current status: " + task.getStatus());
         }
     }
 
@@ -669,6 +674,41 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 .collect(Collectors.toList());
           System.out.println("HoD can assign to " + result.size() + " Subject Leaders");
         System.out.println("=== END TaskAssignmentService.getAssignableUsersForHoD DEBUG ===");
+        
+        return result;
+    }
+
+    // Phương thức mới: Lấy danh sách SL cho HoD assignment
+    public List<Map<String, Object>> getSubjectLeadersForHoDAssignment(String department) {
+        System.out.println("=== TaskAssignmentService.getSubjectLeadersForHoDAssignment DEBUG ===");
+        System.out.println("Department: " + department);
+        
+        if (department == null || department.trim().isEmpty()) {
+            System.out.println("Department is null or empty, returning empty list");
+            return new ArrayList<>();
+        }
+        
+        // HoD can only assign to Subject Leaders in their department
+        List<User> subjectLeaders = userRepository.findUsersByRoleAndDepartment(UserRole.SL, department);
+        System.out.println("Found " + subjectLeaders.size() + " subject leaders in department " + department);
+        
+        for (User user : subjectLeaders) {
+            System.out.println("  - SL: " + user.getFullName() + " (ID: " + user.getUserId() + ", Role: " + user.getRole() + ")");
+        }
+        
+        List<Map<String, Object>> result = subjectLeaders.stream()
+                .map(user -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", user.getUserId().longValue());
+                    map.put("name", user.getFullName());
+                    map.put("department", user.getDepartment());
+                    map.put("role", user.getRole().toString());
+                    return map;
+                })
+                .collect(Collectors.toList());
+        
+        System.out.println("Returning " + result.size() + " subject leaders for HoD assignment");
+        System.out.println("=== END TaskAssignmentService.getSubjectLeadersForHoDAssignment DEBUG ===");
         
         return result;
     }

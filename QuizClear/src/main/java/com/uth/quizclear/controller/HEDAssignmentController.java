@@ -4,6 +4,9 @@ import com.uth.quizclear.model.dto.CourseDTO;
 import com.uth.quizclear.model.dto.QuestionDTO;
 import com.uth.quizclear.model.dto.TaskAssignmentDTO;
 import com.uth.quizclear.model.dto.TaskNotificationDTO;
+import com.uth.quizclear.model.entity.User;
+import com.uth.quizclear.model.enums.UserRole;
+import com.uth.quizclear.repository.UserRepository;
 import com.uth.quizclear.service.CourseService;
 import com.uth.quizclear.service.QuestionService;
 import com.uth.quizclear.service.TaskAssignmentService;
@@ -20,14 +23,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/hed")
-public class HEDAssignmentController {
+public class HEDAssignmentController {    private static final Logger logger = LoggerFactory.getLogger(HEDAssignmentController.class);
 
-    private static final Logger logger = LoggerFactory.getLogger(HEDAssignmentController.class);    @Autowired
+    @Autowired
     private TaskAssignmentService taskAssignmentService;
 
     @Autowired
@@ -37,7 +41,10 @@ public class HEDAssignmentController {
     private CourseService courseService;
 
     @Autowired
-    private UserService userService;    @GetMapping("/assignments")
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;@GetMapping("/assignments")
     public String showAssignmentManagement(Model model) {
         // Get current user's department
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -262,19 +269,36 @@ public class HEDAssignmentController {
     @ResponseBody
     public List<Map<String, Object>> getLecturers() {
         // Debug logging
-        System.out.println("=== GET LECTURERS FOR HED DEBUG ===");
+        System.out.println("=== GET LECTURERS FOR HED/HoD DEBUG ===");
         
         // Get current user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         System.out.println("Current user: " + currentUsername);
         
-        // HED should get assignable users following proper workflow hierarchy
-        List<Map<String, Object>> assignableUsers = taskAssignmentService.getAssignableUsersForHoD();
-        System.out.println("Found " + assignableUsers.size() + " assignable users for HED");
+        User currentUser = userRepository.findByEmail(currentUsername)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + currentUsername));
+        System.out.println("User role: " + currentUser.getRole() + ", Department: " + currentUser.getDepartment());
+        
+        List<Map<String, Object>> assignableUsers;
+          if (currentUser.getRole() == UserRole.HOD) {
+            // HoD can only assign to Subject Leaders in their department
+            System.out.println("HoD detected - getting Subject Leaders for department: " + currentUser.getDepartment());
+            assignableUsers = taskAssignmentService.getSubjectLeadersForHoDAssignment(currentUser.getDepartment());
+        } else if (currentUser.getRole() == UserRole.HOED) {
+            // HED can assign based on proper hierarchy 
+            System.out.println("HED detected - getting assignable users across departments");
+            assignableUsers = taskAssignmentService.getAssignableUsersForHoD();
+        } else {
+            System.out.println("User is neither HoD nor HED - returning empty list");
+            assignableUsers = new ArrayList<>();
+        }
+        
+        System.out.println("Found " + assignableUsers.size() + " assignable users");
         for (Map<String, Object> user : assignableUsers) {
-            System.out.println("  - " + user.get("name") + " (ID: " + user.get("id") + ", Dept: " + user.get("department") + ", Role: " + user.get("role") + ")");        }
-        System.out.println("=== END GET LECTURERS FOR HED DEBUG ===");
+            System.out.println("  - " + user.get("name") + " (ID: " + user.get("id") + ", Dept: " + user.get("department") + ", Role: " + user.get("role") + ")");
+        }
+        System.out.println("=== END GET LECTURERS FOR HED/HoD DEBUG ===");
         
         return assignableUsers;
     }@GetMapping("/api/courses")
