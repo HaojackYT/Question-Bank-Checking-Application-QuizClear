@@ -247,6 +247,10 @@ public class User {
         return userId.intValue();
     }
 
+    public Long getUserIdLong(){
+        return userId;
+    }
+
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }

@@ -286,6 +286,45 @@
             }, 100);
         });
 
+        function formatDate(dateString) {
+        if (!dateString) return '';
+        const isoString = dateString.replace(' ', 'T');
+        const date = new Date(isoString);
+        if (isNaN(date)) return '';
+        return date.toLocaleDateString('en-GB'); // dd/mm/yyyy
+    }
+
+        function mapStatusValue(status) {
+            switch (status) {
+                case 'DRAFT': return 'Draft';
+                case 'SUBMITTED': return 'Submitted';
+                case 'APPROVED': return 'Approved';
+                case 'REJECTED': return 'Rejected';
+                case 'ARCHIVED': return 'Archived';
+                case 'DECLINED': return 'Declined';
+                default: return status;
+            }
+        }
+
+        function formatDifficulty(level) {
+            switch ((level || '').toLowerCase()) {
+                case 'recognition': return 'Recognition';
+                case 'comprehension': return 'Comprehension';
+                case 'basic_application': return 'Apply (Basic)';
+                case 'advanced_application': return 'Apply (Advanced)';
+                default: return level;
+            }
+        }
+
+        function mapSumStatus(statusKey) {
+        switch (statusKey) {
+            case 'COMPLETED': return 'Completed';
+            case 'DRAFT': return 'Draft';
+            case 'PENDING': return 'Pending';
+            default: return statusKey; 
+        }
+    }
+
         function viewSummaryDetails(summaryId) {
             fetch(`/subject-leader/api/summary-report/${summaryId}`)
 
@@ -296,32 +335,41 @@
                     return response.json();
                 })
                 .then(data => {
+                    console.log('[DEBUG] Summary report data:', data); // DEBUG
                     // Ẩn trang danh sách, hiện trang chi tiết
                     document.getElementById('summaryReportPage').style.display = 'none';
                     document.getElementById('summaryDetailsPage').style.display = 'block';
 
                     // Gán dữ liệu vào form
                     document.getElementById('detailId').value = 'RP_S' + data.sumId;
-                    document.getElementById('detailTitle').value = data.title;
-                    document.getElementById('detailCreatedBy').value = data.assignedBy.fullName;
-                    document.getElementById('detailQuestions').value = data.totalQuestions;
-                    document.getElementById('detailSubmissionDate').value = formatDate(data.createdAt);
-                    document.getElementById('detailRecipient').value = data.assignedTo.fullName;
-                    document.getElementById('detailStatus').value = data.status.value;
+                    document.getElementById('detailTitle').value = data.title || '';
+                    document.getElementById('detailRecipient').value = data.assignedTo?.department || '';
+                    document.getElementById('detailQuestions').value = data.totalQuestions || '';
+                    document.getElementById('detailSubmissionDate').value = formatDate(data.createdAt) || '';
+                    document.getElementById('detailCreatedBy').value = data.assignedBy ? data.assignedBy.fullName : '';
+                    document.getElementById('detailStatus').value = mapSumStatus(data.status) || '';
+
+
 
                     // Nếu có danh sách câu hỏi => thêm vào bảng
                     if (data.questions && Array.isArray(data.questions)) {
                         const tbody = document.querySelector('.questions-table tbody');
-                        tbody.innerHTML = ''; // clear cũ
+                        tbody.innerHTML = '';
 
                         data.questions.forEach(q => {
                             const tr = document.createElement('tr');
                             tr.innerHTML = `
                         <td>${q.id}</td>
                         <td>${q.contributor}</td>
-                        <td>${q.difficulty}</td>
-                        <td>${formatDate(q.updatedAt)}</td>
-                        <td><span class="status ${q.status.toLowerCase()}">${q.status}</span></td>
+                        <td>${formatDifficulty(q.difficulty)}</td>
+                        <td>${q.createdAt ? formatDate(q.createdAt) : ''}</td>
+                        <td>
+                            <span class="status ${q.status ? q.status.toLowerCase() : 'unknown'}">
+                                ${mapStatusValue(q.status)}
+                            </span>
+                        </td>
+
+
                     `;
                             tbody.appendChild(tr);
                         });

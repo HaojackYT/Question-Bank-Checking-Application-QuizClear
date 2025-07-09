@@ -14,9 +14,11 @@ public class SummaryQuestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "report_id")
     private Long id;
+    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "summary_id", nullable = false)
     private SummaryReport summaryReport;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
@@ -39,7 +41,4 @@ public class SummaryQuestion {
     public void setQuestion(Question question) {
         this.question = question;
     }
-
-    
-
 }

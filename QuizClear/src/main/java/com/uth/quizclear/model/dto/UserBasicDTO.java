@@ -52,6 +52,12 @@ public class UserBasicDTO {
         this.avatarUrl = avatarUrl;
     }
 
+    public UserBasicDTO (Long userId, String fullName, String department){
+        this.userId = userId;
+        this.fullName = fullName;
+        this.department = department;
+    }
+
     // ========== THÊM CONSTRUCTOR MỚI CHO LOGIN SYSTEM ==========
 
     /**
