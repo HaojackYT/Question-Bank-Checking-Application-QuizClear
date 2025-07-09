@@ -36,23 +36,23 @@
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-label">Pending Assignments</div>
-                            <div class="stat-number">25</div>
-                            <div class="stat-change">+6 this month</div>
+                            <div class="stat-number" th:text="${pendingAssignments}">25</div>
+                            <div class="stat-change">Waiting review</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-label">Total Reviews</div>
-                            <div class="stat-number">253</div>
-                            <div class="stat-change">+12 this month</div>
+                            <div class="stat-number" th:text="${totalReviews}">253</div>
+                            <div class="stat-change">All time</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-label">Need approval</div>
-                            <div class="stat-number">14</div>
-                            <div class="stat-change">+1 this month</div>
+                            <div class="stat-number" th:text="${needApproval}">14</div>
+                            <div class="stat-change">Pending approval</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-label">Task Completion</div>
-                            <div class="stat-number">32</div>
-                            <div class="stat-change">+8 this month</div>
+                            <div class="stat-number" th:text="${taskCompletion}">32</div>
+                            <div class="stat-change">Completed tasks</div>
                         </div>
                     </div>
 
@@ -74,54 +74,9 @@
                                         <span>0</span>
                                     </div>
                                     <div class="chart-bars">
-                                        <div class="bar-group"
-                                            data-subject="Database Systems">
-                                            <div class="bar created"
-                                                style="height: 44px;"></div>
-                                            <div class="bar target"
-                                                style="height: 54px;"></div>
-                                        </div>
-                                        <div class="bar-group"
-                                            data-subject="Web Development">
-                                            <div class="bar created"
-                                                style="height: 30px;"></div>
-                                            <div class="bar target"
-                                                style="height: 82px;"></div>
-                                        </div>
-                                        <div class="bar-group"
-                                            data-subject="Data Structures">
-                                            <div class="bar created"
-                                                style="height: 56px;"></div>
-                                            <div class="bar target"
-                                                style="height: 74px;"></div>
-                                        </div>
-                                        <div class="bar-group"
-                                            data-subject="Algorithms">
-                                            <div class="bar created"
-                                                style="height: 24px;"></div>
-                                            <div class="bar target"
-                                                style="height: 84px;"></div>
-                                        </div>
-                                        <div class="bar-group"
-                                            data-subject="Operating System">
-                                            <div class="bar created"
-                                                style="height: 60px;"></div>
-                                            <div class="bar target"
-                                                style="height: 82px;"></div>
-                                        </div>
-                                        <div class="bar-group"
-                                            data-subject="Networks">
-                                            <div class="bar created"
-                                                style="height: 18px;"></div>
-                                            <div class="bar target"
-                                                style="height: 42px;"></div>
-                                        </div>
-                                        <div class="bar-group"
-                                            data-subject="Security">
-                                            <div class="bar created"
-                                                style="height: 24px;"></div>
-                                            <div class="bar target"
-                                                style="height: 30px;"></div>
+                                        <div class="bar-group" th:each="data : ${chartData}" th:attr="data-subject=${data.subject}">
+                                            <div class="bar created" th:style="'height: ' + ${data.created} + 'px;'"></div>
+                                            <div class="bar target" th:style="'height: ' + ${data.target} + 'px;'"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -146,7 +101,7 @@
                         <!-- Progress Chart -->
                         <div class="progress-container">
                             <h3>Overall Progress</h3>
-                            <div class="progress-percentage-text">72%
+                            <div class="progress-percentage-text" th:text="${overallProgress} + '% Completed'">72%
                                 Completed</div>
                             <div class="circular-progress">
                                 <svg width="180" height="180"
@@ -174,64 +129,7 @@
                         </div>
                     </div>
 
-                    <!-- Recent Updates -->
-                    <div class="recent-updates">
-                        <h3>Recent Updates</h3>
-                        <div class="updates-list">
-                            <div class="update-item">
-                                <div class="update-content">
-                                    <div class="bullet-point">•</div>
-                                    <span class="update-text">Assign review for
-                                        Object Oriented Programming</span>
-                                    <div class="update-time">3:00 PM</div>
-                                    <div class="update-progress">
-                                        <div class="progress-bar"
-                                            style="width: 85%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="update-item">
-                                <div class="update-content">
-                                    <div class="bullet-point">•</div>
-                                    <span class="update-text">Approve feedback
-                                        for Nguyen Van A</span>
-                                    <div class="update-time">12:35 AM</div>
-                                    <div class="update-progress">
-                                        <div class="progress-bar"
-                                            style="width: 45%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="update-item">
-                                <div class="update-content">
-                                    <div class="bullet-point">•</div>
-                                    <span class="update-text">Lecturer ABC has
-                                        sent feedback for Data Structures and
-                                        Algorithms</span>
-                                    <div class="update-time">8:00 PM</div>
-                                    <div class="update-progress">
-                                        <div class="progress-bar"
-                                            style="width: 100%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="update-item">
-                                <div class="update-content">
-                                    <div class="bullet-point">•</div>
-                                    <span class="update-text">Approve feedback
-                                        for Computer Architecture</span>
-                                    <div class="update-time">9:35 AM</div>
-                                    <div class="update-progress">
-                                        <div class="progress-bar"
-                                            style="width: 20%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="see-more">
-                            <a href="#">See more...</a>
-                        </div>
-                    </div>
+                    <!-- Recent Updates section removed as requested -->
                 </div>
             </div>
         </div>

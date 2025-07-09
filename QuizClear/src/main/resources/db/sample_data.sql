@@ -18,7 +18,8 @@ INSERT INTO users (
 ('Frank Green', 'frank.green@university.edu', 'hash_fg007', 'Lec', 'active', 'Mathematics', 'male', '1985-12-30', 'South Africa', '1234567107', '2025-01-07 09:00:00', 'Cape Town', '77 Long St, Cape Town', '2020-07-01', '2030-07-01', 'UTC - Mathematics Faculty, Campus 1', 'MSc in Mathematics - University of Transport and Communications, Vietnam - 2011', false),
 ('Grace Harris', 'grace.harris@university.edu', 'hash_gh008', 'SL', 'active', 'Mathematics', 'female', '1983-06-14', 'Germany', '1234567108', '2025-01-08 09:00:00', 'Berlin', '88 Unter den Linden, Berlin', '2020-08-01', '2030-08-01', 'UTC - Mathematics Department, Campus 2', 'PhD in Mathematics - University of Transport and Communications, Vietnam - 2009', false),
 ('Henry Johnson', 'henry.johnson@university.edu', 'hash_hj009', 'HoD', 'active', 'Chemistry', 'male', '1981-10-08', 'France', '1234567109', '2025-01-09 09:00:00', 'Paris', '99 Champs-Élysées, Paris', '2020-09-01', '2030-09-01', 'UTC - Chemistry Research Lab, Campus 1', 'PhD in Chemistry - University of Transport and Communications, Vietnam - 2006', false),
-('Isabella King', 'isabella.king@university.edu', 'hash_ik010', 'HoD', 'active', 'Biology', 'female', '1977-02-25', 'Spain', '1234567110', '2025-01-10 09:00:00', 'Madrid', '111 Gran Vía, Madrid', '2020-10-01', '2030-10-01', 'UTC - Head of Biology Department, Campus 2', 'PhD in Biology - University of Transport and Communications, Vietnam - 2003', false);
+('Isabella King', 'isabella.king@university.edu', 'hash_ik010', 'HoD', 'active', 'Biology', 'female', '1977-02-25', 'Spain', '1234567110', '2025-01-10 09:00:00', 'Madrid', '111 Gran Vía, Madrid', '2020-10-01', '2030-10-01', 'UTC - Head of Biology Department, Campus 2', 'PhD in Biology - University of Transport and Communications, Vietnam - 2003', false),
+('Michael Taylor', 'michael.taylor@university.edu', 'hash_mt011', 'HoD', 'active', 'Computer Science', 'male', '1978-08-16', 'USA', '1234567111', '2025-01-11 09:00:00', 'San Francisco', '123 Silicon Valley Ave, San Francisco', '2020-11-01', '2030-11-01', 'UTC - Head of Computer Science Department, Campus 3', 'PhD in Computer Science - Stanford University, USA - 2007', false);
 
 -- 2. Thêm 10 bản ghi vào bảng courses  
 INSERT INTO courses (course_code, course_name, credits, department, description, created_by, semester, academic_year) VALUES
@@ -334,7 +335,7 @@ INSERT INTO duplicate_detections (new_question_id, similar_question_id, similari
 
 -- 1. Dữ liệu mẫu cho bảng departments
 INSERT INTO departments (department_code, department_name, description, head_of_department_id, status) VALUES
-('CS', 'Computer Science', 'Department of Computer Science and Information Technology', NULL, 'active'),
+('CS', 'Computer Science', 'Department of Computer Science and Information Technology', 11, 'active'),
 ('MATH', 'Mathematics', 'Department of Mathematics and Statistics', 2, 'active'),
 ('PHYS', 'Physics', 'Department of Physics and Applied Sciences', NULL, 'active'),
 ('CHEM', 'Chemistry', 'Department of Chemistry and Chemical Engineering', 9, 'active'),
@@ -370,6 +371,7 @@ INSERT INTO user_department_assignments (user_id, department_id, role_in_departm
 (2, 2, 'head', 6, 'active'),    -- Alexander Brooks (HoD) -> Math Department
 (10, 5, 'head', 6, 'active'),   -- Isabella King (HoD) -> Biology Department  
 (9, 4, 'head', 6, 'active'),    -- Henry Johnson (HoD) -> Chemistry Department
+(11, 1, 'head', 6, 'active'),   -- Michael Taylor (HoD) -> CS Department
 -- Emily Foster (HoED) không làm head department, chỉ observer
 (6, 1, 'observer', 6, 'active'), -- Emily Foster (HoED) -> CS Department
 (6, 2, 'observer', 6, 'active'), -- Emily Foster (HoED) -> Math Department  
@@ -527,9 +529,14 @@ INSERT INTO question_access_permissions (question_id, department_id, subject_id,
 --    Password: hash_ef006
 --    Should redirect to: /hoe-dashboard
 --
+-- 6. HEAD OF CS DEPARTMENT (HoD):
+--    Email: michael.taylor@university.edu
+--    Password: hash_mt011
+--    Should redirect to: /hed-dashboard
+--
 -- ROLE MAPPING:
 -- RD -> staff-dashboard (Catherine Davis)
--- HoD -> hed-dashboard (Alexander Brooks, Henry Johnson, Isabella King) 
+-- HoD -> hed-dashboard (Alexander Brooks, Henry Johnson, Isabella King, Michael Taylor) 
 -- SL -> sl-dashboard (Brian Carter, Grace Harris)
 -- Lec -> lecturer-dashboard (Ash Abrahams, Daniel Evans, Frank Green)
 -- HoED -> hoe-dashboard (Emily Foster)

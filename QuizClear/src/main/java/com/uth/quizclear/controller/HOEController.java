@@ -55,6 +55,7 @@ import com.uth.quizclear.repository.ExamRepository;
 @RequestMapping("/hoe")
 public class HOEController {
 
+
     @Autowired
     private ExamReviewService examReviewService;
 
@@ -64,12 +65,21 @@ public class HOEController {
     @Autowired
     private ExamService examService;
 
+    @Autowired
+    private com.uth.quizclear.service.HOEDashboardService hoeDashboardService;
+
     /**
      * Show HOE Dashboard page (view)
      */
     @GetMapping("/dashboard")
     public String showDashboard(Model model) {
-        // Add any dashboard data if needed
+        // Truyền dữ liệu dashboard HOE thực tế (đã bỏ recentUpdates)
+        model.addAttribute("pendingAssignments", hoeDashboardService.getPendingAssignments());
+        model.addAttribute("totalReviews", hoeDashboardService.getTotalReviews());
+        model.addAttribute("needApproval", hoeDashboardService.getNeedApproval());
+        model.addAttribute("taskCompletion", hoeDashboardService.getTaskCompletion());
+        model.addAttribute("overallProgress", hoeDashboardService.getOverallProgress());
+        model.addAttribute("chartData", hoeDashboardService.getChartData());
         model.addAttribute("pageTitle", "Dashboard");
         return "Head of Examination Department/HOE_Dashboard";
     }

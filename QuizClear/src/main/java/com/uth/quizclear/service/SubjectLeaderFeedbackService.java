@@ -12,10 +12,10 @@ public interface SubjectLeaderFeedbackService {
      * @return List of feedback DTOs
      */
     List<QuestionFeedbackDTO> getFeedbackForSubjectLeader(Long subjectLeaderId);
-    
-    /**
+      /**
      * Get detailed feedback for a specific question or exam
      * @param feedbackId The ID of the question or exam
+     * @param type The type of feedback (question or exam)
      * @return Detailed feedback DTO
      */
     QuestionFeedbackDetailDTO getFeedbackDetail(Long feedbackId, String type);
@@ -37,12 +37,36 @@ public interface SubjectLeaderFeedbackService {
      * @return true if successful
      */
     boolean assignQuestion(Long feedbackId, Map<String, Object> assignmentData, Long subjectLeaderId);
-    
-    /**
+      /**
      * Resubmit question for review after revision
      * @param feedbackId The question ID
      * @param subjectLeaderId The subject leader resubmitting
      * @return true if successful
      */
     boolean resubmitQuestion(Long feedbackId, Long subjectLeaderId);
+    
+    /**
+     * Approve question as Subject Leader
+     * @param feedbackId The question ID
+     * @param subjectLeaderId The subject leader approving
+     * @return true if successful
+     */
+    boolean approveQuestion(Long feedbackId, Long subjectLeaderId);
+    
+    /**
+     * Reject question as Subject Leader
+     * @param feedbackId The question ID
+     * @param subjectLeaderId The subject leader rejecting
+     * @param feedback The rejection feedback
+     * @return true if successful
+     */
+    boolean rejectQuestion(Long feedbackId, Long subjectLeaderId, String feedback);
+    
+    /**
+     * Get lecturers by department for assignment (excluding current Subject Leader)
+     * @param department The department name
+     * @param excludeUserId The Subject Leader ID to exclude
+     * @return List of available lecturers
+     */
+    List<Map<String, Object>> getLecturersByDepartmentForAssignment(String department, Long excludeUserId);
 }

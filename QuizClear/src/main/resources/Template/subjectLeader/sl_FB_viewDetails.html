@@ -100,15 +100,27 @@
                                         </div>
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
+                            </tbody>                        </table>
+                    </div>
+
+                    <!-- Correct Answer Explanation section -->
+                    <div class="explanation-section" id="explanationSection" style="margin-top: 20px; display: none;">
+                        <h3>Correct Answer Explanation</h3>
+                        <p class="section-subtitle">Explanation provided by the Lecturer</p>
+                        <div class="explanation-content">
+                            <div class="explanation-box">
+                                <span id="explanationText">No explanation provided.</span>
+                            </div>
+                        </div>
                     </div>                    <div class="action-buttons">
+                        <button title="Approve Question" class="btn btn--approve"
+                            onclick="approveQuestion()">Approve</button>
+                        <button title="Reject Question" class="btn btn--reject"
+                            onclick="rejectQuestion()">Reject</button>
                         <button title="Edit Question Content" class="btn btn--edit"
                             onclick="openEditModal()">Edit</button>
                         <button title="Assign to Another Lecturer" class="btn btn--assign"
-                            onclick="openAssignModal()">Assign</button>
-                        <button title="Resubmit for Higher Review" class="btn btn--resubmit"
-                            onclick="handleResubmit()">Resubmit</button>
+                            onclick="openAssignModal()">Assign</button>                        <button title="Resubmit for Higher Review" class="btn btn--resubmit">Resubmit</button>
                         <button title="Save Feedback Notes" class="btn btn--save-notes" 
                             onclick="saveFeedbackNotes()" 
                             id="saveNotesBtn" 
@@ -128,16 +140,11 @@
                 <h2 class="modal-title">Reassign Question</h2>
                 <p style="color: #666; margin-bottom: 20px;">Assign this question to another lecturer for revision</p>
 
-                <div class="modal-row">
-                    <div class="modal-item">
+                <div class="modal-row">                    <div class="modal-item">
                         <label class="modal-label">Target Department</label>
                         <select id="assignDepartment" class="modal-select" onchange="loadLecturersByDepartment()">
                             <option value="">Select Department</option>
-                            <option value="CS">Computer Science</option>
-                            <option value="MATH">Mathematics</option>
-                            <option value="PHYS">Physics</option>
-                            <option value="CHEM">Chemistry</option>
-                            <option value="BIO">Biology</option>
+                            <!-- This will be populated by JavaScript based on SL's accessible departments -->
                         </select>
                     </div>
                     <div class="modal-item">
@@ -166,7 +173,7 @@
 
                 <div class="modal-buttons">
                     <button class="modal-btn modal-btn--cancel" onclick="closeAssignModal()">Cancel</button>
-                    <button class="modal-btn modal-btn--assign" onclick="handleAssignment()">Reassign</button>
+                    <button class="modal-btn modal-btn--assign">Reassign</button>
                 </div>
             </div>
         </div>
@@ -254,6 +261,23 @@
                 loadFeedbackDetail(currentFeedbackId);
             } else {
                 showErrorMessage('No feedback ID provided');
+            }
+            
+            // Add event listeners for buttons
+            const assignButton = document.querySelector('.modal-btn--assign');
+            if (assignButton) {
+                assignButton.addEventListener('click', handleAssignment);
+            }
+
+            const resubmitButton = document.querySelector('.btn--resubmit');
+            if (resubmitButton) {
+                resubmitButton.addEventListener('click', handleResubmit);
+            }
+
+            const notesTextarea = document.querySelector('.info-field textarea');
+            if (notesTextarea) {
+                notesTextarea.addEventListener('input', markNotesAsModified);
+                notesTextarea.addEventListener('change', markNotesAsModified);
             }
         });// Load feedback detail data
         function loadFeedbackDetail(feedbackId) {
@@ -431,12 +455,29 @@
             if (optionA && data.answerF1) optionA.innerText = data.answerF1;
             if (optionB && data.answerF2) optionB.innerText = data.answerF2;
             if (optionC && data.answerF3) optionC.innerText = data.answerF3;
-            if (optionD && data.answerKey) optionD.innerText = data.answerKey;
-
-            // Update table header for question
+            if (optionD && data.answerKey) optionD.innerText = data.answerKey;            // Update table header for question
             const tableHeader = document.querySelector('.questions-table th');
             if (tableHeader) {
                 tableHeader.textContent = 'Question Content';
+            }
+
+            // Populate explanation
+            populateExplanation(data);
+        }
+
+        // Populate explanation content
+        function populateExplanation(data) {
+            const explanationSection = document.getElementById('explanationSection');
+            const explanationText = document.getElementById('explanationText');
+
+            if (explanationSection && explanationText) {
+                if (data.explanation && data.explanation.trim() !== '') {
+                    explanationText.innerText = data.explanation;
+                    explanationSection.style.display = 'block';
+                } else {
+                    explanationText.innerText = 'No explanation provided.';
+                    explanationSection.style.display = 'none';
+                }
             }
         }
 
@@ -564,7 +605,7 @@
                 console.error('Error:', error);
                 alert('❌ Network Error:\nFailed to save notes. Please check your connection and try again.');
             });
-        }// Assign Modal functionality
+        }        // Assign Modal functionality
         function openAssignModal() {
             // Check if assigning is allowed for current status
             if (currentFeedbackData) {
@@ -581,20 +622,48 @@
             assignDateInput.value = formatDate(currentDate);
 
             // Reset form
-            document.getElementById('assignDepartment').value = '';
+            document.getElementById('assignDepartment').innerHTML = '<option value="">Loading departments...</option>';
             document.getElementById('assignLecturer').innerHTML = '<option value="">First select department</option>';
             document.getElementById('assignLecturer').disabled = true;
             document.getElementById('assignNotes').value = '';
+
+            // Load accessible departments
+            loadAccessibleDepartments();
 
             // Show the modal
             document.getElementById('assignModal').style.display = 'block';
         }
 
-        function closeAssignModal() {
-            document.getElementById('assignModal').style.display = 'none';
+        function loadAccessibleDepartments() {
+            const departmentSelect = document.getElementById('assignDepartment');
+            
+            fetch('/subject-leader/api/departments')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.departments) {
+                        departmentSelect.innerHTML = '<option value="">Select Department</option>';
+                        
+                        if (data.departments.length === 0) {
+                            departmentSelect.innerHTML += '<option value="">No departments available</option>';
+                        } else {
+                            data.departments.forEach(dept => {
+                                departmentSelect.innerHTML += `<option value="${dept.code}">${dept.name}</option>`;
+                            });
+                        }
+                    } else {
+                        departmentSelect.innerHTML = '<option value="">Error loading departments</option>';
+                        console.error('Error loading departments:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    departmentSelect.innerHTML = '<option value="">Error loading departments</option>';
+                });
         }
 
-        // Load lecturers based on selected department
+        function closeAssignModal() {
+            document.getElementById('assignModal').style.display = 'none';
+        }        // Load lecturers based on selected department
         function loadLecturersByDepartment() {
             const departmentSelect = document.getElementById('assignDepartment');
             const lecturerSelect = document.getElementById('assignLecturer');
@@ -605,37 +674,36 @@
                 return;
             }
 
-            // Mock data - in real app, this would fetch from API
-            const lecturersByDepartment = {
-                'CS': [
-                    { id: 1, name: 'Ash Abrahams', email: 'ash.abrahams@university.edu' },
-                    { id: 3, name: 'Brian Carter', email: 'brian.carter@university.edu' }
-                ],
-                'MATH': [
-                    { id: 7, name: 'Frank Green', email: 'frank.green@university.edu' },
-                    { id: 8, name: 'Grace Harris', email: 'grace.harris@university.edu' }
-                ],
-                'PHYS': [
-                    { id: 6, name: 'Emily Foster', email: 'emily.foster@university.edu' }
-                ],
-                'CHEM': [
-                    { id: 9, name: 'Henry Johnson', email: 'henry.johnson@university.edu' }
-                ],
-                'BIO': [
-                    { id: 5, name: 'Daniel Evans', email: 'daniel.evans@university.edu' },
-                    { id: 10, name: 'Isabella King', email: 'isabella.king@university.edu' }
-                ]
-            };
+            // Show loading state
+            lecturerSelect.innerHTML = '<option value="">Loading...</option>';
+            lecturerSelect.disabled = true;
 
-            const lecturers = lecturersByDepartment[departmentSelect.value] || [];
-            
-            lecturerSelect.innerHTML = '<option value="">Select Lecturer</option>';
-            lecturers.forEach(lecturer => {
-                lecturerSelect.innerHTML += `<option value="${lecturer.id}">${lecturer.name} (${lecturer.email})</option>`;
-            });
-            
-            lecturerSelect.disabled = false;
-        }        // Handle assignment submission
+            // Fetch lecturers from API (excluding current Subject Leader)
+            fetch(`/subject-leader/api/lecturers?department=${departmentSelect.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.lecturers) {
+                        lecturerSelect.innerHTML = '<option value="">Select Lecturer</option>';
+                        
+                        if (data.lecturers.length === 0) {
+                            lecturerSelect.innerHTML += '<option value="">No lecturers available</option>';
+                        } else {
+                            data.lecturers.forEach(lecturer => {
+                                lecturerSelect.innerHTML += `<option value="${lecturer.id}">${lecturer.name} (${lecturer.email})</option>`;
+                            });
+                        }
+                        
+                        lecturerSelect.disabled = false;
+                    } else {
+                        lecturerSelect.innerHTML = '<option value="">Error loading lecturers</option>';
+                        console.error('Error loading lecturers:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    lecturerSelect.innerHTML = '<option value="">Error loading lecturers</option>';
+                });
+        }// Handle assignment submission
         function handleAssignment() {
             // Get form values
             const departmentSelect = document.getElementById('assignDepartment');
@@ -906,13 +974,11 @@
 
             // Get current notes for resubmission
             const notesTextarea = document.querySelector('.info-field textarea');
-            const resubmitNotes = notesTextarea ? notesTextarea.value.trim() : '';
-
-            const confirmMessage = `Are you sure you want to resubmit this question for higher-level review?\n\n` +
+            const resubmitNotes = notesTextarea ? notesTextarea.value.trim() : '';            const confirmMessage = `Are you sure you want to resubmit this question for higher-level review?\n\n` +
                                  `This action will:\n` +
-                                 `• Send the question to Head of Education Department\n` +
+                                 `• Send the question to Head of Department\n` +
                                  `• Include your feedback notes for context\n` +
-                                 `• Change status to "SUBMITTED_FOR_REVIEW"\n\n` +
+                                 `• Change status to "ARCHIVED"\n\n` +
                                  `Current feedback notes:\n"${resubmitNotes || 'No notes provided'}"`;
 
             if (!confirm(confirmMessage)) {
@@ -933,21 +999,19 @@
                 body: JSON.stringify(resubmitData)
             })
             .then(response => response.json())
-            .then(data => {
-                if (data.success) {
+            .then(data => {                if (data.success) {
                     alert('✅ Question resubmitted successfully!\n\n' +
-                          'The question has been escalated to Head of Education Department ' +
-                          'for final review. You will be notified of their decision.');
+                          'The question has been escalated to Head of Department ' +
+                          'for higher-level review. You will be notified of their decision.');
                     
                     // Update status display
                     const statusInput = document.querySelector('.info-field input[readonly]');
                     if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
-                        statusInput.value = 'SUBMITTED_FOR_REVIEW';
-                    }
-                      // Optional: redirect back to feedback list
+                        statusInput.value = 'ARCHIVED';
+                    }// Optional: redirect back to feedback list
                     setTimeout(() => {
                         if (confirm('✅ Question resubmitted successfully!\n\n' +
-                                  'The question has been escalated to Head of Education Department for final review. ' +
+                                  'The question has been escalated to Head of Department for final review. ' +
                                   'It will no longer appear in your feedback list since it\'s now under higher-level review.\n\n' +
                                   'Do you want to return to feedback list?')) {
                             window.location.href = '/subject-leader/feedback';
@@ -963,6 +1027,92 @@
             });
         }
         
+        // Approve question functionality
+        function approveQuestion() {
+            if (!currentFeedbackId) {
+                alert('Error: No question ID found');
+                return;
+            }
+            
+            if (!confirm('Are you sure you want to approve this question?\n\nThis action will mark the question as APPROVED and complete the review process.')) {
+                return;
+            }
+            
+            fetch(`/subject-leader/api/feedback/${currentFeedbackId}/approve`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ Question approved successfully!');
+                    // Update status display
+                    const statusInput = document.querySelector('.info-field input[readonly]');
+                    if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
+                        statusInput.value = 'APPROVED';
+                    }
+                    // Refresh page or redirect
+                    setTimeout(() => {
+                        window.location.href = '/subject-leader/feedback';
+                    }, 1500);
+                } else {
+                    alert('❌ Error approving question:\n' + (data.message || 'Unknown error occurred'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Network Error:\nFailed to approve question. Please check your connection and try again.');
+            });
+        }
+        
+        // Reject question functionality
+        function rejectQuestion() {
+            if (!currentFeedbackId) {
+                alert('Error: No question ID found');
+                return;
+            }
+            
+            const feedback = prompt('Please provide feedback for rejection (optional):');
+            if (feedback === null) {
+                return; // User cancelled
+            }
+            
+            if (!confirm('Are you sure you want to reject this question?\n\nThis will send it back to the lecturer for revision.')) {
+                return;
+            }
+            
+            fetch(`/subject-leader/api/feedback/${currentFeedbackId}/reject`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ feedback: feedback })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ Question rejected successfully!\n\nThe question has been returned to the lecturer for revision.');
+                    // Update status display
+                    const statusInput = document.querySelector('.info-field input[readonly]');
+                    if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
+                        statusInput.value = 'REJECTED';
+                    }
+                    // Refresh page or redirect
+                    setTimeout(() => {
+                        window.location.href = '/subject-leader/feedback';
+                    }, 1500);
+                } else {
+                    alert('❌ Error rejecting question:\n' + (data.message || 'Unknown error occurred'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Network Error:\nFailed to reject question. Please check your connection and try again.');
+            });
+        }
+
         // Close modals when clicking outside of them
         window.onclick = function (event) {
             const assignModal = document.getElementById('assignModal');
@@ -971,30 +1121,7 @@
             }
             if (event.target == editModal) {
                 editModal.style.display = 'none';
-            }
-        };
-        
-        // Add event listeners when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Assign button event listener
-            const assignButton = document.querySelector('.modal-btn--assign');
-            if (assignButton) {
-                assignButton.addEventListener('click', handleAssignment);
-            }
-
-            // Resubmit button event listener
-            const resubmitButton = document.querySelector('.btn--resubmit');
-            if (resubmitButton) {
-                resubmitButton.addEventListener('click', handleResubmit);
-            }
-
-            // Notes change event listener
-            const notesTextarea = document.querySelector('.info-field textarea');
-            if (notesTextarea) {
-                notesTextarea.addEventListener('input', markNotesAsModified);
-                notesTextarea.addEventListener('change', markNotesAsModified);
-            }
-        });
+            }        };
     </script>
     <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>

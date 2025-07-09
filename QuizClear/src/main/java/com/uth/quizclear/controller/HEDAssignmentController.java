@@ -37,25 +37,68 @@ public class HEDAssignmentController {
     private CourseService courseService;
 
     @Autowired
-    private UserService userService;
-
-    @GetMapping("/assignments")
+    private UserService userService;    @GetMapping("/assignments")
     public String showAssignmentManagement(Model model) {
-        Page<TaskAssignmentDTO> tasks = taskAssignmentService.getAllTaskAssignments(PageRequest.of(0, 5));
+        // Get current user's department
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        String userDepartment = userService.getUserDepartment(currentUsername);
+        
+        // Get tasks filtered by department
+        Page<TaskAssignmentDTO> tasks = taskAssignmentService.getTaskAssignmentsByDepartment(
+            userDepartment, PageRequest.of(0, 5));
+        
         model.addAttribute("assignments", tasks.getContent());
         model.addAttribute("totalPages", tasks.getTotalPages());
         model.addAttribute("currentPage", 0);
+        model.addAttribute("userDepartment", userDepartment);
         return "HEAD_OF_DEPARTMENT/HED_AssignmentManagement";
-    }
-
-    @GetMapping("/api/assignments")
+    }    @GetMapping("/api/assignments")
     @ResponseBody
     public Page<TaskAssignmentDTO> getAssignments(
-            @RequestParam(defaultValue = "") String search,            @RequestParam(defaultValue = "") String status,
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "") String status,
             @RequestParam(defaultValue = "") String subject,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
-        return taskAssignmentService.getAllTaskAssignments(search, status, subject, page, size);
+        
+        System.out.println("=== HEDAssignmentController.getAssignments DEBUG ===");
+        System.out.println("Parameters received:");
+        System.out.println("  - search: '" + search + "'");
+        System.out.println("  - status: '" + status + "'");
+        System.out.println("  - subject: '" + subject + "'");
+        System.out.println("  - page: " + page);
+        System.out.println("  - size: " + size);
+        
+        // Get current user's department
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        System.out.println("Current user: " + currentUsername);
+        
+        String userDepartment = userService.getUserDepartment(currentUsername);
+        System.out.println("User department: " + userDepartment);
+        
+        Page<TaskAssignmentDTO> result;
+        
+        // If no filters applied, return by department only
+        if (search.isEmpty() && status.isEmpty() && subject.isEmpty()) {
+            System.out.println("No filters applied, getting assignments by department only");
+            result = taskAssignmentService.getTaskAssignmentsByDepartment(
+                userDepartment, PageRequest.of(page, size));
+        } else {
+            System.out.println("Filters applied, getting assignments with filters and department constraint");
+            // Apply filters with department constraint
+            result = taskAssignmentService.getTaskAssignmentsByDepartmentWithFilters(
+                userDepartment, search, status, subject, page, size);
+        }
+        
+        System.out.println("Returning " + result.getNumberOfElements() + " assignments out of " + result.getTotalElements() + " total");
+        for (TaskAssignmentDTO assignment : result.getContent()) {
+            System.out.println("  - " + assignment.getTitle() + " -> " + assignment.getAssignedLecturerName() + " (" + assignment.getSubjectName() + ")");
+        }
+        System.out.println("=== END HEDAssignmentController.getAssignments DEBUG ===");
+        
+        return result;
     }
 
     // API endpoint for HED Join Task page
@@ -96,41 +139,88 @@ public class HEDAssignmentController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
-    }
-
-    @PostMapping("/api/assignments")
+    }    @PostMapping("/api/assignments")
     @ResponseBody
     public ResponseEntity<?> createAssignment(@RequestBody Map<String, Object> request) {
+        System.out.println("=== CREATE ASSIGNMENT DEBUG ===");
+        System.out.println("Received request to create assignment");
+        System.out.println("Request data: " + request);
+        
         try {
+            Long lecturerId = Long.parseLong(request.get("lecturerId").toString());
+            Long courseId = Long.parseLong(request.get("courseId").toString());
+            Integer totalQuestions = Integer.parseInt(request.get("totalQuestions").toString());
+            String title = request.get("title").toString();
+            String description = request.get("description").toString();
+            String dueDate = request.get("dueDate").toString();
+            
+            System.out.println("Parsed data:");
+            System.out.println("  - Lecturer ID: " + lecturerId);
+            System.out.println("  - Course ID: " + courseId);
+            System.out.println("  - Total Questions: " + totalQuestions);
+            System.out.println("  - Title: " + title);
+            System.out.println("  - Description: " + description);
+            System.out.println("  - Due Date: " + dueDate);
+            
             taskAssignmentService.createTaskAssignment(
-                    Long.parseLong(request.get("lecturerId").toString()),
-                    Long.parseLong(request.get("courseId").toString()),
-                    Integer.parseInt(request.get("totalQuestions").toString()),
-                    request.get("title").toString(),
-                    request.get("description").toString(),
-                    request.get("dueDate").toString()
+                    lecturerId,
+                    courseId,
+                    totalQuestions,
+                    title,
+                    description,
+                    dueDate
             );
+            
+            System.out.println("Assignment created successfully");
+            System.out.println("=== END CREATE ASSIGNMENT DEBUG ===");
+            
             return ResponseEntity.ok().build();
         } catch (Exception e) {
+            System.out.println("Error creating assignment: " + e.getMessage());
+            e.printStackTrace();
+            System.out.println("=== END CREATE ASSIGNMENT DEBUG (ERROR) ===");
             return ResponseEntity.badRequest().body(Map.of("error", "Error creating assignment: " + e.getMessage()));
         }
-    }
-
-    @DeleteMapping("/api/assignments/{taskId}")
+    }    @DeleteMapping("/api/assignments/{taskId}")
     @ResponseBody
     public ResponseEntity<?> deleteAssignment(@PathVariable Long taskId) {
         try {
+            // Get assignment details to check status
+            TaskAssignmentDTO assignment = taskAssignmentService.getTaskDetailForHED(taskId);
+            
+            // Business rule: Prevent deletion of assignments in progress or completed
+            if ("in_progress".equalsIgnoreCase(assignment.getStatus()) || 
+                "IN_PROGRESS".equalsIgnoreCase(assignment.getStatus())) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Cannot delete assignment that is currently in progress. " +
+                            "Please cancel or reassign instead."
+                ));
+            }
+            
+            if ("completed".equalsIgnoreCase(assignment.getStatus()) || 
+                "COMPLETED".equalsIgnoreCase(assignment.getStatus()) ||
+                "approved".equalsIgnoreCase(assignment.getStatus()) ||
+                "APPROVED".equalsIgnoreCase(assignment.getStatus())) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Cannot delete completed or approved assignments. " +
+                            "This would affect audit trails and reporting."
+                ));
+            }
+            
             taskAssignmentService.deleteTaskAssignment(taskId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", "Error deleting assignment: " + e.getMessage()));
         }
-    }
-
-    @GetMapping("/api/assignment")
+    }@GetMapping("/api/assignment")
     @ResponseBody
     public TaskAssignmentDTO getAssignment(@RequestParam Long taskId) {
-        return taskAssignmentService.getTaskAssignmentById(taskId);
+        System.out.println("=== GET ASSIGNMENT DETAILS DEBUG ===");
+        System.out.println("Getting assignment details for task ID: " + taskId);
+        TaskAssignmentDTO result = taskAssignmentService.getTaskDetailForHED(taskId);
+        System.out.println("Assignment details: " + result.getAssignedLecturerName());
+        System.out.println("=== END GET ASSIGNMENT DETAILS DEBUG ===");
+        return result;
     }
 
     @GetMapping("/api/notifications")
@@ -168,18 +258,39 @@ public class HEDAssignmentController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", "Error updating question status: " + e.getMessage()));
         }
-    }
-
-    @GetMapping("/api/lecturers")
+    }    @GetMapping("/api/lecturers")
     @ResponseBody
     public List<Map<String, Object>> getLecturers() {
-        return taskAssignmentService.getLecturers();
-    }
-
-    @GetMapping("/api/courses")
+        // Debug logging
+        System.out.println("=== GET LECTURERS DEBUG ===");
+        
+        // Get current user's department
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        System.out.println("Current user: " + currentUsername);
+        
+        String userDepartment = userService.getUserDepartment(currentUsername);
+        System.out.println("User department: " + userDepartment);
+        
+        // Return lecturers for this department only
+        List<Map<String, Object>> lecturers = taskAssignmentService.getLecturersByDepartment(userDepartment);
+        System.out.println("Found " + lecturers.size() + " lecturers for department: " + userDepartment);
+        for (Map<String, Object> lecturer : lecturers) {
+            System.out.println("  - " + lecturer.get("name") + " (ID: " + lecturer.get("id") + ", Dept: " + lecturer.get("department") + ")");
+        }
+        System.out.println("=== END GET LECTURERS DEBUG ===");
+        
+        return lecturers;
+    }@GetMapping("/api/courses")
     @ResponseBody
     public List<Map<String, Object>> getCourses() {
-        return taskAssignmentService.getCourses();
+        // Get current user's department
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        String userDepartment = userService.getUserDepartment(currentUsername);
+        
+        // Return courses for this department only
+        return taskAssignmentService.getCoursesByDepartment(userDepartment);
     }
 
     @GetMapping("/courses")

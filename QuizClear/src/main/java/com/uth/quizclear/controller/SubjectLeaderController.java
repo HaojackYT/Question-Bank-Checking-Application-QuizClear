@@ -1,5 +1,7 @@
 package com.uth.quizclear.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +26,8 @@ import com.uth.quizclear.model.dto.SummaryReportDTO;
 import com.uth.quizclear.model.entity.Plan;
 import com.uth.quizclear.model.entity.SummaryReport;
 import com.uth.quizclear.repository.SummaryRepository;
+import com.uth.quizclear.model.entity.User;
+import com.uth.quizclear.repository.UserRepository;
 import com.uth.quizclear.service.PlanService;
 import com.uth.quizclear.service.SubjectLeaderFeedbackService;
 import com.uth.quizclear.service.SummaryService;
@@ -33,10 +37,14 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/subject-leader")
 public class SubjectLeaderController {
+      @Autowired
+    private SubjectLeaderFeedbackService feedbackService;
     
     @Autowired
-    private SubjectLeaderFeedbackService feedbackService;    @Autowired
     private PlanService planService;
+    
+    @Autowired
+    private UserRepository userRepository;
       /**
      * Helper method to safely get userId from session
      */
@@ -63,14 +71,15 @@ public class SubjectLeaderController {
     
     /**
      * Helper method to get userId from email (temporary solution)
-     */
-    private Long getUserIdFromEmail(String email) {
+     */    private Long getUserIdFromEmail(String email) {
         // This is a temporary solution - in real app, you'd query database
         // For Subject Leader testing, use fixed ID based on email
         if ("brian.carter@university.edu".equals(email)) {
-            return 3L; // Brian Carter - Subject Leader
+            return 3L; // Brian Carter - Subject Leader (Computer Science)
+        } else if ("grace.harris@university.edu".equals(email)) {
+            return 8L; // Grace Harris - Subject Leader (Mathematics)
         }
-        return 3L; // Default for testing
+        return 3L; // Default fallback to Brian Carter for testing
     }
       // View pages
     @GetMapping("/dashboard")
@@ -462,10 +471,87 @@ public class SubjectLeaderController {
                 return ResponseEntity.ok(Map.of("success", true, "message", "Question resubmitted successfully"));
             } else {
                 return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Failed to resubmit question"));
+            }        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body(Map.of("success", false, "message", "Error resubmitting question: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/api/feedback/{feedbackId}/approve")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> approveQuestion(
+            @PathVariable Long feedbackId,
+            HttpSession session) {
+        
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
+        
+        if (userId == null || roleObj == null) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        // Handle both String and UserRole enum cases
+        String roleStr = null;
+        if (roleObj instanceof String) {
+            roleStr = (String) roleObj;
+        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+        }
+        
+        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        try {
+            boolean success = feedbackService.approveQuestion(feedbackId, userId);
+            if (success) {
+                return ResponseEntity.ok(Map.of("success", true, "message", "Question approved successfully"));
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Failed to approve question"));
             }
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
-                .body(Map.of("success", false, "message", "Error resubmitting question: " + e.getMessage()));
+                .body(Map.of("success", false, "message", "Error approving question: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/api/feedback/{feedbackId}/reject")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> rejectQuestion(
+            @PathVariable Long feedbackId,
+            @RequestBody Map<String, String> requestBody,
+            HttpSession session) {
+        
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
+        
+        if (userId == null || roleObj == null) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        // Handle both String and UserRole enum cases
+        String roleStr = null;
+        if (roleObj instanceof String) {
+            roleStr = (String) roleObj;
+        } else if (roleObj instanceof com.uth.quizclear.model.enums.UserRole) {
+            roleStr = ((com.uth.quizclear.model.enums.UserRole) roleObj).getValue();
+        }
+        
+        if (roleStr == null || (!"SL".equalsIgnoreCase(roleStr) && !"ROLE_SL".equalsIgnoreCase(roleStr))) {
+            return ResponseEntity.status(403).build();
+        }
+        
+        try {
+            String feedback = requestBody.get("feedback");
+            boolean success = feedbackService.rejectQuestion(feedbackId, userId, feedback);
+            if (success) {
+                return ResponseEntity.ok(Map.of("success", true, "message", "Question rejected successfully"));
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Failed to reject question"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body(Map.of("success", false, "message", "Error rejecting question: " + e.getMessage()));
         }
     }
 
@@ -603,6 +689,103 @@ public class SubjectLeaderController {
                 </div>
             </div>
             """;
+    }
+      // API to get lecturers by department for assignment
+    @GetMapping("/api/lecturers")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getLecturersByDepartment(
+            @RequestParam(required = false) String department,
+            HttpSession session) {
+        
+        System.out.println("=== DEBUG API /api/lecturers ===");
+        System.out.println("Request department parameter: " + department);
+        
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
+        
+        System.out.println("Session userId: " + userId);
+        System.out.println("Session role: " + roleObj);
+        
+        if (userId == null || roleObj == null) {
+            return ResponseEntity.status(403).body(Map.of("success", false, "message", "Unauthorized"));
+        }
+        
+        try {
+            // If no department specified, get current user's department
+            if (department == null || department.trim().isEmpty()) {
+                Optional<User> userOpt = userRepository.findById(userId);
+                if (userOpt.isPresent()) {
+                    department = userOpt.get().getDepartment();
+                    System.out.println("No department param, using user's department: " + department);
+                }
+            }
+            
+            if (department == null || department.trim().isEmpty()) {
+                System.out.println("No department found - returning error");
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Department not found"));
+            }
+            
+            System.out.println("Final department to query: " + department);
+            List<Map<String, Object>> lecturers = feedbackService.getLecturersByDepartmentForAssignment(department, userId);
+            System.out.println("Returned lecturers count: " + lecturers.size());
+            return ResponseEntity.ok(Map.of("success", true, "lecturers", lecturers));
+            
+        } catch (Exception e) {
+            System.err.println("Error getting lecturers: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError()
+                .body(Map.of("success", false, "message", "Error getting lecturers: " + e.getMessage()));
+        }
+    }
+    
+    // API to get departments accessible by Subject Leader
+    @GetMapping("/api/departments")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getAccessibleDepartments(HttpSession session) {
+        
+        Long userId = getUserIdFromSession(session);
+        Object roleObj = session.getAttribute("role");
+        
+        if (userId == null || roleObj == null) {
+            return ResponseEntity.status(403).body(Map.of("success", false, "message", "Unauthorized"));
+        }
+        
+        try {
+            Optional<User> userOpt = userRepository.findById(userId);
+            if (!userOpt.isPresent()) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "User not found"));
+            }
+            
+            String userDepartment = userOpt.get().getDepartment();
+            List<Map<String, String>> departments = new ArrayList<>();
+            
+            // For now, Subject Leader can only access their own department
+            // In future, this can be expanded to multiple departments
+            if (userDepartment != null && !userDepartment.trim().isEmpty()) {
+                Map<String, String> dept = new HashMap<>();
+                dept.put("code", userDepartment);
+                dept.put("name", getDepartmentDisplayName(userDepartment));
+                departments.add(dept);
+            }
+            
+            return ResponseEntity.ok(Map.of("success", true, "departments", departments));
+            
+        } catch (Exception e) {
+            System.err.println("Error getting departments: " + e.getMessage());
+            return ResponseEntity.internalServerError()
+                .body(Map.of("success", false, "message", "Error getting departments: " + e.getMessage()));
+        }
+    }
+    
+    private String getDepartmentDisplayName(String departmentCode) {
+        switch (departmentCode.toUpperCase()) {
+            case "CS": return "Computer Science";
+            case "MATH": return "Mathematics";
+            case "PHYS": return "Physics";
+            case "CHEM": return "Chemistry";
+            case "BIO": return "Biology";
+            default: return departmentCode;
+        }
     }
 }
 

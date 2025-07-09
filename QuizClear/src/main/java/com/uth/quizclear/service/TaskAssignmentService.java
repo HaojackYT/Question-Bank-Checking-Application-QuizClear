@@ -14,6 +14,8 @@ import com.uth.quizclear.repository.TasksRepository;
 import com.uth.quizclear.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,6 +81,74 @@ public class TaskAssignmentService {
     public Page<TaskAssignmentDTO> getAllTaskAssignments(Pageable pageable) {
         Page<Tasks> tasksPage = tasksRepository.findAll(pageable);
         return tasksPage.map(this::mapToDTOExtended);
+    }    // Phương thức mới: Lấy tasks theo department cho HoD
+    public Page<TaskAssignmentDTO> getTaskAssignmentsByDepartment(String department, Pageable pageable) {
+        List<Tasks> departmentTasks = tasksRepository.findTasksByDepartmentImproved(department);
+        
+        // Convert List to Page manually
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), departmentTasks.size());
+          // Handle empty list case
+        if (departmentTasks.isEmpty() || start >= departmentTasks.size()) {
+            return new PageImpl<>(java.util.Collections.emptyList(), pageable, departmentTasks.size());
+        }
+        
+        List<Tasks> pageContent = departmentTasks.subList(start, end);
+        Page<Tasks> tasksPage = new PageImpl<>(pageContent, pageable, departmentTasks.size());
+        return tasksPage.map(this::mapToDTOExtended);
+    }
+
+    // Phương thức mới: Lấy tasks theo department với filters
+    public Page<TaskAssignmentDTO> getTaskAssignmentsByDepartmentWithFilters(String department, String search, String status, String subject, int page, int size) {
+        List<Tasks> departmentTasks = tasksRepository.findTasksByDepartmentImproved(department);
+        
+        // Apply filters
+        List<Tasks> filteredTasks = departmentTasks.stream()
+                .filter(task -> {
+                    // Filter by search term (title or course name)
+                    if (search != null && !search.isEmpty()) {
+                        String searchLower = search.toLowerCase();
+                        String title = task.getTitle() != null ? task.getTitle().toLowerCase() : "";
+                        String courseName = task.getCourse() != null && task.getCourse().getCourseName() != null 
+                                ? task.getCourse().getCourseName().toLowerCase() : "";
+                        if (!title.contains(searchLower) && !courseName.contains(searchLower)) {
+                            return false;
+                        }
+                    }
+                    
+                    // Filter by status
+                    if (status != null && !status.isEmpty()) {
+                        String taskStatus = task.getStatus() != null ? task.getStatus().toString().toLowerCase() : "";
+                        if (!taskStatus.equals(status.toLowerCase())) {
+                            return false;
+                        }
+                    }
+                    
+                    // Filter by course/subject (by courseId)
+                    if (subject != null && !subject.isEmpty()) {
+                        Long courseId = task.getCourse() != null ? task.getCourse().getCourseId() : null;
+                        if (courseId == null || !courseId.toString().equals(subject)) {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                })
+                .collect(Collectors.toList());
+        
+        // Manual pagination
+        Pageable pageable = PageRequest.of(page, size);
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), filteredTasks.size());
+        
+        // Handle empty list case
+        if (filteredTasks.isEmpty() || start >= filteredTasks.size()) {
+            return new PageImpl<>(java.util.Collections.emptyList(), pageable, filteredTasks.size());
+        }
+        
+        List<Tasks> pageContent = filteredTasks.subList(start, end);
+        Page<Tasks> tasksPage = new PageImpl<>(pageContent, pageable, filteredTasks.size());
+        return tasksPage.map(this::mapToDTOExtended);
     }
 
     // // Phương thức sửa: Lấy task với tìm kiếm và lọc theo courseId
@@ -118,23 +188,40 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
         Tasks task = tasksRepository.findById(Math.toIntExact(taskId))
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy task với id: " + taskId));
         return convertToDTO(task);
-    }
-
-    // Phương thức gốc: Tạo task
+    }    // Phương thức gốc: Tạo task
     public void createTaskAssignment(Long lecturerId, Long courseId, Integer totalQuestions, String title, String description, String dueDate) {
+        System.out.println("=== TaskAssignmentService.createTaskAssignment DEBUG ===");
+        System.out.println("Parameters received:");
+        System.out.println("  - Lecturer ID: " + lecturerId);
+        System.out.println("  - Course ID: " + courseId);
+        System.out.println("  - Total Questions: " + totalQuestions);
+        System.out.println("  - Title: " + title);
+        System.out.println("  - Description: " + description);
+        System.out.println("  - Due Date: " + dueDate);
+        
         if (lecturerId > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("Lecturer ID exceeds maximum value for Integer");
         }
         if (courseId > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("Course ID exceeds maximum value for Integer");
         }
+        
         User lecturer = userRepository.findById(lecturerId)
                 .orElseThrow(() -> new RuntimeException("Lecturer not found with id: " + lecturerId));
+        System.out.println("Found lecturer: " + lecturer.getFullName() + " (ID: " + lecturer.getUserId() + ", Dept: " + lecturer.getDepartment() + ")");
+        
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found with id: " + courseId));
-        // Gán cứng assignedBy với userId = 5 cho mục đích test
-        User assignedBy = userRepository.findById(5L)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy người dùng với id: 5"));
+        System.out.println("Found course: " + course.getCourseName() + " (ID: " + course.getCourseId() + ", Dept: " + course.getDepartment() + ")");
+          // Get current user as assignedBy instead of hardcoding user ID 5
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        System.out.println("Current authenticated user: " + currentUsername);
+        
+        User assignedBy = userRepository.findByEmail(currentUsername)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy người dùng hiện tại: " + currentUsername));
+        System.out.println("Assigned by: " + assignedBy.getFullName() + " (ID: " + assignedBy.getUserId() + ", Dept: " + assignedBy.getDepartment() + ")");
+        
         Tasks task = new Tasks();
         task.setTitle(title);
         task.setDescription(description);
@@ -146,7 +233,16 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
         task.setTaskType(TaskType.create_questions);
         task.setStatus(TaskStatus.pending);
         task.setCreatedAt(LocalDateTime.now());
+        
+        System.out.println("Task created with:");
+        System.out.println("  - AssignedTo: " + task.getAssignedTo().getFullName());
+        System.out.println("  - AssignedBy: " + task.getAssignedBy().getFullName());
+        System.out.println("  - Course: " + task.getCourse().getCourseName());
+        System.out.println("  - Status: " + task.getStatus());
+        
         tasksRepository.save(task);
+        System.out.println("Task saved successfully!");
+        System.out.println("=== END TaskAssignmentService.createTaskAssignment DEBUG ===");
     }
 
     // Phương thức mới: Tạo task với giao dịch
@@ -155,10 +251,12 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
         User lecturer = userRepository.findById(lecturerId)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy giảng viên với id: " + lecturerId));
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khóa học với id: " + courseId));
-        // Gán cứng assignedBy với userId = 5 cho mục đích test
-        User assignedBy = userRepository.findById(5L)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy người dùng với id: 5"));
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy khóa học với id: " + courseId));        // Get current authenticated user (HoD) instead of hardcoded ID
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        User assignedBy = userRepository.findByEmail(currentUsername)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy người dùng hiện tại: " + currentUsername));
+        System.out.println("Assigned by: " + assignedBy.getFullName() + " (ID: " + assignedBy.getUserId() + ", Dept: " + assignedBy.getDepartment() + ")");
         Tasks task = new Tasks();
         task.setTitle(title);
         task.setDescription(description);
@@ -214,6 +312,48 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                     return map;
                 })
                 .collect(Collectors.toList());
+    }    // Phương thức mới: Lấy danh sách giảng viên theo phòng ban
+    public List<Map<String, Object>> getLecturersByDepartment(String department) {
+        System.out.println("=== TaskAssignmentService.getLecturersByDepartment DEBUG ===");
+        System.out.println("Requested department: " + department);
+        
+        if (department == null || department.trim().isEmpty()) {
+            System.out.println("Department is null or empty, falling back to all lecturers");
+            return getLecturers(); // Fallback to all lecturers if no department specified
+        }
+        
+        // Get both Lecturers (LEC) and Subject Leaders (SL) from the department
+        // HoD can assign tasks to both lecturers and subject leaders in their department
+        List<User> lecturers = userRepository.findUsersByRoleAndDepartment(UserRole.LEC, department);
+        List<User> subjectLeaders = userRepository.findUsersByRoleAndDepartment(UserRole.SL, department);
+        
+        System.out.println("Found " + lecturers.size() + " lecturers with role LEC and department " + department);
+        System.out.println("Found " + subjectLeaders.size() + " subject leaders with role SL and department " + department);
+        
+        // Combine both lists
+        List<User> allUsers = new java.util.ArrayList<>();
+        allUsers.addAll(lecturers);
+        allUsers.addAll(subjectLeaders);
+        
+        for (User user : allUsers) {
+            System.out.println("  - " + user.getFullName() + " (ID: " + user.getUserId() + ", Dept: " + user.getDepartment() + ", Role: " + user.getRole() + ")");
+        }
+        
+        List<Map<String, Object>> result = allUsers.stream()
+                .map(user -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", user.getUserId().longValue());
+                    map.put("name", user.getFullName());
+                    map.put("department", user.getDepartment());
+                    map.put("role", user.getRole().toString()); // Add role info for debugging
+                    return map;
+                })
+                .collect(Collectors.toList());
+        
+        System.out.println("Returning " + result.size() + " lecturers and subject leaders");
+        System.out.println("=== END TaskAssignmentService.getLecturersByDepartment DEBUG ===");
+        
+        return result;
     }
 
     // Phương thức gốc: Lấy danh sách khóa học
@@ -228,12 +368,31 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 .collect(Collectors.toList());
     }
 
-    // Phương thức gốc: Đếm số câu hỏi hoàn thành
+    // Phương thức mới: Lấy danh sách khóa học theo department
+    public List<Map<String, Object>> getCoursesByDepartment(String department) {
+        return courseRepository.findAll().stream()
+                .filter(course -> department.equals(course.getDepartment()))
+                .map(course -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", course.getCourseId());
+                    map.put("name", course.getCourseName());
+                    return map;
+                })
+                .collect(Collectors.toList());
+    }    // Phương thức gốc: Đếm số câu hỏi hoàn thành
     private Integer countCompletedQuestions(Tasks task) {
-        return task.getTotalQuestions() / 2; // Placeholder, replace with actual logic
-    }
-
-    // Phương thức gốc: Chuyển Tasks thành DTO cơ bản
+        // For now, return 0 for new tasks. 
+        // In a real system, this would query the questions table to count completed questions for this task
+        if (task.getStatus() == TaskStatus.pending) {
+            return 0; // New tasks have no completed questions
+        } else if (task.getStatus() == TaskStatus.completed) {
+            return task.getTotalQuestions(); // Completed tasks have all questions done
+        } else {
+            // For in_progress tasks, you would query the database to count actual completed questions
+            // For now, return 0 as placeholder
+            return 0;
+        }
+    }    // Phương thức gốc: Chuyển Tasks thành DTO cơ bản
     private TaskAssignmentDTO mapToDTOBasic(Tasks task) {
         return new TaskAssignmentDTO(
                 task.getTaskId().longValue(),
@@ -243,16 +402,14 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getTotalQuestions(),
                 task.getTotalQuestions(),
                 countCompletedQuestions(task),
-                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
+                task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A", // Fixed: assignedTo instead of assignedBy
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
                 task.getStatus() != null ? task.getStatus().name().toLowerCase() : "N/A",
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
-                task.getDescription(),
-                null
+                task.getDescription() != null ? task.getDescription() : "No description provided",
+                "No feedback yet"
         );
-    }
-
-    // Phương thức gốc: Chuyển Tasks thành DTO mở rộng
+    }    // Phương thức gốc: Chuyển Tasks thành DTO mở rộng
     private TaskAssignmentDTO mapToDTOExtended(Tasks task) {
         return new TaskAssignmentDTO(
                 task.getTaskId().longValue(),
@@ -262,16 +419,14 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getTotalQuestions(),
                 task.getTotalQuestions(),
                 countCompletedQuestions(task),
-                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
+                task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A", // Fixed: assignedTo instead of assignedBy
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
                 task.getStatus() != null ? task.getStatus().name().toLowerCase() : "N/A",
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
-                task.getDescription(),
-                null
+                task.getDescription() != null ? task.getDescription() : "No description provided",
+                "No feedback yet"
         );
-    }
-
-    // Phương thức mới: Chuyển Tasks thành DTO
+    }// Phương thức mới: Chuyển Tasks thành DTO
     private TaskAssignmentDTO convertToDTO(Tasks task) {
         return new TaskAssignmentDTO(
                 task.getTaskId().longValue(),
@@ -281,14 +436,14 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getTotalQuestions(),
                 task.getTotalQuestions(),
                 countCompletedQuestions(task),
-                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
+                task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A", // Fixed: should be assignedTo
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
                 task.getStatus() != null ? task.getStatus().name().toLowerCase() : "N/A",
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
-                task.getDescription(),
-                null
+                task.getDescription() != null ? task.getDescription() : "No description provided",
+                "No feedback yet" // Default feedback instead of null
         );
-    }    // Phương thức gốc: Lấy task cho HED - Using real database data
+    }// Phương thức gốc: Lấy task cho HED - Using real database data
     public List<TaskAssignmentDTO> getTasksForHED() {
         // Get all tasks from database
         List<Tasks> allTasks = tasksRepository.findAll();
@@ -327,13 +482,23 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                     return matches;
                 })
                 .collect(java.util.stream.Collectors.toList());
-    }
-
-    // Phương thức mới: Lấy task cho HED với filter
+    }    // Phương thức mới: Lấy task cho HED với filter
     public List<TaskAssignmentDTO> getTasksForHEDWithFilter(String search, String status, String subject) {
-        List<Tasks> allTasks = tasksRepository.findAll();
+        // Get current user to filter by department
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        User currentUser = userRepository.findByEmail(currentUsername)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + currentUsername));
         
-        return allTasks.stream()
+        System.out.println("=== TaskAssignmentService.getTasksForHEDWithFilter DEBUG ===");
+        System.out.println("Current user: " + currentUser.getFullName() + " (Dept: " + currentUser.getDepartment() + ")");
+        System.out.println("Filters - search: " + search + ", status: " + status + ", subject: " + subject);
+        
+        // Use department-based query instead of findAll
+        List<Tasks> departmentTasks = tasksRepository.findTasksByDepartmentImproved(currentUser.getDepartment());
+        System.out.println("Found " + departmentTasks.size() + " tasks for department: " + currentUser.getDepartment());
+        
+        return departmentTasks.stream()
                 .filter(task -> {
                     // Filter by search term (title or subject)
                     if (search != null && !search.isEmpty()) {

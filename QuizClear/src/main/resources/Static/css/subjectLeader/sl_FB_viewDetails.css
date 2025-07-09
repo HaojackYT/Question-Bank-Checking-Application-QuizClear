@@ -263,6 +263,28 @@
     background-color: white;
 }
 
+.action-buttons .btn--approve {
+    border-color: #10b981;
+    color: white;
+    background-color: #10b981;
+}
+
+.action-buttons .btn--approve:hover {
+    background-color: #059669;
+    border-color: #059669;
+}
+
+.action-buttons .btn--reject {
+    border-color: #ef4444;
+    color: white;
+    background-color: #ef4444;
+}
+
+.action-buttons .btn--reject:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
 .action-buttons .btn--edit {
     border-color: #6b7280;
     color: #374151;
@@ -444,4 +466,41 @@
 .answer-contain {
     flex: 2;
     margin-right: 1rem;
+}
+
+/* Explanation section styles */
+.explanation-section {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 0.75rem;
+    border-left: 4px solid #007bff;
+}
+
+.explanation-section h3 {
+    color: #495057;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.explanation-section .section-subtitle {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin: 0 0 1rem 0;
+    font-style: italic;
+}
+
+.explanation-box {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    min-height: 3rem;
+    line-height: 1.5;
+}
+
+.explanation-box span {
+    color: #495057;
+    font-size: 0.95rem;
 }
