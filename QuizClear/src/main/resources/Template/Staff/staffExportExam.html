@@ -21,7 +21,9 @@
             <div id="main">
                 <div id="export-exam-container">
                     <div class="header-content">
-                        <h1><i class="fas fa-arrow-left back-arrow"></i> Export Exam</h1>
+                        <a th:href="@{/staff/exams/approved}">
+                            <i class="fas fa-arrow-left back-arrow"></i> Export Exam
+                        </a>
                         <p th:text="${exam.examTitle} + ' • ' + ${exam.examCode}"></p>
                     </div>
                     <div class="main-content">
