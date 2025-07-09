@@ -553,8 +553,7 @@ public class HEDAssignmentController {    private static final Logger logger = L
     @GetMapping("/api/tasks/status-options")
     @ResponseBody
     public ResponseEntity<?> getStatusOptions() {
-        try {
-            List<String> statusOptions = List.of(
+        try {            List<String> statusOptions = List.of(
                 "PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED", "APPROVED", "REJECTED"
             );
             return ResponseEntity.ok(statusOptions);

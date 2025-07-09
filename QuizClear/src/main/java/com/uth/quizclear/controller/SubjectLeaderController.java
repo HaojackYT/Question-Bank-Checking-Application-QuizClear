@@ -933,8 +933,7 @@ public class SubjectLeaderController {
             
             User lecturer = userRepository.findById(lecturerId)
                     .orElseThrow(() -> new IllegalArgumentException("Lecturer not found"));
-            
-            // Create new task for lecturer
+              // Create new task for lecturer
             Tasks delegatedTask = new Tasks();
             delegatedTask.setTitle(originalTask.getTitle() + " (Delegated)");
             delegatedTask.setDescription(originalTask.getDescription() + "\n\nNotes: " + notes);
@@ -947,7 +946,10 @@ public class SubjectLeaderController {
             delegatedTask.setStatus(TaskStatus.pending);
             delegatedTask.setCreatedAt(LocalDateTime.now());
             
-            tasksRepository.save(delegatedTask);
+            tasksRepository.save(delegatedTask);            // Update original task status to cancelled (task delegated to another user)
+            originalTask.setStatus(TaskStatus.cancelled);
+            originalTask.setDescription(originalTask.getDescription() + "\n\n[DELEGATED] This task has been delegated to " + lecturer.getFullName() + " on " + LocalDateTime.now().toString());
+            tasksRepository.save(originalTask);
             
             return ResponseEntity.ok(Map.of("success", true, "message", "Task delegated successfully"));
         } catch (Exception e) {

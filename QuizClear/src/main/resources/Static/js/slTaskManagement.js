@@ -102,7 +102,8 @@ function getStatusClass(status) {
     const statusMap = {
         'pending': 'status-pending',
         'in_progress': 'status-in_progress', 
-        'completed': 'status-completed'
+        'completed': 'status-completed',
+        'cancelled': 'status-cancelled'
     };
     return statusMap[status] || 'status-pending';
 }
@@ -112,7 +113,8 @@ function formatStatus(status) {
     const statusMap = {
         'pending': 'Pending',
         'in_progress': 'In Progress',
-        'completed': 'Completed'
+        'completed': 'Completed',
+        'cancelled': 'Cancelled'
     };
     return statusMap[status] || status;
 }
@@ -136,6 +138,24 @@ function getActionButtons(task) {
                     <button class="action-btn delegate-btn" onclick="openDelegateModal(${task.taskId})">
                         <i class="fas fa-user-plus"></i> Delegate
                     </button>`;
+    }    if (task.status === 'completed') {
+        // For completed tasks, only show view button (already added above)
+        buttons += `<span class="status-info">
+                       <i class="fas fa-check-circle"></i> Completed
+                   </span>`;
+    }
+    
+    if (task.status === 'cancelled') {
+        // Check if this is a delegated task
+        if (task.description && task.description.includes('[DELEGATED]')) {
+            buttons += `<span class="status-info">
+                           <i class="fas fa-user-check"></i> Delegated
+                       </span>`;
+        } else {
+            buttons += `<span class="status-info">
+                           <i class="fas fa-times-circle"></i> Cancelled
+                       </span>`;
+        }
     }
     
     return buttons;
@@ -245,6 +265,12 @@ async function handleDelegateSubmit(event) {
         return;
     }
     
+    // Show loading state
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Delegating...';
+    submitBtn.disabled = true;
+    
     try {
         const response = await fetch(`/subject-leader/api/task-management/tasks/${taskId}/delegate`, {
             method: 'POST',
@@ -262,12 +288,21 @@ async function handleDelegateSubmit(event) {
         }
         
         const result = await response.json();
-        showMessage('Task delegated successfully!', 'success');
+        showMessage('Task delegated successfully! The task status has been updated.', 'success');
         closeModal('delegateModal');
-        loadTasks(); // Reload tasks
+        
+        // Add small delay then reload to ensure backend has processed
+        setTimeout(() => {
+            loadTasks(); // Reload tasks to refresh status and buttons
+        }, 500);
+        
     } catch (error) {
         console.error('Error delegating task:', error);
         showMessage('Error delegating task: ' + error.message, 'error');
+    } finally {
+        // Restore button state
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
     }
 }
 
