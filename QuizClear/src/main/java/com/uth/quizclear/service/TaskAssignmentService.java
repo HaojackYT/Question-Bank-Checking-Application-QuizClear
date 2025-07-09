@@ -21,8 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,27 +50,64 @@ public class TaskAssignmentService {
                         task.getStatus()
                 ))
                 .collect(Collectors.toList());
-    }
-
-    // Phương thức gốc: Cập nhật trạng thái task
+    }    // Phương thức gốc: Cập nhật trạng thái task
     public void updateTaskStatus(Long taskId, String status) {
         if (taskId > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("Task ID exceeds maximum value for Integer");
         }
         Tasks task = tasksRepository.findById(taskId.intValue())
                 .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
-        try {
-            TaskStatus taskStatus = TaskStatus.valueOf(status.toLowerCase());
-            task.setStatus(taskStatus);
-            if (taskStatus == TaskStatus.completed || taskStatus == TaskStatus.cancelled) {
-                task.setCompletedAt(LocalDateTime.now());
-            } else {
-                task.setCompletedAt(null);
-            }
-            tasksRepository.save(task);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid status: " + status);
+        
+        Integer intTaskId = taskId.intValue();
+        
+        // Map virtual statuses to actual enum values and track virtual status
+        TaskStatus actualStatus;
+        switch (status.toUpperCase()) {
+            case "APPROVED":
+                actualStatus = TaskStatus.completed;
+                approvedTasks.add(intTaskId);
+                rejectedTasks.remove(intTaskId); // Remove from rejected if was there
+                break;
+            case "REJECTED":
+                actualStatus = TaskStatus.cancelled;
+                rejectedTasks.add(intTaskId);
+                approvedTasks.remove(intTaskId); // Remove from approved if was there
+                break;
+            case "PENDING":
+                actualStatus = TaskStatus.pending;
+                // Clear virtual status
+                approvedTasks.remove(intTaskId);
+                rejectedTasks.remove(intTaskId);
+                break;
+            case "IN_PROGRESS":
+                actualStatus = TaskStatus.in_progress;
+                // Clear virtual status
+                approvedTasks.remove(intTaskId);
+                rejectedTasks.remove(intTaskId);
+                break;
+            case "COMPLETED":
+                actualStatus = TaskStatus.completed;
+                // Don't add to approved set - this is just lecturer completion
+                break;
+            case "CANCELLED":
+                actualStatus = TaskStatus.cancelled;
+                // Don't add to rejected set - this is just regular cancellation
+                break;
+            default:
+                try {
+                    actualStatus = TaskStatus.valueOf(status.toLowerCase());
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("Invalid status: " + status);
+                }
         }
+        
+        task.setStatus(actualStatus);
+        if (actualStatus == TaskStatus.completed || actualStatus == TaskStatus.cancelled) {
+            task.setCompletedAt(LocalDateTime.now());
+        } else {
+            task.setCompletedAt(null);
+        }
+        tasksRepository.save(task);
     }
 
     // Phương thức gốc: Lấy tất cả task với phân trang
@@ -402,9 +441,9 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getTotalQuestions(),
                 task.getTotalQuestions(),
                 countCompletedQuestions(task),
-                task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A", // Fixed: assignedTo instead of assignedBy
+                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
-                task.getStatus() != null ? task.getStatus().name().toLowerCase() : "N/A",
+                getVirtualDisplayStatus(task),
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
                 task.getDescription() != null ? task.getDescription() : "No description provided",
                 "No feedback yet"
@@ -419,14 +458,14 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getTotalQuestions(),
                 task.getTotalQuestions(),
                 countCompletedQuestions(task),
-                task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A", // Fixed: assignedTo instead of assignedBy
+                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
-                task.getStatus() != null ? task.getStatus().name().toLowerCase() : "N/A",
+                getVirtualDisplayStatus(task),
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
                 task.getDescription() != null ? task.getDescription() : "No description provided",
                 "No feedback yet"
         );
-    }// Phương thức mới: Chuyển Tasks thành DTO
+    }    // Phương thức mới: Chuyển Tasks thành DTO
     private TaskAssignmentDTO convertToDTO(Tasks task) {
         return new TaskAssignmentDTO(
                 task.getTaskId().longValue(),
@@ -436,12 +475,12 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getTotalQuestions(),
                 task.getTotalQuestions(),
                 countCompletedQuestions(task),
-                task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A", // Fixed: should be assignedTo
+                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
-                task.getStatus() != null ? task.getStatus().name().toLowerCase() : "N/A",
+                getVirtualDisplayStatus(task),
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
                 task.getDescription() != null ? task.getDescription() : "No description provided",
-                "No feedback yet" // Default feedback instead of null
+                "No feedback yet"
         );
     }// Phương thức gốc: Lấy task cho HED - Using real database data
     public List<TaskAssignmentDTO> getTasksForHED() {
@@ -563,6 +602,41 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
             tasksRepository.delete(task);
         } else {
             throw new IllegalStateException("Chỉ có thể xóa task đã hoàn thành");
+        }    }
+
+    // In-memory tracking for approved/rejected tasks (virtual status)
+    // This is a simple solution without changing database schema
+    private final Set<Integer> approvedTasks = new HashSet<>();
+    private final Set<Integer> rejectedTasks = new HashSet<>();
+
+    // Helper method to get display status for frontend with virtual status support
+    private String getVirtualDisplayStatus(Tasks task) {
+        if (task.getStatus() == null) {
+            return "pending";
+        }
+        
+        Integer taskId = task.getTaskId();
+        
+        // Check if task was explicitly approved or rejected by HED
+        if (approvedTasks.contains(taskId)) {
+            return "approved";
+        }
+        if (rejectedTasks.contains(taskId)) {
+            return "rejected";
+        }
+        
+        // Default to actual enum status
+        switch (task.getStatus()) {
+            case pending:
+                return "pending";
+            case in_progress:
+                return "in_progress";
+            case completed:
+                return "completed";            case cancelled:
+                return "cancelled";
+            default:
+                return task.getStatus().name().toLowerCase();
         }
     }
+
 }

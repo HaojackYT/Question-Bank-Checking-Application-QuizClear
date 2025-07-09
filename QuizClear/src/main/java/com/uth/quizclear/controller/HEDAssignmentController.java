@@ -504,5 +504,29 @@ public class HEDAssignmentController {
         logger.warn("User is not authenticated, returning null for user ID");
         return null;
     }
+
+    // TEMPORARY DEBUG ENDPOINT - REMOVE IN PRODUCTION
+    @PostMapping("/api/tasks/{taskId}/set-completed")
+    @ResponseBody
+    public ResponseEntity<?> setTaskCompleted(@PathVariable Long taskId) {
+        try {
+            taskAssignmentService.updateTaskStatus(taskId, "COMPLETED");
+            return ResponseEntity.ok(Map.of("success", true, "message", "Task set to completed for testing"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }
+    // Temporary test endpoint to set task to completed status
+    @PostMapping("/api/tasks/{taskId}/test-completed")
+    @ResponseBody
+    public ResponseEntity<?> testSetCompleted(@PathVariable Long taskId) {
+        try {
+            taskAssignmentService.updateTaskStatus(taskId, "COMPLETED");
+            return ResponseEntity.ok(Map.of("success", true, "message", "Task set to completed for testing"));
+        } catch (Exception e) {
+            logger.error("Error setting task to completed: ", e);
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }
 }
 

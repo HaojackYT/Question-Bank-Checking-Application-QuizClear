@@ -351,10 +351,31 @@
                     }
 
                     const descriptionElement = document.querySelector('.detail-section:nth-child(5) p');
-                    if (descriptionElement) descriptionElement.textContent = data.description || 'No description';
+                    if (descriptionElement) descriptionElement.textContent = data.description || 'No description';                    const feedbackElement = document.querySelector('.detail-section:nth-child(6) .feedback-box p');
+                    if (feedbackElement) feedbackElement.textContent = data.feedback || 'No feedback';                    // Show/hide approve and reject buttons based on status
+                    const modalFooter = document.querySelector('#detailsModal .modal-footer');
+                    if (modalFooter) {
+                        console.log('=== BUTTON VISIBILITY DEBUG ===');
+                        console.log('Current assignment status:', data.status);
+                        console.log('Status type:', typeof data.status);
+                        console.log('Status comparison result:', data.status === 'completed');
+                        console.log('Assignment ID:', data.taskId);
+                        console.log('Assignment title:', data.title);
+                        
+                        if (data.status === 'completed') {
+                            // Show approve/reject buttons only for completed assignments
+                            modalFooter.style.display = 'block';
+                            console.log('✓ SHOWING approve/reject buttons for completed assignment');
+                        } else {
+                            // Hide buttons for other statuses
+                            modalFooter.style.display = 'none';
+                            console.log('✗ HIDING approve/reject buttons for status:', data.status);
+                        }
+                        console.log('Modal footer display style:', modalFooter.style.display);
+                        console.log('=== END BUTTON VISIBILITY DEBUG ===');
+                    }
 
-                    const feedbackElement = document.querySelector('.detail-section:nth-child(6) .feedback-box p');
-                    if (feedbackElement) feedbackElement.textContent = data.feedback || 'No feedback';                    loadQuestions(taskId);
+                    loadQuestions(taskId);
                     document.getElementById('detailsModal').style.display = 'block';
                     
                     console.log('=== END OPENING DETAILS MODAL DEBUG ===');
@@ -499,9 +520,7 @@
                     console.error('Error updating question status:', error);
                     showError(`Failed to update question status: ${error.message}`);
                 });
-        }
-
-        function updateAssignmentStatus(status) {
+        }        function updateAssignmentStatus(status) {
             const action = status === 'APPROVED' ? 'approve' : 'reject';
             if (!confirm(`Are you sure you want to ${action} this assignment?`)) return;
             const taskIdMatch = document.querySelector('.details-modal h2').textContent.match(/ID: (\d+)/);
@@ -510,14 +529,14 @@
                 return;
             }
             const taskId = parseInt(taskIdMatch[1]);
-            const mappedStatus = status === 'APPROVED' ? 'completed' : 'cancelled';
             const buttons = document.querySelectorAll('.modal-footer button');
             buttons.forEach(btn => btn.disabled = true);
 
-            fetchWithErrorHandling(`${BASE_URL}/api/hed/notifications/${taskId}/status`, {
+            // Use the dedicated approve/reject endpoints
+            fetchWithErrorHandling(`${BASE_URL}/hed/api/tasks/${taskId}/${action}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: mappedStatus })
+                body: JSON.stringify({ feedback: 'Processed by HED' })
             })
                 .then(() => {
                     showError(`Assignment ${action}d successfully`, true);
@@ -526,12 +545,12 @@
                 })
                 .catch(error => {
                     console.error('Error updating assignment status:', error);
-                    showError(`Failed to update assignment status: ${error.message}`);
+                    showError(`Failed to ${action} assignment: ${error.message}`);
                 })
                 .finally(() => {
                     buttons.forEach(btn => btn.disabled = false);
                 });
-        }        // Form submission
+        }// Form submission
         document.getElementById('newAssignForm').addEventListener('submit', function (event) {
             event.preventDefault();
             const dueDate = document.getElementById('dueDate').value;
