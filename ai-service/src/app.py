@@ -1,5 +1,6 @@
 """
 Flask API Server for AI Duplicate Detection Service
+Máy chủ API Flask cho dịch vụ phát hiện câu hỏi trùng lặp bằng AI
 """
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -8,7 +9,7 @@ import os
 import sys
 from datetime import datetime
 
-# Add parent directory to path for imports
+# Thêm thư mục cha vào đường dẫn để import được các module
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
@@ -16,28 +17,28 @@ sys.path.append(parent_dir)
 from src.config import config
 from src.duplicate_detector import DuplicateDetector
 
-# Setup logging
+# Thiết lập logging để ghi nhật ký
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
-# Initialize Flask app
+# Khởi tạo ứng dụng Flask
 app = Flask(__name__)
 
-# Get configuration
+# Lấy cấu hình từ biến môi trường (development, production, etc.)
 config_name = os.getenv('FLASK_ENV', 'default')
 app_config = config[config_name]
 
-# Setup CORS
+# Thiết lập CORS để cho phép truy cập từ các domain khác
 CORS(app, origins=app_config.CORS_ORIGINS)
 
-# Initialize AI detector (will be loaded on first request)
+# Khởi tạo AI detector (sẽ được tạo khi có request đầu tiên - lazy loading)
 detector = None
 
 def get_detector():
-    """Get or initialize the detector"""
+    """Lấy hoặc khởi tạo detector AI (lazy loading để tiết kiệm memory)"""
     global detector
     if detector is None:
         logger.info("Initializing AI Duplicate Detector...")

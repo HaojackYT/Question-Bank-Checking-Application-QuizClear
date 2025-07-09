@@ -1,5 +1,6 @@
 """
 AI Duplicate Detection Module using Sentence Transformers
+Module phát hiện câu hỏi trùng lặp sử dụng AI Sentence Transformers
 """
 import numpy as np
 import logging
@@ -9,91 +10,88 @@ from sentence_transformers import SentenceTransformer, util
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List, Dict, Tuple
 
-# Add parent directory to path for imports
+# Thêm thư mục cha vào đường dẫn để import được các module
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.config import Config
 
-# Setup logging
+# Thiết lập logging để ghi nhật ký
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class DuplicateDetector:
     def __init__(self):
-        """Initialize the duplicate detector with sentence transformer model"""
-        self.model = None
-        self.model_name = Config.MODEL_NAME
-        self.cache_dir = Config.get_model_path()
-        self.threshold = Config.SIMILARITY_THRESHOLD
-        self._load_model()
+        """Khởi tạo detector phát hiện trùng lặp với model sentence transformer"""
+        self.model = None  # Model AI chưa được load
+        self.model_name = Config.MODEL_NAME  # Tên model từ config
+        self.cache_dir = Config.get_model_path()  # Thư mục lưu model
+        self.threshold = Config.SIMILARITY_THRESHOLD  # Ngưỡng độ tương tự
+        self._load_model()  # Load model ngay khi khởi tạo
     
     def _load_model(self):
-        """Load the sentence transformer model"""
+        """Load model sentence transformer từ cache hoặc download"""
         try:
-            logger.info(f"Loading model: {self.model_name}")
-            logger.info(f"Cache directory: {self.cache_dir}")
+            logger.info(f"Đang load model: {self.model_name}")
+            logger.info(f"Thư mục cache: {self.cache_dir}")
             
-            # Load model with custom cache directory
+            # Load model với thư mục cache tùy chỉnh
             self.model = SentenceTransformer(
                 self.model_name, 
                 cache_folder=self.cache_dir
             )
             
-            logger.info("Model loaded successfully!")
+            logger.info("Model đã được load thành công!")
             
         except Exception as e:
-            logger.error(f"Error loading model: {str(e)}")
+            logger.error(f"Lỗi khi load model: {str(e)}")
             raise e
-    
     def encode_questions(self, questions: List[str]) -> np.ndarray:
-        """Convert questions to embeddings"""
+        """Chuyển đổi câu hỏi thành vector số (embeddings)"""
         try:
             if not questions:
                 return np.array([])
             
-            # Clean and prepare questions
+            # Làm sạch và chuẩn bị câu hỏi
             cleaned_questions = [q.strip() for q in questions if q.strip()]
             
             if not cleaned_questions:
                 return np.array([])
             
-            # Generate embeddings
+            # Tạo embeddings (vector đại diện cho ý nghĩa câu hỏi)
             embeddings = self.model.encode(cleaned_questions)
-            logger.info(f"Generated embeddings for {len(cleaned_questions)} questions")
+            logger.info(f"Đã tạo embeddings cho {len(cleaned_questions)} câu hỏi")
             
             return embeddings
             
         except Exception as e:
-            logger.error(f"Error encoding questions: {str(e)}")
+            logger.error(f"Lỗi khi encode câu hỏi: {str(e)}")
             raise e
-    
     def calculate_similarity(self, embedding1: np.ndarray, embedding2: np.ndarray) -> float:
-        """Calculate cosine similarity between two embeddings"""
+        """Tính độ tương tự giữa hai vector embedding (từ 0 đến 1)"""
         try:
-            # Reshape if needed
+            # Reshape nếu cần thiết (chuyển thành ma trận 2D)
             if embedding1.ndim == 1:
                 embedding1 = embedding1.reshape(1, -1)
             if embedding2.ndim == 1:
                 embedding2 = embedding2.reshape(1, -1)
             
-            # Calculate cosine similarity
+            # Tính độ tương tự cosine (0 = hoàn toàn khác, 1 = giống hệt)
             similarity = cosine_similarity(embedding1, embedding2)[0][0]
             return float(similarity)
             
         except Exception as e:
-            logger.error(f"Error calculating similarity: {str(e)}")
+            logger.error(f"Lỗi khi tính độ tương tự: {str(e)}")
             return 0.0
-    
     def find_duplicates(self, new_question: str, existing_questions: List[Dict]) -> List[Dict]:
         """
-        Find duplicate questions for a new question
+        Tìm các câu hỏi trùng lặp cho một câu hỏi mới
         
         Args:
-            new_question (str): The new question to check
-            existing_questions (List[Dict]): List of existing questions with format:
+            new_question (str): Câu hỏi mới cần kiểm tra
+            existing_questions (List[Dict]): Danh sách câu hỏi đã có với format:
                 [{"id": int, "content": str}, ...]
         
         Returns:
-            List[Dict]: List of similar questions with similarity scores
+            List[Dict]: Danh sách câu hỏi tương tự với điểm số
         """
         try:
             if not new_question.strip():
@@ -102,29 +100,29 @@ class DuplicateDetector:
             if not existing_questions:
                 return []
             
-            # Extract question contents
+            # Lấy nội dung các câu hỏi đã có
             existing_contents = [q.get('content', '') for q in existing_questions]
             existing_contents = [c for c in existing_contents if c.strip()]
             
             if not existing_contents:
                 return []
             
-            # Encode new question
+            # Encode câu hỏi mới thành vector
             new_embedding = self.encode_questions([new_question])
             if new_embedding.size == 0:
                 return []
             
-            # Encode existing questions
+            # Encode các câu hỏi đã có thành vector
             existing_embeddings = self.encode_questions(existing_contents)
             if existing_embeddings.size == 0:
                 return []
             
-            # Calculate similarities
+            # Tính độ tương tự với từng câu hỏi
             similarities = []
             for i, existing_embedding in enumerate(existing_embeddings):
                 similarity = self.calculate_similarity(new_embedding[0], existing_embedding)
                 
-                # Only include if above threshold
+                # Chỉ lấy những câu có độ tương tự trên ngưỡng
                 if similarity >= self.threshold:
                     similarities.append({
                         'question_id': existing_questions[i].get('id'),
@@ -132,26 +130,25 @@ class DuplicateDetector:
                         'similarity_score': round(similarity, 4)
                     })
             
-            # Sort by similarity score (descending)
+            # Sắp xếp theo độ tương tự (từ cao xuống thấp)
             similarities.sort(key=lambda x: x['similarity_score'], reverse=True)
             
-            logger.info(f"Found {len(similarities)} similar questions above threshold {self.threshold}")
+            logger.info(f"Tìm thấy {len(similarities)} câu hỏi tương tự trên ngưỡng {self.threshold}")
             
             return similarities
             
         except Exception as e:
-            logger.error(f"Error finding duplicates: {str(e)}")
+            logger.error(f"Lỗi khi tìm câu hỏi trùng lặp: {str(e)}")
             return []
-    
     def batch_check_duplicates(self, questions: List[Dict]) -> Dict:
         """
-        Check duplicates for multiple questions at once
+        Kiểm tra trùng lặp cho nhiều câu hỏi cùng một lúc
         
         Args:
-            questions (List[Dict]): List of questions to check
+            questions (List[Dict]): Danh sách câu hỏi cần kiểm tra
         
         Returns:
-            Dict: Results for each question
+            Dict: Kết quả cho từng câu hỏi
         """
         try:
             results = {}
@@ -160,7 +157,7 @@ class DuplicateDetector:
                 question_id = question.get('id')
                 content = question.get('content', '')
                 
-                # Check against other questions in the batch
+                # Kiểm tra với các câu hỏi khác trong batch
                 other_questions = questions[:i] + questions[i+1:]
                 
                 duplicates = self.find_duplicates(content, other_questions)
@@ -174,13 +171,12 @@ class DuplicateDetector:
             return results
             
         except Exception as e:
-            logger.error(f"Error in batch check: {str(e)}")
+            logger.error(f"Lỗi trong batch check: {str(e)}")
             return {}
-    
     def health_check(self) -> Dict:
-        """Check if the service is healthy"""
+        """Kiểm tra xem service có hoạt động tốt không"""
         try:
-            # Test with simple questions
+            # Test với 2 câu hỏi đơn giản
             test_questions = ["What is AI?", "What is artificial intelligence?"]
             embeddings = self.encode_questions(test_questions)
             
@@ -198,7 +194,7 @@ class DuplicateDetector:
                 return {
                     'status': 'unhealthy',
                     'model_loaded': False,
-                    'error': 'Failed to generate embeddings'
+                    'error': 'Không thể tạo embeddings'
                 }
                 
         except Exception as e:
