@@ -262,25 +262,21 @@ public class HEDAssignmentController {
     @ResponseBody
     public List<Map<String, Object>> getLecturers() {
         // Debug logging
-        System.out.println("=== GET LECTURERS DEBUG ===");
+        System.out.println("=== GET LECTURERS FOR HED DEBUG ===");
         
-        // Get current user's department
+        // Get current user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         System.out.println("Current user: " + currentUsername);
         
-        String userDepartment = userService.getUserDepartment(currentUsername);
-        System.out.println("User department: " + userDepartment);
+        // HED should get assignable users following proper workflow hierarchy
+        List<Map<String, Object>> assignableUsers = taskAssignmentService.getAssignableUsersForHoD();
+        System.out.println("Found " + assignableUsers.size() + " assignable users for HED");
+        for (Map<String, Object> user : assignableUsers) {
+            System.out.println("  - " + user.get("name") + " (ID: " + user.get("id") + ", Dept: " + user.get("department") + ", Role: " + user.get("role") + ")");        }
+        System.out.println("=== END GET LECTURERS FOR HED DEBUG ===");
         
-        // Return lecturers for this department only
-        List<Map<String, Object>> lecturers = taskAssignmentService.getLecturersByDepartment(userDepartment);
-        System.out.println("Found " + lecturers.size() + " lecturers for department: " + userDepartment);
-        for (Map<String, Object> lecturer : lecturers) {
-            System.out.println("  - " + lecturer.get("name") + " (ID: " + lecturer.get("id") + ", Dept: " + lecturer.get("department") + ")");
-        }
-        System.out.println("=== END GET LECTURERS DEBUG ===");
-        
-        return lecturers;
+        return assignableUsers;
     }@GetMapping("/api/courses")
     @ResponseBody
     public List<Map<String, Object>> getCourses() {

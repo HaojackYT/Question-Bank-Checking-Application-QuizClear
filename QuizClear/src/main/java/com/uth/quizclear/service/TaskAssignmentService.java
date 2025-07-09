@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -637,6 +639,38 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
             default:
                 return task.getStatus().name().toLowerCase();
         }
+    }    // Phương thức mới: Lấy danh sách SL mà HoD có thể assign theo workflow đúng
+    public List<Map<String, Object>> getAssignableUsersForHoD() {
+        System.out.println("=== TaskAssignmentService.getAssignableUsersForHoD DEBUG ===");
+        
+        // HoD chỉ assign cho Subject Leaders (SL) trong department của mình
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        User currentUser = userRepository.findByEmail(currentUsername)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + currentUsername));
+        
+        String department = currentUser.getDepartment();
+        System.out.println("Current HoD: " + currentUser.getFullName() + " from department: " + department);
+        
+        // Lấy tất cả Subject Leaders trong department này
+        List<User> subjectLeaders = userRepository.findUsersByRoleAndDepartment(UserRole.SL, department);
+        System.out.println("Found " + subjectLeaders.size() + " Subject Leaders in " + department);
+        
+        List<Map<String, Object>> result = subjectLeaders.stream()
+                .map(user -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", user.getUserId().longValue());
+                    map.put("name", user.getFullName());
+                    map.put("department", user.getDepartment());
+                    map.put("role", user.getRole().toString());
+                    System.out.println("  - " + user.getFullName() + " (ID: " + user.getUserId() + ")");
+                    return map;
+                })
+                .collect(Collectors.toList());
+          System.out.println("HoD can assign to " + result.size() + " Subject Leaders");
+        System.out.println("=== END TaskAssignmentService.getAssignableUsersForHoD DEBUG ===");
+        
+        return result;
     }
 
 }
