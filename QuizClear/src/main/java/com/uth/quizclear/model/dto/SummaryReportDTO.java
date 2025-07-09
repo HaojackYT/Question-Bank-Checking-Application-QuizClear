@@ -13,8 +13,8 @@ public class SummaryReportDTO {
     private Integer totalQuestions;
     private String feedbackStatus;
     private String status;
-    private String assignedTo;
-    private String assignedBy;
+    private UserBasicDTO assignedTo;
+    private UserBasicDTO assignedBy;
     private List<QuesReportDTO> questions;
 
     // Getters/Setters
@@ -74,19 +74,19 @@ public class SummaryReportDTO {
         this.status = status;
     }
 
-    public String getAssignedTo() {
+    public UserBasicDTO getAssignedTo() {
         return assignedTo;
     }
 
-    public void setAssignedTo(String assignedTo) {
+    public void setAssignedTo(UserBasicDTO assignedTo) {
         this.assignedTo = assignedTo;
     }
 
-    public String getAssignedBy() {
+    public UserBasicDTO getAssignedBy() {
         return assignedBy;
     }
 
-    public void setAssignedBy(String assignedBy) {
+    public void setAssignedBy(UserBasicDTO assignedBy) {
         this.assignedBy = assignedBy;
     }
 
@@ -103,7 +103,7 @@ public class SummaryReportDTO {
     }
 
     public SummaryReportDTO(Long sumId, String title, String description, String createdAt, Integer totalQuestions,
-            String feedbackStatus, String status, String assignedTo, String assignedBy, List<QuesReportDTO> questions) {
+            String feedbackStatus, String status, UserBasicDTO assignedTo, UserBasicDTO assignedBy, List<QuesReportDTO> questions) {
         this.sumId = sumId;
         this.title = title;
         this.description = description;
