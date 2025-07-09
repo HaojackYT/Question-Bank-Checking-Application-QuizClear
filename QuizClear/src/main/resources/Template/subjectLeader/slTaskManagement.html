@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management - Subject Leader</title>
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}">
+    <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
+    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/slTaskManagement.css}">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!--header-->
+    <header class="header" th:insert="~{header_user :: header}"></header>
+
+    <div id="Container-body">
+        <!-- Menu -->
+        <div class="sidebar" th:insert="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
+
+        <div id="main">
+            <div class="task-container">
+                <div class="task-header">
+                    <h1>Task Management</h1>
+                    <p>View and manage tasks assigned by Head of Examination Department</p>
+                </div>
+
+                <div class="task-actions">
+                    <div class="search-filter-bar">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Search tasks..." class="search-input">
+                            <button class="search-btn" onclick="filterTasks()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div class="filter-dropdown">
+                            <select class="filter-select" id="statusFilter" onchange="filterTasks()">
+                                <option value="">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+
+                    <button class="refresh-button" onclick="loadTasks()" title="Refresh">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+
+                <div class="task-table-container">
+                    <table class="task-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Course</th>
+                                <th>Total Questions</th>
+                                <th>Assigned By</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="taskTableBody">
+                            <!-- Tasks will be loaded dynamically via JavaScript -->
+                            <tr>
+                                <td colspan="8" class="loading-cell">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading tasks...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Details Modal -->
+    <div id="taskDetailsModal" class="modal">
+        <div class="modal-content">
+            <button type="button" class="close-button" onclick="closeModal('taskDetailsModal')">&times;</button>
+            <h2 id="taskDetailsTitle">Task Details</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="detailTitle" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Course</label>
+                    <input type="text" id="detailCourse" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Total Questions</label>
+                    <input type="text" id="detailTotalQuestions" readonly>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Assigned By</label>
+                    <input type="text" id="detailAssignedBy" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Due Date</label>
+                    <input type="text" id="detailDueDate" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <input type="text" id="detailStatus" readonly>
+                </div>
+            </div>
+            <div class="form-group full-width">
+                <label>Description</label>
+                <textarea id="detailDescription" readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delegate Task Modal -->
+    <div id="delegateModal" class="modal">
+        <div class="modal-content">
+            <button type="button" class="close-button" onclick="closeModal('delegateModal')">&times;</button>
+            <h2>Delegate Task to Lecturer</h2>
+            <form id="delegateForm">
+                <input type="hidden" id="delegateTaskId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Task Title</label>
+                        <input type="text" id="delegateTaskTitle" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="lecturerSelect">Select Lecturer *</label>
+                        <select id="lecturerSelect" name="lecturerSelect" required>
+                            <option value="">Choose a lecturer...</option>
+                            <!-- Lecturers will be loaded dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group full-width">
+                    <label for="delegateNotes">Additional Notes</label>
+                    <textarea id="delegateNotes" name="delegateNotes" placeholder="Add any specific instructions for the lecturer..."></textarea>
+                </div>
+                <div class="form-actions centered">
+                    <button type="button" class="cancel-button" onclick="closeModal('delegateModal')">Cancel</button>
+                    <button type="submit" class="submit-button">Delegate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success/Error Message -->
+    <div id="messageToast" class="toast">
+        <span id="messageText"></span>
+    </div>
+
+    <script th:src="@{/Static/js/slTaskManagement.js}"></script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
+</body>
+
+</html>

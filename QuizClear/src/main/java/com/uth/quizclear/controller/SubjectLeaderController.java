@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,11 @@ import com.uth.quizclear.repository.UserRepository;
 import com.uth.quizclear.service.PlanService;
 import com.uth.quizclear.service.SubjectLeaderFeedbackService;
 import com.uth.quizclear.service.SummaryService;
+import com.uth.quizclear.model.entity.Tasks;
+import com.uth.quizclear.model.enums.TaskStatus;
+import com.uth.quizclear.model.enums.UserRole;
+import com.uth.quizclear.repository.TasksRepository;
+import java.time.LocalDateTime;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -42,9 +48,11 @@ public class SubjectLeaderController {
     
     @Autowired
     private PlanService planService;
+      @Autowired
+    private UserRepository userRepository;
     
     @Autowired
-    private UserRepository userRepository;
+    private TasksRepository tasksRepository;
       /**
      * Helper method to safely get userId from session
      */
@@ -785,6 +793,165 @@ public class SubjectLeaderController {
             case "CHEM": return "Chemistry";
             case "BIO": return "Biology";
             default: return departmentCode;
+        }
+    }    // Task Management endpoints
+    @GetMapping("/task-management")
+    public String taskManagementPage(Authentication authentication, Model model) {
+        // Check authentication first
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/login";
+        }
+        
+        // Check if user has SL role
+        boolean isSL = authentication.getAuthorities().stream()
+                .anyMatch(a -> {
+                    String auth = a.getAuthority();
+                    return auth.equals("SL") || auth.equals("ROLE_SL");
+                });
+        
+        if (!isSL) {
+            return "redirect:/login";
+        }
+          model.addAttribute("userEmail", authentication.getName());
+        return "subjectLeader/slTaskManagement";
+    }    // API: Get tasks assigned to current SL
+    @GetMapping("/api/task-management/tasks")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getAssignedTasks(Authentication authentication) {
+        try {
+            String currentUsername = authentication.getName();
+            User currentUser = userRepository.findByEmail(currentUsername)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found: " + currentUsername));            // Get tasks assigned to this SL
+            List<Tasks> assignedTasks = tasksRepository.findByAssignedTo_UserIdOrderByDueDateDesc(currentUser.getUserId().longValue());
+            
+            List<Map<String, Object>> taskList = assignedTasks.stream()
+                    .map(task -> {
+                        Map<String, Object> taskMap = new HashMap<>();
+                        taskMap.put("taskId", task.getTaskId());
+                        taskMap.put("title", task.getTitle());
+                        taskMap.put("description", task.getDescription());
+                        taskMap.put("courseName", task.getCourse() != null ? task.getCourse().getCourseName() : "N/A");
+                        taskMap.put("totalQuestions", task.getTotalQuestions());
+                        taskMap.put("status", task.getStatus().name().toLowerCase());
+                        taskMap.put("dueDate", task.getDueDate() != null ? task.getDueDate().toString() : "N/A");
+                        taskMap.put("assignedByName", task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A");
+                        taskMap.put("createdAt", task.getCreatedAt() != null ? task.getCreatedAt().toString() : "N/A");
+                        return taskMap;
+                    })
+                    .collect(Collectors.toList());
+            
+            return ResponseEntity.ok(taskList);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    // API: Accept task
+    @PostMapping("/api/task-management/tasks/{taskId}/accept")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> acceptTask(@PathVariable Long taskId, Authentication authentication) {
+        try {
+            Tasks task = tasksRepository.findById(Math.toIntExact(taskId))
+                    .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+              if (task.getStatus() == TaskStatus.pending) {
+                task.setStatus(TaskStatus.in_progress);
+                // Note: acceptedAt field doesn't exist in Tasks entity, using status change to track acceptance
+                tasksRepository.save(task);
+                
+                return ResponseEntity.ok(Map.of("success", true, "message", "Task accepted successfully"));
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Task is not in pending status"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
+
+    // API: Complete task
+    @PostMapping("/api/task-management/tasks/{taskId}/complete")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> completeTask(@PathVariable Long taskId, Authentication authentication) {
+        try {
+            Tasks task = tasksRepository.findById(Math.toIntExact(taskId))
+                    .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+            
+            if (task.getStatus() == TaskStatus.in_progress) {
+                task.setStatus(TaskStatus.completed);
+                task.setCompletedAt(LocalDateTime.now());
+                tasksRepository.save(task);
+                
+                return ResponseEntity.ok(Map.of("success", true, "message", "Task completed successfully"));
+            } else {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Task is not in progress"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
+
+    // API: Get lecturers for assignment delegation
+    @GetMapping("/api/task-management/lecturers")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getLecturersForAssignment(Authentication authentication) {
+        try {
+            String currentUsername = authentication.getName();
+            User currentUser = userRepository.findByEmail(currentUsername)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found: " + currentUsername));
+            
+            // Get lecturers from same department
+            List<User> lecturers = userRepository.findUsersByRoleAndDepartment(UserRole.LEC, currentUser.getDepartment());
+            
+            List<Map<String, Object>> lecturerList = lecturers.stream()
+                    .map(lecturer -> {
+                        Map<String, Object> lecturerMap = new HashMap<>();                        lecturerMap.put("userId", lecturer.getUserId());
+                        lecturerMap.put("fullName", lecturer.getFullName());
+                        lecturerMap.put("department", lecturer.getDepartment());
+                        lecturerMap.put("email", lecturer.getEmail());
+                        return lecturerMap;
+                    })
+                    .collect(Collectors.toList());
+            
+            return ResponseEntity.ok(lecturerList);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    // API: Delegate task to lecturer
+    @PostMapping("/api/task-management/tasks/{taskId}/delegate")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> delegateTask(
+            @PathVariable Long taskId, 
+            @RequestBody Map<String, Object> request,
+            Authentication authentication) {
+        try {
+            Long lecturerId = Long.parseLong(request.get("lecturerId").toString());
+            String notes = request.get("notes") != null ? request.get("notes").toString() : "";
+            
+            Tasks originalTask = tasksRepository.findById(Math.toIntExact(taskId))
+                    .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+            
+            User lecturer = userRepository.findById(lecturerId)
+                    .orElseThrow(() -> new IllegalArgumentException("Lecturer not found"));
+            
+            // Create new task for lecturer
+            Tasks delegatedTask = new Tasks();
+            delegatedTask.setTitle(originalTask.getTitle() + " (Delegated)");
+            delegatedTask.setDescription(originalTask.getDescription() + "\n\nNotes: " + notes);
+            delegatedTask.setCourse(originalTask.getCourse());
+            delegatedTask.setAssignedTo(lecturer);
+            delegatedTask.setAssignedBy(originalTask.getAssignedTo()); // SL becomes the assigner
+            delegatedTask.setTotalQuestions(originalTask.getTotalQuestions());
+            delegatedTask.setDueDate(originalTask.getDueDate());
+            delegatedTask.setTaskType(originalTask.getTaskType());
+            delegatedTask.setStatus(TaskStatus.pending);
+            delegatedTask.setCreatedAt(LocalDateTime.now());
+            
+            tasksRepository.save(delegatedTask);
+            
+            return ResponseEntity.ok(Map.of("success", true, "message", "Task delegated successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", e.getMessage()));
         }
     }
 }
