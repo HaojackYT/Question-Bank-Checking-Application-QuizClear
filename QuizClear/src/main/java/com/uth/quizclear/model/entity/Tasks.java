@@ -1,19 +1,9 @@
 package com.uth.quizclear.model.entity;
 
 import com.uth.quizclear.model.enums.TaskStatus;
-import com.uth.quizclear.model.enums.TaskStatusConverter;
 import com.uth.quizclear.model.enums.TaskType;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import java.time.LocalDateTime;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -60,10 +50,12 @@ public class Tasks {
     private LocalDateTime createdAt;
 
     @Column(name = "completed_at")
-    private LocalDateTime completedAt;
-
-    @Column(name = "assigned_at")
+    private LocalDateTime completedAt;    @Column(name = "assigned_at")
     private LocalDateTime assignedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "plan_id")
+    private Plan plan;
 
     // Getters and Setters
     public Integer getTaskId() {
@@ -160,15 +152,13 @@ public class Tasks {
 
     public void setCompletedAt(LocalDateTime completedAt) {
         this.completedAt = completedAt;
+    }    public LocalDateTime getAssignedAt() {
+        return assignedAt;
     }
 
-    public LocalDateTime getAssignedAt() {
-    return assignedAt;
-}
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "plan_id")
-    private Plan plan;
+    public void setAssignedAt(LocalDateTime assignedAt) {
+        this.assignedAt = assignedAt;
+    }
 
     public Plan getPlan() {
         return plan;

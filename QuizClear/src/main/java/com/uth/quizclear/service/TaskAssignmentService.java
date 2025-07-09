@@ -20,9 +20,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,27 +52,64 @@ public class TaskAssignmentService {
                         task.getStatus()
                 ))
                 .collect(Collectors.toList());
-    }
-
-    // Phương thức gốc: Cập nhật trạng thái task
+    }    // Phương thức gốc: Cập nhật trạng thái task
     public void updateTaskStatus(Long taskId, String status) {
         if (taskId > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("Task ID exceeds maximum value for Integer");
         }
         Tasks task = tasksRepository.findById(taskId.intValue())
                 .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
-        try {
-            TaskStatus taskStatus = TaskStatus.valueOf(status.toLowerCase());
-            task.setStatus(taskStatus);
-            if (taskStatus == TaskStatus.completed || taskStatus == TaskStatus.cancelled) {
-                task.setCompletedAt(LocalDateTime.now());
-            } else {
-                task.setCompletedAt(null);
-            }
-            tasksRepository.save(task);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid status: " + status);
+        
+        Integer intTaskId = taskId.intValue();
+        
+        // Map virtual statuses to actual enum values and track virtual status
+        TaskStatus actualStatus;
+        switch (status.toUpperCase()) {
+            case "APPROVED":
+                actualStatus = TaskStatus.completed;
+                approvedTasks.add(intTaskId);
+                rejectedTasks.remove(intTaskId); // Remove from rejected if was there
+                break;
+            case "REJECTED":
+                actualStatus = TaskStatus.cancelled;
+                rejectedTasks.add(intTaskId);
+                approvedTasks.remove(intTaskId); // Remove from approved if was there
+                break;
+            case "PENDING":
+                actualStatus = TaskStatus.pending;
+                // Clear virtual status
+                approvedTasks.remove(intTaskId);
+                rejectedTasks.remove(intTaskId);
+                break;
+            case "IN_PROGRESS":
+                actualStatus = TaskStatus.in_progress;
+                // Clear virtual status
+                approvedTasks.remove(intTaskId);
+                rejectedTasks.remove(intTaskId);
+                break;
+            case "COMPLETED":
+                actualStatus = TaskStatus.completed;
+                // Don't add to approved set - this is just lecturer completion
+                break;
+            case "CANCELLED":
+                actualStatus = TaskStatus.cancelled;
+                // Don't add to rejected set - this is just regular cancellation
+                break;
+            default:
+                try {
+                    actualStatus = TaskStatus.valueOf(status.toLowerCase());
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("Invalid status: " + status);
+                }
         }
+        
+        task.setStatus(actualStatus);
+        if (actualStatus == TaskStatus.completed || actualStatus == TaskStatus.cancelled) {
+            task.setCompletedAt(LocalDateTime.now());
+        } else {
+            task.setCompletedAt(null);
+        }
+        tasksRepository.save(task);
     }
 
     // Phương thức gốc: Lấy tất cả task với phân trang
@@ -402,9 +443,9 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getTotalQuestions(),
                 task.getTotalQuestions(),
                 countCompletedQuestions(task),
-                task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A", // Fixed: assignedTo instead of assignedBy
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
-                task.getStatus() != null ? task.getStatus().name().toLowerCase() : "N/A",
+                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
+                getVirtualDisplayStatus(task),
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
                 task.getDescription() != null ? task.getDescription() : "No description provided",
                 "No feedback yet"
@@ -419,9 +460,9 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getTotalQuestions(),
                 task.getTotalQuestions(),
                 countCompletedQuestions(task),
-                task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A", // Fixed: assignedTo instead of assignedBy
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
-                task.getStatus() != null ? task.getStatus().name().toLowerCase() : "N/A",
+                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
+                getVirtualDisplayStatus(task),
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
                 task.getDescription() != null ? task.getDescription() : "No description provided",
                 "No feedback yet"
@@ -436,12 +477,12 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getTotalQuestions(),
                 task.getTotalQuestions(),
                 countCompletedQuestions(task),
-                task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A", // Fixed: should be assignedTo
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
-                task.getStatus() != null ? task.getStatus().name().toLowerCase() : "N/A",
+                task.getAssignedBy() != null ? task.getAssignedBy().getFullName() : "N/A",
+                getVirtualDisplayStatus(task),
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
                 task.getDescription() != null ? task.getDescription() : "No description provided",
-                "No feedback yet" // Default feedback instead of null
+                "No feedback yet"
         );
     }// Phương thức gốc: Lấy task cho HED - Using real database data
     public List<TaskAssignmentDTO> getTasksForHED() {
@@ -546,9 +587,14 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy task với id: " + taskId));
         
         // Update task status to indicate HED has joined
-        if (task.getStatus() == TaskStatus.pending) {
+        if (task.getStatus() == TaskStatus.pending || task.getStatus() == TaskStatus.cancelled) {
             task.setStatus(TaskStatus.in_progress);
             tasksRepository.save(task);
+            System.out.println("Task " + taskId + " status changed from " + 
+                (task.getStatus() == TaskStatus.pending ? "PENDING" : "CANCELLED") + 
+                " to IN_PROGRESS by HED " + hedId);
+        } else {
+            throw new IllegalStateException("Task must be in PENDING or CANCELLED status to join. Current status: " + task.getStatus());
         }
     }
 
@@ -563,6 +609,146 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
             tasksRepository.delete(task);
         } else {
             throw new IllegalStateException("Chỉ có thể xóa task đã hoàn thành");
+        }    }
+
+    // In-memory tracking for approved/rejected tasks (virtual status)
+    // This is a simple solution without changing database schema
+    private final Set<Integer> approvedTasks = new HashSet<>();
+    private final Set<Integer> rejectedTasks = new HashSet<>();
+
+    // Helper method to get display status for frontend with virtual status support
+    private String getVirtualDisplayStatus(Tasks task) {
+        if (task.getStatus() == null) {
+            return "pending";
+        }
+        
+        Integer taskId = task.getTaskId();
+        
+        // Check if task was explicitly approved or rejected by HED
+        if (approvedTasks.contains(taskId)) {
+            return "approved";
+        }
+        if (rejectedTasks.contains(taskId)) {
+            return "rejected";
+        }
+        
+        // Default to actual enum status
+        switch (task.getStatus()) {
+            case pending:
+                return "pending";
+            case in_progress:
+                return "in_progress";
+            case completed:
+                return "completed";            case cancelled:
+                return "cancelled";
+            default:
+                return task.getStatus().name().toLowerCase();
+        }
+    }    // Phương thức mới: Lấy danh sách SL mà HoD có thể assign theo workflow đúng
+    public List<Map<String, Object>> getAssignableUsersForHoD() {
+        System.out.println("=== TaskAssignmentService.getAssignableUsersForHoD DEBUG ===");
+        
+        // HoD chỉ assign cho Subject Leaders (SL) trong department của mình
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        User currentUser = userRepository.findByEmail(currentUsername)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + currentUsername));
+        
+        String department = currentUser.getDepartment();
+        System.out.println("Current HoD: " + currentUser.getFullName() + " from department: " + department);
+        
+        // Lấy tất cả Subject Leaders trong department này
+        List<User> subjectLeaders = userRepository.findUsersByRoleAndDepartment(UserRole.SL, department);
+        System.out.println("Found " + subjectLeaders.size() + " Subject Leaders in " + department);
+        
+        List<Map<String, Object>> result = subjectLeaders.stream()
+                .map(user -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", user.getUserId().longValue());
+                    map.put("name", user.getFullName());
+                    map.put("department", user.getDepartment());
+                    map.put("role", user.getRole().toString());
+                    System.out.println("  - " + user.getFullName() + " (ID: " + user.getUserId() + ")");
+                    return map;
+                })
+                .collect(Collectors.toList());
+          System.out.println("HoD can assign to " + result.size() + " Subject Leaders");
+        System.out.println("=== END TaskAssignmentService.getAssignableUsersForHoD DEBUG ===");
+        
+        return result;
+    }
+
+    // Phương thức mới: Lấy danh sách SL cho HoD assignment
+    public List<Map<String, Object>> getSubjectLeadersForHoDAssignment(String department) {
+        System.out.println("=== TaskAssignmentService.getSubjectLeadersForHoDAssignment DEBUG ===");
+        System.out.println("Department: " + department);
+        
+        if (department == null || department.trim().isEmpty()) {
+            System.out.println("Department is null or empty, returning empty list");
+            return new ArrayList<>();
+        }
+        
+        // HoD can only assign to Subject Leaders in their department
+        List<User> subjectLeaders = userRepository.findUsersByRoleAndDepartment(UserRole.SL, department);
+        System.out.println("Found " + subjectLeaders.size() + " subject leaders in department " + department);
+        
+        for (User user : subjectLeaders) {
+            System.out.println("  - SL: " + user.getFullName() + " (ID: " + user.getUserId() + ", Role: " + user.getRole() + ")");
+        }
+        
+        List<Map<String, Object>> result = subjectLeaders.stream()
+                .map(user -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", user.getUserId().longValue());
+                    map.put("name", user.getFullName());
+                    map.put("department", user.getDepartment());
+                    map.put("role", user.getRole().toString());
+                    return map;
+                })
+                .collect(Collectors.toList());
+        
+        System.out.println("Returning " + result.size() + " subject leaders for HoD assignment");
+        System.out.println("=== END TaskAssignmentService.getSubjectLeadersForHoDAssignment DEBUG ===");
+        
+        return result;
+    }
+
+    /**
+     * Get distinct subjects from tasks assigned to a specific HED
+     * @param hedId the HED user ID
+     * @return list of subject names
+     */
+    public List<String> getSubjectsByHedId(Integer hedId) {
+        try {
+            // Find all tasks where this HED is involved (either as assigned or monitoring)
+            List<Tasks> tasks = tasksRepository.findAll().stream()
+                    .filter(task -> {
+                        // Check if this HED is assigned to monitor/manage tasks in their department
+                        // For now, we'll get all tasks and filter by department logic
+                        User hed = userRepository.findById(hedId.longValue()).orElse(null);
+                        if (hed == null) return false;
+                        
+                        // If the task has a course and the HED's department matches
+                        if (task.getCourse() != null && hed.getDepartment() != null) {
+                            // You might need to implement department-course relationship
+                            // For now, return all tasks as a fallback
+                            return true;
+                        }
+                        return false;
+                    })
+                    .collect(Collectors.toList());
+            
+            // Extract unique subject names from courses
+            Set<String> subjectSet = tasks.stream()
+                    .filter(task -> task.getCourse() != null && task.getCourse().getCourseName() != null)
+                    .map(task -> task.getCourse().getCourseName())
+                    .collect(Collectors.toSet());
+            
+            return new ArrayList<>(subjectSet);
+        } catch (Exception e) {
+            System.err.println("Error getting subjects by HED ID: " + e.getMessage());
+            // Return empty list if error occurs
+            return new ArrayList<>();
         }
     }
 }

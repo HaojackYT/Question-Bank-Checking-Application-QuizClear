@@ -4,6 +4,9 @@ import com.uth.quizclear.model.dto.CourseDTO;
 import com.uth.quizclear.model.dto.QuestionDTO;
 import com.uth.quizclear.model.dto.TaskAssignmentDTO;
 import com.uth.quizclear.model.dto.TaskNotificationDTO;
+import com.uth.quizclear.model.entity.User;
+import com.uth.quizclear.model.enums.UserRole;
+import com.uth.quizclear.repository.UserRepository;
 import com.uth.quizclear.service.CourseService;
 import com.uth.quizclear.service.QuestionService;
 import com.uth.quizclear.service.TaskAssignmentService;
@@ -20,14 +23,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/hed")
-public class HEDAssignmentController {
+public class HEDAssignmentController {    private static final Logger logger = LoggerFactory.getLogger(HEDAssignmentController.class);
 
-    private static final Logger logger = LoggerFactory.getLogger(HEDAssignmentController.class);    @Autowired
+    @Autowired
     private TaskAssignmentService taskAssignmentService;
 
     @Autowired
@@ -37,7 +42,10 @@ public class HEDAssignmentController {
     private CourseService courseService;
 
     @Autowired
-    private UserService userService;    @GetMapping("/assignments")
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;@GetMapping("/assignments")
     public String showAssignmentManagement(Model model) {
         // Get current user's department
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -262,25 +270,38 @@ public class HEDAssignmentController {
     @ResponseBody
     public List<Map<String, Object>> getLecturers() {
         // Debug logging
-        System.out.println("=== GET LECTURERS DEBUG ===");
+        System.out.println("=== GET LECTURERS FOR HED/HoD DEBUG ===");
         
-        // Get current user's department
+        // Get current user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
         System.out.println("Current user: " + currentUsername);
         
-        String userDepartment = userService.getUserDepartment(currentUsername);
-        System.out.println("User department: " + userDepartment);
+        User currentUser = userRepository.findByEmail(currentUsername)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + currentUsername));
+        System.out.println("User role: " + currentUser.getRole() + ", Department: " + currentUser.getDepartment());
         
-        // Return lecturers for this department only
-        List<Map<String, Object>> lecturers = taskAssignmentService.getLecturersByDepartment(userDepartment);
-        System.out.println("Found " + lecturers.size() + " lecturers for department: " + userDepartment);
-        for (Map<String, Object> lecturer : lecturers) {
-            System.out.println("  - " + lecturer.get("name") + " (ID: " + lecturer.get("id") + ", Dept: " + lecturer.get("department") + ")");
+        List<Map<String, Object>> assignableUsers;
+          if (currentUser.getRole() == UserRole.HOD) {
+            // HoD can only assign to Subject Leaders in their department
+            System.out.println("HoD detected - getting Subject Leaders for department: " + currentUser.getDepartment());
+            assignableUsers = taskAssignmentService.getSubjectLeadersForHoDAssignment(currentUser.getDepartment());
+        } else if (currentUser.getRole() == UserRole.HOED) {
+            // HED can assign based on proper hierarchy 
+            System.out.println("HED detected - getting assignable users across departments");
+            assignableUsers = taskAssignmentService.getAssignableUsersForHoD();
+        } else {
+            System.out.println("User is neither HoD nor HED - returning empty list");
+            assignableUsers = new ArrayList<>();
         }
-        System.out.println("=== END GET LECTURERS DEBUG ===");
         
-        return lecturers;
+        System.out.println("Found " + assignableUsers.size() + " assignable users");
+        for (Map<String, Object> user : assignableUsers) {
+            System.out.println("  - " + user.get("name") + " (ID: " + user.get("id") + ", Dept: " + user.get("department") + ", Role: " + user.get("role") + ")");
+        }
+        System.out.println("=== END GET LECTURERS FOR HED/HoD DEBUG ===");
+        
+        return assignableUsers;
     }@GetMapping("/api/courses")
     @ResponseBody
     public List<Map<String, Object>> getCourses() {
@@ -503,6 +524,84 @@ public class HEDAssignmentController {
         // No fallback - return null if user is not authenticated
         logger.warn("User is not authenticated, returning null for user ID");
         return null;
+    }
+
+    // TEMPORARY DEBUG ENDPOINT - REMOVE IN PRODUCTION
+    @PostMapping("/api/tasks/{taskId}/set-completed")
+    @ResponseBody
+    public ResponseEntity<?> setTaskCompleted(@PathVariable Long taskId) {
+        try {
+            taskAssignmentService.updateTaskStatus(taskId, "COMPLETED");
+            return ResponseEntity.ok(Map.of("success", true, "message", "Task set to completed for testing"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }
+    // Temporary test endpoint to set task to completed status
+    @PostMapping("/api/tasks/{taskId}/test-completed")
+    @ResponseBody
+    public ResponseEntity<?> testSetCompleted(@PathVariable Long taskId) {
+        try {
+            taskAssignmentService.updateTaskStatus(taskId, "COMPLETED");
+            return ResponseEntity.ok(Map.of("success", true, "message", "Task set to completed for testing"));
+        } catch (Exception e) {
+            logger.error("Error setting task to completed: ", e);
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/api/tasks/status-options")
+    @ResponseBody
+    public ResponseEntity<?> getStatusOptions() {
+        try {            List<String> statusOptions = List.of(
+                "PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED", "APPROVED", "REJECTED"
+            );
+            return ResponseEntity.ok(statusOptions);
+        } catch (Exception e) {
+            logger.error("Error getting status options: ", e);
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }    @GetMapping("/api/tasks/subject-options")
+    @ResponseBody
+    public ResponseEntity<?> getSubjectOptions() {
+        try {
+            // Get current user
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+            Optional<User> userOpt = userRepository.findByEmail(username);
+            
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.status(401).body(Map.of("error", "User not authenticated"));
+            }
+              User user = userOpt.get();
+            
+            // Check if user has proper HOED role
+            if (user.getRole() != UserRole.HOED) {
+                return ResponseEntity.status(403).body(Map.of("error", "Access denied: Head of Examination Department role required"));
+            }
+              // Get all tasks for this HED and extract unique subjects
+            List<TaskAssignmentDTO> allTasks = taskAssignmentService.getTasksForHED();
+            
+            // Extract unique subject names
+            List<String> subjectOptions = allTasks.stream()
+                    .map(TaskAssignmentDTO::getSubjectName)
+                    .filter(subject -> subject != null && !subject.trim().isEmpty())
+                    .distinct()
+                    .sorted()
+                    .collect(java.util.stream.Collectors.toList());
+            
+            return ResponseEntity.ok(subjectOptions);
+        } catch (Exception e) {
+            logger.error("Error getting subject options: ", e);
+            // Return fallback subjects if error occurs
+            List<String> fallbackSubjects = List.of(
+                "Operating System",
+                "Database", 
+                "Computer Architecture",
+                "Object Oriented Programming"
+            );
+            return ResponseEntity.ok(fallbackSubjects);
+        }
     }
 }
 

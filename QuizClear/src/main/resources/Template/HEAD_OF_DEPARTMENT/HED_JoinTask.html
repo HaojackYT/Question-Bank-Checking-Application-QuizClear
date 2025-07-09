@@ -75,13 +75,17 @@
         .status-badge.in_progress {
             background-color: #8b5cf6;
             color: white;
-        }
-        
-        .status-badge.incomplete {
+        }        .status-badge.incomplete {
             background-color: #ef4444;
             color: white;
         }
-          .status-badge.unknown {
+        
+        .status-badge.cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-badge.unknown {
             background-color: #6b7280;
             color: white;
         }
@@ -182,22 +186,15 @@
                     </button>
                 </div>
                 <div class="filter-controls">                    <div class="filter-dropdown">
-                        <select class="filter-select">
+                        <select class="filter-select" id="statusFilter">
                             <option value="">All Status</option>
-                            <option value="ASSIGNED">Assigned</option>
-                            <option value="PENDING">Pending</option>
-                            <option value="IN_PROGRESS">In Progress</option>
-                            <option value="COMPLETED">Completed</option>
-                            <option value="INCOMPLETE">Incomplete</option>
+                            <!-- Options will be loaded dynamically -->
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div><div class="filter-dropdown">
-                        <select class="filter-select">
+                        <select class="filter-select" id="subjectFilter">
                             <option value="">All Subject</option>
-                            <option value="Operating System">Operating System</option>
-                            <option value="Database">Database</option>
-                            <option value="Computer Architecture">Computer Architecture</option>
-                            <option value="Object Oriented Programming">Object Oriented Programming</option>
+                            <!-- Options will be loaded dynamically -->
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div>
@@ -232,16 +229,20 @@
                             <td>
                                 <span th:class="'status-badge ' + ${#strings.toLowerCase(task.status)}" 
                                       th:text="${task.status}">Status</span>
-                            </td>
-                            <td>
+                            </td>                            <td>
                                 <button class="action-btn view-btn" title="View" 
                                         th:onclick="'viewTask(' + ${task.taskId} + ')'">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button th:if="${task.status == 'ASSIGNED' or task.status == 'PENDING'}" 
-                                        class="action-btn edit-btn" title="Join Task" 
+                                <button th:if="${task.status == 'PENDING' or task.status == 'pending'}" 
+                                        class="action-btn edit-btn" title="Join Task (Start Progress)" 
                                         th:onclick="'joinTask(' + ${task.taskId} + ')'">
                                     <i class="fas fa-user-plus"></i>
+                                </button>
+                                <button th:if="${task.status == 'CANCELLED' or task.status == 'cancelled'}" 
+                                        class="action-btn edit-btn" title="Resume Task" 
+                                        th:onclick="'joinTask(' + ${task.taskId} + ')'">
+                                    <i class="fas fa-redo"></i>
                                 </button>
                                 <button th:if="${task.status == 'COMPLETED'}" 
                                         class="action-btn delete-btn" title="Remove" 
@@ -399,10 +400,10 @@
                 function loadTasks(resetToFirstPage = false) {
                     if (resetToFirstPage) {
                         currentPage = 1; // Reset to first page for new searches/filters
-                    }
-                      const selects = document.querySelectorAll('.filter-controls select');
-                    const status = selects[0] ? selects[0].value : '';
-                    const subject = selects[1] ? selects[1].value : '';
+                    }                      const statusSelect = document.getElementById('statusFilter');
+                    const subjectSelect = document.getElementById('subjectFilter');
+                    const status = statusSelect ? statusSelect.value : '';
+                    const subject = subjectSelect ? subjectSelect.value : '';
                     const searchInput = document.querySelector('.search-input');
                     const search = searchInput ? searchInput.value : '';
                     
@@ -466,42 +467,106 @@
                 function showError(message) {
                     const tbody = document.querySelector('#taskTableBody');
                     tbody.innerHTML = `<tr><td colspan="7" class="error-message">${message}</td></tr>`;
-                }
-                  // Load subjects for filter dropdown
-                function loadSubjects() {
-                    fetch(`/hed/api/subjects`)
-                        .then(response => response.json())
-                        .then(data => {
-                            const selects = document.querySelectorAll('.filter-controls select');
-                            const subjectSelect = selects[1]; // Second dropdown is subject
-                            if (subjectSelect) {
-                                subjectSelect.innerHTML = '<option value="">All Subject</option>';
-                                
-                                if (Array.isArray(data)) {
-                                    data.forEach(subject => {
-                                        const option = document.createElement('option');
-                                        option.value = subject;
-                                        option.textContent = subject;
-                                        subjectSelect.appendChild(option);
-                                    });
-                                }
+                }                // Load dropdown options from backend
+                function loadDropdownOptions() {
+                    console.log('Loading dropdown options...');
+                    
+                    // Load status options
+                    fetch('/hed/api/tasks/status-options')
+                        .then(response => {
+                            console.log('Status options response status:', response.status);
+                            return response.json();
+                        })
+                        .then(statusOptions => {
+                            console.log('Status options received:', statusOptions);
+                            const statusSelect = document.getElementById('statusFilter');
+                            if (statusSelect && Array.isArray(statusOptions)) {
+                                statusSelect.innerHTML = '<option value="">All Status</option>';
+                                statusOptions.forEach(status => {
+                                    const option = document.createElement('option');
+                                    option.value = status;
+                                    option.textContent = formatStatusDisplay(status);
+                                    statusSelect.appendChild(option);
+                                });
+                                console.log('Status dropdown populated with', statusOptions.length, 'options');
+                            } else {
+                                console.error('Status select not found or options not array:', statusSelect, statusOptions);
                             }
                         })
                         .catch(error => {
-                            console.error('Error loading subjects:', error);
-                            // Fallback to default subjects if API fails
-                            const selects = document.querySelectorAll('.filter-controls select');
-                            const subjectSelect = selects[1];
+                            console.error('Error loading status options:', error);
+                            // Fallback to default status options
+                            const statusSelect = document.getElementById('statusFilter');
+                            if (statusSelect) {
+                                statusSelect.innerHTML = `
+                                    <option value="">All Status</option>
+                                    <option value="PENDING">Pending</option>
+                                    <option value="IN_PROGRESS">In Progress</option>
+                                    <option value="COMPLETED">Completed</option>
+                                    <option value="CANCELLED">Cancelled</option>
+                                    <option value="APPROVED">Approved</option>
+                                    <option value="REJECTED">Rejected</option>
+                                `;
+                                console.log('Used fallback status options');
+                            }
+                        });
+
+                    // Load subject options
+                    console.log('Fetching subject options...');
+                    fetch('/hed/api/tasks/subject-options')
+                        .then(response => {
+                            console.log('Subject options response status:', response.status);
+                            if (!response.ok) {
+                                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                            }
+                            return response.json();
+                        })
+                        .then(subjectOptions => {
+                            console.log('Subject options received:', subjectOptions);
+                            const subjectSelect = document.getElementById('subjectFilter');
+                            if (subjectSelect && Array.isArray(subjectOptions)) {
+                                subjectSelect.innerHTML = '<option value="">All Subject</option>';
+                                subjectOptions.forEach(subject => {
+                                    const option = document.createElement('option');
+                                    option.value = subject;
+                                    option.textContent = subject;
+                                    subjectSelect.appendChild(option);
+                                });
+                                console.log('Subject dropdown populated with', subjectOptions.length, 'options:', subjectOptions);
+                            } else {
+                                console.error('Subject select not found or options not array:', subjectSelect, subjectOptions);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading subject options:', error);
+                            // Fallback to default subject options
+                            const subjectSelect = document.getElementById('subjectFilter');
                             if (subjectSelect) {
                                 subjectSelect.innerHTML = `
                                     <option value="">All Subject</option>
+                                    <option value="Calculus II">Calculus II</option>
+                                    <option value="Linear Algebra">Linear Algebra</option>
                                     <option value="Operating System">Operating System</option>
                                     <option value="Database">Database</option>
                                     <option value="Computer Architecture">Computer Architecture</option>
                                     <option value="Object Oriented Programming">Object Oriented Programming</option>
                                 `;
+                                console.log('Used fallback subject options with Calculus II and Linear Algebra');
                             }
                         });
+                }
+
+                // Format status for display
+                function formatStatusDisplay(status) {
+                    switch(status) {
+                        case 'IN_PROGRESS': return 'In Progress';
+                        case 'PENDING': return 'Pending';
+                        case 'COMPLETED': return 'Completed';
+                        case 'CANCELLED': return 'Cancelled';
+                        case 'APPROVED': return 'Approved';
+                        case 'REJECTED': return 'Rejected';
+                        default: return status;
+                    }
                 }
                 
                 // Update tasks table
@@ -707,10 +772,9 @@
                             alert('Failed to load task details');
                         });
                 }
-                
-                // Join a task
+                  // Join a task
                 function joinTask(taskId) {
-                    if (confirm('Are you sure you want to join this task?')) {
+                    if (confirm('Are you sure you want to join this task? This will change the status from PENDING to IN_PROGRESS.')) {
                         fetch(`/hed/api/tasks/${taskId}/join`, {
                             method: 'POST',
                             headers: {
@@ -723,7 +787,7 @@
                             if (data.error) {
                                 alert('Error: ' + data.error);
                             } else {
-                                alert('Successfully joined the task!');
+                                alert('Successfully joined the task! Status changed to IN_PROGRESS.');
                                 loadTasks(); // Reload to update the table
                             }
                         })
@@ -779,18 +843,23 @@
                     const modalStatus = document.getElementById('modalStatus');
                     modalStatus.textContent = task.status || 'Unknown';
                     modalStatus.className = `status-badge ${task.status ? task.status.toLowerCase() : 'unknown'}`;
-                    
-                    // Show/hide Join Task button based on status
+                      // Show/hide Join Task button based on status
                     const joinTaskBtn = modal.querySelector('.join-task-btn');
                     if (joinTaskBtn) {
-                        if (task.status === 'ASSIGNED' || task.status === 'PENDING') {
+                        if (task.status === 'PENDING' || task.status === 'pending') {
                             joinTaskBtn.style.display = 'flex';
-                            joinTaskBtn.innerHTML = '<i class="fas fa-user-plus"></i><span>Join Task</span>';
-                        } else if (task.status === 'IN_PROGRESS') {
+                            joinTaskBtn.innerHTML = '<i class="fas fa-user-plus"></i><span>Join Task (Start Progress)</span>';
+                            joinTaskBtn.title = 'Join this task to start progress';
+                        } else if (task.status === 'CANCELLED' || task.status === 'cancelled') {
                             joinTaskBtn.style.display = 'flex';
-                            joinTaskBtn.innerHTML = '<i class="fas fa-play"></i><span>Continue Task</span>';
-                        } else if (task.status === 'COMPLETED') {
+                            joinTaskBtn.innerHTML = '<i class="fas fa-redo"></i><span>Resume Task</span>';
+                            joinTaskBtn.title = 'Resume this cancelled task';
+                        } else if (task.status === 'IN_PROGRESS' || task.status === 'in_progress') {
+                            joinTaskBtn.style.display = 'none'; // Already joined
+                        } else if (task.status === 'COMPLETED' || task.status === 'completed') {
                             joinTaskBtn.style.display = 'none'; // Can't join completed tasks
+                        } else if (task.status === 'APPROVED' || task.status === 'approved') {
+                            joinTaskBtn.style.display = 'none'; // Can't join approved tasks
                         } else {
                             joinTaskBtn.style.display = 'none'; // Default to hidden
                         }
@@ -802,19 +871,41 @@
                   // Load more notifications (legacy function)
                 function loadMoreTaskNotifications() {
                     toggleNotifications();
-                }
-                  // Initialize page
+                }                  // Initialize page
                 document.addEventListener('DOMContentLoaded', function() {
-                    loadSubjects(); // Load subjects for dropdown
-                    loadTasks(true); // Reset to first page on initial load
+                    console.log('DOM Content Loaded - Starting initialization...');
+                    
+                    // Load dropdown options first, then load tasks
+                    loadDropdownOptions();
+                    
+                    // Add a small delay to ensure dropdowns are loaded before loading tasks
+                    setTimeout(() => {
+                        loadTasks(true); // Reset to first page on initial load
+                    }, 500);
                     
                     // Add event listeners for filters and search
-                    document.querySelectorAll('.filter-controls select').forEach((select, index) => {
-                        select.addEventListener('change', function() {
-                            console.log(`Filter ${index} changed to:`, this.value);
+                    const statusFilter = document.getElementById('statusFilter');
+                    const subjectFilter = document.getElementById('subjectFilter');
+                    
+                    if (statusFilter) {
+                        statusFilter.addEventListener('change', function() {
+                            console.log('Status filter changed to:', this.value);
                             loadTasks(true); // Reset to first page when filter changes
                         });
-                    });
+                        console.log('Status filter event listener added');
+                    } else {
+                        console.error('Status filter not found!');
+                    }
+                    
+                    if (subjectFilter) {
+                        subjectFilter.addEventListener('change', function() {
+                            console.log('Subject filter changed to:', this.value);
+                            loadTasks(true); // Reset to first page when filter changes
+                        });
+                        console.log('Subject filter event listener added');
+                    } else {
+                        console.error('Subject filter not found!');
+                    }
                     
                     document.querySelector('.search-input').addEventListener('input', function() {
                         clearTimeout(this.searchTimeout);
