@@ -158,7 +158,7 @@ public class WebPageController {
             return "redirect:/lecturer-dashboard";
         }
         if (roles.contains("HOED")) {
-            return "redirect:/hoe-dashboard";
+            return "redirect:/hoe/dashboard";
         }        
         return "redirect:/login?error=unknown_role";
     }    @GetMapping("/staff-dashboard")
@@ -324,22 +324,8 @@ public class WebPageController {
     }
 
     @GetMapping("/hoe-dashboard")
-    public String hoeDashboard(org.springframework.security.core.Authentication authentication, Model model) {
-        
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return "redirect:/login";
-        }
-        boolean isHOED = authentication.getAuthorities().stream()
-                .anyMatch(a -> {
-                    String auth = a.getAuthority();
-                    return auth.equals("HOED") || auth.equals("ROLE_HOED");
-                });
-        if (!isHOED) {
-            
-            return dashboardRedirect(authentication);
-        }
-        model.addAttribute("userEmail", authentication.getName());
-        return "Head of Examination Department/HOE_Dashboard";
+    public String hoeDashboardRedirect() {
+        return "redirect:/hoe/dashboard";
     }
 
     @GetMapping("/hoe-review-assignment")

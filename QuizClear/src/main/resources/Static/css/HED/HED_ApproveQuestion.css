@@ -147,6 +147,11 @@
     color: #721c24;
 }
 
+.status-badge.archived {
+    background: #e1ecf4;
+    color: #2c5282;
+}
+
 .action-buttons {
     display: flex;
     gap: 0.5rem;

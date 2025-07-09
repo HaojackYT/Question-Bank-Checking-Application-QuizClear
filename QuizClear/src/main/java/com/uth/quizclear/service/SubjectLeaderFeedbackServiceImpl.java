@@ -31,28 +31,38 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
     private ExamRepository examRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Override
+    private UserRepository userRepository;    @Override
     public List<QuestionFeedbackDTO> getFeedbackForSubjectLeader(Long subjectLeaderId) {
         List<QuestionFeedbackDTO> feedbackList = new ArrayList<>();
+        
+        // Debug logging
+        System.out.println("=== FEEDBACK SERVICE DEBUG ===");
+        System.out.println("Getting feedback for Subject Leader ID: " + subjectLeaderId);
         
         // Get subject leader's department
         Optional<User> subjectLeaderOpt = userRepository.findById(subjectLeaderId);
         if (!subjectLeaderOpt.isPresent()) {
+            System.out.println("Subject Leader not found with ID: " + subjectLeaderId);
             return feedbackList;
         }
         
-        String department = subjectLeaderOpt.get().getDepartment();
-        if (department == null || department.trim().isEmpty()) {
+        User subjectLeader = subjectLeaderOpt.get();
+        String department = subjectLeader.getDepartment();
+        System.out.println("Subject Leader: " + subjectLeader.getFullName() + " (" + subjectLeader.getEmail() + ")");
+        System.out.println("Subject Leader Department: " + department);        if (department == null || department.trim().isEmpty()) {
+            System.out.println("Subject Leader department is null or empty");
             return feedbackList;
-        }        // Get questions from the same department that need Subject Leader review
-        List<Question> questionsWithFeedback = questionRepository.findQuestionsPendingReviewByDepartment(department);for (Question question : questionsWithFeedback) {
+        }
+        
+        // Get questions from the same department that need Subject Leader review
+        List<Question> questionsWithFeedback = questionRepository.findQuestionsPendingReviewByDepartment(department);
+        System.out.println("Found " + questionsWithFeedback.size() + " questions pending review for department: " + department);
+        
+        for (Question question : questionsWithFeedback) {
             // Only show questions that need Subject Leader action:
-            // - SUBMITTED: newly submitted questions (may or may not have feedback)
-            // - REJECTED: questions that were rejected and need SL action
-            // Hide: DRAFT (not ready), APPROVED (already processed), ARCHIVED (sent to higher level)
-            if (question.getStatus() == QuestionStatus.SUBMITTED || question.getStatus() == QuestionStatus.REJECTED) {
+            // - SUBMITTED: newly submitted questions that need review
+            // Hide: DRAFT (not ready), REJECTED (returned to lecturer), APPROVED (already processed), ARCHIVED (sent to higher level)
+            if (question.getStatus() == QuestionStatus.SUBMITTED) {
                 
                 // Check if question still belongs to the same department
                 boolean belongsToSameDepartment = false;
@@ -113,9 +123,7 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
                 
                 feedbackList.add(dto);
             }
-        }
-
-        // Sort by priority and date
+        }        // Sort by priority and date
         feedbackList.sort((a, b) -> {
             int priorityCompare = Integer.compare(a.getPriority(), b.getPriority());
             if (priorityCompare != 0) return priorityCompare;
@@ -125,6 +133,12 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
             }
             return 0;
         });
+
+        System.out.println("Final feedback list for SL " + subjectLeaderId + " (" + department + "): " + feedbackList.size() + " items");
+        for (QuestionFeedbackDTO item : feedbackList) {
+            System.out.println("  - " + item.getType() + " ID " + item.getId() + ": " + item.getTitle() + " (Status: " + item.getStatus() + ")");
+        }
+        System.out.println("=== END FEEDBACK SERVICE DEBUG ===");
 
         return feedbackList;
     }    @Override
@@ -288,6 +302,70 @@ public class SubjectLeaderFeedbackServiceImpl implements SubjectLeaderFeedbackSe
             question.setStatus(QuestionStatus.ARCHIVED); // Mark as archived (sent to higher level)
             question.setSubmittedAt(LocalDateTime.now());
             question.setUpdatedAt(LocalDateTime.now());
+            questionRepository.save(question);
+            return true;        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean approveQuestion(Long feedbackId, Long subjectLeaderId) {
+        Optional<Question> questionOpt = questionRepository.findById(feedbackId);
+        if (!questionOpt.isPresent()) {
+            return false;
+        }
+
+        Question question = questionOpt.get();
+        
+        try {
+            // Mark as approved by Subject Leader
+            question.setStatus(QuestionStatus.APPROVED);
+            question.setReviewedAt(LocalDateTime.now());
+            question.setApprovedAt(LocalDateTime.now());
+            question.setUpdatedAt(LocalDateTime.now());
+            
+            // Set reviewer/approver
+            Optional<User> slOpt = userRepository.findById(subjectLeaderId);
+            if (slOpt.isPresent()) {
+                question.setReviewer(slOpt.get());
+                question.setApprover(slOpt.get());
+            }
+            
+            questionRepository.save(question);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean rejectQuestion(Long feedbackId, Long subjectLeaderId, String feedback) {
+        Optional<Question> questionOpt = questionRepository.findById(feedbackId);
+        if (!questionOpt.isPresent()) {
+            return false;
+        }
+
+        Question question = questionOpt.get();
+        
+        try {
+            // Mark as rejected by Subject Leader
+            question.setStatus(QuestionStatus.REJECTED);
+            question.setReviewedAt(LocalDateTime.now());
+            question.setUpdatedAt(LocalDateTime.now());
+            question.setApprovedAt(null);
+            question.setApprover(null);
+            
+            // Set feedback if provided
+            if (feedback != null && !feedback.trim().isEmpty()) {
+                question.setFeedback(feedback);
+            }
+            
+            // Set reviewer
+            Optional<User> slOpt = userRepository.findById(subjectLeaderId);
+            if (slOpt.isPresent()) {
+                question.setReviewer(slOpt.get());
+            }
+            
             questionRepository.save(question);
             return true;
         } catch (Exception e) {

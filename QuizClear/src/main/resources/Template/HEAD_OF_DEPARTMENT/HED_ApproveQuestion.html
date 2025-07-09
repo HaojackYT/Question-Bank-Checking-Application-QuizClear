@@ -3,14 +3,17 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/Static/header.css}">
     <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
     <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
     <link rel="stylesheet" th:href="@{/Static/css/HED/HED_ExamManagement.css}">
-    <link rel="stylesheet" th:href="@{/Static/css/HED/HED_ApproveQuestion.css}">    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Approve_Question</title>    <style>
+    <link rel="stylesheet" th:href="@{/Static/css/HED/HED_ApproveQuestion.css}">
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">    <title>Approve_Question</title>
+    
+    <style>
         .notification_item.hidden {
             display: none;
         }
@@ -198,9 +201,7 @@
                 <div class="filter-controls">                    <div class="filter-dropdown">
                         <select class="filter-select">
                             <option value="">All Status</option>
-                            <option value="APPROVED">Approved</option>
-                            <option value="SUBMITTED">Submitted</option>
-                            <option value="REJECTED">Rejected</option>
+                            <option value="ARCHIVED">Archived (Resubmitted by SL)</option>
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div>
@@ -445,11 +446,9 @@
                     tbody.innerHTML = '';
                       questions.forEach(question => {
                         const row = document.createElement('tr');
-                        row.setAttribute('data-exam-id', question.questionId);
-                        
-                        // Determine action buttons based on status
+                        row.setAttribute('data-exam-id', question.questionId);                        // Determine action buttons based on status - HoD only handles ARCHIVED questions
                         let actionButtons = '';
-                        if (question.status === 'SUBMITTED' || question.status === 'PENDING') {
+                        if (question.status === 'ARCHIVED') {
                             actionButtons = `
                                 <button class="action-btn view-btn" title="View" onclick="viewQuestion(${question.questionId})">
                                     <i class="fas fa-eye"></i>
@@ -467,7 +466,7 @@
                                     <i class="fas fa-eye"></i>
                                 </button>
                             `;
-                        }                        row.innerHTML = `
+                        }row.innerHTML = `
                             <td>${question.questionId}</td>
                             <td>${question.subjectName || 'N/A'}</td>
                             <td>${question.createdByName || 'N/A'}</td>

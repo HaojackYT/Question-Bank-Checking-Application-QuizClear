@@ -51,6 +51,19 @@ public class UserService {
     }
 
     /**
+     * Get user's primary department by username
+     */
+    public String getUserDepartment(String username) {
+        logger.debug("Getting department for user: {}", username);
+        Optional<User> userOpt = userRepository.findByEmail(username);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            return user.getDepartment();
+        }
+        throw new RuntimeException("User not found: " + username);
+    }
+
+    /**
      * Get all subjects assigned to user
      */
     public List<Subject> getUserSubjects(Long userId) {

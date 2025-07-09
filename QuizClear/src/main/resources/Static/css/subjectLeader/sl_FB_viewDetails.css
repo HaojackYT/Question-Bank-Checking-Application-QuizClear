@@ -263,6 +263,28 @@
     background-color: white;
 }
 
+.action-buttons .btn--approve {
+    border-color: #10b981;
+    color: white;
+    background-color: #10b981;
+}
+
+.action-buttons .btn--approve:hover {
+    background-color: #059669;
+    border-color: #059669;
+}
+
+.action-buttons .btn--reject {
+    border-color: #ef4444;
+    color: white;
+    background-color: #ef4444;
+}
+
+.action-buttons .btn--reject:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
 .action-buttons .btn--edit {
     border-color: #6b7280;
     color: #374151;

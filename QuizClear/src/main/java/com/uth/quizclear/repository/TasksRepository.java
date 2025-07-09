@@ -19,6 +19,8 @@ import java.util.Optional;
 
 @Repository
 public interface TasksRepository extends JpaRepository<Tasks, Integer> {
+    // Thêm hàm đếm task theo trạng thái
+    List<Tasks> findByStatus(com.uth.quizclear.model.enums.TaskStatus status);
 
         List<Tasks> findByTaskType(TaskType taskType);
 
@@ -30,7 +32,10 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
 
         // Lấy tất cả task theo khoa
         @Query("SELECT t FROM Tasks t WHERE t.assignedTo.department = :department")
-        List<Tasks> findTasksByDepartment(@Param("department") String department);
+        List<Tasks> findTasksByDepartment(@Param("department") String department);        // Lấy tất cả task theo khoa (chỉ lấy task assigned TO users trong department này)
+        @Query("SELECT DISTINCT t FROM Tasks t " +
+               "WHERE t.assignedTo.department = :department")
+        List<Tasks> findTasksByDepartmentImproved(@Param("department") String department);
 
         // Tìm task tạo trong 7 ngày gần đây
         @Query("SELECT t FROM Tasks t WHERE t.createdAt >= :sevenDaysAgo")
