@@ -260,11 +260,18 @@
         function closeNewAssignModal() {
             document.getElementById('newAssignModal').style.display = 'none';
             document.getElementById('form-error').style.display = 'none';
-        }
-
-        function openDetailsModal(taskId) {
-            fetchWithErrorHandling(`${BASE_URL}/api/hed/assignment?taskId=${taskId}`)
+        }        function openDetailsModal(taskId) {
+            console.log('=== OPENING DETAILS MODAL DEBUG ===');
+            console.log('Task ID:', taskId);
+            
+            fetchWithErrorHandling(`${BASE_URL}/hed/api/assignment?taskId=${taskId}`)
                 .then(data => {
+                    console.log('API Response for task', taskId, ':', data);
+                    console.log('Response assignedLecturerName:', data.assignedLecturerName);
+                    console.log('Response title:', data.title);
+                    console.log('Response dueDate:', data.dueDate);
+                    console.log('Response description:', data.description);
+                    
                     const titleElement = document.querySelector('.details-modal h2');
                     if (titleElement) titleElement.textContent = `Details - ${data.title || 'N/A'} (ID: ${taskId})`;
 
@@ -272,7 +279,10 @@
                     if (dueDateElement) dueDateElement.textContent = formatDate(data.dueDate);
 
                     const lecturerInfoElement = document.querySelector('.lecturer-info span');
-                    if (lecturerInfoElement) lecturerInfoElement.textContent = data.assignedLecturerName || 'N/A';
+                    if (lecturerInfoElement) {
+                        console.log('Setting lecturer name to:', data.assignedLecturerName);
+                        lecturerInfoElement.textContent = data.assignedLecturerName || 'N/A';
+                    }
 
                     const detailSections = document.querySelectorAll('.detail-section');
                     if (detailSections.length >= 2) {
@@ -308,14 +318,15 @@
                     if (descriptionElement) descriptionElement.textContent = data.description || 'No description';
 
                     const feedbackElement = document.querySelector('.detail-section:nth-child(6) .feedback-box p');
-                    if (feedbackElement) feedbackElement.textContent = data.feedback || 'No feedback';
-
-                    loadQuestions(taskId);
+                    if (feedbackElement) feedbackElement.textContent = data.feedback || 'No feedback';                    loadQuestions(taskId);
                     document.getElementById('detailsModal').style.display = 'block';
+                    
+                    console.log('=== END OPENING DETAILS MODAL DEBUG ===');
                 })
                 .catch(error => {
                     console.error('Error fetching assignment details:', error);
                     showError(`Failed to load assignment details: ${error.message}`);
+                    console.log('=== END OPENING DETAILS MODAL DEBUG (ERROR) ===');
                 });
         }
 
@@ -392,7 +403,7 @@
     }
 }        async function loadQuestions(taskId) {
             try {
-                const questions = await fetchWithErrorHandling(`${BASE_URL}/api/hed/assignment/questions?taskId=${taskId}`);
+                const questions = await fetchWithErrorHandling(`${BASE_URL}/hed/api/assignment/questions?taskId=${taskId}`);
                 const questionsList = document.getElementById('questions-list');
                 questionsList.innerHTML = '';
                 if (!questions || questions.length === 0) {

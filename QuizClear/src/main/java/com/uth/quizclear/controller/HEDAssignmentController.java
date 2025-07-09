@@ -192,12 +192,15 @@ public class HEDAssignmentController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", "Error deleting assignment: " + e.getMessage()));
         }
-    }
-
-    @GetMapping("/api/assignment")
+    }    @GetMapping("/api/assignment")
     @ResponseBody
     public TaskAssignmentDTO getAssignment(@RequestParam Long taskId) {
-        return taskAssignmentService.getTaskAssignmentById(taskId);
+        System.out.println("=== GET ASSIGNMENT DETAILS DEBUG ===");
+        System.out.println("Getting assignment details for task ID: " + taskId);
+        TaskAssignmentDTO result = taskAssignmentService.getTaskDetailForHED(taskId);
+        System.out.println("Assignment details: " + result.getAssignedLecturerName());
+        System.out.println("=== END GET ASSIGNMENT DETAILS DEBUG ===");
+        return result;
     }
 
     @GetMapping("/api/notifications")

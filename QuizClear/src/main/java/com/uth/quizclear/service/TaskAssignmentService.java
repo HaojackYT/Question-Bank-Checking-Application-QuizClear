@@ -406,8 +406,8 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
                 task.getStatus() != null ? task.getStatus().name().toLowerCase() : "N/A",
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
-                task.getDescription(),
-                null
+                task.getDescription() != null ? task.getDescription() : "No description provided",
+                "No feedback yet"
         );
     }    // Phương thức gốc: Chuyển Tasks thành DTO mở rộng
     private TaskAssignmentDTO mapToDTOExtended(Tasks task) {
@@ -423,8 +423,8 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
                 task.getStatus() != null ? task.getStatus().name().toLowerCase() : "N/A",
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
-                task.getDescription(),
-                null
+                task.getDescription() != null ? task.getDescription() : "No description provided",
+                "No feedback yet"
         );
     }// Phương thức mới: Chuyển Tasks thành DTO
     private TaskAssignmentDTO convertToDTO(Tasks task) {
@@ -436,12 +436,12 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getTotalQuestions(),
                 task.getTotalQuestions(),
                 countCompletedQuestions(task),
-                task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A", // This should be assignedTo, not assignedBy
+                task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A", // Fixed: should be assignedTo
                 task.getAssignedTo() != null ? task.getAssignedTo().getFullName() : "N/A",
                 task.getStatus() != null ? task.getStatus().name().toLowerCase() : "N/A",
                 task.getDueDate() != null ? task.getDueDate().toString() : "N/A",
-                task.getDescription(),
-                null
+                task.getDescription() != null ? task.getDescription() : "No description provided",
+                "No feedback yet" // Default feedback instead of null
         );
     }// Phương thức gốc: Lấy task cho HED - Using real database data
     public List<TaskAssignmentDTO> getTasksForHED() {
