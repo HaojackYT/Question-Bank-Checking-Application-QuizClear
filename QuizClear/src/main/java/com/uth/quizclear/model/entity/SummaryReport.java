@@ -1,6 +1,7 @@
 package com.uth.quizclear.model.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.uth.quizclear.model.enums.FeedbackStatus;
 import com.uth.quizclear.model.enums.FeedbackStatusConverter;
@@ -18,8 +19,6 @@ import lombok.ToString;
 @Table(name = "summary")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @ToString
 public class SummaryReport {
 
@@ -55,4 +54,88 @@ public class SummaryReport {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "summaryReport", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<SummaryQuestion> summaryQuestions;
+
+    
+    public Long getSumId() {
+        return sumId;
+    }
+
+    public void setSumId(Long sumId) {
+        this.sumId = sumId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public User getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(User assignedTo) {
+        this.assignedTo = assignedTo;
+    }
+
+    public User getAssignedBy() {
+        return assignedBy;
+    }
+
+    public void setAssignedBy(User assignedBy) {
+        this.assignedBy = assignedBy;
+    }
+
+    public Integer getTotalQuestions() {
+        return totalQuestions;
+    }
+
+    public void setTotalQuestions(Integer totalQuestions) {
+        this.totalQuestions = totalQuestions;
+    }
+
+    public FeedbackStatus getFeedbackStatus() {
+        return feedbackStatus;
+    }
+
+    public void setFeedbackStatus(FeedbackStatus feedbackStatus) {
+        this.feedbackStatus = feedbackStatus;
+    }
+
+    public SumStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(SumStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public List<SummaryQuestion> getSummaryQuestions() {
+        return summaryQuestions;
+    }
+
+    public void setSummaryQuestions(List<SummaryQuestion> summaryQuestions) {
+        this.summaryQuestions = summaryQuestions;
+    }
 }

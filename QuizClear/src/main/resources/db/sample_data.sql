@@ -856,9 +856,10 @@ VALUES
 ('Weekly Update', 'Weekly progress report', 4, 2, 20, 'Received', 'Draft', '2025-05-15 08:30:00'),
 ('Project Summary', 'Summary for project evaluation', 5, 3, 30, 'Not received', 'Draft', '2025-06-10 14:20:00');
 
-
 -- Bảng câu hỏi theo từng Report
-INSERT INTO summary_report (summary_id, question_id)
-VALUES (1, 1),
-       (1, 2),
-       (1, 3);
+INSERT INTO summary_question (summary_id, question_id)
+VALUES (1, 1), (1, 2), (1, 3),
+       (2, 2), (2, 3), (3, 1),
+       (4, 1), (4, 2);
+       
+      

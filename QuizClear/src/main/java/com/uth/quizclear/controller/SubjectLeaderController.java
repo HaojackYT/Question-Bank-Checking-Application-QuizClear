@@ -2,6 +2,7 @@ package com.uth.quizclear.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.uth.quizclear.model.dto.QuestionFeedbackDTO;
 import com.uth.quizclear.model.dto.QuestionFeedbackDetailDTO;
 import com.uth.quizclear.model.dto.SL_PlanDTO;
+import com.uth.quizclear.model.dto.SummaryReportDTO;
 import com.uth.quizclear.model.entity.Plan;
+import com.uth.quizclear.model.entity.SummaryReport;
+import com.uth.quizclear.repository.SummaryRepository;
 import com.uth.quizclear.service.PlanService;
 import com.uth.quizclear.service.SubjectLeaderFeedbackService;
+import com.uth.quizclear.service.SummaryService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -462,7 +467,15 @@ public class SubjectLeaderController {
             return ResponseEntity.internalServerError()
                 .body(Map.of("success", false, "message", "Error resubmitting question: " + e.getMessage()));
         }
-    }    @GetMapping("/summary-report")
+    }
+
+    @Autowired
+    private SummaryService summaryService;
+
+    @Autowired
+    private SummaryRepository summaryRepository;
+
+    @GetMapping("/summary-report")
     public String summaryReportPage(org.springframework.security.core.Authentication authentication, Model model) {
         // Check authentication first
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -479,9 +492,25 @@ public class SubjectLeaderController {
         if (!isSL) {
             return "redirect:/login";
         }
-        
+
+        List<SummaryReport> reports = summaryService.getAllRps();
+        model.addAttribute("reports", reports);
         model.addAttribute("userEmail", authentication.getName());
-        return "subjectLeader/SL_SummaryReport";
+
+        return "subjectLeader/SL_SummaryReport";  // /subject-leader
+    }
+
+    @GetMapping("/api/summary-report/{sumId}")
+    @ResponseBody
+    public ResponseEntity<?> getReportDetail(@PathVariable Long sumId) {
+        Optional<SummaryReportDTO> report = summaryService.getReportDetail(sumId);
+        if (report.isPresent()) {
+            System.out.println("✅ [Controller] Report found: " + report.get());
+            return ResponseEntity.ok(report.get());
+        } else {
+            System.out.println("❌ [Controller] Report not found for ID: " + sumId);
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // Accept plan API endpoint

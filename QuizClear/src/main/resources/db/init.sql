@@ -532,7 +532,7 @@ CREATE TABLE IF NOT EXISTS summary (
 ) ENGINE=InnoDB;
 
 -- 26. Bảng lưu câu hỏi cho Sum Report
-CREATE TABLE IF NOT EXISTS summary_report (
+CREATE TABLE IF NOT EXISTS summary_question (
   report_id INT AUTO_INCREMENT PRIMARY KEY,
   summary_id INT NOT NULL,
   question_id INT NOT NULL,
