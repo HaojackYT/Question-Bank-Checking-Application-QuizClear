@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ import com.uth.quizclear.model.entity.Plan;
 import com.uth.quizclear.model.entity.SummaryReport;
 import com.uth.quizclear.repository.SummaryRepository;
 import com.uth.quizclear.model.entity.User;
+import com.uth.quizclear.repository.SummaryQuesRepository;
 import com.uth.quizclear.repository.UserRepository;
 import com.uth.quizclear.service.PlanService;
 import com.uth.quizclear.service.SubjectLeaderFeedbackService;
@@ -561,6 +563,9 @@ public class SubjectLeaderController {
     @Autowired
     private SummaryRepository summaryRepository;
 
+    @Autowired 
+    private SummaryQuesRepository summaryQuesRepository;
+
     @GetMapping("/summary-report")
     public String summaryReportPage(org.springframework.security.core.Authentication authentication, Model model) {
         // Check authentication first
@@ -598,6 +603,20 @@ public class SubjectLeaderController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // Create new Report
+    @PostMapping("/api/summary-report/new")
+    public ResponseEntity<?> createSummary(@RequestBody SummaryReportDTO summaryReportDTO) {
+        try {
+            summaryService.createSummary(summaryReportDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body("Error creating summary: " + e.getMessage());
+        }
+    }
+
+    // Edit Report
 
     // Accept plan API endpoint
     @PostMapping("/api/plans/{planId}/accept")
