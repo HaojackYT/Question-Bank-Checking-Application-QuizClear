@@ -181,18 +181,38 @@ public class HEDAssignmentController {
             System.out.println("=== END CREATE ASSIGNMENT DEBUG (ERROR) ===");
             return ResponseEntity.badRequest().body(Map.of("error", "Error creating assignment: " + e.getMessage()));
         }
-    }
-
-    @DeleteMapping("/api/assignments/{taskId}")
+    }    @DeleteMapping("/api/assignments/{taskId}")
     @ResponseBody
     public ResponseEntity<?> deleteAssignment(@PathVariable Long taskId) {
         try {
+            // Get assignment details to check status
+            TaskAssignmentDTO assignment = taskAssignmentService.getTaskDetailForHED(taskId);
+            
+            // Business rule: Prevent deletion of assignments in progress or completed
+            if ("in_progress".equalsIgnoreCase(assignment.getStatus()) || 
+                "IN_PROGRESS".equalsIgnoreCase(assignment.getStatus())) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Cannot delete assignment that is currently in progress. " +
+                            "Please cancel or reassign instead."
+                ));
+            }
+            
+            if ("completed".equalsIgnoreCase(assignment.getStatus()) || 
+                "COMPLETED".equalsIgnoreCase(assignment.getStatus()) ||
+                "approved".equalsIgnoreCase(assignment.getStatus()) ||
+                "APPROVED".equalsIgnoreCase(assignment.getStatus())) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Cannot delete completed or approved assignments. " +
+                            "This would affect audit trails and reporting."
+                ));
+            }
+            
             taskAssignmentService.deleteTaskAssignment(taskId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", "Error deleting assignment: " + e.getMessage()));
         }
-    }    @GetMapping("/api/assignment")
+    }@GetMapping("/api/assignment")
     @ResponseBody
     public TaskAssignmentDTO getAssignment(@RequestParam Long taskId) {
         System.out.println("=== GET ASSIGNMENT DETAILS DEBUG ===");

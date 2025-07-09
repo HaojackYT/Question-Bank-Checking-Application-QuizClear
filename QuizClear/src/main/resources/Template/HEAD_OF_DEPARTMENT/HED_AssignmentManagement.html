@@ -23,12 +23,17 @@
 
         <!-- Main content -->
         <div id="main">
-            <div class="assignment-container">
-                <div class="assignment-header">
+            <div class="assignment-container">                <div class="assignment-header">
                     <h1>Assignment Management</h1>
                     <button class="new-assign-btn" onclick="openNewAssignModal()">
                         <i class="fas fa-plus"></i> New Assign
                     </button>
+                </div>
+
+                <!-- Global notification area -->
+                <div id="global-notification" class="global-notification" style="display: none;">
+                    <span id="notification-message"></span>
+                    <button id="close-notification" class="close-notification">&times;</button>
                 </div>
 
                 <!-- Notifications -->
@@ -224,22 +229,53 @@
             if (!dateString) return 'N/A';
             const date = new Date(dateString);
             return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
-        }
-
-        function showError(message, isSuccess = false) {
+        }        function showError(message, isSuccess = false) {
+            // Try to use global notification first (for general messages)
+            const globalNotification = document.getElementById('global-notification');
+            const messageElement = document.getElementById('notification-message');
+            
+            if (globalNotification && messageElement) {
+                messageElement.textContent = message;
+                globalNotification.className = `global-notification ${isSuccess ? 'success' : 'error'}`;
+                globalNotification.style.display = 'flex';
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    globalNotification.style.display = 'none';
+                }, 5000);
+                
+                return;
+            }
+            
+            // Fallback to form-error (for modal messages)
             const errorDiv = document.getElementById('form-error');
-            errorDiv.textContent = message;
-            errorDiv.style.color = isSuccess ? 'green' : 'red';
-            errorDiv.style.display = 'block';
-            setTimeout(() => errorDiv.style.display = 'none', 5000);
-        }
-
-        async function fetchWithErrorHandling(url, options = {}) {
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.style.color = isSuccess ? 'green' : 'red';
+                errorDiv.style.display = 'block';
+                setTimeout(() => errorDiv.style.display = 'none', 5000);
+            } else {
+                // Last resort: use alert
+                alert(message);
+            }
+        }async function fetchWithErrorHandling(url, options = {}) {
             try {
                 const response = await fetch(url, options);
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Error ${response.status}: ${errorText || 'No error details provided'}`);
+                    // Read the response body once as text
+                    const responseText = await response.text();
+                    let errorMessage;
+                    
+                    try {
+                        // Try to parse as JSON to get structured error
+                        const errorData = JSON.parse(responseText);
+                        errorMessage = errorData.error || errorData.message || `HTTP ${response.status}`;
+                    } catch (jsonError) {
+                        // If not JSON, use the text as is
+                        errorMessage = `Error ${response.status}: ${responseText || 'No error details provided'}`;
+                    }
+                    
+                    throw new Error(errorMessage);
                 }
                 const text = await response.text();
                 return text ? JSON.parse(text) : {};
@@ -710,25 +746,46 @@
             showError('Edit functionality not implemented yet');
         }        function deleteAssignment(taskId) {
             if (confirm('Are you sure you want to delete this assignment?')) {
-                fetchWithErrorHandling(`${BASE_URL}/api/hed/assignments/${taskId}`, {
+                console.log('=== DELETE ASSIGNMENT DEBUG ===');
+                console.log('Deleting assignment with ID:', taskId);
+                
+                fetchWithErrorHandling(`${BASE_URL}/hed/api/assignments/${taskId}`, {
                     method: 'DELETE'
                 })
                     .then(() => {
+                        console.log('Assignment deleted successfully');
                         loadAssignments(currentPage);
                         showError('Assignment deleted successfully', true);
+                        console.log('=== END DELETE ASSIGNMENT DEBUG ===');
                     })
                     .catch(error => {
                         console.error('Error deleting assignment:', error);
-                        showError(`Failed to delete assignment: ${error.message}`);
+                        console.log('Delete error details:', error);
+                        
+                        // Show the specific error message from backend
+                        let errorMessage = error.message || 'Failed to delete assignment';
+                        
+                        // Show error message to user
+                        showError(errorMessage);
+                        
+                        console.log('=== END DELETE ASSIGNMENT DEBUG (ERROR) ===');
                     });
-            }
-        }        // Initialize
+            }        }// Initialize
         document.addEventListener('DOMContentLoaded', () => {
             console.log('Assignment Management page loaded');
             loadNotifications();
             loadAssignments(currentPage);
             loadCourses();
             document.querySelector('.search-btn').addEventListener('click', () => loadAssignments(0));
+            
+            // Add close notification event listener
+            const closeNotificationBtn = document.getElementById('close-notification');
+            if (closeNotificationBtn) {
+                closeNotificationBtn.addEventListener('click', () => {
+                    document.getElementById('global-notification').style.display = 'none';
+                });
+            }
+            
             // Củng cố sự kiện change cho filter-select
             document.querySelectorAll('.filter-select').forEach(select => {
                 select.addEventListener('change', () => {
