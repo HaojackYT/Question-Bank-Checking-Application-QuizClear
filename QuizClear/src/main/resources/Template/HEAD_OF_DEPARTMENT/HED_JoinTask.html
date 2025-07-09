@@ -182,22 +182,15 @@
                     </button>
                 </div>
                 <div class="filter-controls">                    <div class="filter-dropdown">
-                        <select class="filter-select">
+                        <select class="filter-select" id="statusFilter">
                             <option value="">All Status</option>
-                            <option value="ASSIGNED">Assigned</option>
-                            <option value="PENDING">Pending</option>
-                            <option value="IN_PROGRESS">In Progress</option>
-                            <option value="COMPLETED">Completed</option>
-                            <option value="INCOMPLETE">Incomplete</option>
+                            <!-- Options will be loaded dynamically -->
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div><div class="filter-dropdown">
-                        <select class="filter-select">
+                        <select class="filter-select" id="subjectFilter">
                             <option value="">All Subject</option>
-                            <option value="Operating System">Operating System</option>
-                            <option value="Database">Database</option>
-                            <option value="Computer Architecture">Computer Architecture</option>
-                            <option value="Object Oriented Programming">Object Oriented Programming</option>
+                            <!-- Options will be loaded dynamically -->
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div>
@@ -403,10 +396,10 @@
                 function loadTasks(resetToFirstPage = false) {
                     if (resetToFirstPage) {
                         currentPage = 1; // Reset to first page for new searches/filters
-                    }
-                      const selects = document.querySelectorAll('.filter-controls select');
-                    const status = selects[0] ? selects[0].value : '';
-                    const subject = selects[1] ? selects[1].value : '';
+                    }                      const statusSelect = document.getElementById('statusFilter');
+                    const subjectSelect = document.getElementById('subjectFilter');
+                    const status = statusSelect ? statusSelect.value : '';
+                    const subject = subjectSelect ? subjectSelect.value : '';
                     const searchInput = document.querySelector('.search-input');
                     const search = searchInput ? searchInput.value : '';
                     
@@ -470,42 +463,106 @@
                 function showError(message) {
                     const tbody = document.querySelector('#taskTableBody');
                     tbody.innerHTML = `<tr><td colspan="7" class="error-message">${message}</td></tr>`;
-                }
-                  // Load subjects for filter dropdown
-                function loadSubjects() {
-                    fetch(`/hed/api/subjects`)
-                        .then(response => response.json())
-                        .then(data => {
-                            const selects = document.querySelectorAll('.filter-controls select');
-                            const subjectSelect = selects[1]; // Second dropdown is subject
-                            if (subjectSelect) {
-                                subjectSelect.innerHTML = '<option value="">All Subject</option>';
-                                
-                                if (Array.isArray(data)) {
-                                    data.forEach(subject => {
-                                        const option = document.createElement('option');
-                                        option.value = subject;
-                                        option.textContent = subject;
-                                        subjectSelect.appendChild(option);
-                                    });
-                                }
+                }                // Load dropdown options from backend
+                function loadDropdownOptions() {
+                    console.log('Loading dropdown options...');
+                    
+                    // Load status options
+                    fetch('/hed/api/tasks/status-options')
+                        .then(response => {
+                            console.log('Status options response status:', response.status);
+                            return response.json();
+                        })
+                        .then(statusOptions => {
+                            console.log('Status options received:', statusOptions);
+                            const statusSelect = document.getElementById('statusFilter');
+                            if (statusSelect && Array.isArray(statusOptions)) {
+                                statusSelect.innerHTML = '<option value="">All Status</option>';
+                                statusOptions.forEach(status => {
+                                    const option = document.createElement('option');
+                                    option.value = status;
+                                    option.textContent = formatStatusDisplay(status);
+                                    statusSelect.appendChild(option);
+                                });
+                                console.log('Status dropdown populated with', statusOptions.length, 'options');
+                            } else {
+                                console.error('Status select not found or options not array:', statusSelect, statusOptions);
                             }
                         })
                         .catch(error => {
-                            console.error('Error loading subjects:', error);
-                            // Fallback to default subjects if API fails
-                            const selects = document.querySelectorAll('.filter-controls select');
-                            const subjectSelect = selects[1];
+                            console.error('Error loading status options:', error);
+                            // Fallback to default status options
+                            const statusSelect = document.getElementById('statusFilter');
+                            if (statusSelect) {
+                                statusSelect.innerHTML = `
+                                    <option value="">All Status</option>
+                                    <option value="PENDING">Pending</option>
+                                    <option value="IN_PROGRESS">In Progress</option>
+                                    <option value="COMPLETED">Completed</option>
+                                    <option value="CANCELLED">Cancelled</option>
+                                    <option value="APPROVED">Approved</option>
+                                    <option value="REJECTED">Rejected</option>
+                                `;
+                                console.log('Used fallback status options');
+                            }
+                        });
+
+                    // Load subject options
+                    console.log('Fetching subject options...');
+                    fetch('/hed/api/tasks/subject-options')
+                        .then(response => {
+                            console.log('Subject options response status:', response.status);
+                            if (!response.ok) {
+                                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                            }
+                            return response.json();
+                        })
+                        .then(subjectOptions => {
+                            console.log('Subject options received:', subjectOptions);
+                            const subjectSelect = document.getElementById('subjectFilter');
+                            if (subjectSelect && Array.isArray(subjectOptions)) {
+                                subjectSelect.innerHTML = '<option value="">All Subject</option>';
+                                subjectOptions.forEach(subject => {
+                                    const option = document.createElement('option');
+                                    option.value = subject;
+                                    option.textContent = subject;
+                                    subjectSelect.appendChild(option);
+                                });
+                                console.log('Subject dropdown populated with', subjectOptions.length, 'options:', subjectOptions);
+                            } else {
+                                console.error('Subject select not found or options not array:', subjectSelect, subjectOptions);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading subject options:', error);
+                            // Fallback to default subject options
+                            const subjectSelect = document.getElementById('subjectFilter');
                             if (subjectSelect) {
                                 subjectSelect.innerHTML = `
                                     <option value="">All Subject</option>
+                                    <option value="Calculus II">Calculus II</option>
+                                    <option value="Linear Algebra">Linear Algebra</option>
                                     <option value="Operating System">Operating System</option>
                                     <option value="Database">Database</option>
                                     <option value="Computer Architecture">Computer Architecture</option>
                                     <option value="Object Oriented Programming">Object Oriented Programming</option>
                                 `;
+                                console.log('Used fallback subject options with Calculus II and Linear Algebra');
                             }
                         });
+                }
+
+                // Format status for display
+                function formatStatusDisplay(status) {
+                    switch(status) {
+                        case 'IN_PROGRESS': return 'In Progress';
+                        case 'PENDING': return 'Pending';
+                        case 'COMPLETED': return 'Completed';
+                        case 'CANCELLED': return 'Cancelled';
+                        case 'APPROVED': return 'Approved';
+                        case 'REJECTED': return 'Rejected';
+                        default: return status;
+                    }
                 }
                 
                 // Update tasks table
@@ -810,19 +867,41 @@
                   // Load more notifications (legacy function)
                 function loadMoreTaskNotifications() {
                     toggleNotifications();
-                }
-                  // Initialize page
+                }                  // Initialize page
                 document.addEventListener('DOMContentLoaded', function() {
-                    loadSubjects(); // Load subjects for dropdown
-                    loadTasks(true); // Reset to first page on initial load
+                    console.log('DOM Content Loaded - Starting initialization...');
+                    
+                    // Load dropdown options first, then load tasks
+                    loadDropdownOptions();
+                    
+                    // Add a small delay to ensure dropdowns are loaded before loading tasks
+                    setTimeout(() => {
+                        loadTasks(true); // Reset to first page on initial load
+                    }, 500);
                     
                     // Add event listeners for filters and search
-                    document.querySelectorAll('.filter-controls select').forEach((select, index) => {
-                        select.addEventListener('change', function() {
-                            console.log(`Filter ${index} changed to:`, this.value);
+                    const statusFilter = document.getElementById('statusFilter');
+                    const subjectFilter = document.getElementById('subjectFilter');
+                    
+                    if (statusFilter) {
+                        statusFilter.addEventListener('change', function() {
+                            console.log('Status filter changed to:', this.value);
                             loadTasks(true); // Reset to first page when filter changes
                         });
-                    });
+                        console.log('Status filter event listener added');
+                    } else {
+                        console.error('Status filter not found!');
+                    }
+                    
+                    if (subjectFilter) {
+                        subjectFilter.addEventListener('change', function() {
+                            console.log('Subject filter changed to:', this.value);
+                            loadTasks(true); // Reset to first page when filter changes
+                        });
+                        console.log('Subject filter event listener added');
+                    } else {
+                        console.error('Subject filter not found!');
+                    }
                     
                     document.querySelector('.search-input').addEventListener('input', function() {
                         clearTimeout(this.searchTimeout);

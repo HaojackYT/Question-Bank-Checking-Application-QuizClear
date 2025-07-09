@@ -713,4 +713,42 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
         return result;
     }
 
+    /**
+     * Get distinct subjects from tasks assigned to a specific HED
+     * @param hedId the HED user ID
+     * @return list of subject names
+     */
+    public List<String> getSubjectsByHedId(Integer hedId) {
+        try {
+            // Find all tasks where this HED is involved (either as assigned or monitoring)
+            List<Tasks> tasks = tasksRepository.findAll().stream()
+                    .filter(task -> {
+                        // Check if this HED is assigned to monitor/manage tasks in their department
+                        // For now, we'll get all tasks and filter by department logic
+                        User hed = userRepository.findById(hedId.longValue()).orElse(null);
+                        if (hed == null) return false;
+                        
+                        // If the task has a course and the HED's department matches
+                        if (task.getCourse() != null && hed.getDepartment() != null) {
+                            // You might need to implement department-course relationship
+                            // For now, return all tasks as a fallback
+                            return true;
+                        }
+                        return false;
+                    })
+                    .collect(Collectors.toList());
+            
+            // Extract unique subject names from courses
+            Set<String> subjectSet = tasks.stream()
+                    .filter(task -> task.getCourse() != null && task.getCourse().getCourseName() != null)
+                    .map(task -> task.getCourse().getCourseName())
+                    .collect(Collectors.toSet());
+            
+            return new ArrayList<>(subjectSet);
+        } catch (Exception e) {
+            System.err.println("Error getting subjects by HED ID: " + e.getMessage());
+            // Return empty list if error occurs
+            return new ArrayList<>();
+        }
+    }
 }

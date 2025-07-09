@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/hed")
@@ -546,6 +547,61 @@ public class HEDAssignmentController {    private static final Logger logger = L
         } catch (Exception e) {
             logger.error("Error setting task to completed: ", e);
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/api/tasks/status-options")
+    @ResponseBody
+    public ResponseEntity<?> getStatusOptions() {
+        try {
+            List<String> statusOptions = List.of(
+                "PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED", "APPROVED", "REJECTED"
+            );
+            return ResponseEntity.ok(statusOptions);
+        } catch (Exception e) {
+            logger.error("Error getting status options: ", e);
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }    @GetMapping("/api/tasks/subject-options")
+    @ResponseBody
+    public ResponseEntity<?> getSubjectOptions() {
+        try {
+            // Get current user
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+            Optional<User> userOpt = userRepository.findByEmail(username);
+            
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.status(401).body(Map.of("error", "User not authenticated"));
+            }
+              User user = userOpt.get();
+            
+            // Check if user has proper HOED role
+            if (user.getRole() != UserRole.HOED) {
+                return ResponseEntity.status(403).body(Map.of("error", "Access denied: Head of Examination Department role required"));
+            }
+              // Get all tasks for this HED and extract unique subjects
+            List<TaskAssignmentDTO> allTasks = taskAssignmentService.getTasksForHED();
+            
+            // Extract unique subject names
+            List<String> subjectOptions = allTasks.stream()
+                    .map(TaskAssignmentDTO::getSubjectName)
+                    .filter(subject -> subject != null && !subject.trim().isEmpty())
+                    .distinct()
+                    .sorted()
+                    .collect(java.util.stream.Collectors.toList());
+            
+            return ResponseEntity.ok(subjectOptions);
+        } catch (Exception e) {
+            logger.error("Error getting subject options: ", e);
+            // Return fallback subjects if error occurs
+            List<String> fallbackSubjects = List.of(
+                "Operating System",
+                "Database", 
+                "Computer Architecture",
+                "Object Oriented Programming"
+            );
+            return ResponseEntity.ok(fallbackSubjects);
         }
     }
 }
