@@ -484,9 +484,7 @@
                 .finally(() => {
                     buttons.forEach(btn => btn.disabled = false);
                 });
-        }
-
-        // Form submission
+        }        // Form submission
         document.getElementById('newAssignForm').addEventListener('submit', function (event) {
             event.preventDefault();
             const dueDate = document.getElementById('dueDate').value;
@@ -494,14 +492,39 @@
                 showError('Due date must be in format YYYY-MM-DD HH:MM:SS');
                 return;
             }
+            
+            const selectedLecturerId = document.getElementById('lecturer-select').value;
+            const selectedCourseId = document.getElementById('course-select').value;
+            
+            // Debug: kiểm tra các giá trị được chọn
+            console.log('=== FORM SUBMISSION DEBUG ===');
+            console.log('Selected Lecturer ID:', selectedLecturerId);
+            console.log('Selected Course ID:', selectedCourseId);
+            console.log('Lecturer dropdown element:', document.getElementById('lecturer-select'));
+            console.log('All lecturer options:', Array.from(document.getElementById('lecturer-select').options).map(opt => ({value: opt.value, text: opt.text})));
+            
+            // Kiểm tra xem có thực sự chọn lecturer không
+            if (!selectedLecturerId || selectedLecturerId === '') {
+                showError('Please select a lecturer');
+                return;
+            }
+            
+            if (!selectedCourseId || selectedCourseId === '') {
+                showError('Please select a course');
+                return;
+            }
+            
             const formData = {
-                lecturerId: document.getElementById('lecturer-select').value,
-                courseId: document.getElementById('course-select').value,
-                totalQuestions: document.getElementById('totalQuestions').value,
+                lecturerId: selectedLecturerId,
+                courseId: selectedCourseId,
+                totalQuestions: parseInt(document.getElementById('totalQuestions').value),
                 title: document.getElementById('title').value,
                 description: document.getElementById('description').value,
                 dueDate: dueDate
-            };            fetchWithErrorHandling(`${BASE_URL}/hed/api/assignments`, {
+            };
+            
+            console.log('Final assignment creation data:', formData);
+            console.log('=== END FORM SUBMISSION DEBUG ===');fetchWithErrorHandling(`${BASE_URL}/hed/api/assignments`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -529,20 +552,17 @@
             .catch(error => console.error('Error loading menu:', error));        // Pagination and table logic
         let currentPage = /*[[${currentPage ?: 0}]]*/ 0;
         const pageSize = 5;
-        
-        // Load assignments when page loads
+          // Load assignments when page loads
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Assignment Management page loaded');
-            // For now, just show static content
-            // loadAssignments(currentPage); // Disable for now
+            loadAssignments(currentPage);
         });
 
         function loadAssignments(page = 0) {
     const searchValue = document.querySelector('.search-input').value;
     const statusValue = document.getElementById('status-filter').value;
     const courseValue = document.getElementById('course-filter').value;
-    console.log('Loading assignments with:', { searchValue, statusValue, courseValue });
-    // Thay courseId thành subject để khớp với backend
+    console.log('Loading assignments with:', { searchValue, statusValue, courseValue });    // Thay courseId thành subject để khớp với backend
     fetchWithErrorHandling(`${BASE_URL}/hed/api/assignments?search=${encodeURIComponent(searchValue)}&status=${statusValue}&subject=${courseValue}&page=${page}&size=${pageSize}&_=${new Date().getTime()}`)
         .then(data => {
             console.log('Assignments response:', data);
@@ -556,16 +576,25 @@
             updatePagination(page, 1);
             showError(`Failed to load assignments: ${error.message}`);
         });
-}
-
-        function updateTable(assignments) {
+}        function updateTable(assignments) {
+            console.log('=== UPDATE TABLE DEBUG ===');
+            console.log('Assignments received:', assignments);
+            
             const tbody = document.querySelector('.assignment-table tbody');
             tbody.innerHTML = '';
             if (!assignments || assignments.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No assignments found</td></tr>';
                 return;
             }
-            assignments.forEach(assignment => {
+            assignments.forEach((assignment, index) => {
+                console.log(`Assignment ${index + 1}:`, {
+                    taskId: assignment.taskId,
+                    title: assignment.title,
+                    assignedLecturerName: assignment.assignedLecturerName,
+                    courseName: assignment.courseName,
+                    status: assignment.status
+                });
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${assignment.title || 'N/A'}</td>
@@ -582,6 +611,7 @@
                 /*<button onclick="editAssignment(${assignment.taskId})"><i class="fas fa-edit"></i></button>*/
                 tbody.appendChild(row);
             });
+            console.log('=== END UPDATE TABLE DEBUG ===');
         }
 
         function updatePagination(currentPage, totalPages) {

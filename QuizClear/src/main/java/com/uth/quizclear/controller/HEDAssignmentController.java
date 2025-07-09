@@ -62,20 +62,43 @@ public class HEDAssignmentController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size) {
         
+        System.out.println("=== HEDAssignmentController.getAssignments DEBUG ===");
+        System.out.println("Parameters received:");
+        System.out.println("  - search: '" + search + "'");
+        System.out.println("  - status: '" + status + "'");
+        System.out.println("  - subject: '" + subject + "'");
+        System.out.println("  - page: " + page);
+        System.out.println("  - size: " + size);
+        
         // Get current user's department
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
+        System.out.println("Current user: " + currentUsername);
+        
         String userDepartment = userService.getUserDepartment(currentUsername);
+        System.out.println("User department: " + userDepartment);
+        
+        Page<TaskAssignmentDTO> result;
         
         // If no filters applied, return by department only
         if (search.isEmpty() && status.isEmpty() && subject.isEmpty()) {
-            return taskAssignmentService.getTaskAssignmentsByDepartment(
+            System.out.println("No filters applied, getting assignments by department only");
+            result = taskAssignmentService.getTaskAssignmentsByDepartment(
                 userDepartment, PageRequest.of(page, size));
+        } else {
+            System.out.println("Filters applied, getting assignments with filters and department constraint");
+            // Apply filters with department constraint
+            result = taskAssignmentService.getTaskAssignmentsByDepartmentWithFilters(
+                userDepartment, search, status, subject, page, size);
         }
         
-        // Apply filters with department constraint
-        return taskAssignmentService.getTaskAssignmentsByDepartmentWithFilters(
-            userDepartment, search, status, subject, page, size);
+        System.out.println("Returning " + result.getNumberOfElements() + " assignments out of " + result.getTotalElements() + " total");
+        for (TaskAssignmentDTO assignment : result.getContent()) {
+            System.out.println("  - " + assignment.getTitle() + " -> " + assignment.getAssignedLecturerName() + " (" + assignment.getSubjectName() + ")");
+        }
+        System.out.println("=== END HEDAssignmentController.getAssignments DEBUG ===");
+        
+        return result;
     }
 
     // API endpoint for HED Join Task page

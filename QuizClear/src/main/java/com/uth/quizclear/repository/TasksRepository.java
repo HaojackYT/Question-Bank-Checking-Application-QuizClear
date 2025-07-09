@@ -32,13 +32,9 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
 
         // Lấy tất cả task theo khoa
         @Query("SELECT t FROM Tasks t WHERE t.assignedTo.department = :department")
-        List<Tasks> findTasksByDepartment(@Param("department") String department);
-
-        // Lấy tất cả task theo khoa (cải tiến - bao gồm cả course department)
+        List<Tasks> findTasksByDepartment(@Param("department") String department);        // Lấy tất cả task theo khoa (chỉ lấy task assigned TO users trong department này)
         @Query("SELECT DISTINCT t FROM Tasks t " +
-               "WHERE t.assignedTo.department = :department " +
-               "OR t.course.department = :department " +
-               "OR t.assignedBy.department = :department")
+               "WHERE t.assignedTo.department = :department")
         List<Tasks> findTasksByDepartmentImproved(@Param("department") String department);
 
         // Tìm task tạo trong 7 ngày gần đây
