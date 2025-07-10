@@ -1,21 +1,24 @@
 package com.uth.quizclear.controller;
 
 import com.uth.quizclear.model.dto.QuestionBankDTO;
+import com.uth.quizclear.model.dto.CreatePlanDTO;
 import com.uth.quizclear.model.entity.Question;
+import com.uth.quizclear.model.entity.User;
+import com.uth.quizclear.model.entity.CLO;
 import com.uth.quizclear.repository.QuestionRepository;
+import com.uth.quizclear.service.QuestionPlanningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -24,6 +27,9 @@ public class QuestionManagementController {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private QuestionPlanningService questionPlanningService;
 
     // Đây là điểm vào chính cho "Question Management" từ menu.
     // Nó sẽ xử lý GET /staff/question-management
@@ -211,7 +217,64 @@ public class QuestionManagementController {
     // Xử lý GET /staff/questions/planning
     @GetMapping("/questions/planning")
     public String showQuestionPlanning(Model model) {
-        return "Staff/staffQMQuestionPlanning"; // Giả định tên file: src/main/resources/templates/Staff/staffQuestionPlanning.html
+        // Rót dữ liệu cho form Create New Plan - chỉ lấy dữ liệu có HoD
+        model.addAttribute("courses", questionPlanningService.getAllCourses()); // Chỉ course có dept HoD
+        model.addAttribute("departments", questionPlanningService.getAllDepartments()); // Chỉ dept có HoD
+        model.addAttribute("users", questionPlanningService.getAllHoDUsers()); // Tất cả HoD users
+        model.addAttribute("plans", questionPlanningService.getAllPlans());
+        
+        return "Staff/staffQMQuestionPlanning";
+    }
+
+    /**
+     * API để lấy users theo department cho dropdown Assign To
+     */
+    @GetMapping("/api/users-by-department")
+    @ResponseBody
+    public List<User> getUsersByDepartment(@RequestParam String departmentName) {
+        return questionPlanningService.getUsersByDepartment(departmentName);
+    }
+
+    /**
+     * API để lấy CLOs theo course và difficulty level
+     */
+    @GetMapping("/api/clos-by-course-difficulty")
+    @ResponseBody
+    public List<CLO> getClosByCourseAndDifficulty(@RequestParam Long courseId, 
+                                                  @RequestParam String difficultyLevel) {
+        return questionPlanningService.getClosByCourseAndDifficulty(courseId, difficultyLevel);
+    }
+
+    /**
+     * API để lấy tất cả CLOs theo course
+     */
+    @GetMapping("/api/clos-by-course")
+    @ResponseBody
+    public List<CLO> getClosByCourse(@RequestParam Long courseId) {
+        return questionPlanningService.getClosByCourse(courseId);
+    }
+
+    /**
+     * API để tạo plan mới
+     */
+    @PostMapping("/api/create-plan")
+    @ResponseBody
+    public ResponseEntity<?> createPlan(@RequestBody CreatePlanDTO createPlanDTO) {
+        try {
+            questionPlanningService.createPlanAndTask(createPlanDTO);
+            return ResponseEntity.ok().body(Map.of("success", true, "message", "Plan created successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
+
+    /**
+     * API để lấy thống kê planning
+     */
+    @GetMapping("/api/planning-statistics")
+    @ResponseBody
+    public Map<String, Object> getPlanningStatistics() {
+        return questionPlanningService.getPlanningStatistics();
     }
 
     // Trang Duplication Check (của phần Question Management)
