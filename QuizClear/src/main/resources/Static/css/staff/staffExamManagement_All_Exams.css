@@ -11,9 +11,8 @@ body {
 }
 
 .exam-management {
-    padding: 24px;
-    max-width: 1200px;
-    margin: 0 auto;
+    padding: 0;
+    width: 100%;
 }
 
 /* Header Section */
@@ -59,7 +58,7 @@ body {
 /* Statistics Cards */
 .stats-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 24px;
     margin-bottom: 32px;
 }
@@ -199,31 +198,43 @@ body {
 }
 
 /* Navigation Tabs */
-.tab-navigation {
+.tab-navigation, .tab-switch {
     display: flex;
-    gap: 32px;
+    gap: 0;
     border-bottom: 1px solid #e5e7eb;
     margin-bottom: 32px;
 }
 
-.nav-tab {
-    padding: 12px 0;
+.nav-tab, .tab-button {
+    padding: 16px 24px;
     color: #6b7280;
     text-decoration: none;
     font-weight: 500;
+    font-size: 14px;
     position: relative;
     transition: color 0.2s;
+    border: 1px solid #e5e7eb;
+    border-bottom: none;
+    background: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+    margin-right: 2px;
+    cursor: pointer;
 }
 
-.nav-tab:hover {
+.nav-tab:hover, .tab-button:hover {
     color: #4f46e5;
+    background: #f1f5f9;
 }
 
-.nav-tab.active {
+.nav-tab.active, .tab-button.active {
     color: #4f46e5;
+    background: white;
+    border-color: #e5e7eb;
+    border-bottom: 1px solid white;
+    margin-bottom: -1px;
 }
 
-.nav-tab.active::after {
+.nav-tab.active::after, .tab-button.active::after {
     content: '';
     position: absolute;
     bottom: -1px;
@@ -300,6 +311,11 @@ body {
 .exam-status.rejected {
     background: #fee2e2;
     color: #dc2626;
+}
+
+.exam-status.needs-revision {
+    background: #fef3c7;
+    color: #d97706;
 }
 
 .exam-actions {
