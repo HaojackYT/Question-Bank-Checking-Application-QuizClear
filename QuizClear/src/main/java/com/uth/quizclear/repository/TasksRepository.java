@@ -88,7 +88,9 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
                 JOIN t.course c
                 WHERE t.taskType = 'create_questions'
                 """)
-        List<LecTaskDTO> getAllTasksWithPlan();        // Lec Task by ID - Support tasks with or without plans
+        List<LecTaskDTO> getAllTasksWithPlan();
+
+        // Lec Task by ID
         @Query("""
                 SELECT new com.uth.quizclear.model.dto.LecTaskDTO(
                         t.taskId,
@@ -111,7 +113,8 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
                 """)
         List<LecTaskDTO> getTasksByUserId(@Param("userId") Long userId);
 
-          // Get Task Detail by ID - Support tasks with or without plans
+        
+        // Get Task Detail by ID
         @Query("""
                 SELECT new com.uth.quizclear.model.dto.LecTaskDTO(
                         t.taskId,

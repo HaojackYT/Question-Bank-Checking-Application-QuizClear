@@ -14,14 +14,14 @@
 
 <body>
     <!--header-->
-    <div th:replace="header_user"></div>
+    <div th:replace="~{header_user}"></div>
 
 
 
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div th:replace="Lecturer/Menu-Lecturer"></div>
+        <div th:replace="~{Lecturer/Menu-Lecturer}"></div>
 
 
         <!-- Main content -->
@@ -92,6 +92,8 @@
 
             <div class="questions-list">
                 <h2 style="color: #141263">Question</h2>
+                <!-- Search box for filtering questions -->
+                <input type="text" id="searchInput" class="search-input" placeholder="Search questions..." style="margin-bottom: 1rem; width: 100%; padding: 0.5rem; font-size: 1rem;" />
                 <div class="question-box" th:each="q : ${questions}" th:attr="data-question-id=${q.questionId}"
                     style="display:none;">
                     <div class="question-header" onclick="toggleQuestion(this)">

@@ -63,28 +63,12 @@ public class UserDepartmentAssignment {
     @Builder.Default
     private LocalDateTime assignedDate = LocalDateTime.now();
 
-    @Column(name = "effective_from")
-    private LocalDateTime effectiveFrom;
-
-    @Column(name = "effective_to")
-    private LocalDateTime effectiveTo;
-
-    @Column(name = "notes", columnDefinition = "TEXT")
-    private String notes;
-
-    @Builder.Default
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    // Đã loại bỏ các trường effectiveFrom, effectiveTo, notes để khớp với database
+    // Đã loại bỏ các trường createdAt, updatedAt để khớp với database
 
     // JPA lifecycle callbacks
     @PrePersist
     protected void onCreate() {
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
-        }
         if (assignedDate == null) {
             assignedDate = LocalDateTime.now();
         }
@@ -95,41 +79,27 @@ public class UserDepartmentAssignment {
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+        // Đã loại bỏ updatedAt
     }
 
     // Business logic methods
     public void activateAssignment() {
         this.status = Status.ACTIVE;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public void deactivateAssignment() {
         this.status = Status.INACTIVE;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public boolean isActive() {
         return status == Status.ACTIVE;
     }
 
-    public boolean isCurrentlyEffective() {
-        LocalDateTime now = LocalDateTime.now();
-        boolean afterStart = effectiveFrom == null || !now.isBefore(effectiveFrom);
-        boolean beforeEnd = effectiveTo == null || !now.isAfter(effectiveTo);
-        return isActive() && afterStart && beforeEnd;
-    }
+    // Removed isCurrentlyEffective() due to missing effectiveFrom/effectiveTo fields
 
-    public void setEffectivePeriod(LocalDateTime from, LocalDateTime to) {
-        this.effectiveFrom = from;
-        this.effectiveTo = to;
-        this.updatedAt = LocalDateTime.now();
-    }
+    // Removed setEffectivePeriod() due to missing effectiveFrom/effectiveTo fields
 
-    public void extendEffectiveTo(LocalDateTime newEndDate) {
-        this.effectiveTo = newEndDate;
-        this.updatedAt = LocalDateTime.now();
-    }
+    // Removed extendEffectiveTo() due to missing effectiveTo field
 
     // Utility methods
     public String getDisplayName() {
@@ -171,21 +141,5 @@ public class UserDepartmentAssignment {
         return UserRole.HOED.equals(role);
     }
 
-    // Time validation
-    public boolean hasValidPeriod() {
-        if (effectiveFrom == null && effectiveTo == null) {
-            return true; // No time restrictions
-        }
-        if (effectiveFrom != null && effectiveTo != null) {
-            return !effectiveFrom.isAfter(effectiveTo);
-        }
-        return true; // Only one endpoint specified is valid
-    }
-
-    public long getDurationInDays() {
-        if (effectiveFrom == null || effectiveTo == null) {
-            return 0;
-        }
-        return java.time.Duration.between(effectiveFrom, effectiveTo).toDays();
-    }
+    // Removed hasValidPeriod() and getDurationInDays() due to missing effectiveFrom/effectiveTo fields
 }

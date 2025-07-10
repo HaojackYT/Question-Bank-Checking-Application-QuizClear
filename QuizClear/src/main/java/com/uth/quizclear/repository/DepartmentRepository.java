@@ -50,7 +50,8 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     List<Department> findDepartmentsByUserIdAndRole(@Param("userId") Long userId, @Param("role") com.uth.quizclear.model.enums.UserRole role);
     
     // Find departments where user has specific permissions
-    @Query("SELECT DISTINCT d FROM Department d JOIN d.userDepartmentAssignments uda WHERE uda.user.userId = :userId AND uda.status = 'ACTIVE' AND (uda.effectiveTo IS NULL OR uda.effectiveTo > CURRENT_TIMESTAMP)")
+    // Đã loại bỏ kiểm tra effectiveTo, chỉ kiểm tra status ACTIVE
+    @Query("SELECT DISTINCT d FROM Department d JOIN d.userDepartmentAssignments uda WHERE uda.user.userId = :userId AND uda.status = 'ACTIVE'")
     List<Department> findManagedDepartmentsByUser(@Param("userId") Long userId);
     
     // Count users in department

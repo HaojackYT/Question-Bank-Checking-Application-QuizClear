@@ -15,7 +15,7 @@
 
 <body>
     <!--header-->
-    <div th:replace="header_user"></div>
+    <div th:replace="~{header_user}"></div>
 
     <div id="overlay"> <!-- Modal Detail -->
         <div class="modal">
@@ -59,7 +59,7 @@
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div th:replace="Lecturer/Menu-Lecturer"></div>
+        <div th:replace="~{Lecturer/Menu-Lecturer}"></div>
 
 
         <!-- Main content -->
@@ -271,7 +271,9 @@
         }
         const text = status.charAt(0).toUpperCase() + status.slice(1);
         return `<span class="status ${className}">${text}</span>`;
-    }    document.querySelectorAll('.view-task').forEach(icon => {
+    }
+
+    document.querySelectorAll('.view-task').forEach(icon => {
         icon.addEventListener('click', async () => {
             const taskId = icon.getAttribute('data-task-id');
             console.log('Clicked taskId:', taskId);
@@ -279,7 +281,6 @@
                 const response = await fetch(`/lecturer/api/task/${taskId}`);
                 if (!response.ok) throw new Error('Task not found');
                 const task = await response.json();
-                
                 // Cập nhật modal
                 document.querySelector('.modal .modal-due').textContent = `Due: ${task.dueDate?.split('T')[0] || ''}`;
                 document.querySelector('.modal input[readonly][value]').value = task.courseName;

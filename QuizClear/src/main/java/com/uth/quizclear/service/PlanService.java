@@ -40,4 +40,9 @@ public class PlanService {
         return false;
     }
 
+    // Thêm phương thức lưu Plan và trả về đối tượng đã lưu
+    public Plan savePlan(Plan plan) {
+        return planRepository.save(plan);
+    }
+
 }
