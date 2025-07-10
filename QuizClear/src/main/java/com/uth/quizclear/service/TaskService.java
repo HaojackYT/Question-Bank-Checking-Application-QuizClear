@@ -1,6 +1,9 @@
 package com.uth.quizclear.service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.config.Task;
@@ -11,6 +14,7 @@ import com.uth.quizclear.model.dto.SendQuesDTO;
 import com.uth.quizclear.model.entity.Question;
 import com.uth.quizclear.model.entity.Tasks;
 import com.uth.quizclear.model.enums.TaskStatus;
+import com.uth.quizclear.model.enums.QuestionStatus;
 import com.uth.quizclear.repository.CourseRepository;
 import com.uth.quizclear.repository.QuestionRepository;
 import com.uth.quizclear.repository.TasksRepository;
@@ -142,6 +146,49 @@ public class TaskService {
 
         task.setStatus(TaskStatus.completed);
         tasksRepository.save(task);
+    }
+
+    /**
+     * Submit questions for HED approval
+     */
+    public void submitQuestionsForApproval(Long taskId, List<Integer> questionIds, Long lecturerId) {
+        // First, validate the task exists and lecturer has access
+        Optional<Tasks> taskOpt = tasksRepository.findById(taskId.intValue());
+        if (!taskOpt.isPresent()) {
+            throw new RuntimeException("Task not found with ID: " + taskId);
+        }
+        
+        Tasks task = taskOpt.get();
+        
+        // If no specific questions are provided, get all questions assigned to this task
+        List<Long> questionsToSubmit = new ArrayList<>();
+        if (questionIds == null || questionIds.isEmpty()) {
+            // Get all questions assigned to this task
+            questionsToSubmit = questionRepository.findQuestionIdsByTaskId(taskId);
+        } else {
+            questionsToSubmit = questionIds.stream().map(Integer::longValue).collect(Collectors.toList());
+        }
+        
+        if (questionsToSubmit.isEmpty()) {
+            throw new RuntimeException("No questions found to submit for task ID: " + taskId);
+        }
+        
+        // Update task status to indicate questions have been submitted for approval
+        task.setStatus(TaskStatus.waiting_for_approval);
+        tasksRepository.save(task);
+        
+        // Update the status of submitted questions to SUBMITTED for HED review
+        for (Long questionId : questionsToSubmit) {
+            questionRepository.findById(questionId).ifPresent(question -> {
+                question.setStatus(QuestionStatus.SUBMITTED);
+                // Add reference to the task
+                question.setTaskId(taskId);
+                questionRepository.save(question);
+            });
+        }
+        
+        System.out.println("Questions submitted for HED approval - Task ID: " + taskId + 
+                          ", Question IDs: " + questionsToSubmit + ", Lecturer ID: " + lecturerId);
     }
 
 

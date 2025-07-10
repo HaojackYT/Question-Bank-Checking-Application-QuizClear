@@ -344,7 +344,7 @@ public class HEDAssignmentController {    private static final Logger logger = L
         return "HEAD_OF_DEPARTMENT/HED_ApproveQuestion";
     }
 
-    // HED Join Task page
+    // HED Join Task page - Modified to show Plans from Staff
     @GetMapping("/join-task")
     public String joinTask(Model model) {
         Long hedId = getCurrentUserId();
@@ -357,10 +357,11 @@ public class HEDAssignmentController {    private static final Logger logger = L
         // Add hedId for JavaScript
         model.addAttribute("hedId", hedId);
         
-        // Get tasks for HED from database
+        // Get plans and tasks for HED from database (new workflow)
         try {
-            List<TaskAssignmentDTO> tasks = taskAssignmentService.getTasksForHED();
-            model.addAttribute("tasks", tasks);
+            // Get plans from Staff that need HED approval (status = 'new' or 'pending')
+            List<TaskAssignmentDTO> plansAndTasks = taskAssignmentService.getPlansForHEDApproval();
+            model.addAttribute("tasks", plansAndTasks);
         } catch (Exception e) {
             logger.error("Error loading join task page for HED {}: ", hedId, e);
             model.addAttribute("tasks", List.of());
@@ -601,6 +602,31 @@ public class HEDAssignmentController {    private static final Logger logger = L
                 "Object Oriented Programming"
             );
             return ResponseEntity.ok(fallbackSubjects);
+        }
+    }
+    // NEW WORKFLOW: API for HED to accept/join a plan/task
+    @PostMapping("/api/tasks/{taskId}/accept")
+    @ResponseBody
+    public ResponseEntity<?> acceptPlanTask(@PathVariable Long taskId) {
+        try {
+            Long hedId = getCurrentUserId();
+            taskAssignmentService.hedAcceptPlanTask(taskId, hedId);
+            return ResponseEntity.ok(Map.of("success", true, "message", "Task accepted and moved to in_progress"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    // NEW WORKFLOW: Get accepted tasks/plans for assignment creation
+    @GetMapping("/api/accepted-tasks")
+    @ResponseBody
+    public ResponseEntity<?> getAcceptedTasks() {
+        try {
+            Long hedId = getCurrentUserId();
+            List<TaskAssignmentDTO> acceptedTasks = taskAssignmentService.getAcceptedTasksForAssignment();
+            return ResponseEntity.ok(acceptedTasks);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
     }
 }

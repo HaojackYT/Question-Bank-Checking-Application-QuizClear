@@ -7,11 +7,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.uth.quizclear.service.StaffDashboardService;
 import com.uth.quizclear.service.UserService;
+import com.uth.quizclear.service.QuestionService;
 import com.uth.quizclear.model.dto.StaffDashboardDTO;
 import com.uth.quizclear.model.entity.User;
+import com.uth.quizclear.model.dto.QuestionDTO;
 
 import java.util.*;
 
@@ -23,6 +28,9 @@ public class WebPageController {
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private QuestionService questionService;
     // ========== UNIVERSAL ENDPOINTS TO PREVENT 404 FOR FRAGMENTS, MENUS, WS, SL DASHBOARD ===========
 
     // Universal mapping for header_user.html fragment (for all roles)
@@ -864,5 +872,52 @@ public class WebPageController {
             System.err.println("Could not get current user ID: " + e.getMessage());
         }
         return null;
+    }
+    
+    // Staff Question Review and Final Approval
+    @GetMapping("/staff/question-review")
+    public String staffQuestionReview(Model model) {
+        Long staffId = getCurrentUserId();
+        
+        // Get questions that are HED_APPROVED and waiting for Staff final approval
+        List<QuestionDTO> hedApprovedQuestions = questionService.getQuestionsForStaffFinalApproval(staffId);
+        model.addAttribute("pendingQuestions", hedApprovedQuestions);
+        
+        return "Staff/staffReviewQuestion";
+    }
+    
+    // API: Staff final approve question (stores in database)
+    @PostMapping("/staff/api/questions/{questionId}/final-approve")
+    @ResponseBody
+    public ResponseEntity<?> staffFinalApproveQuestion(@PathVariable Long questionId, @RequestBody Map<String, Object> request) {
+        try {
+            Long staffId = getCurrentUserId();
+            questionService.finalApproveQuestionByStaff(questionId, staffId);
+            return ResponseEntity.ok(Map.of("success", true, "message", "Question finally approved and stored"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }
+    
+    // API: Staff reject question (sends back to lecturer)
+    @PostMapping("/staff/api/questions/{questionId}/reject")
+    @ResponseBody
+    public ResponseEntity<?> staffRejectQuestion(@PathVariable Long questionId, @RequestBody Map<String, Object> request) {
+        try {
+            Long staffId = getCurrentUserId();
+            String feedback = request.get("feedback") != null ? request.get("feedback").toString() : "";
+            questionService.rejectQuestionByStaff(questionId, staffId, feedback);
+            return ResponseEntity.ok(Map.of("success", true, "message", "Question rejected by Staff"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }
+    
+    /**
+     * Get current user ID - simple implementation for demo
+     */
+    private Long getCurrentUserId() {
+        // Simple implementation - in a real app, get from session or security context
+        return 1L; // Default staff user ID for demo
     }
 }

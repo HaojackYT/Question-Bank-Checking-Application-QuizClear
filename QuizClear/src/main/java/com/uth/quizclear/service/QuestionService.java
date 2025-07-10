@@ -11,6 +11,8 @@ import com.uth.quizclear.model.enums.DifficultyLevel;
 import com.uth.quizclear.repository.QuestionRepository;
 import com.uth.quizclear.repository.UserRepository;
 import com.uth.quizclear.repository.SubjectRepository;
+import com.uth.quizclear.repository.TasksRepository;
+import com.uth.quizclear.model.enums.TaskStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,12 +37,14 @@ public class QuestionService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final SubjectRepository subjectRepository;
+    private final TasksRepository tasksRepository;
 
-    public QuestionService(QuestionRepository questionRepository, UserRepository userRepository, UserService userService, SubjectRepository subjectRepository) {
+    public QuestionService(QuestionRepository questionRepository, UserRepository userRepository, UserService userService, SubjectRepository subjectRepository, TasksRepository tasksRepository) {
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
         this.userService = userService;
         this.subjectRepository = subjectRepository;
+        this.tasksRepository = tasksRepository;
     }
 
     // Scope-based question retrieval methods
@@ -677,19 +681,43 @@ public class QuestionService {
     }
     
     /**
-     * Approve question by HED
+     * Approve question by HED - sends to Staff for final approval
      */
-    @Transactional    public void approveQuestionByHED(Long questionId, Long hedId) {
+    @Transactional    
+    public void approveQuestionByHED(Long questionId, Long hedId) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy câu hỏi với id: " + questionId));
         
         if (question.getStatus() == QuestionStatus.SUBMITTED || question.getStatus() == QuestionStatus.ARCHIVED) {
-            question.setStatus(QuestionStatus.APPROVED);
+            // Set status to HED_APPROVED (waiting for Staff final approval)
+            question.setStatus(QuestionStatus.HED_APPROVED);
             question.setUpdatedAt(LocalDateTime.now());
             questionRepository.save(question);
+            
+            // Update related task status if all questions for the task are HED approved
+            if (question.getTaskId() != null) {
+                updateTaskStatusIfAllQuestionsApproved(question.getTaskId());
+            }
+        }
+    }
+    
+    /**
+     * Check if all questions for a task are HED approved and update task status
+     */
+    private void updateTaskStatusIfAllQuestionsApproved(Long taskId) {
+        List<Question> taskQuestions = questionRepository.findByTaskId(taskId);
+        boolean allApproved = taskQuestions.stream()
+                .allMatch(q -> q.getStatus() == QuestionStatus.HED_APPROVED || q.getStatus() == QuestionStatus.APPROVED);
+        
+        if (allApproved && !taskQuestions.isEmpty()) {
+            // Update task status to indicate it's ready for Staff final approval
+            tasksRepository.findById(taskId.intValue()).ifPresent(task -> {
+                task.setStatus(TaskStatus.pending); // Reset to pending for Staff review
+                tasksRepository.save(task);
+            });
         }
     }    /**
-     * Reject question by HED
+     * Reject question by HED - sends back to Lecturer for revision
      */
     @Transactional
     public void rejectQuestionByHED(Long questionId, Long hedId, String feedback) {
@@ -701,6 +729,14 @@ public class QuestionService {
             question.setUpdatedAt(LocalDateTime.now());
             // TODO: Save feedback to question or create feedback entity
             questionRepository.save(question);
+            
+            // Update related task status back to in_progress for lecturer revision
+            if (question.getTaskId() != null) {
+                tasksRepository.findById(question.getTaskId().intValue()).ifPresent(task -> {
+                    task.setStatus(TaskStatus.in_progress); // Back to lecturer for revision
+                    tasksRepository.save(task);
+                });
+            }
         }
     }/**
      * Convert Question entity to QuestionDTO
@@ -734,5 +770,84 @@ public class QuestionService {
         }
         
         return dto;
+    }
+
+    /**
+     * Get questions that are HED approved and waiting for Staff final approval
+     */
+    public List<QuestionDTO> getQuestionsForStaffFinalApproval(Long staffId) {
+        try {
+            // Get all questions with HED_APPROVED status
+            List<Question> hedApprovedQuestions = questionRepository.findByStatus(QuestionStatus.HED_APPROVED);
+            
+            return hedApprovedQuestions.stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Error getting questions for staff final approval: ", e);
+            return List.of();
+        }
+    }
+
+    /**
+     * Final approve question by Staff - stores approved question in database
+     */
+    @Transactional
+    public void finalApproveQuestionByStaff(Long questionId, Long staffId) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy câu hỏi với id: " + questionId));
+        
+        if (question.getStatus() == QuestionStatus.HED_APPROVED) {
+            // Final approval - question is now fully approved and stored
+            question.setStatus(QuestionStatus.APPROVED);
+            question.setUpdatedAt(LocalDateTime.now());
+            questionRepository.save(question);
+            
+            // Update related task status to completed if all questions are approved
+            if (question.getTaskId() != null) {
+                updateTaskStatusIfAllQuestionsFullyApproved(question.getTaskId());
+            }
+        }
+    }
+
+    /**
+     * Reject question by Staff - sends back to lecturer for revision
+     */
+    @Transactional
+    public void rejectQuestionByStaff(Long questionId, Long staffId, String feedback) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy câu hỏi với id: " + questionId));
+        
+        if (question.getStatus() == QuestionStatus.HED_APPROVED) {
+            question.setStatus(QuestionStatus.REJECTED);
+            question.setUpdatedAt(LocalDateTime.now());
+            // TODO: Save feedback to question or create feedback entity
+            questionRepository.save(question);
+            
+            // Update related task status back to in_progress for lecturer revision
+            if (question.getTaskId() != null) {
+                tasksRepository.findById(question.getTaskId().intValue()).ifPresent(task -> {
+                    task.setStatus(TaskStatus.in_progress);
+                    tasksRepository.save(task);
+                });
+            }
+        }
+    }
+
+    /**
+     * Check if all questions for a task are fully approved and update task status
+     */
+    private void updateTaskStatusIfAllQuestionsFullyApproved(Long taskId) {
+        List<Question> taskQuestions = questionRepository.findByTaskId(taskId);
+        boolean allApproved = taskQuestions.stream()
+                .allMatch(q -> q.getStatus() == QuestionStatus.APPROVED);
+        
+        if (allApproved && !taskQuestions.isEmpty()) {
+            // Update task status to completed
+            tasksRepository.findById(taskId.intValue()).ifPresent(task -> {
+                task.setStatus(TaskStatus.completed);
+                tasksRepository.save(task);
+            });
+        }
     }
   }

@@ -548,4 +548,197 @@ function openModal(modalElement) {
         ];
         renderAssignmentsTable();
     }
+
+    // 4-Button Workflow Event Handlers
+    
+    // Edit Button Handler
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.edit-button')) {
+            const button = e.target.closest('.edit-button');
+            const questionId = button.getAttribute('data-id');
+            handleEditQuestion(questionId);
+        }
+    });
+    
+    // Assign Button Handler
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.assign-button')) {
+            const button = e.target.closest('.assign-button');
+            const questionId = button.getAttribute('data-id');
+            handleAssignQuestion(questionId);
+        }
+    });
+    
+    // Resubmit Button Handler
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.resubmit-button')) {
+            const button = e.target.closest('.resubmit-button');
+            const questionId = button.getAttribute('data-id');
+            handleResubmitQuestion(questionId);
+        }
+    });
+    
+    // Reject Button Handler
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.reject-button')) {
+            const button = e.target.closest('.reject-button');
+            const questionId = button.getAttribute('data-id');
+            handleRejectQuestion(questionId);
+        }
+    });
+    
+    // Direct Approve Button Handler
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.approve-button')) {
+            const button = e.target.closest('.approve-button');
+            const questionId = button.getAttribute('data-id');
+            handleDirectApprove(questionId);
+        }
+    });
+    
+    // 4-Button Workflow Functions
+    
+    async function handleEditQuestion(questionId) {
+        try {
+            // Show edit modal or redirect to edit page
+            const newContent = prompt('Edit question content:');
+            if (newContent) {
+                const response = await fetch(`/subject-leader/question-assignment/api/questions/${questionId}/edit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: newContent
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    alert('Question edited successfully!');
+                    // Refresh the table or update UI
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            }
+        } catch (error) {
+            console.error('Error editing question:', error);
+            alert('An error occurred while editing the question');
+        }
+    }
+    
+    async function handleAssignQuestion(questionId) {
+        try {
+            const lecturerId = prompt('Enter Lecturer ID to assign:');
+            const instructions = prompt('Enter instructions for the lecturer:');
+            
+            if (lecturerId) {
+                const response = await fetch(`/subject-leader/question-assignment/api/questions/${questionId}/assign`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        lecturerId: lecturerId,
+                        instructions: instructions || ''
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    alert('Question assigned to lecturer successfully!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            }
+        } catch (error) {
+            console.error('Error assigning question:', error);
+            alert('An error occurred while assigning the question');
+        }
+    }
+    
+    async function handleResubmitQuestion(questionId) {
+        try {
+            const feedback = prompt('Enter feedback for resubmission:');
+            
+            if (confirm('Are you sure you want to resubmit this question for review?')) {
+                const response = await fetch(`/subject-leader/question-assignment/api/questions/${questionId}/resubmit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        feedback: feedback || ''
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    alert('Question resubmitted for review successfully!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            }
+        } catch (error) {
+            console.error('Error resubmitting question:', error);
+            alert('An error occurred while resubmitting the question');
+        }
+    }
+    
+    async function handleRejectQuestion(questionId) {
+        try {
+            const feedback = prompt('Enter reason for rejection:');
+            
+            if (confirm('Are you sure you want to reject this question?')) {
+                const response = await fetch(`/subject-leader/question-assignment/api/questions/${questionId}/reject`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        feedback: feedback || ''
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    alert('Question rejected successfully!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            }
+        } catch (error) {
+            console.error('Error rejecting question:', error);
+            alert('An error occurred while rejecting the question');
+        }
+    }
+    
+    async function handleDirectApprove(questionId) {
+        try {
+            if (confirm('Are you sure you want to directly approve this question to the database? This action cannot be undone.')) {
+                const response = await fetch(`/subject-leader/question-assignment/api/questions/${questionId}/approve-direct`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    alert('Question directly approved and stored in database successfully!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            }
+        } catch (error) {
+            console.error('Error directly approving question:', error);
+            alert('An error occurred while approving the question');
+        }
+    }
 });

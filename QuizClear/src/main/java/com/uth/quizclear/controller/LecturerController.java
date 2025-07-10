@@ -29,6 +29,10 @@ import org.springframework.security.core.Authentication;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 import java.util.Map;
@@ -2249,6 +2253,63 @@ public class LecturerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(errorResponse);
         }
+    }
+
+    /**
+     * Submit questions to HED for approval
+     */
+    @PostMapping("/api/tasks/{taskId}/submit-questions")
+    @ResponseBody
+    public ResponseEntity<?> submitQuestionsToHED(@PathVariable Long taskId, @RequestBody Map<String, Object> request) {
+        try {
+            Long lecturerId = getCurrentUserId();
+            
+            // Get the list of question IDs to submit
+            @SuppressWarnings("unchecked")
+            List<Integer> questionIds = (List<Integer>) request.get("questionIds");
+            
+            if (questionIds == null || questionIds.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "No questions selected for submission"));
+            }
+            
+            // Submit questions for HED approval
+            taskService.submitQuestionsForApproval(taskId, questionIds, lecturerId);
+            
+            return ResponseEntity.ok(Map.of("success", true, "message", "Questions submitted to HED for approval"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }
+    
+    /**
+     * Get current user ID from session
+     */
+    private Long getCurrentUserId() {
+        // Try to get from SecurityContext first
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            Object principal = auth.getPrincipal();
+            if (principal instanceof UserDetails) {
+                // Try to extract user ID from username (email)
+                String email = ((UserDetails) principal).getUsername();
+                Optional<User> userOpt = userRepository.findByEmail(email);
+                if (userOpt.isPresent()) {
+                    return userOpt.get().getUserId().longValue();
+                }
+            }
+        }
+        
+        // Fallback to session
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpSession session = attr.getRequest().getSession(false);
+        if (session != null) {
+            Object userIdObj = session.getAttribute("currentUserId");
+            if (userIdObj instanceof Long) {
+                return (Long) userIdObj;
+            }
+        }
+        
+        return 1L; // Default fallback
     }
 
     /**

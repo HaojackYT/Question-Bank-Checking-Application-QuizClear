@@ -292,9 +292,38 @@ function viewTask(taskId) {
     window.location.href = `/api/hed/tasks/${taskId}/details`;
 }
 
-function joinTask(taskId) {
-    if (confirm('Are you sure you want to join this task?')) {
-        updateTaskStatus(taskId, 'JOINED');
+// Join task function - NEW WORKFLOW: Accept plan/task and move to in_progress
+async function joinTask(taskId) {
+    if (confirm('Are you sure you want to accept this task/plan? This will move it to in_progress status.')) {
+        try {
+            console.log('Accepting task/plan:', taskId);
+            
+            const response = await fetch(`/hed/api/tasks/${taskId}/accept`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                alert('Task accepted successfully! Moving to Assignment Management...');
+                
+                // Reload tasks to reflect status change
+                await loadTaskData();
+                
+                // Optional: redirect to assignment management after a delay
+                setTimeout(() => {
+                    window.location.href = '/hed/assignments';
+                }, 2000);
+            } else {
+                alert('Failed to accept task: ' + (result.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error accepting task:', error);
+            alert('Error accepting task: ' + error.message);
+        }
     }
 }
 
