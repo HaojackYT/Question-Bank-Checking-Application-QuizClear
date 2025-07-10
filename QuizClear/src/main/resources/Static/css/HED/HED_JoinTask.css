@@ -251,7 +251,8 @@
     width: 90%;
     max-width: 800px;
     max-height: 80vh;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-header {
@@ -288,6 +289,9 @@
 
 .modal-body {
     padding: 1.5rem;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
 }
 
 .details-subtitle {
@@ -410,7 +414,41 @@
     text-align: center;
 }
 
-/* Responsive Design */
+/* Difficulty breakdown styles */
+.difficulty-breakdown {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.difficulty-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem;
+    min-width: 100px;
+    flex: 1;
+}
+
+.difficulty-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+.difficulty-count {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #007bff;
+    text-align: center;
+}
+
 @media (max-width: 768px) {
     .search-filter-bar {
         flex-direction: column;
@@ -432,5 +470,18 @@
     
     .details-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .difficulty-breakdown {
+        gap: 0.5rem;
+    }
+    
+    .difficulty-item {
+        min-width: 80px;
+        padding: 0.5rem;
+    }
+    
+    .difficulty-count {
+        font-size: 1.25rem;
     }
 }

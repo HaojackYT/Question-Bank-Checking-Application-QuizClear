@@ -17,6 +17,8 @@ public class TaskAssignmentDTO {
 
     private String assignedLecturerName;
     private String assignedToName;
+    // Field for RD staff who created the original plan
+    private String planCreatedByName;
     private String status;
     private String dueDate;
     private String description;
@@ -64,6 +66,11 @@ public class TaskAssignmentDTO {
     public void setAssignedLecturerName(String assignedLecturerName) { this.assignedLecturerName = assignedLecturerName; }
     public String getAssignedToName() { return assignedToName; }
     public void setAssignedToName(String assignedToName) { this.assignedToName = assignedToName; }
+    
+    // Getter and setter for plan created by name (RD staff)
+    public String getPlanCreatedByName() { return planCreatedByName; }
+    public void setPlanCreatedByName(String planCreatedByName) { this.planCreatedByName = planCreatedByName; }
+    
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     public String getDueDate() { return dueDate; }

@@ -554,10 +554,22 @@ public class HEDAssignmentController {    private static final Logger logger = L
     @GetMapping("/api/tasks/status-options")
     @ResponseBody
     public ResponseEntity<?> getStatusOptions() {
-        try {            List<String> statusOptions = List.of(
-                "PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED", "APPROVED", "REJECTED"
-            );
-            return ResponseEntity.ok(statusOptions);
+        try {
+            // Get current user to filter by their department
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+            Optional<User> userOpt = userRepository.findByEmail(username);
+            
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.status(401).body(Map.of("error", "User not authenticated"));
+            }
+            
+            User currentUser = userOpt.get();
+            
+            // Get actual status values from tasks in this HED's department
+            List<String> actualStatuses = taskAssignmentService.getActualStatusOptionsForDepartment(currentUser.getDepartment());
+            
+            return ResponseEntity.ok(actualStatuses);
         } catch (Exception e) {
             logger.error("Error getting status options: ", e);
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
@@ -576,34 +588,20 @@ public class HEDAssignmentController {    private static final Logger logger = L
             }
               User user = userOpt.get();
             
-            // Check if user has proper HOED role
-            if (user.getRole() != UserRole.HOED) {
-                return ResponseEntity.status(403).body(Map.of("error", "Access denied: Head of Examination Department role required"));
+            // Check if user has proper HoD role
+            if (user.getRole() != UserRole.HOD) {
+                return ResponseEntity.status(403).body(Map.of("error", "Access denied: Head of Department role required"));
             }
-              // Get all tasks for this HED and extract unique subjects
-            List<TaskAssignmentDTO> allTasks = taskAssignmentService.getTasksForHED();
-            
-            // Extract unique subject names
-            List<String> subjectOptions = allTasks.stream()
-                    .map(TaskAssignmentDTO::getSubjectName)
-                    .filter(subject -> subject != null && !subject.trim().isEmpty())
-                    .distinct()
-                    .sorted()
-                    .collect(java.util.stream.Collectors.toList());
+              // Get actual subject options for this HED's department
+            List<String> subjectOptions = taskAssignmentService.getActualSubjectOptionsForDepartment(user.getDepartment());
             
             return ResponseEntity.ok(subjectOptions);
         } catch (Exception e) {
             logger.error("Error getting subject options: ", e);
-            // Return fallback subjects if error occurs
-            List<String> fallbackSubjects = List.of(
-                "Operating System",
-                "Database", 
-                "Computer Architecture",
-                "Object Oriented Programming"
-            );
-            return ResponseEntity.ok(fallbackSubjects);
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
     }
+    
     // NEW WORKFLOW: API for HED to accept/join a plan/task
     @PostMapping("/api/tasks/{taskId}/accept")
     @ResponseBody

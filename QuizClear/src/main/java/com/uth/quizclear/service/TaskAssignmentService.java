@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -467,9 +468,9 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getDescription() != null ? task.getDescription() : "No description provided",
                 "No feedback yet"
         );
-    }// Phương thức mới: Chuyển Tasks thành DTO
+    }    // Phương thức mới: Chuyển Tasks thành DTO
     private TaskAssignmentDTO convertToDTO(Tasks task) {
-        return new TaskAssignmentDTO(
+        TaskAssignmentDTO dto = new TaskAssignmentDTO(
                 task.getTaskId().longValue(),
                 task.getTitle(),
                 task.getCourse() != null ? task.getCourse().getCourseName() : "N/A",
@@ -484,6 +485,29 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
                 task.getDescription() != null ? task.getDescription() : "No description provided",
                 "No feedback yet"
         );
+        
+        // Set RD staff name who created the original plan
+        if (task.getPlan() != null && task.getPlan().getAssignedByUser() != null) {
+            dto.setPlanCreatedByName(task.getPlan().getAssignedByUser().getFullName());
+        } else {
+            dto.setPlanCreatedByName("Catherine Davis"); // Fallback to default RD staff
+        }
+        
+        // Set difficulty breakdown from Plan (not Task)
+        if (task.getPlan() != null) {
+            dto.setRecognitionQuestions(task.getPlan().getTotalRecognition() != null ? task.getPlan().getTotalRecognition() : 0);
+            dto.setComprehensionQuestions(task.getPlan().getTotalComprehension() != null ? task.getPlan().getTotalComprehension() : 0);
+            dto.setBasicApplicationQuestions(task.getPlan().getTotalBasicApplication() != null ? task.getPlan().getTotalBasicApplication() : 0);
+            dto.setAdvancedApplicationQuestions(task.getPlan().getTotalAdvancedApplication() != null ? task.getPlan().getTotalAdvancedApplication() : 0);
+        } else {
+            // Fallback to task-level difficulty breakdown if plan not available
+            dto.setRecognitionQuestions(task.getTotalRecognition() != null ? task.getTotalRecognition() : 0);
+            dto.setComprehensionQuestions(task.getTotalComprehension() != null ? task.getTotalComprehension() : 0);
+            dto.setBasicApplicationQuestions(task.getTotalBasicApplication() != null ? task.getTotalBasicApplication() : 0);
+            dto.setAdvancedApplicationQuestions(task.getTotalAdvancedApplication() != null ? task.getTotalAdvancedApplication() : 0);
+        }
+        
+        return dto;
     }// Phương thức gốc: Lấy task cho HED - Using real database data
     public List<TaskAssignmentDTO> getTasksForHED() {
         // Get all tasks from database
@@ -827,5 +851,49 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
         return acceptedTasks.stream()
                 .map(this::convertTaskToDTOWithPlan)
                 .collect(Collectors.toList());
+    }
+
+    // Get actual status options for department
+    public List<String> getActualStatusOptionsForDepartment(String department) {
+        try {
+            List<Tasks> departmentTasks = tasksRepository.findTasksByDepartmentImproved(department);
+            
+            Set<String> statusSet = departmentTasks.stream()
+                    .map(task -> task.getStatus() != null ? task.getStatus().toString() : null)
+                    .filter(status -> status != null && !status.trim().isEmpty())
+                    .collect(Collectors.toSet());
+            
+            List<String> statuses = new ArrayList<>(statusSet);
+            Collections.sort(statuses);
+            
+            System.out.println("Found " + statuses.size() + " unique statuses for department " + department + ": " + statuses);
+            return statuses;
+        } catch (Exception e) {
+            System.err.println("Error getting status options for department " + department + ": " + e.getMessage());
+            // Return default statuses if error
+            return List.of("PENDING", "IN_PROGRESS", "COMPLETED");
+        }
+    }
+
+    // Get actual subject options for department
+    public List<String> getActualSubjectOptionsForDepartment(String department) {
+        try {
+            List<Tasks> departmentTasks = tasksRepository.findTasksByDepartmentImproved(department);
+            
+            Set<String> subjectSet = departmentTasks.stream()
+                    .map(task -> task.getCourse() != null ? task.getCourse().getCourseName() : null)
+                    .filter(subject -> subject != null && !subject.trim().isEmpty())
+                    .collect(Collectors.toSet());
+            
+            List<String> subjects = new ArrayList<>(subjectSet);
+            Collections.sort(subjects);
+            
+            System.out.println("Found " + subjects.size() + " unique subjects for department " + department + ": " + subjects);
+            return subjects;
+        } catch (Exception e) {
+            System.err.println("Error getting subject options for department " + department + ": " + e.getMessage());
+            // Return default subjects if error
+            return List.of("Introduction to Computer Science", "Data Structures", "Operating System");
+        }
     }
 }

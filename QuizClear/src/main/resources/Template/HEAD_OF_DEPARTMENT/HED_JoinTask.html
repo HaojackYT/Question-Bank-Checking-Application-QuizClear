@@ -225,7 +225,7 @@
                             <td th:text="${task.subjectName}">Subject</td>
                             <td th:text="${task.dueDate}">Deadline</td>
                             <td th:text="${task.totalQuestions}">Questions</td>
-                            <td th:text="${task.assignedLecturerName}">Staff</td>
+                            <td th:text="${task.planCreatedByName != null ? task.planCreatedByName : 'Catherine Davis'}">Staff</td>
                             <td>
                                 <span th:class="'status-badge ' + ${#strings.toLowerCase(task.status)}" 
                                       th:text="${task.status}">Status</span>
@@ -290,12 +290,9 @@
                         </p>
 
                         <div class="details-section">
-                            <h3>R&D Staff</h3>
+                            <h3>Assigned by Staff</h3>
                             <div class="instructor-info">
                                 <span id="modalStaff">Nguyen Van A</span>
-                                <button class="download-btn" title="Download">
-                                    <i class="fas fa-download"></i>
-                                </button>
                             </div>
                         </div>
 
@@ -320,6 +317,29 @@
                             <div class="detail-item">
                                 <h4>Status</h4>
                                 <span id="modalStatus" class="approved">Active</span>
+                            </div>
+                        </div>
+
+                        <!-- Question Difficulty Breakdown Section -->
+                        <div class="details-section">
+                            <h3>Question Requirements</h3>
+                            <div class="difficulty-breakdown">
+                                <div class="difficulty-item">
+                                    <div class="difficulty-label">Recognition</div>
+                                    <div class="difficulty-count" id="modalRecognition">5</div>
+                                </div>
+                                <div class="difficulty-item">
+                                    <div class="difficulty-label">Comprehension</div>
+                                    <div class="difficulty-count" id="modalComprehension">5</div>
+                                </div>
+                                <div class="difficulty-item">
+                                    <div class="difficulty-label">Basic App.</div>
+                                    <div class="difficulty-count" id="modalBasicApplication">5</div>
+                                </div>
+                                <div class="difficulty-item">
+                                    <div class="difficulty-label">Advanced App.</div>
+                                    <div class="difficulty-count" id="modalAdvancedApplication">5</div>
+                                </div>
                             </div>
                         </div>
 
@@ -437,6 +457,11 @@
                         })
                         .then(data => {
                             console.log("API Response:", data);
+                            console.log("First task data:", data.tasks && data.tasks.length > 0 ? data.tasks[0] : "No tasks");
+                            if (data.tasks && data.tasks.length > 0) {
+                                console.log("First task planCreatedByName:", data.tasks[0].planCreatedByName);
+                                console.log("First task assignedLecturerName:", data.tasks[0].assignedLecturerName);
+                            }
                             if (data.error) {
                                 showError('Server error: ' + data.error);
                                 return;
@@ -631,7 +656,7 @@
                             <td>${task.subjectName || 'N/A'}</td>
                             <td>${task.dueDate || 'N/A'}</td>
                             <td>${task.totalQuestions || 0}</td>
-                            <td>${task.assignedLecturerName || 'N/A'}</td>
+                            <td>${task.planCreatedByName || 'Catherine Davis'}</td>
                             <td>
                                 <span class="status-badge ${task.status ? task.status.toLowerCase() : 'unknown'}">${task.status || 'Unknown'}</span>
                             </td>
@@ -827,12 +852,19 @@
                     
                     // Populate modal with task data
                     document.getElementById('modalDueDate').textContent = task.dueDate || 'N/A';
-                    document.getElementById('modalStaff').textContent = task.assignedLecturerName || 'N/A';
+                    // Display the Staff (RD) who created the original plan, not the assigned lecturer
+                    document.getElementById('modalStaff').textContent = task.planCreatedByName || 'Catherine Davis';
                     document.getElementById('modalTitle').textContent = task.title || `${task.subjectName} Task`;
                     document.getElementById('modalTotalQuestion').textContent = task.totalQuestions || '0';
                     document.getElementById('modalSubject').textContent = task.subjectName || 'N/A';
                     document.getElementById('modalDeadline').textContent = task.dueDate || 'N/A';
                     document.getElementById('modalDescription').textContent = task.description || 'No description available';
+                    
+                    // Update difficulty breakdown from plan data - use correct field names from DTO
+                    document.getElementById('modalRecognition').textContent = task.recognitionQuestions || '0';
+                    document.getElementById('modalComprehension').textContent = task.comprehensionQuestions || '0';
+                    document.getElementById('modalBasicApplication').textContent = task.basicApplicationQuestions || '0';
+                    document.getElementById('modalAdvancedApplication').textContent = task.advancedApplicationQuestions || '0';
                     
                     // Display existing notes/feedback if available
                     const modalFeedback = document.getElementById('modalFeedback');
