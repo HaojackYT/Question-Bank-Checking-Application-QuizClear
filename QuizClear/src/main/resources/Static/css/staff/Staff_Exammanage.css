@@ -52,42 +52,52 @@
     font-weight: bold;
 }
 
-#filter-container {
+/* Filter styles matching staffExamManagement_All_Exams.css */
+.filters {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    gap: 0.625rem;
+    margin-bottom: 1.25rem;
 }
 
-#filter-container input {
-    width: 40%;
-    height: 2.625rem;
-    border: 0.0625rem solid #D1D5DB;
-    border-radius: 0.25rem;
-    padding: 0.3125rem 1.25rem;
-    color: #CCCCCC;
+.search-box {
+    flex-grow: 1;
+    max-width: 25rem;
+    box-shadow: 1px solid #e0e0e0;
+    display: flex;
+    border: 1px solid #e0e0e0;
+    outline: none;
+    width: 1000%;
+    height: 2.5rem;
     font-size: 1rem;
-    margin-right: 22%;
-}
-
-#filter-container select {
-    width: 15%;
-    max-width: 20%;
-    height: 2.5rem;
-    border: 0.0625rem solid #D1D5DB;
-    border-radius: 0.25rem;
-    padding: 0.1875rem 0.625rem;
     box-sizing: border-box;
-    margin: 0 0.625rem;
+    background-color: transparent;
+    border-radius: 0.3125rem;
+    padding: 0.3125rem 1.25rem;
 }
 
-#filter-container .icon {
-    width: 2.5rem;
+.search-box input::placeholder {
+    color: #a0a0a0;
+}
+
+.btn-status,
+.btn-subject,
+.btn-filter-icon {
+    padding: 0.625rem 0.9375rem;
+    border: 1px solid #e0e0e0;
+    background-color: white;
+    border-radius: 0.3125rem;
     height: 2.5rem;
-    border: 0.0625rem solid #D1D5DB;
-    border-radius: 0.25rem;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+}
+
+.btn-filter-icon {
+    cursor: pointer;
+}
+
+.btn-filter-icon:hover {
+    background-color: #f8f9fa;
 }
 
 #menu-container {

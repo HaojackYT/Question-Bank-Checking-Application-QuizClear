@@ -18,10 +18,11 @@ public class ExamManagementController {
 
     @GetMapping("/all-exams")
     public String allExams(
+        @RequestParam(required = false) String search,
         @RequestParam(required = false) String status,
         @RequestParam(required = false) String department,
         Model model) {
-        model.addAttribute("exams", examService.getFilteredExams(status, department));
+        model.addAttribute("exams", examService.getFilteredExams(search, status, department));
         model.addAttribute("totalExams", examService.countAll());
         model.addAttribute("pendingCount", examService.countByStatus("submitted"));
         model.addAttribute("approvedCount", examService.countByStatus("approved"));
@@ -30,36 +31,64 @@ public class ExamManagementController {
         model.addAttribute("departments", examService.getAllDepartments());
         model.addAttribute("selectedStatus", status);
         model.addAttribute("selectedDepartment", department);
+        model.addAttribute("search", search);
         return "Staff/staffExamManagement_All_Exams";
     }
 
     @GetMapping("/pending-approval")
-    public String manageExams(Model model) {
+    public String manageExams(
+        @RequestParam(required = false) String search,
+        @RequestParam(required = false) String status,
+        @RequestParam(required = false) String department,
+        Model model) {
         model.addAttribute("totalExams", examService.countAll());
         model.addAttribute("pendingCount", examService.countByStatus("submitted"));
         model.addAttribute("approvedCount", examService.countByStatus("approved"));
         model.addAttribute("rejectedCount", examService.countByStatus("rejected"));
-        model.addAttribute("pendingExams", examService.getPendingApprovalExams());
+        model.addAttribute("pendingExams", examService.getFilteredPendingExams(search, status, department));
+        model.addAttribute("statuses", com.uth.quizclear.model.enums.ExamStatus.values());
+        model.addAttribute("departments", examService.getAllDepartments());
+        model.addAttribute("selectedStatus", status);
+        model.addAttribute("selectedDepartment", department);
+        model.addAttribute("search", search);
         return "Staff/Staff_Exammanage";
     }
 
     @GetMapping("/approved")
-    public String approvedExams(Model model) {
+    public String approvedExams(
+        @RequestParam(required = false) String search,
+        @RequestParam(required = false) String status,
+        @RequestParam(required = false) String department,
+        Model model) {
         model.addAttribute("totalExams", examService.countAll());
         model.addAttribute("pendingCount", examService.countByStatus("submitted"));
         model.addAttribute("approvedCount", examService.countByStatus("approved"));
         model.addAttribute("rejectedCount", examService.countByStatus("rejected"));
-        model.addAttribute("approvedExams", examService.getApprovedExams());
+        model.addAttribute("approvedExams", examService.getFilteredApprovedExams(search, status, department));
+        model.addAttribute("statuses", com.uth.quizclear.model.enums.ExamStatus.values());
+        model.addAttribute("departments", examService.getAllDepartments());
+        model.addAttribute("selectedStatus", status);
+        model.addAttribute("selectedDepartment", department);
+        model.addAttribute("search", search);
         return "Staff/Staff_Exammanage_3";
     }
     
     @GetMapping("/needs-revision")
-    public String needsRevisionExams(Model model) {
+    public String needsRevisionExams(
+        @RequestParam(required = false) String search,
+        @RequestParam(required = false) String status,
+        @RequestParam(required = false) String department,
+        Model model) {
         model.addAttribute("totalExams", examService.countAll());
         model.addAttribute("pendingCount", examService.countByStatus("submitted"));
         model.addAttribute("approvedCount", examService.countByStatus("approved"));
         model.addAttribute("rejectedCount", examService.countByStatus("rejected"));
-        model.addAttribute("rejectedExams", examService.getRejectedExams());
+        model.addAttribute("rejectedExams", examService.getFilteredRejectedExams(search, status, department));
+        model.addAttribute("statuses", com.uth.quizclear.model.enums.ExamStatus.values());
+        model.addAttribute("departments", examService.getAllDepartments());
+        model.addAttribute("selectedStatus", status);
+        model.addAttribute("selectedDepartment", department);
+        model.addAttribute("search", search);
         return "Staff/staffEMNeedsRevision";
     }
 
