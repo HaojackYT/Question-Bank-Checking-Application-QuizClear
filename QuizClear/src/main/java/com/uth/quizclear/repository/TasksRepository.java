@@ -88,7 +88,9 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
                 JOIN t.course c
                 WHERE t.taskType = 'create_questions'
                 """)
-        List<LecTaskDTO> getAllTasksWithPlan();        // Lec Task by ID - Support tasks with or without plans
+        List<LecTaskDTO> getAllTasksWithPlan();
+
+        // Lec Task by ID
         @Query("""
                 SELECT new com.uth.quizclear.model.dto.LecTaskDTO(
                         t.taskId,
@@ -96,22 +98,23 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
                         t.description,
                         t.dueDate,
                         t.status,
-                        COALESCE(p.planId, 0),
-                        COALESCE(p.totalQuestions, t.totalQuestions),
-                        COALESCE(p.totalRecognition, 0),
-                        COALESCE(p.totalComprehension, 0),
-                        COALESCE(p.totalBasicApplication, 0),
-                        COALESCE(p.totalAdvancedApplication, 0)
+                        p.planId,
+                        p.totalQuestions,
+                        p.totalRecognition,
+                        p.totalComprehension,
+                        p.totalBasicApplication,
+                        p.totalAdvancedApplication
                 )
                 FROM Tasks t
-                LEFT JOIN t.plan p
+                JOIN t.plan p
                 JOIN t.course c
                 WHERE t.assignedTo.userId = :userId
                 AND t.taskType = 'create_questions'
                 """)
         List<LecTaskDTO> getTasksByUserId(@Param("userId") Long userId);
 
-          // Get Task Detail by ID - Support tasks with or without plans
+        
+        // Get Task Detail by ID
         @Query("""
                 SELECT new com.uth.quizclear.model.dto.LecTaskDTO(
                         t.taskId,
@@ -119,15 +122,15 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
                         t.description,
                         t.dueDate,
                         t.status,
-                        COALESCE(p.planId, 0),
-                        COALESCE(p.totalQuestions, t.totalQuestions),
-                        COALESCE(p.totalRecognition, 0),
-                        COALESCE(p.totalComprehension, 0),
-                        COALESCE(p.totalBasicApplication, 0),
-                        COALESCE(p.totalAdvancedApplication, 0)
+                        p.planId,
+                        p.totalQuestions,
+                        p.totalRecognition,
+                        p.totalComprehension,
+                        p.totalBasicApplication,
+                        p.totalAdvancedApplication
                 )
                 FROM Tasks t
-                LEFT JOIN t.plan p
+                JOIN t.plan p
                 JOIN t.course c
                 WHERE t.taskId = :taskId
         """)

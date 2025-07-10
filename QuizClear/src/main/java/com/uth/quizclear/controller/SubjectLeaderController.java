@@ -951,7 +951,8 @@ public class SubjectLeaderController {
                     .orElseThrow(() -> new IllegalArgumentException("Task not found"));
             
             User lecturer = userRepository.findById(lecturerId)
-                    .orElseThrow(() -> new IllegalArgumentException("Lecturer not found"));            // Create new task for lecturer
+                    .orElseThrow(() -> new IllegalArgumentException("Lecturer not found"));
+              // Create new task for lecturer
             Tasks delegatedTask = new Tasks();
             delegatedTask.setTitle(originalTask.getTitle() + " (Delegated)");
             delegatedTask.setDescription(originalTask.getDescription() + "\n\nNotes: " + notes);
@@ -964,12 +965,7 @@ public class SubjectLeaderController {
             delegatedTask.setStatus(TaskStatus.pending);
             delegatedTask.setCreatedAt(LocalDateTime.now());
             
-            // Link to the same Plan if original task has one
-            if (originalTask.getPlan() != null) {
-                delegatedTask.setPlan(originalTask.getPlan());
-            }
-            
-            tasksRepository.save(delegatedTask);// Update original task status to cancelled (task delegated to another user)
+            tasksRepository.save(delegatedTask);            // Update original task status to cancelled (task delegated to another user)
             originalTask.setStatus(TaskStatus.cancelled);
             originalTask.setDescription(originalTask.getDescription() + "\n\n[DELEGATED] This task has been delegated to " + lecturer.getFullName() + " on " + LocalDateTime.now().toString());
             tasksRepository.save(originalTask);

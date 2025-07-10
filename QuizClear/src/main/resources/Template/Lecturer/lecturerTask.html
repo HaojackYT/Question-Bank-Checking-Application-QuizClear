@@ -271,7 +271,9 @@
         }
         const text = status.charAt(0).toUpperCase() + status.slice(1);
         return `<span class="status ${className}">${text}</span>`;
-    }    document.querySelectorAll('.view-task').forEach(icon => {
+    }
+
+    document.querySelectorAll('.view-task').forEach(icon => {
         icon.addEventListener('click', async () => {
             const taskId = icon.getAttribute('data-task-id');
             console.log('Clicked taskId:', taskId);
@@ -279,7 +281,6 @@
                 const response = await fetch(`/lecturer/api/task/${taskId}`);
                 if (!response.ok) throw new Error('Task not found');
                 const task = await response.json();
-                
                 // Cập nhật modal
                 document.querySelector('.modal .modal-due').textContent = `Due: ${task.dueDate?.split('T')[0] || ''}`;
                 document.querySelector('.modal input[readonly][value]').value = task.courseName;
@@ -289,22 +290,11 @@
                 document.querySelector('.info-group div:nth-child(2)').innerHTML = `<strong>Deadline:</strong> ${task.dueDate?.split('T')[0] || ''}`;
                 document.querySelector('.info-group div:nth-child(3)').innerHTML = `<strong>Status:</strong> ${formatStatus(task.status)}`;
 
-                // Kiểm tra xem task có Plan hay không (tất cả giá trị mức độ khó đều bằng 0 hoặc null)
-                const hasPlan = (task.totalRecognition > 0) || (task.totalComprehension > 0) || 
-                               (task.totalBasicApplication > 0) || (task.totalAdvancedApplication > 0);
-                
-                const levelsDiv = document.querySelector('.levels');
-                if (hasPlan) {
-                    // Hiển thị phần levels và cập nhật giá trị
-                    levelsDiv.style.display = 'block';
-                    document.querySelector('.levels div:nth-child(1)').innerHTML = `<strong>Recognition</strong><br>${task.totalRecognition || 0}`;
-                    document.querySelector('.levels div:nth-child(2)').innerHTML = `<strong>Comprehension</strong><br>${task.totalComprehension || 0}`;
-                    document.querySelector('.levels div:nth-child(3)').innerHTML = `<strong>Basic</strong><br>${task.totalBasicApplication || 0}`;
-                    document.querySelector('.levels div:nth-child(4)').innerHTML = `<strong>Advanced</strong><br>${task.totalAdvancedApplication || 0}`;
-                } else {
-                    // Ẩn phần levels nếu task không có Plan
-                    levelsDiv.style.display = 'none';
-                }
+                document.querySelector('.levels div:nth-child(1)').innerHTML = `<strong>Recognition</strong><br>${task.totalRecognition}`;
+                document.querySelector('.levels div:nth-child(2)').innerHTML = `<strong>Comprehension</strong><br>${task.totalComprehension}`;
+                document.querySelector('.levels div:nth-child(3)').innerHTML = `<strong>Basic</strong><br>${task.totalBasicApplication}`;
+                document.querySelector('.levels div:nth-child(4)').innerHTML = `<strong>Advanced</strong><br>${task.totalAdvancedApplication}`;
+
 
                 openModal();
 
