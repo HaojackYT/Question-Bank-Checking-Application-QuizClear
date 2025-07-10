@@ -25,7 +25,8 @@ public class PlanService {
 
     // Lấy danh sách plan cho SL
     public List<SL_PlanDTO> getSLPlan() {
-        return planRepository.findSLPlans(List.of(Plan.PlanStatus.NEW, Plan.PlanStatus.ACCEPTED));
+        // Tạm thời trả về danh sách rỗng, cần implement logic sau
+        return List.of();
     }
 
     // Cập nhật trạng thái của plan

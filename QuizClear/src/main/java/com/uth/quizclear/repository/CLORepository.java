@@ -36,4 +36,12 @@ public interface CLORepository extends JpaRepository<CLO, Long> {
     
     @Query("SELECT c FROM CLO c LEFT JOIN FETCH c.course WHERE c.cloId = :id")
     Optional<CLO> findByIdWithCourse(@Param("id") Long id);
+    
+    // Thêm phương thức tìm CLO theo courseId và difficultyLevel
+    @Query("SELECT c FROM CLO c WHERE c.course.courseId = :courseId AND c.difficultyLevel = :difficultyLevel")
+    List<CLO> findByCourseIdAndDifficultyLevel(@Param("courseId") Long courseId, @Param("difficultyLevel") com.uth.quizclear.model.enums.DifficultyLevel difficultyLevel);
+    
+    // Thêm phương thức tìm CLO theo courseId
+    @Query("SELECT c FROM CLO c WHERE c.course.courseId = :courseId ORDER BY c.difficultyLevel")
+    List<CLO> findByCourseId(@Param("courseId") Long courseId);
 }

@@ -7,6 +7,7 @@
     <link rel="stylesheet" th:href="@{/Static/header.css}" />
     <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
     <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
+    <link rel="stylesheet" th:href="@{/Static/css/staff/staffQMQuestionBank.css}" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" th:href="@{/Static/css/staff/staffSubmissionTable.css}" />
@@ -30,17 +31,9 @@
                         <i class="fas fa-folder"></i>
                         Question Bank
                     </a>
-                    <a th:href="@{/staff/questions/submission-table}" class="tab-button">
-                        <i class="fas fa-table"></i>
-                        Submission Table
-                    </a>
                     <a th:href="@{/staff/questions/planning}" class="tab-button active">
                         <i class="fas fa-calendar-alt"></i>
                         Question Planning
-                    </a>
-                    <a th:href="@{/staff/questions/duplication-check}" class="tab-button">
-                        <i class="fas fa-search"></i>
-                        Duplication Check
                     </a>
                     <a th:href="@{/staff/questions/reports-statistics}" class="tab-button">
                         <i class="fas fa-chart-bar"></i>
@@ -50,24 +43,20 @@
 
                 <div class="action-bar">
                     <div class="filter-bar">
-                        <select class="filter-select">
-                            <option>Filter by Subject</option>
-                            <option>Computer Science</option>
-                            <option>Mathematics</option>
-                            <option>Biology</option>
+                        <select class="filter-select" id="subjectFilter">
+                            <option value="">Filter by Subject</option>
+                            <option th:each="course : ${courses}" th:value="${course.courseName}" th:text="${course.courseName}"></option>
                         </select>
-                        <select class="filter-select">
-                            <option>Filter by Department</option>
-                            <option>Computer Science</option>
-                            <option>Information Technology</option>
-                            <option>Life Sciences</option>
-                            <option>Mathematics</option>
+                        <select class="filter-select" id="departmentFilter">
+                            <option value="">Filter by Department</option>
+                            <option th:each="dept : ${departments}" th:value="${dept.departmentName}" th:text="${dept.departmentName}"></option>
                         </select>
-                        <select class="filter-select">
-                            <option>Filter by Status</option>
-                            <option>In Progress</option>
-                            <option>Completed</option>
-                            <option>Overdue</option>
+                        <select class="filter-select" id="statusFilter">
+                            <option value="">Filter by Status</option>
+                            <option value="NEW">New</option>
+                            <option value="IN_PROGRESS">In Progress</option>
+                            <option value="COMPLETED">Completed</option>
+                            <option value="OVERDUE">Overdue</option>
                         </select>
                     </div>
                     <button class="create-plan-btn" id="openCreateModal">
@@ -76,7 +65,94 @@
                     </button>
                 </div>
 
-                <div class="subject-cards">
+                <div class="subject-cards" id="planCards">
+                    <!-- Plans sẽ được rót từ backend -->
+                    <div th:each="plan : ${plans}" class="subject-card" th:attr="data-subject=${plan.course.courseName}, data-department=${plan.course.department}, data-status=${plan.status}">
+                        <div class="subject-header">
+                            <div class="subject-title" th:text="${plan.course.courseName}">Course Name</div>
+                            <div class="subject-id" th:text="'#P' + ${plan.planId}">Plan ID</div>
+                        </div>
+                        <div class="subject-info">
+                            <div class="subject-info-item">
+                                <i class="fas fa-calendar"></i>
+                                <span th:text="'Due: ' + ${#temporals.format(plan.dueDate, 'yyyy-MM-dd')}">Due Date</span>
+                            </div>
+                            <div class="subject-info-item">
+                                <i class="fas fa-building"></i>
+                                <span th:text="${plan.course.department}">Department</span>
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <div class="progress-label">Progress</div>
+                                <div class="progress-percent" th:text="${plan.status == T(com.uth.quizclear.model.entity.Plan.PlanStatus).COMPLETED ? '100%' : (plan.status == T(com.uth.quizclear.model.entity.Plan.PlanStatus).IN_PROGRESS ? '50%' : '0%')}">0%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" 
+                                     th:classappend="${plan.status == T(com.uth.quizclear.model.entity.Plan.PlanStatus).COMPLETED ? 'high' : (plan.status == T(com.uth.quizclear.model.entity.Plan.PlanStatus).IN_PROGRESS ? 'medium' : 'low')}"
+                                     th:style="'width: ' + ${plan.status == T(com.uth.quizclear.model.entity.Plan.PlanStatus).COMPLETED ? '100%' : (plan.status == T(com.uth.quizclear.model.entity.Plan.PlanStatus).IN_PROGRESS ? '50%' : '0%')}"></div>
+                            </div>
+                        </div>
+                        <div class="question-distribution">
+                            <div class="question-type">
+                                <div class="question-type-value" th:text="${plan.totalRecognition}">0</div>
+                                <div class="question-type-label">Recognition</div>
+                                <div class="question-type-bar recognition"></div>
+                            </div>
+                            <div class="question-type">
+                                <div class="question-type-value" th:text="${plan.totalComprehension}">0</div>
+                                <div class="question-type-label">Comprehension</div>
+                                <div class="question-type-bar comprehension"></div>
+                            </div>
+                            <div class="question-type">
+                                <div class="question-type-value" th:text="${plan.totalBasicApplication}">0</div>
+                                <div class="question-type-label">Basic App</div>
+                                <div class="question-type-bar basic"></div>
+                            </div>
+                            <div class="question-type">
+                                <div class="question-type-value" th:text="${plan.totalAdvancedApplication}">0</div>
+                                <div class="question-type-label">Advanced</div>
+                                <div class="question-type-bar advanced"></div>
+                            </div>
+                        </div>
+                        <div class="card-details">
+                            <div class="detail-row">
+                                <div class="detail-label">Total Questions:</div>
+                                <div class="detail-value" th:text="${plan.totalQuestions}">0</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Received:</div>
+                                <div class="detail-value">0</div> <!-- TODO: Calculate from actual questions -->
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Remaining:</div>
+                                <div class="detail-value" th:text="${plan.totalQuestions}">0</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Assigned To:</div>
+                                <div class="detail-value" th:text="${plan.assignedToUser != null ? plan.assignedToUser.fullName : 'Not Assigned'}">Not Assigned</div>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="action-btn view-btn" th:onclick="'openViewModal(' + ${plan.planId} + ')'">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                            <button class="action-btn reminder-btn">
+                                <i class="fas fa-bell"></i>
+                                Send Reminder
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fallback nếu không có plans -->
+                <div th:if="${#lists.isEmpty(plans)}" class="subject-cards">
+                    <div class="no-plans-message">
+                        <i class="fas fa-calendar-plus"></i>
+                        <h3>No Plans Created Yet</h3>
+                        <p>Click "Create New Plan" to get started with question planning.</p>
+                    </div>
                     <div class="subject-card">
                         <div class="subject-header">
                             <div class="subject-title">Programming</div>
@@ -316,102 +392,109 @@
                 <span class="close-modal" id="closeCreateModal">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="form-row">
-                    <div class="form-col">
-                        <div class="form-group">
-                            <label class="form-label">Subject</label>
-                            <select class="form-control">
-                                <option>Select Subject</option>
-                                <option>Programming</option>
-                                <option>Networking</option>
-                                <option>Biology</option>
-                                <option>Mathematics</option>
-                            </select>
+                <form id="createPlanForm">
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">Subject</label>
+                                <select class="form-control" id="courseSelect" name="courseId" required>
+                                    <option value="">Select Subject</option>
+                                    <option th:each="course : ${courses}" th:value="${course.courseId}" th:text="${course.courseName}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">Department</label>
+                                <select class="form-control" id="departmentSelect" name="departmentName" required>
+                                    <option value="">Select Department</option>
+                                    <option th:each="dept : ${departments}" th:value="${dept.departmentName}" th:text="${dept.departmentName}"></option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-col">
-                        <div class="form-group">
-                            <label class="form-label">Department</label>
-                            <select class="form-control">
-                                <option>Select Department</option>
-                                <option>Computer Science</option>
-                                <option>Information Technology</option>
-                                <option>Life Sciences</option>
-                                <option>Mathematics</option>
-                            </select>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">Assign To</label>
+                                <select class="form-control" id="assignToSelect" name="assignedTo" required>
+                                    <option value="">Select User</option>
+                                    <!-- Users sẽ được load động khi chọn department -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">Deadline</label>
+                                <input type="datetime-local" class="form-control" id="deadlineInput" name="dueDate" required>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-col">
-                        <div class="form-group">
-                            <label class="form-label">Assign To</label>
-                            <select class="form-control">
-                                <option>Select Department Head</option>
-                                <option>Dr. Nguyen</option>
-                                <option>Dr. Le</option>
-                                <option>Dr. Pham</option>
-                                <option>Dr. Hoang</option>
-                            </select>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">Plan Title</label>
+                                <input type="text" class="form-control" id="planTitleInput" name="planTitle" placeholder="Enter plan title" required>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label class="form-label">Total Questions Required</label>
+                                <input type="number" class="form-control" id="totalQuestionsInput" name="totalQuestions" placeholder="Enter total number of questions" min="1" required>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-col">
-                        <div class="form-group">
-                            <label class="form-label">Deadline</label>
-                            <input type="date" class="form-control">
+                    <div class="form-group">
+                        <label class="form-label">Plan Description</label>
+                        <textarea class="form-control" id="planDescriptionInput" name="planDescription" rows="3" placeholder="Enter plan description"></textarea>
+                    </div>
+                    <div class="distribution-section">
+                        <div class="distribution-title">Question Distribution</div>
+                        <div class="distribution-grid">
+                            <div class="distribution-item">
+                                <div class="distribution-label">Recognition</div>
+                                <input type="number" class="distribution-input" id="recognitionInput" name="totalRecognition" value="0" min="0">
+                            </div>
+                            <div class="distribution-item">
+                                <div class="distribution-label">Comprehension</div>
+                                <input type="number" class="distribution-input" id="comprehensionInput" name="totalComprehension" value="0" min="0">
+                            </div>
+                            <div class="distribution-item">
+                                <div class="distribution-label">Basic Application</div>
+                                <input type="number" class="distribution-input" id="basicApplicationInput" name="totalBasicApplication" value="0" min="0">
+                            </div>
+                            <div class="distribution-item">
+                                <div class="distribution-label">Advanced Application</div>
+                                <input type="number" class="distribution-input" id="advancedApplicationInput" name="totalAdvancedApplication" value="0" min="0">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Total Questions Required</label>
-                    <input type="number" class="form-control" placeholder="Enter total number of questions">
-                </div>
-                <div class="distribution-section">
-                    <div class="distribution-title">Question Distribution</div>
-                    <div class="distribution-grid">
-                        <div class="distribution-item">
-                            <div class="distribution-label">Recognition</div>
-                            <input type="number" class="distribution-input" value="40">
-                        </div>
-                        <div class="distribution-item">
-                            <div class="distribution-label">Comprehension</div>
-                            <input type="number" class="distribution-input" value="30">
-                        </div>
-                        <div class="distribution-item">
-                            <div class="distribution-label">Basic Application</div>
-                            <input type="number" class="distribution-input" value="20">
-                        </div>
-                        <div class="distribution-item">
-                            <div class="distribution-label">Advanced Application</div>
-                            <input type="number" class="distribution-input" value="10">
+                    <div class="distribution-section">
+                        <div class="distribution-title">CLO Distribution</div>
+                        <div class="distribution-grid">
+                            <div class="distribution-item">
+                                <div class="distribution-label">CLO1 (Recognition)</div>
+                                <input type="text" class="distribution-input" id="clo1Input" name="clo1" placeholder="CLO Code">
+                            </div>
+                            <div class="distribution-item">
+                                <div class="distribution-label">CLO2 (Comprehension)</div>
+                                <input type="text" class="distribution-input" id="clo2Input" name="clo2" placeholder="CLO Code">
+                            </div>
+                            <div class="distribution-item">
+                                <div class="distribution-label">CLO3 (Basic App)</div>
+                                <input type="text" class="distribution-input" id="clo3Input" name="clo3" placeholder="CLO Code">
+                            </div>
+                            <div class="distribution-item">
+                                <div class="distribution-label">CLO4 (Advanced)</div>
+                                <input type="text" class="distribution-input" id="clo4Input" name="clo4" placeholder="CLO Code">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="distribution-section">
-                    <div class="distribution-title">CLO Distribution</div>
-                    <div class="distribution-grid">
-                        <div class="distribution-item">
-                            <div class="distribution-label">CLO1</div>
-                            <input type="text" class="distribution-input" value="CN01">
-                        </div>
-                        <div class="distribution-item">
-                            <div class="distribution-label">CLO2</div>
-                            <input type="text" class="distribution-input" value="CN02">
-                        </div>
-                        <div class="distribution-item">
-                            <div class="distribution-label">CLO3</div>
-                            <input type="text" class="distribution-input" value="CN02">
-                        </div>
-                        <div class="distribution-item">
-                            <div class="distribution-label">CLO4</div>
-                            <input type="text" class="distribution-input" value="CN02">
-                        </div>
-                    </div>
-                </div>
+                </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary">Cancel</button>
-                <button class="btn btn-primary">
+                <button type="button" class="btn btn-secondary" id="cancelCreateBtn">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="createPlanBtn" form="createPlanForm">
                     <i class="fas fa-check"></i>
                     Create and Assign
                 </button>
@@ -517,9 +600,7 @@
     </div>
 
     <script>
-        // Đã dùng th:replace cho header và menu, không cần fetch thủ công nữa
-
-        // Modal functionality
+        // Modal functionality và form handling
         document.addEventListener('DOMContentLoaded', function() {
             const createModal = document.getElementById('createModal');
             const viewModal = document.getElementById('viewModal');
@@ -527,16 +608,34 @@
             const closeCreateModalBtn = document.getElementById('closeCreateModal');
             const closeViewModalBtn = document.getElementById('closeViewModal');
             const closeViewBtn = document.getElementById('closeViewBtn');
+            const cancelCreateBtn = document.getElementById('cancelCreateBtn');
+            const createPlanForm = document.getElementById('createPlanForm');
+            
+            // Form elements
+            const departmentSelect = document.getElementById('departmentSelect');
+            const assignToSelect = document.getElementById('assignToSelect');
+            const totalQuestionsInput = document.getElementById('totalQuestionsInput');
+            const recognitionInput = document.getElementById('recognitionInput');
+            const comprehensionInput = document.getElementById('comprehensionInput');
+            const basicApplicationInput = document.getElementById('basicApplicationInput');
+            const advancedApplicationInput = document.getElementById('advancedApplicationInput');
             
             // Open create modal
             openCreateModalBtn.addEventListener('click', function() {
                 createModal.style.display = 'block';
+                // Reset form
+                createPlanForm.reset();
+                assignToSelect.innerHTML = '<option value="">Select User</option>';
             });
             
             // Close create modal
-            closeCreateModalBtn.addEventListener('click', function() {
+            function closeCreateModal() {
                 createModal.style.display = 'none';
-            });
+                createPlanForm.reset();
+            }
+            
+            closeCreateModalBtn.addEventListener('click', closeCreateModal);
+            cancelCreateBtn.addEventListener('click', closeCreateModal);
             
             // Close view modal
             closeViewModalBtn.addEventListener('click', function() {
@@ -550,15 +649,226 @@
             // Close modals when clicking outside
             window.addEventListener('click', function(event) {
                 if (event.target === createModal) {
-                    createModal.style.display = 'none';
+                    closeCreateModal();
                 }
                 if (event.target === viewModal) {
                     viewModal.style.display = 'none';
                 }
             });
             
+            // Load users when department is selected
+            departmentSelect.addEventListener('change', function() {
+                const departmentName = this.value;
+                if (departmentName) {
+                    fetch(`/staff/api/users-by-department?departmentName=${encodeURIComponent(departmentName)}`)
+                        .then(response => response.json())
+                        .then(users => {
+                            assignToSelect.innerHTML = '<option value="">Select User</option>';
+                            users.forEach(user => {
+                                const option = document.createElement('option');
+                                option.value = user.userId;
+                                option.textContent = user.fullName;
+                                assignToSelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error loading users:', error);
+                            assignToSelect.innerHTML = '<option value="">Error loading users</option>';
+                        });
+                } else {
+                    assignToSelect.innerHTML = '<option value="">Select User</option>';
+                }
+            });
+
+            // Load CLOs when course is selected
+            const courseSelect = document.getElementById('courseSelect');
+            const clo1Input = document.getElementById('clo1Input');
+            const clo2Input = document.getElementById('clo2Input');
+            const clo3Input = document.getElementById('clo3Input');
+            const clo4Input = document.getElementById('clo4Input');
+
+            courseSelect.addEventListener('change', function() {
+                const courseId = this.value;
+                if (courseId) {
+                    // Gọi API để lấy tất cả CLO của course
+                    fetch(`/staff/api/clos-by-course?courseId=${courseId}`)
+                        .then(response => response.json())
+                        .then(clos => {
+                            // Clear tất cả CLO inputs trước
+                            clo1Input.value = '';
+                            clo2Input.value = '';
+                            clo3Input.value = '';
+                            clo4Input.value = '';
+                            
+                            // Phân loại CLO theo difficulty level và điền vào input tương ứng
+                            if (clos && clos.length > 0) {
+                                clos.forEach(clo => {
+                                    const difficultyLevel = clo.difficultyLevel;
+                                    
+                                    switch(difficultyLevel) {
+                                        case 'recognition':
+                                            clo1Input.value = clo.cloCode;
+                                            break;
+                                        case 'comprehension':
+                                            clo2Input.value = clo.cloCode;
+                                            break;
+                                        case 'Basic Application':
+                                            clo3Input.value = clo.cloCode;
+                                            break;
+                                        case 'Advanced Application':
+                                            clo4Input.value = clo.cloCode;
+                                            break;
+                                    }
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading CLOs for course:', error);
+                            // Clear tất cả CLO inputs nếu có lỗi
+                            clo1Input.value = '';
+                            clo2Input.value = '';
+                            clo3Input.value = '';
+                            clo4Input.value = '';
+                        });
+                } else {
+                    // Clear tất cả CLO inputs nếu không chọn course
+                    clo1Input.value = '';
+                    clo2Input.value = '';
+                    clo3Input.value = '';
+                    clo4Input.value = '';
+                }
+            });
+            
+            // Auto-calculate distribution when total questions changes
+            totalQuestionsInput.addEventListener('input', function() {
+                const total = parseInt(this.value) || 0;
+                if (total > 0) {
+                    // Default distribution: 40% Recognition, 30% Comprehension, 20% Basic, 10% Advanced
+                    const recognition = Math.floor(total * 0.4);
+                    const comprehension = Math.floor(total * 0.3);
+                    const basic = Math.floor(total * 0.2);
+                    const advanced = total - recognition - comprehension - basic; // Remaining
+                    
+                    recognitionInput.value = recognition;
+                    comprehensionInput.value = comprehension;
+                    basicApplicationInput.value = basic;
+                    advancedApplicationInput.value = advanced;
+                }
+            });
+            
+            // Validate distribution totals
+            function validateDistribution() {
+                const total = parseInt(totalQuestionsInput.value) || 0;
+                const recognition = parseInt(recognitionInput.value) || 0;
+                const comprehension = parseInt(comprehensionInput.value) || 0;
+                const basic = parseInt(basicApplicationInput.value) || 0;
+                const advanced = parseInt(advancedApplicationInput.value) || 0;
+                
+                const sum = recognition + comprehension + basic + advanced;
+                
+                if (sum !== total) {
+                    alert(`Distribution total (${sum}) must equal Total Questions (${total})`);
+                    return false;
+                }
+                return true;
+            }
+            
+            // Form submission
+            createPlanForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!validateDistribution()) {
+                    return;
+                }
+                
+                const formData = new FormData(this);
+                const planData = {
+                    courseId: parseInt(formData.get('courseId')),
+                    planTitle: formData.get('planTitle'),
+                    planDescription: formData.get('planDescription'),
+                    totalQuestions: parseInt(formData.get('totalQuestions')),
+                    totalRecognition: parseInt(formData.get('totalRecognition')),
+                    totalComprehension: parseInt(formData.get('totalComprehension')),
+                    totalBasicApplication: parseInt(formData.get('totalBasicApplication')),
+                    totalAdvancedApplication: parseInt(formData.get('totalAdvancedApplication')),
+                    assignedTo: parseInt(formData.get('assignedTo')),
+                    dueDate: formData.get('dueDate'),
+                    clo1: formData.get('clo1'),
+                    clo2: formData.get('clo2'),
+                    clo3: formData.get('clo3'),
+                    clo4: formData.get('clo4')
+                };
+                
+                // Show loading
+                const createBtn = document.getElementById('createPlanBtn');
+                const originalText = createBtn.innerHTML;
+                createBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+                createBtn.disabled = true;
+                
+                fetch('/staff/api/create-plan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(planData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Plan created successfully!');
+                        closeCreateModal();
+                        // Reload page to show new plan
+                        window.location.reload();
+                    } else {
+                        alert('Error creating plan: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error creating plan. Please try again.');
+                })
+                .finally(() => {
+                    // Restore button
+                    createBtn.innerHTML = originalText;
+                    createBtn.disabled = false;
+                });
+            });
+            
+            // Filter functionality
+            const subjectFilter = document.getElementById('subjectFilter');
+            const departmentFilter = document.getElementById('departmentFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const planCards = document.querySelectorAll('.subject-card');
+            
+            function applyFilters() {
+                const subjectValue = subjectFilter.value.toLowerCase();
+                const departmentValue = departmentFilter.value.toLowerCase();
+                const statusValue = statusFilter.value.toLowerCase();
+                
+                planCards.forEach(card => {
+                    const cardSubject = (card.getAttribute('data-subject') || '').toLowerCase();
+                    const cardDepartment = (card.getAttribute('data-department') || '').toLowerCase();
+                    const cardStatus = (card.getAttribute('data-status') || '').toLowerCase();
+                    
+                    const subjectMatch = !subjectValue || cardSubject.includes(subjectValue);
+                    const departmentMatch = !departmentValue || cardDepartment.includes(departmentValue);
+                    const statusMatch = !statusValue || cardStatus.includes(statusValue);
+                    
+                    if (subjectMatch && departmentMatch && statusMatch) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+            
+            subjectFilter.addEventListener('change', applyFilters);
+            departmentFilter.addEventListener('change', applyFilters);
+            statusFilter.addEventListener('change', applyFilters);
+            
             // Function to open view modal
-            window.openViewModal = function() {
+            window.openViewModal = function(planId) {
+                // TODO: Load plan details by ID and populate view modal
                 viewModal.style.display = 'block';
             };
         });
