@@ -240,6 +240,7 @@
                             console.warn("Invalid task data:", task);
                             return;
                         }
+                        console.log("status of task:", task.status);
                         const taskId = task.taskId || -1; // Đảm bảo taskId có giá trị hợp lệ
                         const row = document.createElement('tr');
                         row.dataset.taskId = String(taskId); // Chuyển thành chuỗi để tránh lỗi
@@ -253,13 +254,14 @@
                                 <button class="action-btn" onclick="showInfoModal(${taskId})">
                                     <i class="fas fa-search"></i>
                                 </button>
-                                <button class="action-btn" onclick="window.location.href='/lecturer/lectureEETaskExamCreateExam?taskId=${taskId}'">
+                                <button class="action-btn" onclick="${task.status === 'in_progress' || task.status === 'draf' ? 'window.location.href=\'/lecturer/lectureEETaskExamCreateExam?taskId=' + taskId + '\';' : ''}">
                                     <i class="fas fa-paper-plane"></i>
                                 </button>
                             </td>
                         `;
                         tbody.appendChild(row);
                     });
+                    
                 }
 
                 // Xử lý nút Accept với cải tiến

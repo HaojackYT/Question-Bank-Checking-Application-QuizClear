@@ -162,7 +162,7 @@ tr:hover {
     background-color: #49AFE8;
 }
 
-.status-badge.submitted {
+.status-badge.submitted, .status-badge.completed {
     background-color: #28A745;
 }
 

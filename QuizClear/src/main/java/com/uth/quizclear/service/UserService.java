@@ -10,14 +10,15 @@ import com.uth.quizclear.repository.DepartmentRepository;
 import com.uth.quizclear.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -363,4 +364,29 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+    /**
+ * Get current user ID from Authentication
+ */
+public Long getCurrentUserId(Authentication authentication) {
+    if (authentication == null || !authentication.isAuthenticated()) {
+        throw new RuntimeException("User not authenticated");
+    }
+    
+    Object principal = authentication.getPrincipal();
+    String email;
+    
+    if (principal instanceof UserDetails) {
+        email = ((UserDetails) principal).getUsername();
+    } else {
+        email = principal.toString();
+    }
+    
+    Optional<User> userOpt = userRepository.findByEmail(email);
+    if (userOpt.isPresent()) {
+        return userOpt.get().getUserId().longValue();
+    }
+    
+    throw new RuntimeException("User not found: " + email);
+}
+
 }

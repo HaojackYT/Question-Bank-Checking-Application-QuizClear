@@ -23,7 +23,6 @@ import java.util.HashSet;
 @Table(name = "users")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString(exclude = { "passwordHash" })
@@ -128,6 +127,9 @@ public class User {
     @Builder.Default
     private Set<Subject> leadsSubjects = new HashSet<>();
 
+    public User(Long userId) {
+        this.userId = userId;
+    }
     // JPA lifecycle callbacks
     @PrePersist
     protected void onCreate() {
@@ -246,6 +248,11 @@ public class User {
     public Integer getUserId() {
         return userId.intValue();
     }
+    
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public Long getUserIdLong(){
         return userId;
@@ -294,6 +301,7 @@ public class User {
     public User(long userId) {
     this.userId = userId;
 }
+public User() {}
 
     // Helper methods for new relationships
     public void addDepartmentAssignment(UserDepartmentAssignment assignment) {

@@ -89,15 +89,19 @@
 
             <!-- Question Bank -->
             <div class="questionBank">
-                <h3 class="questionBankHeader"> Question Bank</h3>
+                <h3 class="questionBankHeader">Question Bank</h3>
 
                 <div class="filters">
                     <input type="text" placeholder="Search questions..." class="search-input">
-                    <select class="filter-select">
-                        <option>All CLOs</option>
+                    <select class="filter-select" id="cloFilter">
+                        <option value="all">All CLOs</option>
                     </select>
-                    <select class="filter-select">
-                        <option>All Level</option>
+                    <select class="filter-select" id="levelFilter">
+                        <option value="all">All Level</option>
+                        <option value="remember">Remember</option>
+                        <option value="understand">Understand</option>
+                        <option value="apply-basic">Apply (Basic)</option>
+                        <option value="apply-advance">Apply (Advance)</option>
                     </select>
                 </div>
 
@@ -113,7 +117,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="question-item">
                         <input type="checkbox" class="question-checkbox">
                         <div class="question-content">
@@ -124,24 +127,20 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="question-item">
                         <input type="checkbox" class="question-checkbox">
                         <div class="question-content">
-                            <p>Write a SQL query to retrieve all customers who have made purchases totaling more
-                                than $1000.</p>
+                            <p>Write a SQL query to retrieve all customers who have made purchases totaling more than $1000.</p>
                             <div class="question-tags">
                                 <span class="tag apply-basic">Apply (Basic)</span>
                                 <span class="tag clo2">CLO2</span>
                             </div>
                         </div>
                     </div>
-
                     <div class="question-item">
                         <input type="checkbox" class="question-checkbox">
                         <div class="question-content">
-                            <p>Design a database schema for a university management system that includes students,
-                                professors, courses, and enrollments.</p>
+                            <p>Design a database schema for a university management system that includes students, professors, courses, and enrollments.</p>
                             <div class="question-tags">
                                 <span class="tag apply-advance">Apply (Advance)</span>
                                 <span class="tag clo3">CLO3</span>
@@ -177,6 +176,267 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const taskId = urlParams.get('taskId');
+            if (!taskId) {
+                document.querySelector('.request-form').innerHTML = '<p>Error: No task ID provided.</p>';
+                document.querySelector('.questions-list').innerHTML = '<p>No task selected.</p>';
+                return;
+            }
+
+            let allQuestions = []; // Lưu toàn bộ câu hỏi để lọc client-side
+
+            // Fetch task details for Request Form
+            fetch(`/lecturer/api/task-details/${taskId}`, {
+                credentials: 'include'
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch task details');
+                    return response.json();
+                })
+                .then(data => {
+                    // Populate Requester
+                    const requesterInput = document.querySelector('.form-group input[value="Nguyễn A"]');
+                    if (requesterInput) requesterInput.value = data.requester || 'Unknown';
+
+                    // Populate Time Exam
+                    const timeExamInput = document.querySelector('.form-group input[value="90:00"]');
+                    if (timeExamInput) timeExamInput.value = data.timeExam || '90:00';
+
+                    // Populate Subject
+                    const subjectInput = document.querySelector('.form-group input[value="Database System"]');
+                    if (subjectInput) subjectInput.value = data.subject || 'Unknown';
+
+                    // Populate Deadline
+                    const deadlineInput = document.querySelector('.form-group input[value="23/08/2028"]');
+                    if (deadlineInput) deadlineInput.value = data.deadline || 'N/A';
+
+                    // Populate Remember
+                    const rememberInput = document.querySelector('.form-subgroup input[value="50"]');
+                    if (rememberInput) rememberInput.value = data.remember || 0;
+
+                    // Populate Understand
+                    const understandInput = document.querySelector('.form-subgroup input[value="30"]');
+                    if (understandInput) understandInput.value = data.understand || 0;
+
+                    // Populate Apply (basic)
+                    const applyBasicInput = document.querySelector('.form-subgroup input[value="5"]');
+                    if (applyBasicInput) applyBasicInput.value = data.applyBasic || 0;
+
+                    // Populate Apply (advanced)
+                    const applyAdvancedInput = document.querySelectorAll('.form-subgroup input[value="5"]')[1];
+                    if (applyAdvancedInput) applyAdvancedInput.value = data.applyAdvanced || 0;
+
+                    // Update Summary Section targets
+                    updateSummaryTargets(data.remember, data.understand, data.applyBasic, data.applyAdvanced);
+                })
+                .catch(error => {
+                    console.error('Error fetching task details:', error);
+                    document.querySelector('.request-form').innerHTML = '<p>Error loading task details. Please try again.</p>';
+                });
+
+            // Fetch CLOs for cloFilter
+            fetch(`/lecturer/api/clos/${taskId}`, {
+                credentials: 'include'
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch CLOs');
+                    return response.json();
+                })
+                .then(clos => {
+                    const cloSelect = document.querySelector('#cloFilter');
+                    cloSelect.innerHTML = '<option value="all">All CLOs</option>';
+                    clos.forEach(clo => {
+                        const option = document.createElement('option');
+                        option.value = clo;
+                        option.textContent = `${clo}`;
+                        cloSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching CLOs:', error);
+                    document.querySelector('#cloFilter').innerHTML = '<option value="all">All CLOs</option>';
+                });
+
+            // Fetch questions for Questions List
+            fetch(`/lecturer/api/task-questions/${taskId}`, {
+                credentials: 'include'
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch questions');
+                    return response.json();
+                })
+                .then(questions => {
+                    allQuestions = questions;
+                    renderQuestions(questions);
+                })
+                .catch(error => {
+                    console.error('Error fetching questions:', error);
+                    document.querySelector('.questions-list').innerHTML = '<p>Error loading questions. Please try again.</p>';
+                });
+
+            // Hàm render questions
+            function renderQuestions(questions) {
+                const questionsList = document.querySelector('.questions-list');
+                questionsList.innerHTML = '';
+
+                if (questions.length === 0) {
+                    questionsList.innerHTML = '<p>No approved questions available for this course.</p>';
+                    return;
+                }
+
+                questions.forEach(question => {
+                    const questionItem = document.createElement('div');
+                    questionItem.className = 'question-item';
+                    questionItem.dataset.clo = question.cloTag;
+                    questionItem.dataset.difficulty = question.difficultyTag;
+                    questionItem.dataset.questionId = question.questionId;
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'question-checkbox';
+                    checkbox.dataset.difficulty = question.difficultyTag;
+                    checkbox.dataset.questionId = question.questionId;
+                    questionItem.appendChild(checkbox);
+
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'question-content';
+
+                    const p = document.createElement('p');
+                    p.textContent = question.content;
+                    contentDiv.appendChild(p);
+
+                    const tagsDiv = document.createElement('div');
+                    tagsDiv.className = 'question-tags';
+
+                    const difficultySpan = document.createElement('span');
+                    difficultySpan.className = `tag ${question.difficultyTag}`;
+                    difficultySpan.textContent = mapTagToLabel(question.difficultyTag);
+                    tagsDiv.appendChild(difficultySpan);
+
+                    const cloSpan = document.createElement('span');
+                    cloSpan.className = `tag clo1`;
+                    cloSpan.textContent = `${question.cloTag}`;
+                    tagsDiv.appendChild(cloSpan);
+
+                    contentDiv.appendChild(tagsDiv);
+                    questionItem.appendChild(contentDiv);
+
+                    questionsList.appendChild(questionItem);
+                });
+
+                document.querySelectorAll('.question-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', updateSummaryCounts);
+                });
+            }
+
+            // Hàm map difficulty tag to label
+            function mapTagToLabel(tag) {
+                switch (tag) {
+                    case 'remember':
+                        return 'Remember';
+                    case 'understand':
+                        return 'Understand';
+                    case 'apply-basic':
+                        return 'Apply (Basic)';
+                    case 'apply-advance':
+                        return 'Apply (Advance)';
+                    default:
+                        return 'Unknown';
+                }
+            }
+
+            // Hàm cập nhật Summary Section targets
+            function updateSummaryTargets(remember, understand, applyBasic, applyAdvanced) {
+                const summaryStats = document.querySelector('.summary-stats');
+                summaryStats.querySelector('.stat-item span').textContent = `0/${remember || 0}`;
+                summaryStats.querySelectorAll('.stat-item span')[1].textContent = `0/${understand || 0}`;
+                summaryStats.querySelectorAll('.stat-item span')[2].textContent = `0/${applyBasic || 0}`;
+                summaryStats.querySelectorAll('.stat-item span')[3].textContent = `0/${applyAdvanced || 0}`;
+            }
+
+            // Hàm cập nhật Summary Section counts
+            function updateSummaryCounts() {
+                const checkboxes = document.querySelectorAll('.question-checkbox:checked');
+                let rememberCount = 0, understandCount = 0, applyBasicCount = 0, applyAdvancedCount = 0;
+
+                checkboxes.forEach(cb => {
+                    switch (cb.dataset.difficulty) {
+                        case 'remember':
+                            rememberCount++;
+                            break;
+                        case 'understand':
+                            understandCount++;
+                            break;
+                        case 'apply-basic':
+                            applyBasicCount++;
+                            break;
+                        case 'apply-advance':
+                            applyAdvancedCount++;
+                            break;
+                    }
+                });
+
+                const summaryStats = document.querySelector('.summary-stats');
+                const targets = Array.from(summaryStats.querySelectorAll('.stat-item span')).map(span => parseInt(span.textContent.split('/')[1]));
+                summaryStats.querySelector('.stat-item span').textContent = `${rememberCount}/${targets[0]}`;
+                summaryStats.querySelectorAll('.stat-item span')[1].textContent = `${understandCount}/${targets[1]}`;
+                summaryStats.querySelectorAll('.stat-item span')[2].textContent = `${applyBasicCount}/${targets[2]}`;
+                summaryStats.querySelectorAll('.stat-item span')[3].textContent = `${applyAdvancedCount}/${targets[3]}`;
+            }
+
+            // Search input logic
+            document.querySelector('.search-input').addEventListener('input', function () {
+                const searchText = this.value.trim().toLowerCase();
+                const cloFilter = document.querySelector('#cloFilter').value;
+                const levelFilter = document.querySelector('#levelFilter').value;
+                filterQuestions(searchText, cloFilter, levelFilter);
+            });
+
+            // CLO filter logic
+            document.querySelector('#cloFilter').addEventListener('change', function () {
+                const searchText = document.querySelector('.search-input').value.trim().toLowerCase();
+                const cloFilter = this.value;
+                const levelFilter = document.querySelector('#levelFilter').value;
+                filterQuestions(searchText, cloFilter, levelFilter);
+            });
+
+            // Level filter logic
+            document.querySelector('#levelFilter').addEventListener('change', function () {
+                const searchText = document.querySelector('.search-input').value.trim().toLowerCase();
+                const cloFilter = document.querySelector('#cloFilter').value;
+                const levelFilter = this.value;
+                filterQuestions(searchText, cloFilter, levelFilter);
+            });
+
+            // Hàm lọc câu hỏi
+            function filterQuestions(searchText, cloFilter, levelFilter) {
+                const filteredQuestions = allQuestions.filter(question => {
+                    const contentMatch = searchText === '' || question.content.toLowerCase().includes(searchText);
+                    const cloMatch = cloFilter === 'all' || question.cloTag === cloFilter;
+                    const levelMatch = levelFilter === 'all' || question.difficultyTag === levelFilter;
+                    return contentMatch && cloMatch && levelMatch;
+                });
+                renderQuestions(filteredQuestions);
+            }
+
+            // Next button logic
+            document.querySelector('.next-btn').addEventListener('click', function (e) {
+                e.preventDefault();
+                const checkboxes = document.querySelectorAll('.question-checkbox:checked');
+                const questionIds = Array.from(checkboxes).map(cb => cb.dataset.questionId);
+                if (questionIds.length === 0) {
+                    alert('Please select at least one question.');
+                    return;
+                }
+                const url = `/lecturer/lectureEETaskExamLastReview?taskId=${taskId}&questionIds=${questionIds.join(',')}`;
+                window.location.href = url;
+            });
+        });
+    </script>
     <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 

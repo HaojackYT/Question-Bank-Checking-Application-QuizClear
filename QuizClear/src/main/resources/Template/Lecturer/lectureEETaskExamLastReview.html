@@ -14,11 +14,11 @@
 
 <body>
     <!--header-->
-    <div th:replace="header_user"></div>
+    <div th:replace="~{header_user}"></div>
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div th:replace="Lecturer/Menu-Lecturer"></div>
+        <div th:replace="~{Lecturer/Menu-Lecturer}"></div>
 
         <!-- Main content -->
         <div id="main">
@@ -85,112 +85,16 @@
                     <input type="text" placeholder="The content" class="exam-title-input">
                 </div>
 
-
                 <!-- Build Your Exam Section -->
                 <div class="build-exam-section">
                     <h2 class="sectionTitle">Build Your Exam</h2>
-
-                    <!-- Question 1 -->
-                    <div class="question-item expanded">
-                        <div class="question-header">
-                            <i class="fas fa-chevron-down"></i>
-                            <span>Write a SQL query to retrieve all customers who have made purchases totaling more than
-                                $1000.</span>
-                        </div>
-                        <div class="question-tags">
-                            <span class="tag apply-basic">Apply (Basic)</span>
-                            <span class="tag clo2">CLO2</span>
-                        </div>
-
-                        <!-- Answer Section -->
-                        <div class="answer-section">
-                            <div class="correct-answer">
-                                <h4>Correct Answer</h4>
-                                <p placeholder="The correct answer" class="answer-textarea"><span class="correct">Dap an
-                                        dung duoc lay tu csdl</span></p>
-                            </div>
-
-                            <div class="incorrect-answers">
-                                <h4>Incorrect Answers</h4>
-                                <p placeholder="Incorrect answer" class="answer-textarea"><span class="incorrect">Dap an
-                                        sai lay tu csdl</span></p>
-                                <p placeholder="Incorrect answer" class="answer-textarea"><span class="incorrect">Dap an
-                                        sai lay tu csdl</span></p>
-                                <p placeholder="Incorrect answer" class="answer-textarea"><span class="incorrect">Dap an
-                                        sai lay tu csdl</span></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Question 2 -->
-                    <div class="question-item expanded">
-                        <div class="question-header">
-                            <i class="fas fa-chevron-down"></i>
-                            <span>Write a SQL query to retrieve all customers who have made purchases totaling more than
-                                $1000.</span>
-                        </div>
-                        <div class="question-tags">
-                            <span class="tag apply-basic">Apply (Basic)</span>
-                            <span class="tag clo2">CLO2</span>
-                        </div>
-
-                        <!-- Answer Section -->
-                        <div class="answer-section">
-                            <div class="correct-answer">
-                                <h4>Correct Answer</h4>
-                                <p placeholder="The correct answer" class="answer-textarea"><span class="correct">Dap an
-                                        dung duoc lay tu csdl</span></p>
-                            </div>
-
-                            <div class="incorrect-answers">
-                                <h4>Incorrect Answers</h4>
-                                <p placeholder="Incorrect answer" class="answer-textarea"><span class="incorrect">Dap an
-                                        sai lay tu csdl</span></p>
-                                <p placeholder="Incorrect answer" class="answer-textarea"><span class="incorrect">Dap an
-                                        sai lay tu csdl</span></p>
-                                <p placeholder="Incorrect answer" class="answer-textarea"><span class="incorrect">Dap an
-                                        sai lay tu csdl</span></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Question 3 -->
-                    <div class="question-item expanded">
-                        <div class="question-header">
-                            <i class="fas fa-chevron-down"></i>
-                            <span>Write a SQL query to retrieve all customers who have made purchases totaling more than
-                                $1000.</span>
-                        </div>
-                        <div class="question-tags">
-                            <span class="tag apply-basic">Apply (Basic)</span>
-                            <span class="tag clo2">CLO2</span>
-                        </div>
-
-                        <!-- Answer Section -->
-                        <div class="answer-section">
-                            <div class="correct-answer">
-                                <h4>Correct Answer</h4>
-                                <p placeholder="The correct answer" class="answer-textarea"><span class="correct">Dap an
-                                        dung duoc lay tu csdl</span></p>
-                            </div>
-
-                            <div class="incorrect-answers">
-                                <h4>Incorrect Answers</h4>
-                                <p placeholder="Incorrect answer" class="answer-textarea"><span class="incorrect">Dap an
-                                        sai lay tu csdl</span></p>
-                                <p placeholder="Incorrect answer" class="answer-textarea"><span class="incorrect">Dap an
-                                        sai lay tu csdl</span></p>
-                                <p placeholder="Incorrect answer" class="answer-textarea"><span class="incorrect">Dap an
-                                        sai lay tu csdl</span></p>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Questions will be populated dynamically -->
                 </div>
 
                 <!-- Shuffle Questions -->
                 <div class="shuffle-section">
                     <label class="checkbox-container">
-                        <input type="checkbox">
+                        <input type="checkbox" id="shuffle-checkbox">
                         <span class="checkmark"></span>
                         Shuffle Questions
                     </label>
@@ -198,24 +102,22 @@
 
                 <!-- Action Buttons -->
                 <div class="action-buttons">
-                    <a href="lectureEETaskExamCreateExam"><button class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i>
-                            Back
-                        </button></a>
+                    <button class="btn btn-secondary" id="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Back
+                    </button>
                     <button class="btn btn-secondary" id="preview-btn">
                         <i class="fas fa-eye"></i>
                         Preview
                     </button>
-                    <a href="leturer_ExamEvaluation">
-                        <button class="btn btn-secondary">
-                            <i class="fas fa-save"></i>
-                            Save Draft
-                        </button>
-                    </a>
-                    <a href="leturer_ExamEvaluation"><button class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i>
-                            Submit
-                        </button></a>
+                    <button class="btn btn-secondary" id="save-draft-btn">
+                        <i class="fas fa-save"></i>
+                        Save Draft
+                    </button>
+                    <button class="btn btn-primary" id="submit-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        Submit
+                    </button>
                 </div>
             </div>
         </div>
@@ -226,87 +128,328 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Exam Review</h2>
-                <button class="close"><i class="fa-solid fa-xmark"></i></button>
-
+                <button class="close-btn"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <div class="question-preview">
-                    <p class="question-text">Write a SQL query to retrieve all customers who have made purchases
-                        totaling more than $1000.</p>
-
+                    <p class="question-text"></p>
                     <div class="answer-options">
                         <div class="option">
                             <input type="radio" name="answer" id="option1">
-                            <label for="option1">
-                                <p readonly>50 000</p>
-                            </label>
+                            <label for="option1"><p readonly></p></label>
                         </div>
                         <div class="option">
                             <input type="radio" name="answer" id="option2">
-                            <label for="option2">
-                                <p readonly>50 000</p>
-                            </label>
+                            <label for="option2"><p readonly></p></label>
                         </div>
                         <div class="option">
                             <input type="radio" name="answer" id="option3">
-                            <label for="option3">
-                                <p readonly>50 000</p>
-                            </label>
+                            <label for="option3"><p readonly></p></label>
                         </div>
                         <div class="option">
                             <input type="radio" name="answer" id="option4">
-                            <label for="option4">
-                                <p readonly>50 000</p>
-                            </label>
+                            <label for="option4"><p readonly></p></label>
                         </div>
                     </div>
-
                     <div class="question-navigation">
-                        <span class="question-counter">1/90</span>
+                        <span class="question-counter">1/0</span>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary">&lt; Previous</button>
-                <button class="btn btn-secondary">Next &gt;</button>
+                <button class="btn btn-secondary" id="prev-question">Previous</button>
+                <button class="btn btn-secondary" id="next-question">Next</button>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Đóng mặc định tất cả answer-section
-            const questionItems = document.querySelectorAll('.question-item');
-            questionItems.forEach(item => {
-                item.classList.remove('expanded'); // Bỏ class expanded để đóng answer-section
-            });
+            const urlParams = new URLSearchParams(window.location.search);
+            const taskId = urlParams.get('taskId');
+            const questionIds = urlParams.get('questionIds') ? urlParams.get('questionIds').split(',').map(id => parseInt(id)) : [];
 
-            // Thêm sự kiện click cho question-header
-            document.querySelectorAll('.question-header').forEach(header => {
-                header.addEventListener('click', function () {
-                    const questionItem = this.parentElement;
-                    questionItem.classList.toggle('expanded'); // Chuyển đổi trạng thái mở/đóng
+            if (!taskId || questionIds.length === 0) {
+                document.querySelector('.request-form').innerHTML = '<p>Error: No task ID or questions selected.</p>';
+                document.querySelector('.build-exam-section').innerHTML = '<p>No questions selected.</p>';
+                return;
+            }
+
+            // Fetch task details for Request Form
+            fetch(`/lecturer/api/task-details/${taskId}`, {
+                credentials: 'include'
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch task details');
+                    return response.json();
+                })
+                .then(data => {
+                    // Populate Requester
+                    const requesterInput = document.querySelector('.form-group input[value="Nguyễn A"]');
+                    if (requesterInput) requesterInput.value = data.requester || 'Unknown';
+
+                    // Populate Time Exam
+                    const timeExamInput = document.querySelector('.form-group input[value="90:00"]');
+                    if (timeExamInput) timeExamInput.value = data.timeExam || '90:00';
+
+                    // Populate Subject
+                    const subjectInput = document.querySelector('.form-group input[value="Database System"]');
+                    if (subjectInput) subjectInput.value = data.subject || 'Unknown';
+
+                    // Populate Deadline
+                    const deadlineInput = document.querySelector('.form-group input[value="23/08/2028"]');
+                    if (deadlineInput) deadlineInput.value = data.deadline || 'N/A';
+
+                    // Populate Remember
+                    const rememberInput = document.querySelector('.form-subgroup input[value="50"]');
+                    if (rememberInput) rememberInput.value = data.remember || 0;
+
+                    // Populate Understand
+                    const understandInput = document.querySelector('.form-subgroup input[value="30"]');
+                    if (understandInput) understandInput.value = data.understand || 0;
+
+                    // Populate Apply (basic)
+                    const applyBasicInput = document.querySelector('.form-subgroup input[value="5"]');
+                    if (applyBasicInput) applyBasicInput.value = data.applyBasic || 0;
+
+                    // Populate Apply (advanced)
+                    const applyAdvancedInput = document.querySelectorAll('.form-subgroup input[value="5"]')[1];
+                    if (applyAdvancedInput) applyAdvancedInput.value = data.applyAdvanced || 0;
+                })
+                .catch(error => {
+                    console.error('Error fetching task details:', error);
+                    document.querySelector('.request-form').innerHTML = '<p>Error loading task details. Please try again.</p>';
                 });
+
+            // Fetch questions for Build Your Exam Section
+            fetch(`/lecturer/api/questions-by-ids`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(questionIds)
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch questions');
+                    return response.json();
+                })
+                .then(questions => {
+                    const buildExamSection = document.querySelector('.build-exam-section');
+                    buildExamSection.innerHTML = '<h2 class="sectionTitle">Build Your Exam</h2>';
+
+                    if (questions.length === 0) {
+                        buildExamSection.innerHTML += '<p>No questions selected.</p>';
+                        return;
+                    }
+
+                    questions.forEach(question => {
+                        const questionItem = document.createElement('div');
+                        questionItem.className = 'question-item expanded';
+
+                        const questionHeader = document.createElement('div');
+                        questionHeader.className = 'question-header';
+                        questionHeader.innerHTML = `<i class="fas fa-chevron-down"></i><span>${question.content}</span>`;
+                        questionItem.appendChild(questionHeader);
+
+                        const tagsDiv = document.createElement('div');
+                        tagsDiv.className = 'question-tags';
+                        tagsDiv.innerHTML = `
+                            <span class="tag ${question.difficultyTag}">${mapTagToLabel(question.difficultyTag)}</span>
+                            <span class="tag clo${question.cloTag.toLowerCase()}">${question.cloTag}</span>`;
+                        questionItem.appendChild(tagsDiv);
+
+                        const answerSection = document.createElement('div');
+                        answerSection.className = 'answer-section';
+
+                        const correctAnswerDiv = document.createElement('div');
+                        correctAnswerDiv.className = 'correct-answer';
+                        correctAnswerDiv.innerHTML = `
+                            <h4>Correct Answer</h4>
+                            <p placeholder="The correct answer" class="answer-textarea"><span class="correct">${question.correctAnswer || 'N/A'}</span></p>`;
+                        answerSection.appendChild(correctAnswerDiv);
+
+                        const incorrectAnswersDiv = document.createElement('div');
+                        incorrectAnswersDiv.className = 'incorrect-answers';
+                        incorrectAnswersDiv.innerHTML = `
+                            <h4>Incorrect Answers</h4>
+                            <p placeholder="Incorrect answer" class="answer-textarea"><span class="incorrect">${question.incorrectAnswer1 || 'N/A'}</span></p>
+                            <p placeholder="Incorrect answer" class="answer-textarea"><span class="incorrect">${question.incorrectAnswer2 || 'N/A'}</span></p>
+                            <p placeholder="Incorrect answer" class="answer-textarea"><span class="incorrect">${question.incorrectAnswer3 || 'N/A'}</span></p>`;
+                        answerSection.appendChild(incorrectAnswersDiv);
+
+                        questionItem.appendChild(answerSection);
+                        buildExamSection.appendChild(questionItem);
+                    });
+
+                    // Cập nhật modal preview
+                    updatePreviewModal(questions);
+                })
+                .catch(error => {
+                    console.error('Error fetching questions:', error);
+                    document.querySelector('.build-exam-section').innerHTML = '<p>Error loading questions. Please try again.</p>';
+                });
+
+            // Hàm map difficulty tag to label
+            function mapTagToLabel(tag) {
+                switch (tag) {
+                    case 'remember':
+                        return 'Remember';
+                    case 'understand':
+                        return 'Understand';
+                    case 'apply-basic':
+                        return 'Apply (Basic)';
+                    case 'apply-advance':
+                        return 'Apply (Advance)';
+                    default:
+                        return 'Unknown';
+                }
+            }
+
+            // Hàm cập nhật modal preview
+            function updatePreviewModal(questions) {
+                let currentIndex = 0;
+                const questionText = document.querySelector('.question-text');
+                const answerOptions = document.querySelector('.answer-options');
+                const questionCounter = document.querySelector('.question-counter');
+                const prevButton = document.querySelector('#prev-question');
+                const nextButton = document.querySelector('#next-question');
+
+                function renderQuestion(index) {
+                    if (index < 0 || index >= questions.length) return;
+                    const question = questions[index];
+                    questionText.textContent = question.content;
+
+                    // Randomize đáp án
+                    const answers = [
+                        { text: question.correctAnswer, isCorrect: true },
+                        { text: question.incorrectAnswer1, isCorrect: false },
+                        { text: question.incorrectAnswer2, isCorrect: false },
+                        { text: question.incorrectAnswer3, isCorrect: false }
+                    ].filter(a => a.text).sort(() => Math.random() - 0.5);
+
+                    answerOptions.innerHTML = answers.map((answer, i) => `
+                        <div class="option">
+                            <input type="radio" name="answer" id="option${i + 1}">
+                            <label for="option${i + 1}"><p readonly>${answer.text || 'N/A'}</p></label>
+                        </div>`).join('');
+                    questionCounter.textContent = `${index + 1}/${questions.length}`;
+                    prevButton.disabled = index === 0;
+                    nextButton.disabled = index === questions.length - 1;
+                }
+
+                document.querySelector('#preview-btn').onclick = function () {
+                    if (questions.length === 0) {
+                        alert('No questions to preview.');
+                        return;
+                    }
+                    document.getElementById('preview-modal').style.display = 'block';
+                    renderQuestion(currentIndex);
+                };
+
+                document.querySelector('.close-btn').onclick = function () {
+                    document.getElementById('preview-modal').style.display = 'none';
+                };
+
+                window.onclick = function (event) {
+                    if (event.target === document.getElementById('preview-modal')) {
+                        document.getElementById('preview-modal').style.display = 'none';
+                    }
+                };
+
+                prevButton.onclick = function () {
+                    if (currentIndex > 0) {
+                        currentIndex--;
+                        renderQuestion(currentIndex);
+                    }
+                };
+
+                nextButton.onclick = function () {
+                    if (currentIndex < questions.length - 1) {
+                        currentIndex++;
+                        renderQuestion(currentIndex);
+                    }
+                };
+            }
+
+            // Toggle question-item expanded
+            document.querySelector('.build-exam-section').addEventListener('click', function (e) {
+                const header = e.target.closest('.question-header');
+                if (header) {
+                    const questionItem = header.parentElement;
+                    questionItem.classList.toggle('expanded');
+                }
             });
 
-            // Modal functionality
-            const modal = document.getElementById('preview-modal');
-            const previewBtn = document.getElementById('preview-btn');
-            const closeBtn = document.getElementsByClassName('close')[0];
-
-            previewBtn.onclick = function () {
-                modal.style.display = 'block';
+            // Back button logic
+            document.querySelector('#back-btn').onclick = function () {
+                window.location.href = `/lecturer/lectureEETaskExamCreateExam?taskId=${taskId}`;
             };
 
-            closeBtn.onclick = function () {
-                modal.style.display = 'none';
-            };
-
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = 'none';
+            // Save Draft button logic
+            document.querySelector('#save-draft-btn').onclick = function () {
+                const examTitle = document.querySelector('.exam-title-input').value.trim();
+                if (!examTitle) {
+                    alert('Please enter an exam title.');
+                    return;
                 }
+                if (questionIds.length === 0) {
+                    alert('No questions selected.');
+                    return;
+                }
+                const saveDTO = { taskId: parseInt(taskId), examTitle, questionIds };
+                fetch('/lecturer/api/save-draft', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(saveDTO)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => { throw new Error(text); });
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        alert(data);
+                        window.location.href = '/lecturer/leturer_ExamEvaluation';
+                    })
+                    .catch(error => {
+                        console.error('Error saving draft:', error);
+                        alert('Failed to save draft: ' + error.message);
+                    });
+            };
+
+            // Submit button logic
+            document.querySelector('#submit-btn').onclick = function () {
+                const examTitle = document.querySelector('.exam-title-input').value.trim();
+                if (!examTitle) {
+                    alert('Please enter an exam title.');
+                    return;
+                }
+                if (questionIds.length === 0) {
+                    alert('No questions selected.');
+                    return;
+                }
+                const saveDTO = { taskId: parseInt(taskId), examTitle, questionIds };
+                fetch('/lecturer/api/submit-exam', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(saveDTO)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => { throw new Error(text); });
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        alert(data);
+                        window.location.href = '/lecturer/leturer_ExamEvaluation';
+                    })
+                    .catch(error => {
+                        console.error('Error submitting exam:', error);
+                        alert('Failed to submit exam: ' + error.message);
+                    });
             };
         });
     </script>
