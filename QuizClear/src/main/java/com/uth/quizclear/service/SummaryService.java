@@ -2,6 +2,7 @@ package com.uth.quizclear.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import com.uth.quizclear.model.entity.SummaryReport;
 import com.uth.quizclear.model.entity.User;
 import com.uth.quizclear.model.enums.FeedbackStatus;
 import com.uth.quizclear.model.enums.SumStatus;
+import com.uth.quizclear.model.enums.UserRole;
 import com.uth.quizclear.repository.QuestionRepository;
 import com.uth.quizclear.repository.SummaryQuesRepository;
 import com.uth.quizclear.repository.SummaryRepository;
@@ -114,9 +116,44 @@ public class SummaryService {
     }
 
     // Lấy danh sách câu hỏi phù hợp
-    public List<QuesReportDTO> getQuesReport(){
-        return summaryRepository.findApprovedQuestions();
+    public List<QuesReportDTO> getApprovedQuestionReports() {
+        List<Question> questions = summaryRepository.findApprovedQuestions();
+
+        questions.forEach(q -> System.out.println(
+                q.getQuestionId() + ", "
+                + (q.getCreatedBy() != null ? q.getCreatedBy().getFullName() : "null") + ", "
+                + (q.getDifficultyLevel() != null ? q.getDifficultyLevel().name() : "null") + ", "
+                + q.getCreatedAt() + ", "
+                + q.getStatus()
+        ));
+
+        return questions.stream()
+                .map(q -> new QuesReportDTO(
+                q.getQuestionId(),
+                q.getCreatedBy().getFullName(),
+                q.getDifficultyLevel().name(),
+                q.getCreatedAt(),
+                q.getStatus().toString()
+        ))
+                .collect(Collectors.toList());
     }
+
+    // Lấy danh sách cấp trên
+    public List<UserBasicDTO> getRepient() {
+        List<UserRole> roles = Arrays.asList(UserRole.RD, UserRole.HOD);
+        List<User> recipients = summaryRepository.findRecipient(roles);
+
+        // Map User -> UserBasicDTO (bạn có thể chọn constructor phù hợp)
+        return recipients.stream()
+                .map(user -> new UserBasicDTO(
+                        user.getUserIdLong(),
+                        user.getFullName(),
+                        user.getEmail(),
+                        user.getRole().getValue()
+                ))
+                .collect(Collectors.toList());
+    }
+
 
     // Tạo báo cáo
     public SummaryReport createSummary(SummaryReportDTO dto) throws Exception {
