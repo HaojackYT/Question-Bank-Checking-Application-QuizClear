@@ -670,13 +670,40 @@ public class ExamService {
     }
 
 
-    public List<ExamDTO> getFilteredExams(String status, String department) {
+    public List<ExamDTO> getFilteredExams(String search, String status, String department) {
         ExamStatus examStatus = null;
         if (status != null && !status.isEmpty()) {
             examStatus = ExamStatus.fromValue(status);
         }
         List<Exam> exams = examRepository.findByStatusAndDepartment(examStatus, (department == null || department.isEmpty()) ? null : department);
-        return exams.stream().map(this::toDTO).collect(Collectors.toList());
+        List<ExamDTO> examDTOs = exams.stream().map(this::toDTO).collect(Collectors.toList());
+        return filterExams(examDTOs, search, status, department);
+    }
+
+    public List<ExamDTO> getFilteredPendingExams(String search, String status, String department) {
+        List<ExamDTO> pendingExams = getPendingApprovalExams();
+        return filterExams(pendingExams, search, status, department);
+    }
+
+    public List<ExamDTO> getFilteredApprovedExams(String search, String status, String department) {
+        List<ExamDTO> approvedExams = getApprovedExams();
+        return filterExams(approvedExams, search, status, department);
+    }
+
+    public List<ExamDTO> getFilteredRejectedExams(String search, String status, String department) {
+        List<ExamDTO> rejectedExams = getRejectedExams();
+        return filterExams(rejectedExams, search, status, department);
+    }
+
+    private List<ExamDTO> filterExams(List<ExamDTO> exams, String search, String status, String department) {
+        return exams.stream()
+            .filter(exam -> search == null || search.isEmpty() || 
+                exam.getExamTitle().toLowerCase().contains(search.toLowerCase()) ||
+                exam.getSubject().toLowerCase().contains(search.toLowerCase()) ||
+                exam.getCreatedBy().toLowerCase().contains(search.toLowerCase()))
+            .filter(exam -> status == null || status.isEmpty() || exam.getStatus().equalsIgnoreCase(status))
+            .filter(exam -> department == null || department.isEmpty() || exam.getSubject().equalsIgnoreCase(department))
+            .collect(Collectors.toList());
     }
 
     /**

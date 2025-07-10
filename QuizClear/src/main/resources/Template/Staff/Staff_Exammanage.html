@@ -47,20 +47,22 @@
                     </div>
                 </div>
             </div>
-            <div id="filter-container">
-                <input type="text" placeholder="Search exams...">
-                <select name="status" id="status">
-                    <option value="all">All status</option>
-                    <!-- <option value="pending">Pending Approval</option>
-                    <option value="approved">Approved</option>
-                    <option value="rejected">Rejected</option> -->
+            <form class="filters" method="get" th:action="@{/staff/exams/pending-approval}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                <input class="search-box" type="text" name="search" placeholder="Search exams..." th:value="${search}">
+                <select name="status" class="btn-status" style="height: 2.5rem;">
+                    <option value="">All Statuses</option>
+                    <option th:each="s : ${statuses}" th:value="${s.value}" th:text="${s.displayName}" 
+                        th:selected="${selectedStatus} == ${s.value}"></option>
                 </select>
-                <select name="Subject" id="Subject">
-                    <option value="all">All Subject</option>
-                    <!-- Có thể thêm option động nếu cần -->
+                <select name="department" class="btn-subject" style="height: 2.5rem;">
+                    <option value="">All Subjects</option>
+                    <option th:each="d : ${departments}" th:value="${d}" th:text="${d}" 
+                        th:selected="${selectedDepartment} == ${d}"></option>
                 </select>
-                <i class="fa-solid fa-filter icon"></i>
-            </div>
+                <button type="submit" class="btn-filter-icon" style="height: 2.5rem; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-filter"></i>
+                </button>
+            </form>
             <div id="menu-container">
                 <a class="tab" th:href="@{/staff/exams/all-exams}">All Exams</a>
                 <a class="tab" th:href="@{/staff/exams/pending-approval}">Pending Approval</a>

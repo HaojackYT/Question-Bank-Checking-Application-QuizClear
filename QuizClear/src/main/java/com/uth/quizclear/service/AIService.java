@@ -14,16 +14,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
+/**
+ * Service để gọi AI service phát hiện câu hỏi trùng lặp
+ * Sử dụng HTTP client để gửi request đến Python AI service
+ */
 @Service
 public class AIService {
     
+    // URL của AI service (mặc định localhost:5000)
     @Value("${ai.service.url:http://localhost:5000}")
     private String aiServiceUrl;
     
-    private final HttpClient httpClient;
-    private final ObjectMapper objectMapper;
+    private final HttpClient httpClient;  // Client để gửi HTTP request
+    private final ObjectMapper objectMapper;  // Để chuyển đổi JSON
     
     public AIService() {
+        // Khởi tạo HTTP client với timeout 10 giây
         this.httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(10))
             .build();
@@ -31,28 +37,35 @@ public class AIService {
     }
     
     /**
-     * Check for duplicate questions using AI service
-     */
-    public Map<String, Object> checkDuplicate(String newQuestion, List<Map<String, Object>> existingQuestions) {
+     * Kiểm tra câu hỏi trùng lặp sử dụng AI service
+     * 
+     * @param newQuestion Câu hỏi mới cần kiểm tra
+     * @param existingQuestions Danh sách câu hỏi đã có
+     * @return Kết quả phát hiện trùng lặp từ AI
+     */    public Map<String, Object> checkDuplicate(String newQuestion, List<Map<String, Object>> existingQuestions) {
         try {
-            // Prepare request payload
+            // Chuẩn bị dữ liệu gửi đến AI service
             Map<String, Object> payload = new HashMap<>();
             payload.put("new_question", newQuestion);
             payload.put("existing_questions", existingQuestions);
             
+            // Chuyển đổi thành JSON string
             String jsonPayload = objectMapper.writeValueAsString(payload);
             
-            // Create HTTP request
+            // Tạo HTTP POST request đến AI service
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(aiServiceUrl + "/api/check-duplicate"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
-                .timeout(Duration.ofSeconds(30))
+                .timeout(Duration.ofSeconds(30))  // Timeout 30 giây
                 .build();
             
-            // Send request
+            // Gửi request và nhận response
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-              if (response.statusCode() == 200) {
+              
+            // Kiểm tra response thành công (status 200)
+            if (response.statusCode() == 200) {
+                // Chuyển đổi JSON response thành Map
                 TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
                 return objectMapper.readValue(response.body(), typeRef);
             } else {
@@ -60,31 +73,33 @@ public class AIService {
             }
             
         } catch (Exception e) {
-            // Return fallback response if AI service fails
+            // Trả về response dự phòng nếu AI service lỗi
             Map<String, Object> fallback = new HashMap<>();
             fallback.put("error", "AI service temporarily unavailable: " + e.getMessage());
             fallback.put("duplicates_found", 0);
             fallback.put("similar_questions", List.of());
             return fallback;
         }
-    }
-    
+    }    
     /**
-     * Health check for AI service
+     * Kiểm tra tình trạng sức khỏe của AI service
+     * 
+     * @return true nếu AI service hoạt động bình thường, false nếu lỗi
      */
     public boolean isAIServiceHealthy() {
         try {
+            // Gửi GET request đến endpoint /health
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(aiServiceUrl + "/health"))
                 .GET()
-                .timeout(Duration.ofSeconds(5))
+                .timeout(Duration.ofSeconds(5))  // Timeout ngắn hơn cho health check
                 .build();
             
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            return response.statusCode() == 200;
+            return response.statusCode() == 200;  // Trả về true nếu status 200
             
         } catch (Exception e) {
-            return false;
+            return false;  // Trả về false nếu có lỗi
         }
     }
 }

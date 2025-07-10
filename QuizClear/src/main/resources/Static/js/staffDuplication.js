@@ -258,9 +258,17 @@ function showSuccessMessage(message) {
 }
 
 // =================== AI DUPLICATE CHECK FUNCTIONS ===================
+// Các hàm liên quan đến kiểm tra trùng lặp bằng AI
+
+/**
+ * Kích hoạt AI để kiểm tra tất cả câu hỏi trong hệ thống
+ * Gửi request đến backend để trigger AI scan
+ */
 async function triggerAiCheck() {
   try {
-    showLoadingState(true);
+    showLoadingState(true);  // Hiển thị trạng thái loading
+    
+    // Gửi POST request đến backend để trigger AI check
     const response = await fetch(`${API_BASE_URL}/ai-check/trigger`, {
       method: 'POST',
       headers: {
@@ -275,22 +283,27 @@ async function triggerAiCheck() {
     const result = await response.json();
     showSuccessMessage(`AI check completed! Found ${result.duplicatesFound} potential duplicates.`);
     
-    // Refresh the duplications list
-    await loadDuplications();
-    
+    // Refresh lại danh sách duplicate sau khi AI check xong
+    await loadDuplications();    
   } catch (error) {
     console.error('Error triggering AI check:', error);
     showErrorMessage('Failed to trigger AI duplicate check. Please try again.');
   } finally {
-    showLoadingState(false);
+    showLoadingState(false);  // Tắt loading state
   }
 }
 
+/**
+ * Kiểm tra tình trạng sức khỏe của AI service
+ * Gửi request đến backend để check AI service status
+ */
 async function getAiServiceHealth() {
   try {
+    // Gửi GET request đến endpoint health check
     const response = await fetch(`${API_BASE_URL}/ai-service/health`);
     const health = await response.json();
     
+    // Cập nhật UI hiển thị trạng thái AI service
     const statusElement = document.getElementById('ai-service-status');
     if (statusElement) {
       statusElement.innerHTML = `
@@ -303,6 +316,7 @@ async function getAiServiceHealth() {
     return health;
   } catch (error) {
     console.error('Error checking AI service health:', error);
+    // Hiển thị trạng thái OFFLINE nếu không thể kết nối
     const statusElement = document.getElementById('ai-service-status');
     if (statusElement) {
       statusElement.innerHTML = `
