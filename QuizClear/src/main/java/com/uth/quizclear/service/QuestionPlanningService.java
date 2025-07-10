@@ -47,29 +47,31 @@ public class QuestionPlanningService {
     private CLORepository cloRepository;
 
     /**
-     * Lấy danh sách courses để hiển thị trong dropdown Subject
+     * Lấy danh sách courses có department HoD để hiển thị trong dropdown Subject
      */
     public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+        return courseRepository.findCoursesWithHoDDepartment();
     }
 
     /**
-     * Lấy danh sách departments để hiển thị trong dropdown Department
+     * Lấy danh sách departments có HoD để hiển thị trong dropdown Department
      */
     public List<Department> getAllDepartments() {
-        return departmentRepository.findAll();
+        return departmentRepository.findDepartmentsWithHoD();
     }
 
     /**
-     * Lấy danh sách users theo department để hiển thị trong dropdown Assign To
+     * Lấy danh sách tất cả users có role HoD
+     */
+    public List<User> getAllHoDUsers() {
+        return userRepository.findByRole(com.uth.quizclear.model.enums.UserRole.HOD);
+    }
+
+    /**
+     * Lấy danh sách users HoD theo department để hiển thị trong dropdown Assign To
      */
     public List<User> getUsersByDepartment(String departmentName) {
-        // Lấy users có role HoD (HEAD_OF_DEPARTMENT) thuộc department được chọn
-        return userRepository.findAll().stream()
-                .filter(user -> user.getDepartment() != null &&
-                               user.getDepartment().equals(departmentName) &&
-                               user.getRole() == com.uth.quizclear.model.enums.UserRole.HOD)
-                .collect(java.util.stream.Collectors.toList());
+        return userRepository.findByRoleAndDepartment(com.uth.quizclear.model.enums.UserRole.HOD, departmentName);
     }
 
     /**

@@ -166,4 +166,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findActiveUsersBySubjectAndRole(@Param("subjectId") Long subjectId, @Param("role") UserRole role);
 
     List<User> findByRoleAndStatus(UserRole role, Status status);
+
+    // Lấy user HoD theo department
+    List<User> findByRoleAndDepartment(UserRole role, String department);
 }

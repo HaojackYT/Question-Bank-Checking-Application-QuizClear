@@ -418,8 +418,8 @@
                             <div class="form-group">
                                 <label class="form-label">Assign To</label>
                                 <select class="form-control" id="assignToSelect" name="assignedTo" required>
-                                    <option value="">Select User</option>
-                                    <!-- Users sẽ được load động khi chọn department -->
+                                    <option value="">Select HoD</option>
+                                    <option th:each="user : ${users}" th:value="${user.userId}" th:text="${user.fullName}" th:attr="data-department=${user.department}"></option>
                                 </select>
                             </div>
                         </div>
@@ -625,13 +625,22 @@
                 createModal.style.display = 'block';
                 // Reset form
                 createPlanForm.reset();
-                assignToSelect.innerHTML = '<option value="">Select User</option>';
+                // Reset assign to dropdown visibility
+                const allOptions = assignToSelect.querySelectorAll('option');
+                allOptions.forEach(option => {
+                    option.style.display = 'block';
+                });
             });
             
             // Close create modal
             function closeCreateModal() {
                 createModal.style.display = 'none';
                 createPlanForm.reset();
+                // Reset assign to dropdown visibility
+                const allOptions = assignToSelect.querySelectorAll('option');
+                allOptions.forEach(option => {
+                    option.style.display = 'block';
+                });
             }
             
             closeCreateModalBtn.addEventListener('click', closeCreateModal);
@@ -656,28 +665,28 @@
                 }
             });
             
-            // Load users when department is selected
+            // Filter users when department is selected
             departmentSelect.addEventListener('change', function() {
                 const departmentName = this.value;
-                if (departmentName) {
-                    fetch(`/staff/api/users-by-department?departmentName=${encodeURIComponent(departmentName)}`)
-                        .then(response => response.json())
-                        .then(users => {
-                            assignToSelect.innerHTML = '<option value="">Select User</option>';
-                            users.forEach(user => {
-                                const option = document.createElement('option');
-                                option.value = user.userId;
-                                option.textContent = user.fullName;
-                                assignToSelect.appendChild(option);
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error loading users:', error);
-                            assignToSelect.innerHTML = '<option value="">Error loading users</option>';
-                        });
-                } else {
-                    assignToSelect.innerHTML = '<option value="">Select User</option>';
-                }
+                const allOptions = assignToSelect.querySelectorAll('option');
+                
+                // Reset all options visibility
+                allOptions.forEach(option => {
+                    if (option.value === '') {
+                        option.style.display = 'block';
+                        option.textContent = 'Select HoD';
+                    } else {
+                        const userDepartment = option.getAttribute('data-department');
+                        if (!departmentName || userDepartment === departmentName) {
+                            option.style.display = 'block';
+                        } else {
+                            option.style.display = 'none';
+                        }
+                    }
+                });
+                
+                // Reset selection
+                assignToSelect.value = '';
             });
 
             // Load CLOs when course is selected

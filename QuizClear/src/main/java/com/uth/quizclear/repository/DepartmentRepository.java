@@ -53,4 +53,8 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     
     // Check if department name exists
     boolean existsByDepartmentName(String departmentName);
+
+    // Lấy department có ít nhất 1 user HoD
+    @Query("SELECT DISTINCT d FROM Department d WHERE EXISTS (SELECT u FROM User u WHERE u.department = d.departmentName AND u.role = com.uth.quizclear.model.enums.UserRole.HOD)")
+    List<Department> findDepartmentsWithHoD();
 }
