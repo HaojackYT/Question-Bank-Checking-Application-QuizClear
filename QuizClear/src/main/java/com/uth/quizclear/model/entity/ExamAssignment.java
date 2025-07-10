@@ -4,9 +4,7 @@ import com.uth.quizclear.model.base.BaseEntity;
 import com.uth.quizclear.model.enums.ExamAssignmentStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
 import lombok.experimental.SuperBuilder;
-
 import java.time.LocalDateTime;
 
 /**
@@ -21,12 +19,11 @@ import java.time.LocalDateTime;
            @Index(name = "idx_exam_assignment_status", columnList = "status"),
            @Index(name = "idx_exam_assignment_deadline", columnList = "deadline")
        })
-@Getter
-@Setter
-@SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString(exclude = {"course", "assignedTo", "assignedBy"})
+// @Getter // Tạm thời bỏ để thêm getter thủ công
+// @Setter // Tạm thời bỏ để thêm setter thủ công
+ @SuperBuilder 
+// @NoArgsConstructor 
+// @AllArgsConstructor
 public class ExamAssignment extends BaseEntity {
 
     @Id
@@ -60,7 +57,6 @@ public class ExamAssignment extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
     @NotNull(message = "Status is required")
-    @Builder.Default
     private ExamAssignmentStatus status = ExamAssignmentStatus.DRAFT;
 
     @Column(name = "deadline")
@@ -86,7 +82,32 @@ public class ExamAssignment extends BaseEntity {
     @Column(name = "instructions", columnDefinition = "TEXT")
     private String instructions;
 
-    @Column(name = "feedback", columnDefinition = "TEXT")    private String feedback;
+    @Column(name = "feedback", columnDefinition = "TEXT")
+    private String feedback;
+
+    // Constructor không tham số
+    public ExamAssignment() {}
+
+    // Constructor đầy đủ
+    public ExamAssignment(Long assignmentId, String assignmentName, String description, Course course, User assignedTo, User assignedBy,
+                         ExamAssignmentStatus status, LocalDateTime deadline, LocalDateTime submittedAt, LocalDateTime approvedAt,
+                         LocalDateTime publishedAt, Integer totalQuestions, Integer durationMinutes, String instructions, String feedback) {
+        this.assignmentId = assignmentId;
+        this.assignmentName = assignmentName;
+        this.description = description;
+        this.course = course;
+        this.assignedTo = assignedTo;
+        this.assignedBy = assignedBy;
+        this.status = status;
+        this.deadline = deadline;
+        this.submittedAt = submittedAt;
+        this.approvedAt = approvedAt;
+        this.publishedAt = publishedAt;
+        this.totalQuestions = totalQuestions;
+        this.durationMinutes = durationMinutes;
+        this.instructions = instructions;
+        this.feedback = feedback;
+    }
 
     @Override
     public Long getId() {
@@ -145,12 +166,135 @@ public class ExamAssignment extends BaseEntity {
     public long getDaysUntilDeadline() {
         if (deadline == null) return -1;
         return java.time.Duration.between(LocalDateTime.now(), deadline).toDays();
-    }    public int getCurrentQuestionCount() {
+    }
+
+    public int getCurrentQuestionCount() {
         // TODO: Implement by querying ExamQuestion repository if needed
         return 0;
     }
 
     public boolean isComplete() {
         return totalQuestions != null && getCurrentQuestionCount() >= totalQuestions;
+    }
+
+    // Thêm getter và setter thủ công
+    public Long getAssignmentId() {
+        return assignmentId;
+    }
+
+    public void setAssignmentId(Long assignmentId) {
+        this.assignmentId = assignmentId;
+    }
+
+    public String getAssignmentName() {
+        return assignmentName;
+    }
+
+    public void setAssignmentName(String assignmentName) {
+        this.assignmentName = assignmentName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public User getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(User assignedTo) {
+        this.assignedTo = assignedTo;
+    }
+
+    public User getAssignedBy() {
+        return assignedBy;
+    }
+
+    public void setAssignedBy(User assignedBy) {
+        this.assignedBy = assignedBy;
+    }
+
+    public ExamAssignmentStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ExamAssignmentStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(LocalDateTime deadline) {
+        this.deadline = deadline;
+    }
+
+    public LocalDateTime getSubmittedAt() {
+        return submittedAt;
+    }
+
+    public void setSubmittedAt(LocalDateTime submittedAt) {
+        this.submittedAt = submittedAt;
+    }
+
+    public LocalDateTime getApprovedAt() {
+        return approvedAt;
+    }
+
+    public void setApprovedAt(LocalDateTime approvedAt) {
+        this.approvedAt = approvedAt;
+    }
+
+    public LocalDateTime getPublishedAt() {
+        return publishedAt;
+    }
+
+    public void setPublishedAt(LocalDateTime publishedAt) {
+        this.publishedAt = publishedAt;
+    }
+
+    public Integer getTotalQuestions() {
+        return totalQuestions;
+    }
+
+    public void setTotalQuestions(Integer totalQuestions) {
+        this.totalQuestions = totalQuestions;
+    }
+
+    public Integer getDurationMinutes() {
+        return durationMinutes;
+    }
+
+    public void setDurationMinutes(Integer durationMinutes) {
+        this.durationMinutes = durationMinutes;
+    }
+
+    public String getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
+
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
     }
 }

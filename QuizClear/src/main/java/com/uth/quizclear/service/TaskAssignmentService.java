@@ -5,6 +5,7 @@ import com.uth.quizclear.model.dto.TaskNotificationDTO;
 import com.uth.quizclear.model.entity.Course;
 import com.uth.quizclear.model.entity.Tasks;
 import com.uth.quizclear.model.entity.User;
+import com.uth.quizclear.model.entity.Plan;
 import com.uth.quizclear.model.enums.Status;
 import com.uth.quizclear.model.enums.TaskStatus;
 import com.uth.quizclear.model.enums.TaskType;
@@ -21,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -750,5 +750,82 @@ public Page<TaskAssignmentDTO> getAllTaskAssignments(String search, String statu
             // Return empty list if error occurs
             return new ArrayList<>();
         }
+    }
+    
+    /**
+     * NEW WORKFLOW: Get plans and tasks that need HED approval
+     * Plans created by Staff that are in 'new' or 'pending' status
+     */
+    public List<TaskAssignmentDTO> getPlansForHEDApproval() {
+        // Get all tasks and filter by status
+        List<Tasks> allTasks = tasksRepository.findAll();
+        List<Tasks> pendingTasks = allTasks.stream()
+                .filter(task -> task.getStatus() == TaskStatus.pending || task.getStatus() == TaskStatus.in_progress)
+                .collect(Collectors.toList());
+        
+        // Convert to DTOs with plan information
+        return pendingTasks.stream()
+                .map(this::convertTaskToDTOWithPlan)
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * Convert Task to DTO with Plan information for new workflow
+     */
+    private TaskAssignmentDTO convertTaskToDTOWithPlan(Tasks task) {
+        TaskAssignmentDTO dto = convertToDTO(task);
+        
+        // Add plan information if available
+        if (task.getPlan() != null) {
+            Plan plan = task.getPlan();
+            dto.setTitle(plan.getPlanTitle());
+            dto.setDescription(plan.getPlanDescription());
+            dto.setTotalQuestions(plan.getTotalQuestions());
+            // Add breakdown by difficulty levels
+            dto.setRecognitionQuestions(plan.getTotalRecognition());
+            dto.setComprehensionQuestions(plan.getTotalComprehension());
+            dto.setBasicApplicationQuestions(plan.getTotalBasicApplication());
+            dto.setAdvancedApplicationQuestions(plan.getTotalAdvancedApplication());
+        }
+        
+        return dto;
+    }
+    
+    /**
+     * NEW WORKFLOW: HED accepts/joins a plan/task and moves it to in_progress
+     */
+    @Transactional
+    public void hedAcceptPlanTask(Long taskId, Long hedId) {
+        Tasks task = tasksRepository.findById(Math.toIntExact(taskId))
+                .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + taskId));
+        
+        // Update task status to in_progress
+        task.setStatus(TaskStatus.in_progress);
+        task.setAcceptedAt(LocalDateTime.now());
+        
+        // Update plan status if available
+        if (task.getPlan() != null) {
+            Plan plan = task.getPlan();
+            plan.setStatus(Plan.PlanStatus.IN_PROGRESS);
+            plan.setAcceptedAt(LocalDateTime.now());
+        }
+        
+        tasksRepository.save(task);
+        
+        System.out.println("HED " + hedId + " accepted task " + taskId + " - moved to in_progress");
+    }
+    
+    /**
+     * NEW WORKFLOW: Get accepted tasks that can be assigned to lecturers
+     */
+    public List<TaskAssignmentDTO> getAcceptedTasksForAssignment() {
+        // Get tasks with status 'in_progress' (accepted by HED)
+        List<Tasks> acceptedTasks = tasksRepository.findAll().stream()
+                .filter(task -> task.getStatus() == TaskStatus.in_progress)
+                .collect(Collectors.toList());
+        
+        return acceptedTasks.stream()
+                .map(this::convertTaskToDTOWithPlan)
+                .collect(Collectors.toList());
     }
 }

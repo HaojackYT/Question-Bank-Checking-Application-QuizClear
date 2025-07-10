@@ -289,4 +289,8 @@ public class Exam {
     public boolean isPast() {
         return getEndTime() != null && getEndTime().isBefore(LocalDateTime.now());
     }
+    public Integer getDurationMinutes() {
+    return durationMinutes;
+    }
+
 }

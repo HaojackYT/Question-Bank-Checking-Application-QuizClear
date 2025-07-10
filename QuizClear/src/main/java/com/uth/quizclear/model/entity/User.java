@@ -318,15 +318,17 @@ public class User {
 
     // Permission checking methods
     public boolean hasPermissionInDepartment(String departmentName, UserRole role) {
+        // Chỉ kiểm tra theo trạng thái ACTIVE
         return departmentAssignments.stream()
                 .anyMatch(assignment -> 
-                    assignment.isCurrentlyEffective() &&
+                    assignment.isActive() &&
                     assignment.getDepartmentName().equals(departmentName) &&
                     assignment.getRole() == role);
     }    public boolean hasPermissionInSubject(String subjectCode, SubjectRole role) {
+        // Chỉ kiểm tra theo trạng thái ACTIVE
         return subjectAssignments.stream()
                 .anyMatch(assignment -> 
-                    assignment.isCurrentlyEffective() &&
+                    assignment.isActive() &&
                     assignment.getSubjectCode().equals(subjectCode) &&
                     assignment.getRole() == role);
     }
@@ -341,15 +343,17 @@ public class User {
 
     // Utility methods for permission system
     public Set<String> getManagedDepartments() {
+        // Lấy các phòng ban mà user đang ACTIVE
         return departmentAssignments.stream()
-                .filter(UserDepartmentAssignment::isCurrentlyEffective)
+                .filter(UserDepartmentAssignment::isActive)
                 .map(UserDepartmentAssignment::getDepartmentName)
                 .collect(java.util.stream.Collectors.toSet());
     }
 
     public Set<String> getManagedSubjects() {
+        // Lấy các môn mà user đang ACTIVE
         return subjectAssignments.stream()
-                .filter(UserSubjectAssignment::isCurrentlyEffective)
+                .filter(UserSubjectAssignment::isActive)
                 .map(UserSubjectAssignment::getSubjectCode)
                 .collect(java.util.stream.Collectors.toSet());
     }

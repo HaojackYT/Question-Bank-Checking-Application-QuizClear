@@ -17,4 +17,7 @@ public interface CourseRepository extends JpaRepository<Course, Long>, JpaSpecif
     // Find courses where a specific lecturer has created questions
     @Query("SELECT DISTINCT c FROM Course c WHERE c.courseId IN (SELECT DISTINCT q.course.courseId FROM Question q WHERE q.createdBy.userId = :lecturerId)")
     List<Course> findCoursesWithQuestionsByCreator(@Param("lecturerId") Long lecturerId);
+
+    // Lấy các khóa học mà lecturer là người tạo
+    List<Course> findByCreatedBy_UserId(Long userId);
 }

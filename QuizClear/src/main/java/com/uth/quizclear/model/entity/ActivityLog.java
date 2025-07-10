@@ -38,6 +38,7 @@ public class ActivityLog {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     
+    
     // Constructors
     public ActivityLog() {}
     

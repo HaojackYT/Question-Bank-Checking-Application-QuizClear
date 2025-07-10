@@ -1041,30 +1041,103 @@ public class SubjectLeaderController {
                     .orElseThrow(() -> new IllegalArgumentException("Task not found"));
 
             User lecturer = userRepository.findById(lecturerId)
-                    .orElseThrow(() -> new IllegalArgumentException("Lecturer not found"));            // Create new task for lecturer
+                    .orElseThrow(() -> new IllegalArgumentException("Lecturer not found"));
+            // Phân bổ số lượng câu hỏi theo tỷ lệ mặc định
+            int total = originalTask.getTotalQuestions() != null ? originalTask.getTotalQuestions() : 0;
+            int recog = 0, comp = 0, basic = 0, adv = 0;
+            if (total >= 4) {
+                recog = Math.max((int)Math.round(total * 0.4), 1);
+                comp = Math.max((int)Math.round(total * 0.3), 1);
+                basic = Math.max((int)Math.round(total * 0.2), 1);
+                adv = Math.max((int)Math.round(total * 0.1), 1);
+                // Điều chỉnh tổng nếu vượt quá
+                int sum = recog + comp + basic + adv;
+                while (sum > total) {
+                    // Giảm mức có % nhỏ nhất trước
+                    if (adv > 1) { adv--; }
+                    else if (basic > 1) { basic--; }
+                    else if (comp > 1) { comp--; }
+                    else if (recog > 1) { recog--; }
+                    sum = recog + comp + basic + adv;
+                }
+                while (sum < total) {
+                    // Ưu tiên tăng mức % lớn hơn
+                    if (recog < total) { recog++; }
+                    else if (comp < total) { comp++; }
+                    else if (basic < total) { basic++; }
+                    else { adv++; }
+                    sum = recog + comp + basic + adv;
+                }
+            } else if (total > 0) {
+                // Nếu < 4, ưu tiên mức % lớn hơn
+                recog = total;
+                comp = basic = adv = 0;
+            }
+
+            // Tạo Plan mới cho task nếu chưa có
+            Plan plan = new Plan();
+            plan.setTotalQuestions(total);
+            plan.setTotalRecognition(recog);
+            plan.setTotalComprehension(comp);
+            plan.setTotalBasicApplication(basic);
+            plan.setTotalAdvancedApplication(adv);
+            plan.setStatus(Plan.PlanStatus.ACCEPTED); // hoặc trạng thái phù hợp
+            // Set các trường bắt buộc
+            plan.setPlanTitle(originalTask.getTitle() + " (Delegated)");
+            plan.setCourse(originalTask.getCourse());
+            plan.setPriority(com.uth.quizclear.model.enums.Priority.medium); // hoặc lấy từ task gốc nếu có
+            plan.setAssignedByUser(originalTask.getAssignedTo());
+            plan.setAssignedToUser(lecturer);
+            plan.setDueDate(originalTask.getDueDate());
+            plan.setCreatedAt(java.time.LocalDateTime.now());
+            plan.setPlanDescription(originalTask.getDescription() + "\n\nNotes: " + notes);
+            // Log debug các trường của Plan trước khi lưu
+            System.out.println("[DEBUG] Plan fields before save:");
+            System.out.println("Title: " + plan.getPlanTitle());
+            System.out.println("Course: " + (plan.getCourse() != null ? plan.getCourse().getCourseId() : null));
+            System.out.println("Priority: " + plan.getPriority());
+            System.out.println("Status: " + plan.getStatus());
+            System.out.println("AssignedBy: " + (plan.getAssignedByUser() != null ? plan.getAssignedByUser().getUserId() : null));
+            System.out.println("AssignedTo: " + (plan.getAssignedToUser() != null ? plan.getAssignedToUser().getUserId() : null));
+            System.out.println("DueDate: " + plan.getDueDate());
+            System.out.println("CreatedAt: " + plan.getCreatedAt());
+            plan = planService.savePlan(plan);
+
+            // Tạo task mới cho lecturer
             Tasks delegatedTask = new Tasks();
             delegatedTask.setTitle(originalTask.getTitle() + " (Delegated)");
             delegatedTask.setDescription(originalTask.getDescription() + "\n\nNotes: " + notes);
             delegatedTask.setCourse(originalTask.getCourse());
             delegatedTask.setAssignedTo(lecturer);
-            delegatedTask.setAssignedBy(originalTask.getAssignedTo()); // SL becomes the assigner
-            delegatedTask.setTotalQuestions(originalTask.getTotalQuestions());
+            delegatedTask.setAssignedBy(originalTask.getAssignedTo());
+            delegatedTask.setTotalQuestions(total);
             delegatedTask.setDueDate(originalTask.getDueDate());
             delegatedTask.setTaskType(originalTask.getTaskType());
             delegatedTask.setStatus(TaskStatus.pending);
             delegatedTask.setCreatedAt(LocalDateTime.now());
+            delegatedTask.setPlan(plan);
+            tasksRepository.save(delegatedTask);
 
-            // Link to the same Plan if original task has one
-            if (originalTask.getPlan() != null) {
-                delegatedTask.setPlan(originalTask.getPlan());
-            }
-
-            tasksRepository.save(delegatedTask);// Update original task status to cancelled (task delegated to another user)
+            // Update original task status to cancelled (task delegated to another user)
             originalTask.setStatus(TaskStatus.cancelled);
             originalTask.setDescription(originalTask.getDescription() + "\n\n[DELEGATED] This task has been delegated to " + lecturer.getFullName() + " on " + LocalDateTime.now().toString());
             tasksRepository.save(originalTask);
 
-            return ResponseEntity.ok(Map.of("success", true, "message", "Task delegated successfully"));
+            // Convert Plan entity to SL_PlanDTO for safe serialization
+            SL_PlanDTO planDTO = new SL_PlanDTO();
+            planDTO.setPlanId(plan.getPlanId());
+            planDTO.setPlanTitle(plan.getPlanTitle());
+            planDTO.setTotalQuestions(plan.getTotalQuestions());
+            planDTO.setTotalRecognition(plan.getTotalRecognition());
+            planDTO.setTotalComprehension(plan.getTotalComprehension());
+            planDTO.setTotalBasicApplication(plan.getTotalBasicApplication());
+            planDTO.setTotalAdvancedApplication(plan.getTotalAdvancedApplication());
+            planDTO.setCreatedAt(plan.getCreatedAt());
+            planDTO.setDueDate(plan.getDueDate());
+            // Fix: setStatus expects PlanStatus, so use the enum directly
+            planDTO.setStatus(plan.getStatus());
+
+            return ResponseEntity.ok(Map.of("success", true, "message", "Task delegated successfully", "plan", planDTO));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("success", false, "message", e.getMessage()));
         }

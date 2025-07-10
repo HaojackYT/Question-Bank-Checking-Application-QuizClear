@@ -110,8 +110,16 @@
                 <h2>New Assignment</h2>
                 <span class="close" onclick="closeNewAssignModal()">×</span>
             </div>
-            <p class="modal-subtitle">Create new assignment for the lecturer.</p>
+            <p class="modal-subtitle">Create new assignment for the lecturer from accepted plans/tasks.</p>
             <form id="newAssignForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Select Accepted Task/Plan</label>
+                        <select id="accepted-task-select" name="acceptedTaskId" required>
+                            <option value="">Select Accepted Task/Plan</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Lecturer</label>
@@ -121,23 +129,43 @@
                     </div>
                     <div class="form-group">
                         <label>Course</label>
-                        <select id="course-select" name="courseId" required>
+                        <select id="course-select" name="courseId" required disabled>
                             <option value="">Select Course</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Total Questions</label>
-                        <input type="number" id="totalQuestions" name="totalQuestions" placeholder="Enter number"
-                            class="small-input" required min="1">
+                        <input type="number" id="totalQuestions" name="totalQuestions" placeholder="From plan" 
+                               class="small-input" required min="1" readonly>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Title</label>
-                    <input type="text" id="title" name="title" placeholder="Enter title" required>
+                    <input type="text" id="title" name="title" placeholder="From plan" required readonly>
                 </div>
                 <div class="form-group">
                     <label>Description</label>
-                    <textarea id="description" name="description" placeholder="Enter description" required></textarea>
+                    <textarea id="description" name="description" placeholder="From plan" required readonly></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Recognition Questions</label>
+                        <input type="number" id="recognitionQuestions" name="recognitionQuestions" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Comprehension Questions</label>
+                        <input type="number" id="comprehensionQuestions" name="comprehensionQuestions" readonly>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Basic Application Questions</label>
+                        <input type="number" id="basicApplicationQuestions" name="basicApplicationQuestions" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Advanced Application Questions</label>
+                        <input type="number" id="advancedApplicationQuestions" name="advancedApplicationQuestions" readonly>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Due Date</label>

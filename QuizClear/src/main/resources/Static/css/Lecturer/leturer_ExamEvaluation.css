@@ -153,11 +153,12 @@ tr:hover {
     background-color: #757575;
 }
 
-.status-badge.Not_received {
+.status-badge.Not_received, .status-badge.not_received, .status-badge.not-received {
     background-color: #FE6565;
 }
 
-.status-badge.Inprogress {
+
+.status-badge.Inprogress, .status-badge.in_progress, .status-badge.in-progress {
     background-color: #49AFE8;
 }
 

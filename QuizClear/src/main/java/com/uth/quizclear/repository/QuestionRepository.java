@@ -43,6 +43,10 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, JpaSp
   // Find by task
   List<Question> findByTaskId(Long taskId);
 
+  // Find question IDs by task ID
+  @Query("SELECT q.questionId FROM Question q WHERE q.taskId = :taskId")
+  List<Long> findQuestionIdsByTaskId(@Param("taskId") Long taskId);
+
   // Find by status
   List<Question> findByStatus(QuestionStatus status);
 

@@ -12,13 +12,17 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
- * Repository interface for ExamAssignment entity
- * Provides data access methods for exam assignment operations
+ * Repository interface for ExamAssignment entity Provides data access methods
+ * for exam assignment operations
  */
 @Repository
 public interface ExamAssignmentRepository extends JpaRepository<ExamAssignment, Long> {
+
+    @Query("SELECT ea FROM ExamAssignment ea WHERE ea.course.courseId = :courseId AND ea.assignedTo.userId = :assignedTo ORDER BY ea.createdAt DESC LIMIT 1")
+    Optional<ExamAssignment> findByCourseIdAndAssignedTo(@Param("courseId") Long courseId, @Param("assignedTo") Integer assignedTo);
 
     // Find by assigned user
     List<ExamAssignment> findByAssignedToOrderByCreatedAtDesc(User assignedTo);
@@ -53,13 +57,13 @@ public interface ExamAssignmentRepository extends JpaRepository<ExamAssignment, 
     List<ExamAssignment> findByCourseId(@Param("courseId") Long courseId);
 
     // Search assignments by name or description
-    @Query("SELECT ea FROM ExamAssignment ea WHERE " +
-            "(LOWER(ea.assignmentName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-            "LOWER(ea.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-            "LOWER(ea.course.courseName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-            "LOWER(ea.course.courseCode) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) AND " +
-            "ea.assignedBy = :assignedBy " +
-            "ORDER BY ea.createdAt DESC")
+    @Query("SELECT ea FROM ExamAssignment ea WHERE "
+            + "(LOWER(ea.assignmentName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "
+            + "LOWER(ea.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "
+            + "LOWER(ea.course.courseName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "
+            + "LOWER(ea.course.courseCode) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) AND "
+            + "ea.assignedBy = :assignedBy "
+            + "ORDER BY ea.createdAt DESC")
     List<ExamAssignment> searchAssignmentsBySubjectLeader(@Param("searchTerm") String searchTerm,
             @Param("assignedBy") User assignedBy);
 
@@ -68,12 +72,12 @@ public interface ExamAssignmentRepository extends JpaRepository<ExamAssignment, 
     Page<ExamAssignment> findByAssignedByWithPagination(@Param("assignedBy") User assignedBy, Pageable pageable);
 
     // Find assignments with filters for Subject Leader dashboard
-    @Query("SELECT ea FROM ExamAssignment ea WHERE " +
-            "ea.assignedBy = :assignedBy " +
-            "AND (:status IS NULL OR ea.status = :status) " +
-            "AND (:courseId IS NULL OR ea.course.courseId = :courseId) " +
-            "AND (:assignedToId IS NULL OR ea.assignedTo.userId = :assignedToId) " +
-            "ORDER BY ea.createdAt DESC")
+    @Query("SELECT ea FROM ExamAssignment ea WHERE "
+            + "ea.assignedBy = :assignedBy "
+            + "AND (:status IS NULL OR ea.status = :status) "
+            + "AND (:courseId IS NULL OR ea.course.courseId = :courseId) "
+            + "AND (:assignedToId IS NULL OR ea.assignedTo.userId = :assignedToId) "
+            + "ORDER BY ea.createdAt DESC")
     Page<ExamAssignment> findWithFilters(
             @Param("assignedBy") User assignedBy,
             @Param("status") ExamAssignmentStatus status,
@@ -82,15 +86,14 @@ public interface ExamAssignmentRepository extends JpaRepository<ExamAssignment, 
             Pageable pageable);
 
     // Get statistics for Subject Leader dashboard
-    @Query("SELECT " +
-            "COUNT(CASE WHEN ea.status = 'ASSIGNED' THEN 1 END) as assigned, " +
-            "COUNT(CASE WHEN ea.status = 'IN_PROGRESS' THEN 1 END) as inProgress, " +
-            "COUNT(CASE WHEN ea.status = 'SUBMITTED' THEN 1 END) as submitted, " +
-            "COUNT(CASE WHEN ea.status = 'APPROVED' THEN 1 END) as approved, " +
-            "COUNT(CASE WHEN ea.status = 'PUBLISHED' THEN 1 END) as published, " +
-            "COUNT(CASE WHEN ea.deadline < CURRENT_TIMESTAMP AND ea.status NOT IN ('PUBLISHED', 'REJECTED', 'APPROVED') THEN 1 END) as overdue "
-            +
-            "FROM ExamAssignment ea WHERE ea.assignedBy = :assignedBy")
+    @Query("SELECT "
+            + "COUNT(CASE WHEN ea.status = 'ASSIGNED' THEN 1 END) as assigned, "
+            + "COUNT(CASE WHEN ea.status = 'IN_PROGRESS' THEN 1 END) as inProgress, "
+            + "COUNT(CASE WHEN ea.status = 'SUBMITTED' THEN 1 END) as submitted, "
+            + "COUNT(CASE WHEN ea.status = 'APPROVED' THEN 1 END) as approved, "
+            + "COUNT(CASE WHEN ea.status = 'PUBLISHED' THEN 1 END) as published, "
+            + "COUNT(CASE WHEN ea.deadline < CURRENT_TIMESTAMP AND ea.status NOT IN ('PUBLISHED', 'REJECTED', 'APPROVED') THEN 1 END) as overdue "
+            + "FROM ExamAssignment ea WHERE ea.assignedBy = :assignedBy")
     Object[] getAssignmentStatistics(@Param("assignedBy") User assignedBy);
 
     // Check if assignment name exists for the same course and assigning user

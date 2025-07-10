@@ -88,7 +88,9 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
                 JOIN t.course c
                 WHERE t.taskType = 'create_questions'
                 """)
-        List<LecTaskDTO> getAllTasksWithPlan();        // Lec Task by ID - Support tasks with or without plans
+        List<LecTaskDTO> getAllTasksWithPlan();
+
+        // Lec Task by ID
         @Query("""
                 SELECT new com.uth.quizclear.model.dto.LecTaskDTO(
                         t.taskId,
@@ -111,7 +113,8 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
                 """)
         List<LecTaskDTO> getTasksByUserId(@Param("userId") Long userId);
 
-          // Get Task Detail by ID - Support tasks with or without plans
+        
+        // Get Task Detail by ID
         @Query("""
                 SELECT new com.uth.quizclear.model.dto.LecTaskDTO(
                         t.taskId,
@@ -134,6 +137,7 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
         Optional<LecTaskDTO> findTaskDTOById(@Param("taskId") Integer taskId);
 
         // Get Questions List for Send Task
+        // Original method - all questions available for task assignment
         @Query("""
                 SELECT new com.uth.quizclear.model.dto.SendQuesDTO(
                         q.questionId,
@@ -147,10 +151,58 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
                         q.createdAt
                 )
                 FROM Question q
-                WHERE q.taskId IS NULL
-                AND q.planId IS NULL
+                WHERE q.status IN ('APPROVED', 'SUBMITTED')
+                AND q.blockQuestion = 'ACTIVE'
+                AND q.hiddenQuestion = false
                 """)
         List<SendQuesDTO> findQuesTask();
+
+        // New method to get questions for a specific task
+        @Query("""
+                SELECT new com.uth.quizclear.model.dto.SendQuesDTO(
+                        q.questionId,
+                        q.course.courseName,
+                        q.content,
+                        q.answerKey,
+                        q.answerF1,
+                        q.answerF2,
+                        q.answerF3,
+                        q.difficultyLevel,
+                        q.createdAt
+                )
+                FROM Question q
+                WHERE q.status IN ('APPROVED', 'SUBMITTED')
+                AND q.blockQuestion = 'ACTIVE'
+                AND q.hiddenQuestion = false
+                AND q.course.courseName = :courseName
+                """)
+        List<SendQuesDTO> findQuesTaskBySubject(@Param("courseName") String courseName);
+        
+        // Method to get questions by difficulty for a specific task
+        @Query("""
+                SELECT new com.uth.quizclear.model.dto.SendQuesDTO(
+                        q.questionId,
+                        q.course.courseName,
+                        q.content,
+                        q.answerKey,
+                        q.answerF1,
+                        q.answerF2,
+                        q.answerF3,
+                        q.difficultyLevel,
+                        q.createdAt
+                )
+                FROM Question q
+                WHERE q.status IN ('APPROVED', 'SUBMITTED')
+                AND q.blockQuestion = 'ACTIVE'
+                AND q.hiddenQuestion = false
+                AND q.taskId IS NULL
+                AND q.course.courseName = :courseName
+                AND (:difficulty IS NULL OR q.difficultyLevel = :difficulty)
+                """)
+        List<SendQuesDTO> findQuesTaskBySubjectAndDifficulty(
+            @Param("courseName") String courseName, 
+            @Param("difficulty") com.uth.quizclear.model.enums.DifficultyLevel difficulty
+        );
 
                 //     AND q.status = 'APPROVED'
                 // AND q.blockQuestion = 'ACTIVE'

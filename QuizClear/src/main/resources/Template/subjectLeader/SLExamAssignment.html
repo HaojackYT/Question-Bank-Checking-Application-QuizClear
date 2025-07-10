@@ -40,9 +40,7 @@
                             <label for="lecturer">Lecturer</label>
                             <select id="lecturer">
                                 <option value="">Select Lecturer</option>
-                                <option value="1">Ash Abrahams</option>
-                                <option value="5">Daniel Evans</option>
-                                <option value="7">Frank Green</option>
+                                <!-- Options will be populated by JavaScript -->
                             </select>
                             <svg class="dropdown-arrow"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -55,16 +53,7 @@
                             <label for="course">Course</label>
                             <select id="course">
                                 <option value="">Select Course</option>
-                                <option value="1">Introduction to Computer Science</option>
-                                <option value="2">Calculus II</option>
-                                <option value="3">Classical Mechanics</option>
-                                <option value="4">General Chemistry</option>
-                                <option value="5">Cell Biology</option>
-                                <option value="6">Data Structures</option>
-                                <option value="7">Linear Algebra</option>
-                                <option value="8">Electricity and Magnetism</option>
-                                <option value="9">Organic Chemistry</option>
-                                <option value="10">Genetics</option>
+                                <!-- Options will be populated by JavaScript based on selected lecturer -->
                             </select>
                             <svg class="dropdown-arrow"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -78,11 +67,12 @@
                             <input type="number" id="noOfExams" placeholder="4">
                         </div>
                         <div class="form-group">
-                            <label for="structure">Structure</label>
-                            <select id="structure">
-                                <option value="Multiple Choices">Multiple
-                                    Choices</option>
-                                <option value="Essay">Essay</option>
+                            <label for="examType">Exam Type</label>
+                            <select id="examType">
+                                <option value="MIDTERM">Midterm Exam</option>
+                                <option value="FINAL">Final Exam</option>
+                                <option value="QUIZ">Quiz</option>
+                                <option value="PRACTICE">Practice Test</option>
                             </select>
                             <svg class="dropdown-arrow"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -100,6 +90,10 @@
                             <label for="dueDate">Due Date</label>
                             <input type="text" id="dueDate"
                                 placeholder="20/4/25">
+                        </div>
+                        <div class="form-group">
+                            <label for="note">Note</label>
+                            <textarea id="note" placeholder="Add any notes or instructions for this assignment..." rows="2" style="resize:vertical;"></textarea>
                         </div>
                     </div>
                 </div>
