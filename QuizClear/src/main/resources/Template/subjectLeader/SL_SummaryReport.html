@@ -103,15 +103,19 @@
                                         <i class="fas fa-eye"></i>
                                     </button>
 
-                                    <!-- <button class="action-btn edit" th:onclick="'editSummary(' + ${report.sumId} + ')'"
-                                        title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </button> -->
-                                    <button class="action-btn edit"
+                                    <!-- <button class="action-btn edit"
                                         th:if="${report.feedbackStatus.name() == 'NOT_RECEIVED' and (report.status.name() == 'PENDING' or report.status.name() == 'DRAFT')}"
                                         th:onclick="'editSummary(' + ${report.sumId} + ')'" title="Edit">
                                         <i class="fas fa-edit"></i>
+                                    </button> -->
+
+                                    <button class="action-btn edit"
+                                        th:if="${report.feedbackStatus.name() == 'NOT_RECEIVED' and (report.status.name() == 'PENDING' or report.status.name() == 'DRAFT')}"
+                                        th:onclick="|editSummary(${report.sumId},${report.status.name() == 'DRAFT'})|"
+                                        title="Edit">
+                                        <i class="fas fa-edit"></i>
                                     </button>
+
                                 </td>
                             </tr>
                         </tbody>
@@ -262,8 +266,8 @@
         </div>
         <div class="modal-footer">
             <button class="modal-btn cancel" onclick="closeNewSummaryModal()">Cancel</button>
-            <button class="modal-btn save-draft" onclick="saveAsDraft()">Save as Draft</button>
-            <button class="modal-btn create" id="submitBtn" onclick="createSummary()">Create</button>
+            <button class="modal-btn save-draft" id="saveDraftBtn" onclick="createSummary(true)">Save as Draft</button>
+            <button class="modal-btn create" id="submitBtn" onclick="createSummary(false)">Create</button>
         </div>
     </div>
     <!-- JavaScript -->
@@ -547,29 +551,43 @@
             document.getElementById('newSummaryModal').style.display = 'block';
         }
 
-        function openEditSummaryModal(summaryId) {
+        function openEditSummaryModal(summaryId, isDraft) {
             editingSummaryId = summaryId;
             document.getElementById('modalTitle').textContent = 'Edit Summary';
-            document.getElementById('submitBtn').textContent = 'Update';
-            document.getElementById('submitBtn').onclick = () => updateSummary(summaryId);
 
             fetch(`/subject-leader/api/summary-report/${summaryId}`)
                 .then(res => res.json())
                 .then(data => {
+                    const status = data.status;
+                    console.log("Status" , status);
                     console.log("Dữ liệu cho edit: ", data);
 
-                    // Set các trường đơn giản
+                    const submitBtn = document.getElementById('submitBtn');
+                    const saveDraftBtn = document.getElementById('saveDraftBtn');
+
+                    if (status === 'DRAFT') {
+                        submitBtn.textContent = 'Create';
+                        submitBtn.onclick = () => updateSummary(summaryId, false);
+
+                        saveDraftBtn.style.display = 'inline-block';
+                        saveDraftBtn.onclick = () => updateSummary(summaryId, true);
+                    } else {
+                        submitBtn.textContent = 'Update';
+                        submitBtn.onclick = () => updateSummary(summaryId, false);
+
+                        saveDraftBtn.style.display = 'none';
+                    }
+
+                    // Đổ dữ liệu như trước
                     document.getElementById('summaryTitle').value = data.title;
                     document.getElementById('summaryTotalQues').value = data.totalQuestions;
                     document.getElementById('summarySubmissionDate').value = data.createdAt;
                     document.getElementById('summaryNotes').value = data.description;
 
-                    // Load recipients, sau đó chọn đúng người
                     loadRecipients(() => {
                         document.getElementById('summaryRecipient').value = data.assignedTo.userId;
                     });
 
-                    // Load questions, sau đó tick những câu đã chọn
                     loadQuestions(() => {
                         const selectedIds = data.questions.map(q => q.id.toString());
                         const checkboxes = document.querySelectorAll('#questionCheckboxContainer input[type="checkbox"]');
@@ -581,11 +599,11 @@
                         checkLimit();
                     });
 
-                    // Hiển thị modal
                     document.getElementById('modalOverlay').style.display = 'block';
                     document.getElementById('newSummaryModal').style.display = 'block';
                 });
         }
+
 
         function clearForm() {
             const form = document.querySelector('.modal-form');
@@ -607,13 +625,6 @@
         }
 
         function saveAsDraft() {
-            // Save as draft logic
-            alert('Summary saved as draft!');
-            closeNewSummaryModal();
-        }
-
-        // Tạo mới
-        function createSummary() {
             const title = document.getElementById('summaryTitle').value.trim();
             const recipientId = document.getElementById('summaryRecipient').value;
             const totalQuestions = Number(document.getElementById('summaryTotalQues').value);
@@ -627,6 +638,12 @@
                 return;
             }
 
+            const totalQuestionsNum = Number(totalQuestions);
+            if (selectedQuestionIds.length > totalQuestionsNum) {
+                alert("Number of questions selected is above the limit.");
+                return;
+            }
+
             const data = {
                 title: title,
                 description: notes,
@@ -635,6 +652,7 @@
                 assignedTo: {
                     userId: Number(recipientId)
                 },
+                status: status,
                 questions: selectedQuestionIds.map(id => ({ id: Number(id) }))
             };
 
@@ -659,7 +677,61 @@
                 });
         }
 
-        function updateSummary(summaryId) {
+        // Tạo mới
+        function createSummary(isDraft = false) {
+            const title = document.getElementById('summaryTitle').value.trim();
+            const recipientId = document.getElementById('summaryRecipient').value;
+            const totalQuestions = Number(document.getElementById('summaryTotalQues').value);
+            const submissionDate = document.getElementById('summarySubmissionDate').value.trim();
+            const notes = document.getElementById('summaryNotes').value.trim();
+            const selectedQuestionIds = Array.from(document.querySelectorAll('#checkboxDropdownList input[type="checkbox"]:checked'))
+                .map(input => input.value);
+
+            if (!title || !recipientId || !totalQuestions || !submissionDate) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const totalQuestionsNum = Number(totalQuestions);
+            if (selectedQuestionIds.length > totalQuestionsNum) {
+                alert("Number of questions selected is above the limit.");
+                return;
+            }
+
+            const data = {
+                title: title,
+                description: notes,
+                createdAt: submissionDate,
+                totalQuestions: totalQuestions,
+                assignedTo: {
+                    userId: Number(recipientId)
+                },
+                questions: selectedQuestionIds.map(id => ({ id: Number(id) }))
+            };
+
+            console.log("Sending payload:", data);
+
+            fetch('/subject-leader/api/summary-report/new', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Save-Draft': isDraft ? 'true' : 'false'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        closeNewSummaryModal();
+                    } else {
+                        return response.text().then(text => { throw new Error(text || 'Failed to create summary'); });
+                    }
+                })
+                .catch(error => {
+                    alert('Error: ' + error.message);
+                });
+        }
+
+        function updateSummary(summaryId, isDraft) {
             const title = document.getElementById('summaryTitle').value;
             const recipient = document.getElementById('summaryRecipient').value;
             const totalQuestions = document.getElementById('summaryTotalQues').value;
@@ -672,6 +744,12 @@
 
             if (!title || !recipient || !totalQuestions) {
                 alert('Please fill in all required fields');
+                return;
+            }
+
+            const totalQuestionsNum = Number(totalQuestions);
+            if (questions.length > totalQuestionsNum) {
+                alert("Number of questions selected is above the limit.");
                 return;
             }
 
@@ -689,7 +767,8 @@
             fetch(`/subject-leader/api/summary-report/update/${summaryId}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-Save-Draft': isDraft ? 'true' : 'false'
                 },
                 body: JSON.stringify(data),
             })

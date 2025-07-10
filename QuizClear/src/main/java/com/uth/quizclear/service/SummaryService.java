@@ -46,6 +46,10 @@ public class SummaryService {
         return summaryRepository.findAll();
     }
 
+    public List<SummaryReport> getReportbyId(Long userId) {
+        return summaryRepository.findReportsbyId(userId);
+    }
+
     // Lấy Report theo ID
     public Optional<SummaryReportDTO> getReportDetail(Long id) {
         System.out.println("📌 [Service] Finding report with ID: " + id);
@@ -141,7 +145,7 @@ public class SummaryService {
 
     // Lấy danh sách cấp trên
     public List<UserBasicDTO> getRepient() {
-        List<UserRole> roles = Arrays.asList(UserRole.RD, UserRole.HOD);
+        List<UserRole> roles = Arrays.asList(UserRole.HOD);
         List<User> recipients = summaryRepository.findRecipient(roles);
 
         // Map User -> UserBasicDTO (bạn có thể chọn constructor phù hợp)
@@ -156,7 +160,7 @@ public class SummaryService {
     }
 
     // Tạo báo cáo
-    public SummaryReport createSummary(SummaryReportDTO dto, Long userId) throws Exception {
+    public SummaryReport createSummary(SummaryReportDTO dto, Long userId, boolean isDraft) throws Exception {
         SummaryReport summary = new SummaryReport();
 
         summary.setTitle(dto.getTitle());
@@ -172,11 +176,17 @@ public class SummaryService {
         summary.setAssignedTo(assignedTo);
         summary.setAssignedBy(assignedBy);
 
+        if (isDraft) {
+            summary.setStatus(
+                    dto.getStatus() != null ? SumStatus.valueOf(dto.getStatus()) : SumStatus.DRAFT
+            );
+        } else {
+            summary.setStatus(
+                    dto.getStatus() != null ? SumStatus.valueOf(dto.getStatus()) : SumStatus.PENDING
+            );
+        }
         summary.setFeedbackStatus(
                 dto.getFeedbackStatus() != null ? FeedbackStatus.valueOf(dto.getFeedbackStatus()) : FeedbackStatus.NOT_RECEIVED
-        );
-        summary.setStatus(
-                dto.getStatus() != null ? SumStatus.valueOf(dto.getStatus()) : SumStatus.PENDING
         );
 
         summary = summaryRepository.save(summary);
@@ -199,12 +209,9 @@ public class SummaryService {
     }
 
     // Edit báo cáo
-    public SummaryReport updateSummary(Long summaryId, SummaryReportDTO dto, Long userId) throws Exception {
-        System.out.println("📥 [Service] Updating Summary ID: " + summaryId);
+    public SummaryReport updateSummary(Long summaryId, SummaryReportDTO dto, Long userId, boolean isDraft) throws Exception {
         SummaryReport summary = summaryRepository.findById(summaryId)
                 .orElseThrow(() -> new Exception("SummaryReport not found with id " + summaryId));
-
-        System.out.println("✅ Found SummaryReport with ID: " + summary.getSumId());
 
         summary.setTitle(dto.getTitle());
         summary.setDescription(dto.getDescription());
@@ -219,23 +226,25 @@ public class SummaryService {
         summary.setAssignedTo(assignedTo);
         summary.setAssignedBy(assignedBy);
 
+        if (isDraft) {
+            summary.setStatus(
+                    dto.getStatus() != null ? SumStatus.valueOf(dto.getStatus()) : SumStatus.DRAFT
+            );
+        } else {
+            summary.setStatus(
+                    dto.getStatus() != null ? SumStatus.valueOf(dto.getStatus()) : SumStatus.PENDING
+            );
+        }
         summary.setFeedbackStatus(
                 dto.getFeedbackStatus() != null ? FeedbackStatus.valueOf(dto.getFeedbackStatus()) : summary.getFeedbackStatus()
-        );
-        summary.setStatus(
-                dto.getStatus() != null ? SumStatus.valueOf(dto.getStatus()) : summary.getStatus()
         );
 
         summary = summaryRepository.save(summary);
 
         // Xóa hết câu hỏi cũ liên kết với báo cáo này
-        System.out.println("📌 Trước khi xóa liên kết câu hỏi cũ");
         summaryQuesRepository.deleteBySummaryReport(summary);
-        System.out.println("✅ Đã xóa xong");
 
-        
         if (dto.getQuestions() != null) {
-            System.out.println("🔁 Updating questions. Count: " + dto.getQuestions().size());
             for (QuesReportDTO quesDto : dto.getQuestions()) {
                 Long qId = quesDto.getId();
                 Question question = questionRepository.findById(qId)

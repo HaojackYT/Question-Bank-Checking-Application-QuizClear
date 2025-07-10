@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -606,7 +607,7 @@ public class SubjectLeaderController {
     private SummaryQuesRepository summaryQuesRepository;
 
     @GetMapping("/summary-report")
-    public String summaryReportPage(org.springframework.security.core.Authentication authentication, Model model) {
+    public String summaryReportPage(org.springframework.security.core.Authentication authentication, Model model, HttpSession session) {
         // Check authentication first
         if (authentication == null || !authentication.isAuthenticated()) {
             return "redirect:/login";
@@ -623,13 +624,16 @@ public class SubjectLeaderController {
             return "redirect:/login";
         }
 
-        List<SummaryReport> reports = summaryService.getAllRps();
+        Long user = (Long) session.getAttribute("userId");
+
+        List<SummaryReport> reports = summaryService.getReportbyId(user);
         model.addAttribute("reports", reports);
         model.addAttribute("userEmail", authentication.getName());
 
-        return "subjectLeader/SL_SummaryReport";  // /subject-leader
+        return "subjectLeader/SL_SummaryReport";
     }
 
+    // Report Detail
     @GetMapping("/api/summary-report/{sumId}")
     @ResponseBody
     public ResponseEntity<?> getReportDetail(@PathVariable Long sumId) {
@@ -659,10 +663,14 @@ public class SubjectLeaderController {
 
     // Create new Report
     @PostMapping("/api/summary-report/new")
-    public ResponseEntity<?> createSummary(@RequestBody SummaryReportDTO summaryReportDTO, HttpSession session) {
+    public ResponseEntity<?> createSummary(
+            @RequestBody SummaryReportDTO summaryReportDTO,
+            @RequestHeader(value = "X-Save-Draft", required = false) String draftFlag,
+            HttpSession session) {
         Long user = (Long) session.getAttribute("userId");
         try {
-            summaryService.createSummary(summaryReportDTO, user);
+            boolean isDraft = "true".equalsIgnoreCase(draftFlag);
+            summaryService.createSummary(summaryReportDTO, user, isDraft);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -686,10 +694,12 @@ public class SubjectLeaderController {
     public ResponseEntity<?> updateSummary(
             @PathVariable("id") Long summaryId,
             @RequestBody SummaryReportDTO dto,
+            @RequestHeader(value = "X-Save-Draft", required = false) String draftFlag,
             HttpSession session) {
         try {
             Long user = (Long) session.getAttribute("userId");
-            SummaryReport updated = summaryService.updateSummary(summaryId, dto, user);
+            boolean isDraft = "true".equalsIgnoreCase(draftFlag);
+            SummaryReport updated = summaryService.updateSummary(summaryId, dto, user, isDraft);
             System.out.println("✅ Update success, returning response");
             return ResponseEntity.ok("Updated successfully");
         } catch (Exception e) {
