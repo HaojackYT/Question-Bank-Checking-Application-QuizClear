@@ -1,5 +1,6 @@
 package com.uth.quizclear.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -43,6 +44,10 @@ public class SummaryService {
     // Lấy danh sách Report (DEBUG)
     public List<SummaryReport> getAllRps() {
         return summaryRepository.findAll();
+    }
+
+    public List<SummaryReport> getReportbyId(Long userId) {
+        return summaryRepository.findReportsbyId(userId);
     }
 
     // Lấy Report theo ID
@@ -140,23 +145,22 @@ public class SummaryService {
 
     // Lấy danh sách cấp trên
     public List<UserBasicDTO> getRepient() {
-        List<UserRole> roles = Arrays.asList(UserRole.RD, UserRole.HOD);
+        List<UserRole> roles = Arrays.asList(UserRole.HOD);
         List<User> recipients = summaryRepository.findRecipient(roles);
 
         // Map User -> UserBasicDTO (bạn có thể chọn constructor phù hợp)
         return recipients.stream()
                 .map(user -> new UserBasicDTO(
-                        user.getUserIdLong(),
-                        user.getFullName(),
-                        user.getEmail(),
-                        user.getRole().getValue()
-                ))
+                user.getUserIdLong(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getRole().getValue()
+        ))
                 .collect(Collectors.toList());
     }
 
-
     // Tạo báo cáo
-    public SummaryReport createSummary(SummaryReportDTO dto) throws Exception {
+    public SummaryReport createSummary(SummaryReportDTO dto, Long userId, boolean isDraft) throws Exception {
         SummaryReport summary = new SummaryReport();
 
         summary.setTitle(dto.getTitle());
@@ -164,17 +168,26 @@ public class SummaryService {
         summary.setTotalQuestions(dto.getTotalQuestions());
         summary.setCreatedAt(LocalDateTime.now());
 
-        // Lấy assignedTo, assignedBy từ dto.assignedTo, dto.assignedBy (UserBasicDTO cần có getUserId())
         User assignedTo = userRepository.findById(dto.getAssignedTo().getUserId())
                 .orElseThrow(() -> new Exception("AssignedTo User not found"));
-        User assignedBy = userRepository.findById(dto.getAssignedBy().getUserId())
+        User assignedBy = userRepository.findById(userId)
                 .orElseThrow(() -> new Exception("AssignedBy User not found"));
 
         summary.setAssignedTo(assignedTo);
         summary.setAssignedBy(assignedBy);
 
-        summary.setFeedbackStatus(FeedbackStatus.valueOf(dto.getFeedbackStatus()));
-        summary.setStatus(SumStatus.valueOf(dto.getStatus()));
+        if (isDraft) {
+            summary.setStatus(
+                    dto.getStatus() != null ? SumStatus.valueOf(dto.getStatus()) : SumStatus.DRAFT
+            );
+        } else {
+            summary.setStatus(
+                    dto.getStatus() != null ? SumStatus.valueOf(dto.getStatus()) : SumStatus.PENDING
+            );
+        }
+        summary.setFeedbackStatus(
+                dto.getFeedbackStatus() != null ? FeedbackStatus.valueOf(dto.getFeedbackStatus()) : FeedbackStatus.NOT_RECEIVED
+        );
 
         summary = summaryRepository.save(summary);
 
@@ -196,4 +209,56 @@ public class SummaryService {
     }
 
     // Edit báo cáo
+    public SummaryReport updateSummary(Long summaryId, SummaryReportDTO dto, Long userId, boolean isDraft) throws Exception {
+        SummaryReport summary = summaryRepository.findById(summaryId)
+                .orElseThrow(() -> new Exception("SummaryReport not found with id " + summaryId));
+
+        summary.setTitle(dto.getTitle());
+        summary.setDescription(dto.getDescription());
+        summary.setTotalQuestions(dto.getTotalQuestions());
+        summary.setCreatedAt(LocalDateTime.now());
+
+        User assignedTo = userRepository.findById(dto.getAssignedTo().getUserId())
+                .orElseThrow(() -> new Exception("AssignedTo User not found"));
+        User assignedBy = userRepository.findById(userId)
+                .orElseThrow(() -> new Exception("AssignedBy User not found"));
+
+        summary.setAssignedTo(assignedTo);
+        summary.setAssignedBy(assignedBy);
+
+        if (isDraft) {
+            summary.setStatus(
+                    dto.getStatus() != null ? SumStatus.valueOf(dto.getStatus()) : SumStatus.DRAFT
+            );
+        } else {
+            summary.setStatus(
+                    dto.getStatus() != null ? SumStatus.valueOf(dto.getStatus()) : SumStatus.PENDING
+            );
+        }
+        summary.setFeedbackStatus(
+                dto.getFeedbackStatus() != null ? FeedbackStatus.valueOf(dto.getFeedbackStatus()) : summary.getFeedbackStatus()
+        );
+
+        summary = summaryRepository.save(summary);
+
+        // Xóa hết câu hỏi cũ liên kết với báo cáo này
+        summaryQuesRepository.deleteBySummaryReport(summary);
+
+        if (dto.getQuestions() != null) {
+            for (QuesReportDTO quesDto : dto.getQuestions()) {
+                Long qId = quesDto.getId();
+                Question question = questionRepository.findById(qId)
+                        .orElseThrow(() -> new Exception("Question id " + qId + " not found"));
+
+                SummaryQuestion sq = new SummaryQuestion();
+                sq.setSummaryReport(summary);
+                sq.setQuestion(question);
+
+                summaryQuesRepository.save(sq);
+            }
+        }
+
+        return summary;
+    }
+
 }

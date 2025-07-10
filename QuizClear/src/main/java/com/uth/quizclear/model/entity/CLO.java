@@ -32,7 +32,8 @@ public class CLO {
 
     @NotBlank(message = "CLO code is required")
     @Column(name = "clo_code", nullable = false)
-    private String cloCode;    @NotNull(message = "Difficulty level is required")
+    private String cloCode;    
+    @NotNull(message = "Difficulty level is required")
     @Convert(converter = DifficultyLevelConverter.class)
     @Column(name = "difficulty_level", nullable = false)
     private DifficultyLevel difficultyLevel;
@@ -49,4 +50,12 @@ public class CLO {
     @Builder.Default
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+        public CLO(String cloCode) {
+        this.cloCode = cloCode;
+    }
+
+    public String getCloCode() {
+        return cloCode;
+    }
 }
