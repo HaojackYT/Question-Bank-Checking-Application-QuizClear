@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -10,41 +10,39 @@
     <link rel="stylesheet" th:href="@{/Static/css/Lecturer/leturer_ExamEvaluation.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Exam Evaluation</title>
-    <!--Task & Exam-->
 </head>
 
 <body>
-    <!--header-->
-    <div th:replace="header_user"></div>
+    <!-- Header -->
+    <div th:replace="~{header_user}"></div>
 
-    <!-- body -->
+    <!-- Body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div th:replace="Lecturer/Menu-Lecturer"></div>
-
+        <div th:replace="~{Lecturer/Menu-Lecturer}"></div>
 
         <!-- Main content -->
         <div id="main">
-            <!-- noi dung duoc nhap trong day -->
             <div class="exam-evaluation-container">
                 <h1 class="page-title">Exam Evaluation</h1>
 
                 <div class="tab-search-wrapper">
                     <div class="nav-tabs">
-                        <a href="lecturerEETaskExam"><button class="tab-btn active">Task Exams</button></a>
-                        <a href="lecturerEETestFeedback"><button class="tab-btn ">Test & Feedback</button></a>
-                        <a href="lecturerEETestRepository"><button class="tab-btn">Test
-                                Repository</button></a>
+                        <a href="#" class="tab-btn active">Task Exams</a>
+                        <a href="/lecturer/lecturerEETestFeedback" class="tab-btn">Test & Feedback</a>
+                        <a href="/lecturer/lecturerEETestRepository" class="tab-btn">Test Repository</a>
                     </div>
 
                     <div class="search-container">
-                        <input type="text" placeholder="Search questions..." class="search-input">
+                        <input type="text" id="searchInput" placeholder="Search questions..." class="search-input">
                         <i class="fas fa-search search-icon"></i>
                     </div>
                 </div>
 
+                <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+
                 <div class="exam-table-container">
-                    <table class="exam-table">
+                    <table class="exam-table" id="examTable">
                         <thead>
                             <tr>
                                 <th>Subject</th>
@@ -55,151 +53,8 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>Database Systems</td>
-                                <td>Middle exam</td>
-                                <td>20</td>
-                                <td>20/05/2023</td>
-                                <td><span class="status-badge submitted">Submitted</span></td>
-                                <td>
-                                    <button class="action-btn" onclick="showInfoModal()"><i
-                                            class="fas fa-search"></i></button>
-                                    <button class="action-btn"><i class="fas fa-paper-plane"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Database Systems</td>
-                                <td>Middle exam</td>
-                                <td>20</td>
-                                <td>20/05/2023</td>
-                                <td><span class="status-badge Inprogress">In Progress</span></td>
-                                <td>
-                                    <button class="action-btn" onclick="showInfoModal()"><i
-                                            class="fas fa-search"></i></button>
-                                    <button class="action-btn"><i class="fas fa-paper-plane"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Database Systems</td>
-                                <td>Middle exam</td>
-                                <td>20</td>
-                                <td>20/05/2023</td>
-                                <td><span class="status-badge Not_received">Not Received</span></td>
-                                <td>
-                                    <button class="action-btn" onclick="showInfoModal()"><i
-                                            class="fas fa-search"></i></button>
-                                    <button class="action-btn"><i class="fas fa-paper-plane"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Database Systems</td>
-                                <td>Middle exam</td>
-                                <td>20</td>
-                                <td>20/05/2023</td>
-                                <td><span class="status-badge Inprogress">In Progress</span></td>
-                                <td>
-                                    <button class="action-btn" onclick="showInfoModal()"><i
-                                            class="fas fa-search"></i></button>
-                                    <button class="action-btn"><i class="fas fa-paper-plane"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Database Systems</td>
-                                <td>Middle exam</td>
-                                <td>20</td>
-                                <td>20/05/2023</td>
-                                <td><span class="status-badge Inprogress">In Progress</span></td>
-                                <td>
-                                    <button class="action-btn" onclick="showInfoModal()"><i
-                                            class="fas fa-search"></i></button>
-                                    <button class="action-btn"><i class="fas fa-paper-plane"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Database Systems</td>
-                                <td>Middle exam</td>
-                                <td>20</td>
-                                <td>20/05/2023</td>
-                                <td><span class="status-badge Inprogress">In Progress</span></td>
-                                <td>
-                                    <button class="action-btn" onclick="showInfoModal()"><i
-                                            class="fas fa-search"></i></button>
-                                    <button class="action-btn"><i class="fas fa-paper-plane"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Database Systems</td>
-                                <td>Middle exam</td>
-                                <td>20</td>
-                                <td>20/05/2023</td>
-                                <td><span class="status-badge Not_received">Not Received</span></td>
-                                <td>
-                                    <button class="action-btn" onclick="showInfoModal()"><i
-                                            class="fas fa-search"></i></button>
-                                    <button class="action-btn"><i class="fas fa-paper-plane"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Database Systems</td>
-                                <td>Middle exam</td>
-                                <td>20</td>
-                                <td>20/05/2023</td>
-                                <td><span class="status-badge submitted">Submitted</span></td>
-                                <td>
-                                    <button class="action-btn" onclick="showInfoModal()"><i
-                                            class="fas fa-search"></i></button>
-                                    <button class="action-btn"><i class="fas fa-paper-plane"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Database Systems</td>
-                                <td>Middle exam</td>
-                                <td>20</td>
-                                <td>20/05/2023</td>
-                                <td><span class="status-badge submitted">Submitted</span></td>
-                                <td>
-                                    <button class="action-btn" onclick="showInfoModal()"><i
-                                            class="fas fa-search"></i></button>
-                                    <button class="action-btn"><i class="fas fa-paper-plane"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Database Systems</td>
-                                <td>Middle exam</td>
-                                <td>20</td>
-                                <td>20/05/2023</td>
-                                <td><span class="status-badge submitted">Submitted</span></td>
-                                <td>
-                                    <button class="action-btn" onclick="showInfoModal()"><i
-                                            class="fas fa-search"></i></button>
-                                    <button class="action-btn"><i class="fas fa-paper-plane"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Database Systems</td>
-                                <td>Middle exam</td>
-                                <td>20</td>
-                                <td>20/05/2023</td>
-                                <td><span class="status-badge Not_received">Not Received</span></td>
-                                <td>
-                                    <button class="action-btn" onclick="showInfoModal()"><i
-                                            class="fas fa-search"></i></button>
-                                    <button class="action-btn"><i class="fas fa-paper-plane"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Database Systems</td>
-                                <td>Middle exam</td>
-                                <td>20</td>
-                                <td>20/05/2023</td>
-                                <td><span class="status-badge  Not_received">Not Received</span></td>
-                                <td>
-                                    <button class="action-btn" onclick="showInfoModal()"><i
-                                            class="fas fa-search"></i></button>
-                                    <button class="action-btn"><i class="fas fa-paper-plane"></i></button>
-                                </td>
-                            </tr>
+                        <tbody id="examTableBody">
+                            <!-- Dữ liệu sẽ được điền bởi JavaScript -->
                         </tbody>
                     </table>
                 </div>
@@ -210,174 +65,281 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h2>Information</h2>
-                        <span class="close" onclick="closeInfoModal()">&times;</span>
+                        <span class="close" onclick="closeInfoModal()">×</span>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Requester</label>
-                            <input type="text" value="Nguyễn A" readonly>
+                            <input type="text" id="requester" readonly>
                         </div>
                         <div class="form-group">
                             <label>Deadline</label>
-                            <input type="text" value="15/8/2028" readonly>
+                            <input type="text" id="deadline" readonly>
                         </div>
                         <div class="form-group">
                             <label>Subject</label>
-                            <input type="text" value="Database System" readonly>
+                            <input type="text" id="subject" readonly>
                         </div>
                         <div class="form-group">
                             <label>Description</label>
-                            <input type="text" value="Middle exam" readonly>
+                            <input type="text" id="description" readonly>
                         </div>
                         <div class="form-row">
                             <div class="form-group half">
                                 <label>Total Question</label>
-                                <input type="text" value="90" readonly>
+                                <input type="text" id="totalQuestions" readonly>
                             </div>
                             <div class="form-group half">
                                 <label>Test Duration</label>
-                                <input type="text" value="90:00" readonly>
+                                <input type="text" id="durationMinutes" readonly>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group quarter">
-                                <label>Remember</label>
-                                <div class="count-box">40</div>
+                                <label>Recognition</label>
+                                <div class="count-box" id="totalRecognition">0</div>
                             </div>
                             <div class="form-group quarter">
-                                <label>Understand</label>
-                                <div class="count-box">20</div>
+                                <label>Comprehension</label>
+                                <div class="count-box" id="totalComprehension">0</div>
                             </div>
                             <div class="form-group quarter">
-                                <label>Apply (basic)</label>
-                                <div class="count-box">15</div>
+                                <label>Basic Application</label>
+                                <div class="count-box" id="totalBasicApplication">0</div>
                             </div>
                             <div class="form-group quarter">
-                                <label>Apply (advanced)</label>
-                                <div class="count-box">15</div>
+                                <label>Adv Application</label>
+                                <div class="count-box" id="totalAdvancedApplication">0</div>
                             </div>
                         </div>
-                        <button class="accept-btn">Accept task</button>
+                        <button class="accept-btn" id="acceptButton" style="opacity: 0.5;" disabled>Accept task</button>
                     </div>
                 </div>
-
             </div>
         </div>
 
-        <!-- ma nhung header vs menu -->
-        <script>
-            // Load header
-            fetch('../../Template/header_user.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('header-placeholder').innerHTML = data;
-                });
+        <!-- JavaScript -->
+        <script th:inline="javascript">
+            let userId; // Biến toàn cục để các hàm có thể truy cập
 
-            // Load menu
-            fetch('Menu-Lecturer.html')
-                .then(response => response.text())
+            // Hàm toàn cục để hiển thị thông tin
+            function showInfoModal(taskId) {
+                fetch(`/lecturer/api/task-exam/${taskId}`, {
+                    credentials: 'include', // Đảm bảo gửi cookie session
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
                 .then(data => {
-                    document.getElementById('menu-HTML').innerHTML = data;
-                    setActiveMenu(document.title);
+                    if (data.success) {
+                        const task = data.data;
+                        document.getElementById('requester').value = task.assignedByName || 'Unknown';
+                        document.getElementById('deadline').value = task.deadline ? new Date(task.deadline).toLocaleDateString('vi-VN') : 'N/A';
+                        document.getElementById('subject').value = task.subject || 'Unknown Subject';
+                        document.getElementById('description').value = task.description || 'No description';
+                        document.getElementById('totalQuestions').value = task.totalQuestions || 0;
+                        document.getElementById('durationMinutes').value = task.durationMinutes !== null && task.durationMinutes > 0 ? task.durationMinutes : 'Not specified';
+                        document.getElementById('totalRecognition').textContent = task.totalRecognition || 0; // Từ plans
+                        document.getElementById('totalComprehension').textContent = task.totalComprehension || 0; // Từ plans
+                        document.getElementById('totalBasicApplication').textContent = task.totalBasicApplication || 0; // Từ plans
+                        document.getElementById('totalAdvancedApplication').textContent = task.totalAdvancedApplication || 0; // Từ plans
+                        updateAcceptButton(task.status);
+                        document.getElementById('infoModal').style.display = 'block';
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching task details:', error);
+                    alert('Failed to load task details. Check console for details.');
                 });
-
-            function showInfoModal() {
-                document.getElementById('infoModal').style.display = 'block';
             }
 
+            // Hàm toàn cục để đóng modal
             function closeInfoModal() {
                 document.getElementById('infoModal').style.display = 'none';
             }
 
-            // Close modal when clicking outside
-            window.onclick = function (event) {
-                const modal = document.getElementById('infoModal');
-                if (event.target == modal) {
-                    modal.style.display = 'none';
+            // Hàm toàn cục để cập nhật trạng thái nút Accept
+            function updateAcceptButton(status) {
+                const acceptButton = document.getElementById('acceptButton');
+                if (status === 'PENDING') {
+                    acceptButton.style.opacity = '1';
+                    acceptButton.disabled = false;
+                } else {
+                    acceptButton.style.opacity = '0.5';
+                    acceptButton.disabled = true;
                 }
             }
-            document.addEventListener('DOMContentLoaded', function () {
-                // Lấy tất cả các nút có class 'action-btn' chứa icon fa-paper-plane
-                const actionButtons = document.querySelectorAll('.action-btn i.fa-paper-plane');
 
-                // Gắn sự kiện click cho từng nút
-                actionButtons.forEach(button => {
-                    button.parentElement.addEventListener('click', function () {
-                        // Chuyển hướng đến trang lectureEETaskExamCreateExam.html
-                        window.location.href = 'lectureEETaskExamCreateExam';
-                    });
-                });
-            });
-        </script>
-        <script>
             document.addEventListener('DOMContentLoaded', function () {
-                const rows = document.querySelectorAll('.exam-table tbody tr');
-                const acceptButton = document.querySelector('.accept-btn');
-                let currentRow = null;
-
-                // Hàm cập nhật trạng thái nút Accept dựa trên status-badge
-                function updateAcceptButton(status) {
-                    if (status === 'Not Received') {
-                        acceptButton.style.opacity = '1';
-                        acceptButton.disabled = false;
-                    } else {
-                        acceptButton.style.opacity = '0.5';
-                        acceptButton.disabled = true;
+                // Gọi API để lấy userId từ session
+                fetch('/lecturer/api/current-user', {
+                    method: 'GET',
+                    credentials: 'include', // Đảm bảo gửi cookie session
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
                     }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        userId = parseInt(data.userId);
+                        if (isNaN(userId)) {
+                            throw new Error("Invalid userId from API");
+                        }
+                        console.log("Fetched userId:", userId);
+                        loadTasks();
+                    } else {
+                        throw new Error(data.message || "Failed to get userId");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching current user:", error);
+                    alert("Unable to determine user ID. Please log in again.");
+                    window.location.href = '/login'; // Chuyển hướng đến trang login đúng
+                });
+
+                function loadTasks() {
+                    fetch(`/lecturer/api/exam-tasks?userId=${userId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include', // Đảm bảo gửi cookie session
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("Received data:", data); // Gỡ lỗi dữ liệu nhận được
+                        if (!Array.isArray(data) || data.length === 0) {
+                            console.warn("No tasks found for userId:", userId);
+                            document.querySelector('.exam-table-container').innerHTML = '<p>No create_exam tasks assigned to you.</p>';
+                            return;
+                        }
+                        populateTable(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching exam tasks:', error);
+                        document.querySelector('.exam-table-container').innerHTML = '<p>Error loading tasks. Check console for details.</p>';
+                    });
                 }
 
-                // Gắn sự kiện cho nút Search (fa-search) để lưu hàng hiện tại và cập nhật nút Accept
-                rows.forEach(row => {
-                    const searchButton = row.querySelector('.action-btn i.fas.fa-search');
-                    searchButton.parentElement.addEventListener('click', function () {
-                        currentRow = row;
-                        const status = row.querySelector('.status-badge').textContent.trim();
-                        showInfoModal();
-                        updateAcceptButton(status);
+                function populateTable(tasks) {
+                    const tbody = document.getElementById('examTableBody');
+                    tbody.innerHTML = ''; // Xóa nội dung cũ
+                    tasks.forEach(task => {
+                        if (!task || typeof task.taskId === 'undefined') {
+                            console.warn("Invalid task data:", task);
+                            return;
+                        }
+                        const taskId = task.taskId || -1; // Đảm bảo taskId có giá trị hợp lệ
+                        const row = document.createElement('tr');
+                        row.dataset.taskId = String(taskId); // Chuyển thành chuỗi để tránh lỗi
+                        row.innerHTML = `
+                            <td>${task.subject || 'Unknown'}</td>
+                            <td>${task.description || 'No description'}</td>
+                            <td>${task.totalQuestions || 0}</td>
+                            <td>${task.deadline ? new Date(task.deadline).toLocaleDateString('vi-VN') : 'N/A'}</td>
+                            <td><span class="status-badge ${task.status ? task.status.toLowerCase().replace('_', '-') : 'unknown'}">${task.status || 'Unknown'}</span></td>
+                            <td>
+                                <button class="action-btn" onclick="showInfoModal(${taskId})">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                <button class="action-btn" onclick="window.location.href='/lecturer/lectureEETaskExamCreateExam?taskId=${taskId}'">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+
+                // Xử lý nút Accept với cải tiến
+                document.getElementById('acceptButton').addEventListener('click', function () {
+                    const taskId = document.querySelector('.modal-content').closest('tr')?.dataset.taskId;
+                    if (!taskId) {
+                        alert('No task selected. Please select a task first.');
+                        return;
+                    }
+
+                    if (!confirm('Are you sure you want to accept this task?')) {
+                        return; // Hủy nếu người dùng không xác nhận
+                    }
+
+                    const button = this;
+                    button.disabled = true; // Vô hiệu hóa nút trong quá trình xử lý
+                    button.textContent = 'Accepting...'; // Cập nhật văn bản nút
+
+                    fetch(`/lecturer/api/task-exam/${taskId}/accept`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include', // Đảm bảo gửi cookie session
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            // Cập nhật trạng thái trực tiếp thay vì reload
+                            const row = document.querySelector(`tr[data-task-id="${taskId}"]`);
+                            if (row) {
+                                row.querySelector('td:nth-child(5) span').textContent = 'ACCEPTED';
+                                row.querySelector('td:nth-child(6) button:nth-child(1)').disabled = true; // Vô hiệu hóa nút info
+                                row.querySelector('td:nth-child(6) button:nth-child(2)').disabled = true; // Vô hiệu hóa nút create
+                                updateAcceptButton('ACCEPTED'); // Cập nhật nút accept trong modal
+                            }
+                            closeInfoModal(); // Đóng modal
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error accepting task:', error);
+                        alert('Failed to accept task. Please try again. Error: ' + error.message);
+                    })
+                    .finally(() => {
+                        button.disabled = false; // Kích hoạt lại nút
+                        button.textContent = 'Accept task'; // Khôi phục văn bản nút
                     });
                 });
 
-                // Xử lý sự kiện nhấn nút Accept
-                acceptButton.addEventListener('click', function () {
-                    if (currentRow) {
-                        const statusBadge = currentRow.querySelector('.status-badge');
-                        if (statusBadge.textContent.trim() === 'Not Received') {
-                            // Cập nhật trạng thái thành In Progress
-                            statusBadge.textContent = 'In Progress';
-                            statusBadge.className = 'status-badge in-progress';
-                            // Làm mờ nút Accept và vô hiệu hóa
-                            acceptButton.style.opacity = '0.5';
-                            acceptButton.disabled = true;
-                            // Đóng modal
-                            closeInfoModal();
-                            alert('Nhiệm vụ đã được chấp nhận và chuyển sang trạng thái In Progress.');
-                        }
-                    }
-                });
-            });
-
-            document.addEventListener('DOMContentLoaded', function () {
-                const searchInput = document.querySelector('.search-input');
-                const rows = document.querySelectorAll('.exam-table tbody tr');
-
-                searchInput.addEventListener('input', function () {
+                // Tìm kiếm
+                document.getElementById('searchInput').addEventListener('input', function () {
                     const searchText = this.value.trim().toLowerCase();
-
+                    const rows = document.querySelectorAll('#examTableBody tr');
                     rows.forEach(row => {
                         const subject = row.querySelector('td:nth-child(1)').textContent.trim().toLowerCase();
                         const description = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
-
-                        // Kiểm tra nếu Subject hoặc Description chứa searchText
                         if (subject.includes(searchText) || description.includes(searchText)) {
-                            row.style.display = ''; // Hiển thị hàng
+                            row.style.display = '';
                         } else {
-                            row.style.display = 'none'; // Ẩn hàng
+                            row.style.display = 'none';
                         }
                     });
                 });
             });
+
+            // Xử lý click ngoài modal để đóng
+            window.onclick = function (event) {
+                const modal = document.getElementById('infoModal');
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
         </script>
-        <script src="../../Static/js/L_activeMenu.js"></script>
+    </div>
 </body>
 
 </html>

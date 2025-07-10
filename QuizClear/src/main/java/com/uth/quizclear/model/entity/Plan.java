@@ -3,10 +3,6 @@ package com.uth.quizclear.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import java.time.LocalDateTime;
 
 import com.uth.quizclear.model.enums.PlanStatusConverter;
@@ -15,14 +11,15 @@ import com.uth.quizclear.model.enums.PriorityConverter;
 
 @Entity
 @Table(name = "plans")
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
+// @AllArgsConstructor // Tạm thời bỏ để thêm constructor thủ công
+// @NoArgsConstructor  // Tạm thời bỏ để thêm constructor thủ công
+// @Getter            // Tạm thời bỏ để thêm getter thủ công
+// @Setter            // Tạm thời bỏ để thêm setter thủ công
 public class Plan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "plan_id")
     private Long planId;
 
     @NotNull(message = "Course is required")
@@ -74,11 +71,14 @@ public class Plan {
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
+    
     // Trạng thái & mức độ ưu tiên
     @NotNull(message = "Status is required")
     @Convert(converter = PlanStatusConverter.class)
     @Column(name = "status", columnDefinition = "ENUM('new', 'accepted', 'in_progress', 'completed', 'overdue') DEFAULT 'new'")
-    private PlanStatus status = PlanStatus.NEW;    @NotNull(message = "Priority is required")
+    private PlanStatus status = PlanStatus.NEW;
+
+    @NotNull(message = "Priority is required")
     @Convert(converter = PriorityConverter.class)
     @Column(name = "priority", columnDefinition = "ENUM('low', 'medium', 'high') DEFAULT 'medium'")
     private Priority priority = Priority.medium;
@@ -86,12 +86,16 @@ public class Plan {
     @Column(name = "created_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
-    // Constructor for creating new plan
+    // Constructor không tham số
+    public Plan() {}
+
+    // Constructor cho việc tạo plan mới
     public Plan(Course course, String planTitle, User assignedBy) {
         this.course = course;
         this.planTitle = planTitle;
         this.assignedByUser = assignedBy;
-        this.createdAt = LocalDateTime.now();        this.assignedAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+        this.assignedAt = LocalDateTime.now();
         this.status = PlanStatus.NEW;
         this.priority = Priority.medium;
         this.totalQuestions = 0;
@@ -112,7 +116,8 @@ public class Plan {
         }
         if (status == null) {
             status = PlanStatus.NEW;
-        }        if (priority == null) {
+        }
+        if (priority == null) {
             priority = Priority.medium;
         }
         if (totalQuestions == null) {
@@ -160,14 +165,6 @@ public class Plan {
         return totalRecognition + totalComprehension + totalBasicApplication + totalAdvancedApplication;
     }
 
-    public PlanStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(PlanStatus status) {
-        this.status = status;
-    }
-
     // Enums
     public enum PlanStatus {
         NEW("new"),
@@ -193,5 +190,156 @@ public class Plan {
                 }
             }
             throw new IllegalArgumentException("Unknown PlanStatus: " + value);
-    }}
+        }
+    }
+
+    // Thêm getter và setter thủ công
+    public Long getPlanId() {
+        return planId;
+    }
+
+    public void setPlanId(Long planId) {
+        this.planId = planId;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public String getPlanTitle() {
+        return planTitle;
+    }
+
+    public void setPlanTitle(String planTitle) {
+        this.planTitle = planTitle;
+    }
+
+    public String getPlanDescription() {
+        return planDescription;
+    }
+
+    public void setPlanDescription(String planDescription) {
+        this.planDescription = planDescription;
+    }
+
+    public Integer getTotalQuestions() {
+        return totalQuestions;
+    }
+
+    public void setTotalQuestions(Integer totalQuestions) {
+        this.totalQuestions = totalQuestions;
+    }
+
+    public Integer getTotalRecognition() {
+        return totalRecognition;
+    }
+
+    public void setTotalRecognition(Integer totalRecognition) {
+        this.totalRecognition = totalRecognition;
+    }
+
+    public Integer getTotalComprehension() {
+        return totalComprehension;
+    }
+
+    public void setTotalComprehension(Integer totalComprehension) {
+        this.totalComprehension = totalComprehension;
+    }
+
+    public Integer getTotalBasicApplication() {
+        return totalBasicApplication;
+    }
+
+    public void setTotalBasicApplication(Integer totalBasicApplication) {
+        this.totalBasicApplication = totalBasicApplication;
+    }
+
+    public Integer getTotalAdvancedApplication() {
+        return totalAdvancedApplication;
+    }
+
+    public void setTotalAdvancedApplication(Integer totalAdvancedApplication) {
+        this.totalAdvancedApplication = totalAdvancedApplication;
+    }
+
+    public User getAssignedToUser() {
+        return assignedToUser;
+    }
+
+    public void setAssignedToUser(User assignedToUser) {
+        this.assignedToUser = assignedToUser;
+    }
+
+    public User getAssignedByUser() {
+        return assignedByUser;
+    }
+
+    public void setAssignedByUser(User assignedByUser) {
+        this.assignedByUser = assignedByUser;
+    }
+
+    public LocalDateTime getAssignedAt() {
+        return assignedAt;
+    }
+
+    public void setAssignedAt(LocalDateTime assignedAt) {
+        this.assignedAt = assignedAt;
+    }
+
+    public LocalDateTime getAcceptedAt() {
+        return acceptedAt;
+    }
+
+    public void setAcceptedAt(LocalDateTime acceptedAt) {
+        this.acceptedAt = acceptedAt;
+    }
+
+    public LocalDateTime getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public LocalDateTime getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(LocalDateTime completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public PlanStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PlanStatus status) {
+        this.status = status;
+    }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    // Getter cho courseId
+    public Long getCourseId() {
+        return course != null ? course.getCourseId() : null;
+    }
 }
