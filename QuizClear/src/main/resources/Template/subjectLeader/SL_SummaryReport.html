@@ -41,18 +41,19 @@
                 <div class="search-filter-section">
                     <div class="search-filter-bar">
                         <div class="search-box">
-                            <input type="text" placeholder="Enter search content ..." class="search-input">
+                            <input type="text" placeholder="Enter search content ..." id="search-input"
+                                class="search-input" oninput="filter()">
                             <button class="search-btn">
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
 
                         <div class="filter-dropdown">
-                            <select class="filter-select">
-                                <option>All Summary</option>
-                                <option>Completed</option>
-                                <option>Draft</option>
-                                <option>Pending</option>
+                            <select id="statusFilter" class="filter-select" onchange="filter()">
+                                <option value="all">All Summary</option>
+                                <option value="completed">Completed</option>
+                                <option value="draft">Draft</option>
+                                <option value="pending">Pending</option>
                             </select>
                             <i class="fas fa-chevron-down"></i>
                         </div>
@@ -102,12 +103,6 @@
                                         th:onclick="'viewSummaryDetails(' + ${report.sumId} + ')'" title="View">
                                         <i class="fas fa-eye"></i>
                                     </button>
-
-                                    <!-- <button class="action-btn edit"
-                                        th:if="${report.feedbackStatus.name() == 'NOT_RECEIVED' and (report.status.name() == 'PENDING' or report.status.name() == 'DRAFT')}"
-                                        th:onclick="'editSummary(' + ${report.sumId} + ')'" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </button> -->
 
                                     <button class="action-btn edit"
                                         th:if="${report.feedbackStatus.name() == 'NOT_RECEIVED' and (report.status.name() == 'PENDING' or report.status.name() == 'DRAFT')}"
@@ -559,7 +554,7 @@
                 .then(res => res.json())
                 .then(data => {
                     const status = data.status;
-                    console.log("Status" , status);
+                    console.log("Status", status);
                     console.log("Dữ liệu cho edit: ", data);
 
                     const submitBtn = document.getElementById('submitBtn');
@@ -783,6 +778,30 @@
                 .catch(error => {
                     alert('Error updating summary: ' + error.message);
                 });
+        }
+
+        function filter() {
+            const keyword = document.querySelector('.search-input').value.trim().toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
+            const rows = document.querySelectorAll('.summary-table tbody tr');
+
+            rows.forEach(row => {
+                const rowText = row.innerText.toLowerCase();
+                const statusElement = row.querySelector('.status');
+
+                // Nếu không có element .status thì bỏ qua dòng này
+                if (!statusElement) {
+                    row.style.display = 'none';
+                    return;
+                }
+
+                const statusText = statusElement.innerText.trim().toLowerCase();
+
+                const matchesKeyword = rowText.includes(keyword);
+                const matchesStatus = (statusFilter === 'all') || (statusText === statusFilter);
+
+                row.style.display = (matchesKeyword && matchesStatus) ? '' : 'none';
+            });
         }
 
         // Close modal when clicking overlay
