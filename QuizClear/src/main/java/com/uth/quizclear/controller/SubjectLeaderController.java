@@ -21,10 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.uth.quizclear.model.dto.QuesReportDTO;
+import com.uth.quizclear.model.dto.QuestionDTO;
 import com.uth.quizclear.model.dto.QuestionFeedbackDTO;
 import com.uth.quizclear.model.dto.QuestionFeedbackDetailDTO;
 import com.uth.quizclear.model.dto.SL_PlanDTO;
 import com.uth.quizclear.model.dto.SummaryReportDTO;
+import com.uth.quizclear.model.dto.UserBasicDTO;
 import com.uth.quizclear.model.entity.Plan;
 import com.uth.quizclear.model.entity.SummaryReport;
 import com.uth.quizclear.repository.SummaryRepository;
@@ -611,6 +614,21 @@ public class SubjectLeaderController {
             return ResponseEntity.notFound().build();
         }
     }
+    
+    // Get approved question list
+    @GetMapping("/api/summary-report/questions")
+    public ResponseEntity<List<QuesReportDTO>> getApprovedQuestions() {
+        List<QuesReportDTO> questionReports = summaryService.getApprovedQuestionReports();
+        return ResponseEntity.ok(questionReports);
+    }
+
+    // Get recipient list
+    @GetMapping("/api/summary-report/recipients")
+        public ResponseEntity<List<UserBasicDTO>> getRecipients() {
+        List<UserBasicDTO> recipients = summaryService.getRepient();
+        return ResponseEntity.ok(recipients);
+    }
+
 
     // Create new Report
     @PostMapping("/api/summary-report/new")
