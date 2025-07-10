@@ -858,16 +858,23 @@ INSERT INTO exam_assignments (
 -- Bảng summary
 INSERT INTO summary (title, description, assigned_to, assigned_by, total_questions, feedback_status, status, created_at)
 VALUES
-('Midterm Report', 'Summary report for midterm exams', 2, 1, 50, 'Not received', 'Pending', '2025-06-01 09:00:00'),
-('Final Report', 'Final summary of the semester', 3, 1, 100, 'Received', 'Completed', '2025-07-01 10:00:00'),
-('Weekly Update', 'Weekly progress report', 4, 2, 20, 'Received', 'Draft', '2025-07-01 10:00:00'),
-('Project Summary', 'Summary for project evaluation', 5, 3, 30, 'Not received', 'Draft', '2025-06-10 14:20:00');
-
--- Bảng câu hỏi theo từng Report
+('Midterm Report', 'Summary report for midterm exams', 2, 3, 10, 'Not received', 'Pending', '2025-06-01 09:00:00'),
+('Final Report', 'Final summary of the semester', 9, 3, 10, 'Received', 'Completed', '2025-07-01 10:00:00'),
+('Weekly Update', 'Weekly progress report', 10, 2, 8, 'Not received', 'Draft', '2025-07-01 10:00:00'),
+('Project Summary', 'Summary for project evaluation', 11, 3, 5, 'Received', 'Completed', '2025-06-10 14:20:00'),
+('Monthly Report', 'Summary for monthly performance', 2, 8, 7, 'Received', 'Completed', '2025-07-05 08:30:00'),
+('Special Audit', 'Special internal audit report', 9, 5, 8, 'Not received', 'Pending', '2025-07-06 14:00:00'),
+('Annual Review', 'Annual performance review report', 10, 3, 5, 'Not received', 'Draft', '2025-07-07 09:15:00');
+-- Bảng summary_question
 INSERT INTO summary_question (summary_id, question_id)
-VALUES (1, 1), (1, 2), (1, 3),
-       (2, 2), (2, 3), 
-       (3, 1),
-       (4, 1), (4, 2);
+VALUES 
+(1, 1), (1, 4), (1, 6), (1, 8), (1, 9), (1, 11), (1, 14), (1, 15), (1, 17), (1, 18),
+(2, 19), (2, 23), (2, 24), (2, 26), (2, 28), (2, 29), (2, 31), (2, 33), (2, 34), (2, 36),
+(3, 37), (3, 39), (3, 41), (3, 42), (3, 44), (3, 45), (3, 28), (3, 60),
+(4, 47), (4, 55), (4, 56), (4, 59), (4, 60),
+(5, 1), (5, 14), (5, 24), (5, 26), (5, 33), (5, 39), (5, 44),
+(6, 4), (6, 6), (6, 9), (6, 19), (6, 23), (6, 29), (6, 34), (6, 42), (6, 45),
+(7, 8), (7, 17), (7, 31), (7, 56), (7, 60);
+
        
       
