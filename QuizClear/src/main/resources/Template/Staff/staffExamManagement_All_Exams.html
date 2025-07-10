@@ -17,87 +17,115 @@
     <div id="main">
         <div class="exam-management">
             <div class="header-container">
-                <div>
+                <div class="header-text">
                     <h2>Exam Management</h2>
                     <p>Create, review, and manage exams across all subjects</p>
                 </div>
-                <a class="create-exam-btn" th:href="@{/staff/exams/create/step1}">Create New Exam</a>
+                <a class="create-exam-btn" th:href="@{/staff/exams/create/step1}">
+                    <i class="fas fa-plus"></i>
+                    Create New Exam
+                </a>
             </div>
-            <div class="summary">
-                <div class="box">
-                    <p>Total Exams</p>
-                    <h3 th:text="${totalExams}">0</h3>
-                    <!-- <p class="text"><span>+6.2</span>% from last month</p> -->
+            
+            <!-- Statistics Cards -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-number" th:text="${totalExams}">128</div>
+                    <div class="stat-label">Total Exams</div>
+                    <div class="stat-change">+6.2% from last month</div>
                 </div>
-                <div class="box">
-                    <p>Pending Approval</p>
-                    <h3 th:text="${pendingCount}">0</h3>
-                    <!-- <p class="text">(2 urgent due in 48h)</p> -->
+                <div class="stat-card pending">
+                    <div class="stat-number" th:text="${pendingCount}">24</div>
+                    <div class="stat-label">Pending Approval</div>
+                    <div class="stat-urgent">(2 urgent due in 48h)</div>
                 </div>
-                <div class="box">
-                    <p>Approved</p>
-                    <h3 th:text="${approvedCount}">0</h3>
-                    <p class="text">Ready for distribution</p>
+                <div class="stat-card approved">
+                    <div class="stat-number" th:text="${approvedCount}">96</div>
+                    <div class="stat-label">Approved</div>
+                    <div class="stat-description">Ready for distribution</div>
                 </div>
-                <div class="box">
-                    <p>Rejected</p>
-                    <h3 th:text="${rejectedCount}">0</h3>
-                    <p class="text">Needs revision</p>
+                <div class="stat-card rejected">
+                    <div class="stat-number" th:text="${rejectedCount}">8</div>
+                    <div class="stat-label">Rejected</div>
+                    <div class="stat-description">Needs revision</div>
                 </div>
             </div>
-            <form class="filters" method="get" th:action="@{/staff/exams/all-exams}" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                <input class="search-box" type="text" name="search" placeholder="Search exams..." th:value="${search}">
-                <select name="status" class="btn-status" style="height: 2.5rem;">
-                    <option value="">All Statuses</option>
-                    <option th:each="s : ${statuses}" th:value="${s.value}" th:text="${s.displayName}" 
-                        th:selected="${selectedStatus} == ${s.value}"></option>
-                </select>
-                <select name="department" class="btn-subject" style="height: 2.5rem;">
-                    <option value="">All Subjects</option>
-                    <option th:each="d : ${departments}" th:value="${d}" th:text="${d}" 
-                        th:selected="${selectedDepartment} == ${d}"></option>
-                </select>
-                <button type="submit" class="btn-filter-icon" style="height: 2.5rem; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-filter"></i>
-                </button>
-            </form>
-            <div class="tab-container">
-                <a class="tab" th:href="@{/staff/exams/all-exams}">All Exams</a>
-                <a class="tab" th:href="@{/staff/exams/pending-approval}">Pending Approval</a>
-                <a class="tab" th:href="@{/staff/exams/approved}">Approved</a>
-                <a class="tab" th:href="@{/staff/exams/needs-revision}">Needs Revision</a>
-            </div>
-            <h2>All Exams</h2>
-            <p>Manage all exams in the system</p>
-            <div class="exam-list">
-                <div th:each="exam : ${exams}" class="item-box">
-                    <div>
-                        <i class="fas"
-                           th:classappend="${exam.status == 'Approved'} ? 'fa-check-circle status-icon green-icon' :
-                                           (${exam.status == 'Rejected'} ? 'fa-times-circle status-icon red-icon' :
-                                           'fa-clock status-icon orange-icon')"></i>
-                        <strong th:text="${exam.examTitle}">Exam Title</strong><br>
-                        <small class="item-meta"
-                               th:text="${exam.subject} + ' • Created: ' + ${#temporals.format(exam.createdAt, 'yyyy-MM-dd')} + 
-                               (exam.dueDate != null ? ' • Due: ' + ${#temporals.format(exam.dueDate, 'yyyy-MM-dd')} : '')">
-                            Subject • Created: 2023-06-15 • Due: 2023-06-20
-                        </small>
-                        <div class="progress"
-                             th:classappend="${exam.status == 'Approved'} ? ' green' : 
-                                             (${exam.status == 'Rejected'} ? ' red' : ' orange')"></div>
+
+            <!-- Search and Filters -->
+            <div class="search-filter-container">
+                <form class="search-form" method="get" th:action="@{/staff/exams/all-exams}">
+                    <div class="search-input-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" name="search" placeholder="Search exams..." 
+                               class="search-input" th:value="${search}">
                     </div>
-                    <div class="actions">
-                        <span th:if="${exam.status == 'Approved'}" class="status-approved">
-                            <i class="fas fa-check-circle status-icon green-icon"></i> Approved
-                        </span>
-                        <span th:if="${exam.status == 'Rejected'}" class="status-revision">
-                            <i class="fas fa-times-circle status-icon red-icon"></i> Needs Revision
-                        </span>
-                        <span th:if="${exam.status == 'Submitted for Review'}" class="status-pending">
-                            <i class="fas fa-clock status-icon orange-icon"></i> Pending
-                        </span>
-                        <a th:href="@{'/staff/exams/' + ${exam.examId} + '/overview-questions'}" class="view">View</a>
-                        <a th:if="${exam.status == 'Submitted for Review'}" th:href="@{'/staff/exams/' + ${exam.examId} + '/review'}" class="review">Review</a>
+                    
+                    <div class="filter-controls">
+                        <select name="status" class="filter-select">
+                            <option value="">All Statuses</option>
+                            <option th:each="s : ${statuses}" th:value="${s.value}" th:text="${s.displayName}" 
+                                th:selected="${selectedStatus} == ${s.value}"></option>
+                        </select>
+                        
+                        <select name="department" class="filter-select">
+                            <option value="">All Subjects</option>
+                            <option th:each="d : ${departments}" th:value="${d}" th:text="${d}" 
+                                th:selected="${selectedDepartment} == ${d}"></option>
+                        </select>
+                        
+                        <button type="submit" class="filter-btn">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="tab-navigation">
+                <a class="nav-tab active" th:href="@{/staff/exams/all-exams}">All Exams</a>
+                <a class="nav-tab" th:href="@{/staff/exams/pending-approval}">Pending Approval</a>
+                <a class="nav-tab" th:href="@{/staff/exams/approved}">Approved</a>
+                <a class="nav-tab" th:href="@{/staff/exams/needs-revision}">Needs Revision</a>
+            </div>
+
+            <!-- Content Header -->
+            <div class="content-header">
+                <h3>All Exams</h3>
+                <p>Manage all exams in the system</p>
+            </div>
+
+            <!-- Exam List -->
+            <div class="exam-grid">
+                <div th:each="exam : ${exams}" class="exam-card">
+                    <div class="exam-header">
+                        <div class="exam-status" 
+                             th:classappend="${exam.status == 'Approved'} ? 'approved' :
+                                           (${exam.status == 'Rejected'} ? 'rejected' : 'pending')">
+                            <i class="fas" 
+                               th:classappend="${exam.status == 'Approved'} ? 'fa-check-circle' :
+                                             (${exam.status == 'Rejected'} ? 'fa-times-circle' : 'fa-clock')"></i>
+                            <span th:text="${exam.status}">Pending</span>
+                        </div>
+                        <div class="exam-actions">
+                            <a th:href="@{'/staff/exams/' + ${exam.examId} + '/overview-questions'}" 
+                               class="action-btn view-btn">View</a>
+                            <a th:if="${exam.status == 'Submitted for Review'}" 
+                               th:href="@{'/staff/exams/' + ${exam.examId} + '/review'}" 
+                               class="action-btn review-btn">Review</a>
+                        </div>
+                    </div>
+                    
+                    <div class="exam-content">
+                        <h4 class="exam-title" th:text="${exam.examTitle}">Data Structures Final</h4>
+                        <div class="exam-meta">
+                            <span class="exam-subject" th:text="${exam.subject}">Computer Science</span>
+                            <span class="exam-date">
+                                Created: <span th:text="${#temporals.format(exam.createdAt, 'yyyy-MM-dd')}">2023-06-15</span>
+                            </span>
+                            <span th:if="${exam.dueDate != null}" class="exam-due">
+                                Due: <span th:text="${#temporals.format(exam.dueDate, 'yyyy-MM-dd')}">2023-06-20</span>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
