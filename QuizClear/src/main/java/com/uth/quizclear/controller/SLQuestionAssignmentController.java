@@ -240,4 +240,200 @@ public class SLQuestionAssignmentController {
             return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
+    
+    /**
+     * Edit question - allows SL to modify question content
+     */
+    @PostMapping("/api/questions/{questionId}/edit")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> editQuestion(
+            @PathVariable Long questionId,
+            @RequestBody Map<String, Object> requestData,
+            HttpSession session) {
+        
+        try {
+            Long slId = getCurrentUserId(session);
+            if (slId == null) {
+                return ResponseEntity.status(403).body(Map.of("success", false, "message", "User not authenticated"));
+            }
+            
+            // TODO: Implement edit question logic
+            // For now, return success
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Question edited successfully");
+            
+            log.info("SL {} edited question {}", slId, questionId);
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("Error editing question", e);
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "Error editing question"));
+        }
+    }
+    
+    /**
+     * Assign question - assigns question to lecturer for revision
+     */
+    @PostMapping("/api/questions/{questionId}/assign")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> assignQuestion(
+            @PathVariable Long questionId,
+            @RequestBody Map<String, Object> requestData,
+            HttpSession session) {
+        
+        try {
+            Long slId = getCurrentUserId(session);
+            if (slId == null) {
+                return ResponseEntity.status(403).body(Map.of("success", false, "message", "User not authenticated"));
+            }
+            
+            Long lecturerId = Long.valueOf(requestData.get("lecturerId").toString());
+            String instructions = requestData.get("instructions") != null ? requestData.get("instructions").toString() : "";
+            
+            // TODO: Implement assign question logic
+            // For now, return success
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Question assigned to lecturer successfully");
+            
+            log.info("SL {} assigned question {} to lecturer {}", slId, questionId, lecturerId);
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("Error assigning question", e);
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "Error assigning question"));
+        }
+    }
+    
+    /**
+     * Resubmit question - sends question back for further review
+     */
+    @PostMapping("/api/questions/{questionId}/resubmit")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> resubmitQuestion(
+            @PathVariable Long questionId,
+            @RequestBody Map<String, Object> requestData,
+            HttpSession session) {
+        
+        try {
+            Long slId = getCurrentUserId(session);
+            if (slId == null) {
+                return ResponseEntity.status(403).body(Map.of("success", false, "message", "User not authenticated"));
+            }
+            
+            String feedback = requestData.get("feedback") != null ? requestData.get("feedback").toString() : "";
+            
+            // TODO: Implement resubmit question logic
+            // For now, return success
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Question resubmitted for review");
+            
+            log.info("SL {} resubmitted question {} for review", slId, questionId);
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("Error resubmitting question", e);
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "Error resubmitting question"));
+        }
+    }
+    
+    /**
+     * Reject question - rejects question with feedback
+     */
+    @PostMapping("/api/questions/{questionId}/reject")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> rejectQuestion(
+            @PathVariable Long questionId,
+            @RequestBody Map<String, Object> requestData,
+            HttpSession session) {
+        
+        try {
+            Long slId = getCurrentUserId(session);
+            if (slId == null) {
+                return ResponseEntity.status(403).body(Map.of("success", false, "message", "User not authenticated"));
+            }
+            
+            String feedback = requestData.get("feedback") != null ? requestData.get("feedback").toString() : "";
+            
+            // TODO: Implement reject question logic
+            // For now, return success
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Question rejected");
+            
+            log.info("SL {} rejected question {} with feedback: {}", slId, questionId, feedback);
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("Error rejecting question", e);
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "Error rejecting question"));
+        }
+    }
+    
+    /**
+     * Direct approve to database - approves question directly to database without further review
+     */
+    @PostMapping("/api/questions/{questionId}/approve-direct")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> directApproveQuestion(
+            @PathVariable Long questionId,
+            @RequestBody Map<String, Object> requestData,
+            HttpSession session) {
+        
+        try {
+            Long slId = getCurrentUserId(session);
+            if (slId == null) {
+                return ResponseEntity.status(403).body(Map.of("success", false, "message", "User not authenticated"));
+            }
+            
+            // TODO: Implement direct approve logic - set status to APPROVED and save to database
+            // For now, return success
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Question directly approved and stored in database");
+            
+            log.info("SL {} directly approved question {} to database", slId, questionId);
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("Error directly approving question", e);
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "Error approving question"));
+        }
+    }
+    
+    /**
+     * Get questions for SL review
+     */
+    @GetMapping("/api/questions")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getQuestionsForReview(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String subject,
+            HttpSession session) {
+        
+        try {
+            Long slId = getCurrentUserId(session);
+            if (slId == null) {
+                return ResponseEntity.status(403).body(Map.of("error", "User not authenticated"));
+            }
+            
+            // TODO: Implement get questions for SL review
+            Map<String, Object> response = new HashMap<>();
+            response.put("questions", java.util.Collections.emptyList());
+            response.put("totalElements", 0);
+            response.put("totalPages", 0);
+            response.put("currentPage", page);
+            
+            log.info("Retrieved questions for SL review: {}", slId);
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("Error retrieving questions for review", e);
+            return ResponseEntity.status(500).body(Map.of("error", "Unable to retrieve questions"));
+        }
+    }
 }

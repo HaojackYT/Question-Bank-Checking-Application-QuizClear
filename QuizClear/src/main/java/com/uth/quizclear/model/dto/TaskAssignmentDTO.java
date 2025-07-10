@@ -8,6 +8,13 @@ public class TaskAssignmentDTO {
     private Integer totalQuestionsRequired;
     private Integer totalQuestions;
     private Integer completedQuestions;
+
+    // New fields for difficulty breakdown from Plan
+    private Integer recognitionQuestions = 0;
+    private Integer comprehensionQuestions = 0;
+    private Integer basicApplicationQuestions = 0;
+    private Integer advancedApplicationQuestions = 0;
+
     private String assignedLecturerName;
     private String assignedToName;
     private String status;
@@ -65,4 +72,17 @@ public class TaskAssignmentDTO {
     public void setDescription(String description) { this.description = description; }
     public String getFeedback() { return feedback; }
     public void setFeedback(String feedback) { this.feedback = feedback; }
+    
+    // Getters and setters for new difficulty fields
+    public Integer getRecognitionQuestions() { return recognitionQuestions; }
+    public void setRecognitionQuestions(Integer recognitionQuestions) { this.recognitionQuestions = recognitionQuestions; }
+    
+    public Integer getComprehensionQuestions() { return comprehensionQuestions; }
+    public void setComprehensionQuestions(Integer comprehensionQuestions) { this.comprehensionQuestions = comprehensionQuestions; }
+    
+    public Integer getBasicApplicationQuestions() { return basicApplicationQuestions; }
+    public void setBasicApplicationQuestions(Integer basicApplicationQuestions) { this.basicApplicationQuestions = basicApplicationQuestions; }
+    
+    public Integer getAdvancedApplicationQuestions() { return advancedApplicationQuestions; }
+    public void setAdvancedApplicationQuestions(Integer advancedApplicationQuestions) { this.advancedApplicationQuestions = advancedApplicationQuestions; }
 }

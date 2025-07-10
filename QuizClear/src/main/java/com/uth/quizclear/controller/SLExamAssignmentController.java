@@ -2,6 +2,8 @@ package com.uth.quizclear.controller;
 
 import com.uth.quizclear.model.dto.ExamAssignmentDTO;
 import com.uth.quizclear.model.dto.ExamAssignmentRequestDTO;
+import com.uth.quizclear.model.dto.LecturerDTO;
+import com.uth.quizclear.model.dto.CourseDTO;
 import com.uth.quizclear.model.entity.Course;
 import com.uth.quizclear.model.entity.User;
 import com.uth.quizclear.model.enums.ExamAssignmentStatus;
@@ -22,6 +24,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +70,7 @@ public class SLExamAssignmentController {
             // Get available courses
             List<Course> courses = courseRepository.findAll();
             log.info("Found {} courses", courses.size());
-            
+
             // Get available lecturers
             List<User> lecturers = userRepository.findByRoleAndStatus(UserRole.LEC, Status.ACTIVE);
             log.info("Found {} lecturers", lecturers.size());
@@ -333,13 +336,35 @@ public class SLExamAssignmentController {
      */
     @GetMapping("/api/lecturers")
     @ResponseBody
-    public ResponseEntity<List<User>> getLecturers() {
+    public ResponseEntity<List<LecturerDTO>> getLecturers() {
         try {
-            List<User> lecturers = userRepository.findActiveUsersByRole(UserRole.LEC);
-            return ResponseEntity.ok(lecturers);
+            List<User> lecturers = userRepository.findByRoleAndStatus(UserRole.LEC, Status.ACTIVE);
+            List<LecturerDTO> lecturerDTOs = lecturers.stream()
+                    .map(user -> new LecturerDTO(user.getUserIdLong(), user.getFullName(), user.getEmail()))
+                    .collect(java.util.stream.Collectors.toList());
+            return ResponseEntity.ok(lecturerDTOs);
 
         } catch (Exception e) {
             log.error("Error fetching lecturers", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * Get courses by lecturer ID (AJAX)
+     */
+    @GetMapping("/api/courses/by-lecturer/{lecturerId}")
+    @ResponseBody
+    public ResponseEntity<List<CourseDTO>> getCoursesByLecturer(@PathVariable Long lecturerId) {
+        try {
+            List<Course> courses = courseRepository.findByCreatedBy_UserId(lecturerId);
+            List<CourseDTO> dtos = courses.stream()
+                    .map(c -> new CourseDTO(c.getCourseId(), c.getCourseCode(), c.getCourseName(), c.getDescription(),
+                            c.getCredits() != null ? c.getCredits() : 0, c.getDepartment(), 0, 0))
+                    .collect(java.util.stream.Collectors.toList());
+            return ResponseEntity.ok(dtos);
+        } catch (Exception e) {
+            log.error("Error fetching courses by lecturer: " + e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -361,4 +386,3 @@ public class SLExamAssignmentController {
         return 3L; // Brian Carter - Subject Leader from sample data
     }
 }
-

@@ -10,6 +10,14 @@
     <link rel="stylesheet" th:href="@{/Static/css/Lecturer/lecturerTask.css}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    
+    <style>
+        .status-w {
+            background-color: #ffc107 !important;
+            color: #212529 !important;
+        }
+    </style>
+    
     <title>Task</title>
 </head>
 
@@ -36,16 +44,16 @@
             </div>
 
             <div class="info-group">
-                <div><strong>Total Question:</strong> 20</div>
-                <div><strong>Deadline:</strong> 2025-05-25</div>
-                <div><strong>Status:</strong> <span class="status status-n">Not Received</span></div>
+                <div><strong>Total Question:</strong> <span id="modal-total-questions">20</span></div>
+                <div><strong>Deadline:</strong> <span id="modal-deadline">2025-05-25</span></div>
+                <div><strong>Status:</strong> <span class="status status-n" id="modal-status">Not Received</span></div>
             </div>
 
             <div class="levels">
-                <div><strong>Recognition</strong><br>5</div>
-                <div><strong>Comprehension</strong><br>5</div>
-                <div><strong>Basic</strong><br>5</div>
-                <div><strong>Advanced</strong><br>5</div>
+                <div><strong>Recognition</strong><br><span id="modal-recognition">5</span></div>
+                <div><strong>Comprehension</strong><br><span id="modal-comprehension">5</span></div>
+                <div><strong>Basic Application</strong><br><span id="modal-basic">5</span></div>
+                <div><strong>Advanced Application</strong><br><span id="modal-advanced">5</span></div>
             </div>
 
             <div class="button-group">
@@ -66,7 +74,7 @@
         <div id="main">
             <!-- noi dung duoc nhap trong day -->
             <div class="main-context">
-                <a href="lecturerQMNewQuestion"><button class="new-btn">+ Create Question</button></a>
+                <a th:href="@{/lecturer/create-question}"><button class="new-btn">+ Create Question</button></a>
                 <div class="title">Task</div>
 
                 <div class="search-container">
@@ -87,6 +95,7 @@
                                         <option value="all">All Status</option>
                                         <option value="pending">Pending</option>
                                         <option value="in_progress">In Progress</option>
+                                        <option value="waiting_for_approval">Waiting for Approval</option>
                                         <option value="completed">Completed</option>
                                     </select>
                                 </div>
@@ -104,19 +113,26 @@
                                 <div class="status" th:switch="${task.status.name()}">
                                     <div th:case="'pending'" class="status status-n">Pending</div>
                                     <div th:case="'in_progress'" class="status status-i">In Progress</div>
+                                    <div th:case="'waiting_for_approval'" class="status status-w">Waiting for Approval</div>
                                     <div th:case="'completed'" class="status status-s">Completed</div>
                                     <div th:case="*" class="status status-i">Unknown</div>
                                 </div>
                             </td>
                             <td>
                                 <i class="fa-solid fa-eye view-task" th:attr="data-task-id=${task.taskId}"
-                                    style="margin-right: 50px; cursor: pointer;">
+                                    style="margin-right: 15px; cursor: pointer;">
                                 </i>
 
                                 <span th:if="${task.status.name() != 'completed'}">
                                     <a th:href="@{/lecturer/task/show-task/{taskId}(taskId=${task.taskId})}">
-                                        <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer;"></i>
+                                        <i class="fa-solid fa-paper-plane" style="color: #74C0FC; cursor: pointer; margin-right: 15px;" title="Assign Questions"></i>
                                     </a>
+                                </span>
+                                
+                                <span th:if="${task.status.name() == 'in_progress'}">
+                                    <i class="fa-solid fa-check-circle submit-for-approval" th:attr="data-task-id=${task.taskId}"
+                                        style="color: #28a745; cursor: pointer;" title="Submit for HED Approval">
+                                    </i>
                                 </span>
                             </td>
                         </tr>
@@ -260,6 +276,9 @@
             case 'in_progress':
                 className = 'status-i';
                 break;
+            case 'waiting_for_approval':
+                className = 'status-w';
+                break;
             case 'completed':
                 className = 'status-s';
                 break;
@@ -353,6 +372,46 @@
 
 
     });
+
+    // Submit for approval functionality
+    document.querySelectorAll('.submit-for-approval').forEach(button => {
+        button.addEventListener('click', async function() {
+            const taskId = this.getAttribute('data-task-id');
+            
+            // Confirm action
+            if (!confirm('Are you sure you want to submit this task\'s questions to HED for approval?')) {
+                return;
+            }
+            
+            try {
+                // For now, we'll submit all questions related to this task
+                // In a real implementation, you might want to show a modal to select specific questions
+                const response = await fetch(`/lecturer/api/tasks/${taskId}/submit-questions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        questionIds: [] // Empty array means submit all task questions
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    alert('Questions submitted to HED for approval successfully!');
+                    // Refresh the page to update status
+                    location.reload();
+                } else {
+                    alert('Error: ' + (result.error || 'Failed to submit questions'));
+                }
+            } catch (error) {
+                console.error('Error submitting questions:', error);
+                alert('An error occurred while submitting questions for approval');
+            }
+        });
+    });
+
 </script>
 
 <script th:src="@{/Static/js/L_activeMenu.js}"></script>

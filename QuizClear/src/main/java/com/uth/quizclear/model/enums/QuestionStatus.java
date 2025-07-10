@@ -7,6 +7,7 @@ public enum QuestionStatus {
     DRAFT("draft"),
     SUBMITTED("submitted"),
     APPROVED("approved"),
+    HED_APPROVED("hed_approved"),  // Approved by HED, waiting for Staff final approval
     REJECTED("rejected"),
     ARCHIVED("archived"),
     DECLINED("declined");
