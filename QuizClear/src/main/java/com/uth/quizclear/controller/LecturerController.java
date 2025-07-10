@@ -107,12 +107,9 @@ public class LecturerController {
     }
 
     // Dynamic mapping for lecturer new question page - clean URLs only
-    @GetMapping("/lecturerQMNewQuestion")
+    @GetMapping("/lecturerQMNewQuestion") 
     public String lecturerQMNewQuestion(Model model, HttpSession session, Authentication authentication) {
-        List<Subject> subjects = subjectRepository.findAll();
-        model.addAttribute("subjects", subjects);
-        model.addAttribute("difficultyLevels", DifficultyLevel.values());
-        return "Lecturer/lecturerQMNewQuestion";
+        return createQuestion(model, session, authentication);
     }
 
     @Autowired
@@ -131,7 +128,7 @@ public class LecturerController {
     private UserService userService;
 
     /**
-     * Lecturer Question Management page
+     * Lecturer Question Management page - for managing existing questions
      */
     @GetMapping("/question-management")
     public String questionManagement(Model model, HttpSession session, Authentication authentication) {
@@ -160,7 +157,7 @@ public class LecturerController {
 
         // Get user from session
         Object userObj = session.getAttribute("user");
-        Long lecturerId = null; // No default - must get real user ID
+        Long lecturerId = null;
         if (userObj != null && userObj instanceof UserBasicDTO) {
             UserBasicDTO user = (UserBasicDTO) userObj;
             lecturerId = user.getUserId();
@@ -266,8 +263,31 @@ public class LecturerController {
             System.out.println("Status parameter: " + status);
             System.out.println("Difficulty parameter: " + difficulty);
             System.out.println("Lecturer ID: " + lecturerId);
+            
+            // First, let's check all questions to see if our new question exists
+            List<Question> allQuestions = questionRepository.findAll();
+            System.out.println("=== ALL QUESTIONS IN DATABASE ===");
+            System.out.println("Total questions in database: " + allQuestions.size());
+            Question question71 = allQuestions.stream()
+                    .filter(q -> q.getQuestionId().equals(71L))
+                    .findFirst()
+                    .orElse(null);
+            if (question71 != null) {
+                System.out.println("Question 71 found in database:");
+                System.out.println("  - ID: " + question71.getQuestionId());
+                System.out.println("  - Creator ID: " + question71.getCreatedBy().getUserId());
+                System.out.println("  - Content: " + question71.getContent().substring(0, Math.min(50, question71.getContent().length())) + "...");
+                System.out.println("  - Status: " + question71.getStatus());
+            } else {
+                System.out.println("Question 71 NOT found in database");
+            }
+            
             // Simplified approach: Get all questions created by this lecturer
             List<Question> questions = questionRepository.findByCreatedBy_UserId(lecturerId);
+            
+            System.out.println("=== LOAD QUESTIONS DEBUG ===");
+            System.out.println("Looking for questions created by lecturer ID: " + lecturerId);
+            System.out.println("Raw questions found: " + questions.size());
 
             // Filter out soft-deleted questions (those marked with [DELETED])
             questions = questions.stream()
@@ -278,9 +298,12 @@ public class LecturerController {
 
             // Debug: Print found questions
             for (Question q : questions) {
-                System.out.println("  - Question: " + q.getContent().substring(0, Math.min(50, q.getContent().length())) + "...");
-                System.out.println("    Course: " + (q.getCourse() != null ? q.getCourse().getCourseName() : "NULL"));
+                System.out.println("  - Question ID: " + q.getQuestionId());
+                System.out.println("    Creator ID: " + q.getCreatedBy().getUserId());
                 System.out.println("    Status: " + q.getStatus());
+                System.out.println("    Content: " + q.getContent().substring(0, Math.min(50, q.getContent().length())) + "...");
+                System.out.println("    Course: " + (q.getCourse() != null ? q.getCourse().getCourseName() : "NULL"));
+                System.out.println("    ---");
             }
 
             // Apply subject filter if specified
@@ -598,7 +621,7 @@ public class LecturerController {
     }
 
     /**
-     * Create new question page
+     * Create new question page - unified endpoint for both task and question management
      */
     @GetMapping("/create-question")
     public String createQuestion(Model model, HttpSession session, Authentication authentication) {
@@ -635,7 +658,9 @@ public class LecturerController {
         // If still no lecturer ID, redirect to login
         if (lecturerId == null) {
             return "redirect:/login";
-        }// Only load subjects that the lecturer is assigned to
+        }
+
+        // Load subjects that the lecturer is assigned to
         List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
                 lecturerId,
                 SubjectRole.LECTURER
@@ -648,6 +673,9 @@ public class LecturerController {
         model.addAttribute("courses", courses);
         model.addAttribute("lecturerId", lecturerId);
         model.addAttribute("difficultyLevels", DifficultyLevel.values());
+
+        // Add flag to show question management functionality
+        model.addAttribute("showQuestionManagement", true);
 
         return "Lecturer/lecturerQMNewQuestion";
     }
@@ -721,7 +749,8 @@ public class LecturerController {
             HttpSession session,
             Authentication authentication) {
         try {
-
+            System.out.println("=== SAVE QUESTION DEBUG START ===");
+            
             // Get user from session
             Object userObj = session.getAttribute("user");
             Long lecturerId = null;
@@ -729,6 +758,7 @@ public class LecturerController {
             if (userObj != null && userObj instanceof UserBasicDTO) {
                 UserBasicDTO user = (UserBasicDTO) userObj;
                 lecturerId = user.getUserId();
+                System.out.println("Lecturer ID from session UserBasicDTO: " + lecturerId);
             }
 
             // Alternative: get from currentUserId set by ScopeInterceptor
@@ -736,6 +766,7 @@ public class LecturerController {
                 Object currentUserId = session.getAttribute("currentUserId");
                 if (currentUserId != null && currentUserId instanceof Long) {
                     lecturerId = (Long) currentUserId;
+                    System.out.println("Lecturer ID from session currentUserId: " + lecturerId);
                 }
             }
 
@@ -743,11 +774,14 @@ public class LecturerController {
             if (lecturerId == null && authentication != null) {
                 try {
                     String email = authentication.getName();
+                    System.out.println("Trying to find user by email: " + email);
                     Optional<User> userOpt = userService.findByEmail(email);
                     if (userOpt.isPresent()) {
                         lecturerId = (long) userOpt.get().getUserId();
+                        System.out.println("Lecturer ID from authentication: " + lecturerId);
                     }
                 } catch (Exception e) {
+                    System.err.println("Authentication error: " + e.getMessage());
                     Map<String, Object> errorResponse = new HashMap<>();
                     errorResponse.put("error", "Authentication failed");
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
@@ -756,10 +790,13 @@ public class LecturerController {
 
             // If still no lecturer ID, return error
             if (lecturerId == null) {
+                System.err.println("No lecturer ID found!");
                 Map<String, Object> errorResponse = new HashMap<>();
                 errorResponse.put("error", "User not authenticated");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
             }
+            
+            System.out.println("Final Lecturer ID for question creation: " + lecturerId);
 
             // Get or create question
             Question question;
@@ -787,11 +824,25 @@ public class LecturerController {
                 // Set createdBy
                 User creator = userRepository.findById(lecturerId).orElse(null);
                 if (creator == null) {
-                    // Create a default user for demo
-                    creator = new User();
-                    creator.setUserId(lecturerId);
+                    System.err.println("User not found in database for ID: " + lecturerId);
+                    // Try to find by authentication
+                    if (authentication != null) {
+                        String email = authentication.getName();
+                        Optional<User> userOpt = userService.findByEmail(email);
+                        if (userOpt.isPresent()) {
+                            creator = userOpt.get();
+                            System.out.println("Found user by email: " + email + ", ID: " + creator.getUserId());
+                        }
+                    }
+                    
+                    if (creator == null) {
+                        Map<String, Object> errorResponse = new HashMap<>();
+                        errorResponse.put("error", "User not found in database");
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+                    }
                 }
                 question.setCreatedBy(creator);
+                System.out.println("Set question creator: " + creator.getUserId() + " (" + creator.getEmail() + ")");
 
                 // Set course (use first available course)
                 List<Course> courses = courseRepository.findAll();
@@ -846,11 +897,25 @@ public class LecturerController {
             if (question.getCreatedBy() == null) {
                 User creator = userRepository.findById(lecturerId).orElse(null);
                 if (creator == null) {
-                    // Create a default user for demo
-                    creator = new User();
-                    creator.setUserId(lecturerId);
+                    System.err.println("User not found in database for ID: " + lecturerId);
+                    // Try to find by authentication
+                    if (authentication != null) {
+                        String email = authentication.getName();
+                        Optional<User> userOpt = userService.findByEmail(email);
+                        if (userOpt.isPresent()) {
+                            creator = userOpt.get();
+                            System.out.println("Found user by email for existing question: " + email + ", ID: " + creator.getUserId());
+                        }
+                    }
+                    
+                    if (creator == null) {
+                        Map<String, Object> errorResponse = new HashMap<>();
+                        errorResponse.put("error", "User not found in database");
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+                    }
                 }
                 question.setCreatedBy(creator);
+                System.out.println("Set existing question creator: " + creator.getUserId() + " (" + creator.getEmail() + ")");
             }
             // Set difficulty (use default for demo)
             if (question.getDifficultyLevel() == null) {
@@ -910,11 +975,21 @@ public class LecturerController {
             }
 
             Question savedQuestion = questionRepository.save(question);
+            
+            System.out.println("=== QUESTION SAVED SUCCESSFULLY ===");
+            System.out.println("Question ID: " + savedQuestion.getQuestionId());
+            System.out.println("Creator ID: " + savedQuestion.getCreatedBy().getUserId());
+            System.out.println("Creator Email: " + savedQuestion.getCreatedBy().getEmail());
+            System.out.println("Question Status: " + savedQuestion.getStatus());
+            System.out.println("Question Content: " + savedQuestion.getContent().substring(0, Math.min(50, savedQuestion.getContent().length())) + "...");
+            System.out.println("Course: " + (savedQuestion.getCourse() != null ? savedQuestion.getCourse().getCourseName() : "NULL"));
+            System.out.println("=== SAVE QUESTION DEBUG END ===");
 
             Map<String, Object> response = new HashMap<>();
             response.put("message", action.equals("submit") ? "Question submitted successfully" : "Question saved as draft successfully");
             response.put("questionId", savedQuestion.getQuestionId());
             response.put("status", savedQuestion.getStatus().toString());
+            response.put("debug", "Creator ID: " + savedQuestion.getCreatedBy().getUserId());
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -949,7 +1024,9 @@ public class LecturerController {
             Object subjectIdObj = questionData.get("subjectId");
             if (subjectIdObj != null && !subjectIdObj.toString().trim().isEmpty()) {
                 try {
-                    Long subjectId = Long.parseLong(subjectIdObj.toString());                      // Check if lecturer has permission for this subject
+                    Long subjectId = Long.parseLong(subjectIdObj.toString());
+                    
+                    // Check if lecturer has permission for this subject
                     List<Subject> assignedSubjects = subjectRepository.findSubjectsByUserIdAndRole(
                             lecturerId,
                             SubjectRole.LECTURER
@@ -959,8 +1036,11 @@ public class LecturerController {
                             .anyMatch(s -> s.getSubjectId().equals(subjectId));
 
                     if (!hasPermission) {
-                        response.put("error", "You don't have permission to create questions for this subject");
-                        return ResponseEntity.status(403).body(response);
+                        // Instead of blocking with 403, provide a warning but allow the check
+                        response.put("warning", "Limited permission for this subject");
+                        response.put("debug", "LecturerId: " + lecturerId + ", SubjectId: " + subjectId + 
+                                   ", AssignedSubjects: " + assignedSubjects.size());
+                        // Continue with duplicate check but add warning
                     }
                 } catch (NumberFormatException e) {
                     response.put("error", "Invalid subject ID format");
@@ -1190,13 +1270,33 @@ public class LecturerController {
         // Lấy thông tin task theo taskId
         LecTaskDTO taskInfo = taskService.getTaskDetailById(taskId);
 
-        // Lấy danh sách câu hỏi có thể chọn cho task này
-        List<SendQuesDTO> questionList = taskService.getQuesForSendTask();
+        // Lấy danh sách câu hỏi có thể chọn cho task này, filtered by subject
+        List<SendQuesDTO> questionList;
+        
+        String taskSubject = taskInfo.getCourseName(); // This should be the subject name
+        System.out.println("=== SHOW TASK SEND PAGE DEBUG ===");
+        System.out.println("Task ID: " + taskId);
+        System.out.println("Task Subject: " + taskSubject);
+        System.out.println("Task Description: " + taskInfo.getDescription());
+        
+        if (taskSubject != null && !taskSubject.trim().isEmpty()) {
+            // Get questions only for this task's subject
+            questionList = taskService.getQuesForSendTaskBySubject(taskSubject);
+            System.out.println("Using subject-filtered questions: " + questionList.size() + " questions found");
+        } else {
+            // Fallback to all questions
+            questionList = taskService.getQuesForSendTask();
+            System.out.println("Using all questions (no subject filter): " + questionList.size() + " questions found");
+        }
 
         if (questionList != null) {
+            System.out.println("Question list loaded successfully: " + questionList.size() + " questions");
             for (SendQuesDTO q : questionList) {
-                System.out.println("Question ID: " + q.getQuestionId() + ", Difficulty: " + q.getDifficultyLevel());
+                System.out.println("  - ID: " + q.getQuestionId() + ", Subject: " + q.getCourseName() + ", Difficulty: " + q.getDifficultyLevel());
             }
+        } else {
+            System.out.println("Question list is null!");
+            questionList = List.of(); // Provide empty list as fallback
         }
 
         model.addAttribute("task", taskInfo);
@@ -2015,7 +2115,7 @@ public class LecturerController {
 
     @PostMapping("/api/create_questions")
     public ResponseEntity<?> createQuestion(@RequestBody @Valid QuestionCreateDTO dto,
-            BindingResult bindingResult, HttpSession session) {
+            BindingResult bindingResult, HttpSession session, Authentication authentication) {
         try {
             // Check for validation errors first
             if (bindingResult.hasErrors()) {
@@ -2054,18 +2154,47 @@ public class LecturerController {
                     .orElseThrow(() -> new RuntimeException("Course not found with ID: " + dto.getCourseId()));
 
             Object userObj = session.getAttribute("user");
-            Long creatorId;
+            Long creatorId = null;
 
             if (userObj != null && userObj instanceof UserBasicDTO) {
                 creatorId = ((UserBasicDTO) userObj).getUserId();
                 System.out.println("Creator ID from session: " + creatorId);
-            } else {
-                // Nếu không có user trong session, dùng userId giả lập (chỉ dùng cho test)
-                creatorId = 1L;
-                System.out.println("Using fallback creator ID: " + creatorId);
             }
-            User creator = userRepository.findById(creatorId)
-                    .orElseThrow(() -> new RuntimeException("Creator user not found with ID: " + creatorId));
+
+            // Alternative: get from currentUserId set by ScopeInterceptor
+            if (creatorId == null) {
+                Object currentUserId = session.getAttribute("currentUserId");
+                if (currentUserId != null && currentUserId instanceof Long) {
+                    creatorId = (Long) currentUserId;
+                    System.out.println("Creator ID from currentUserId: " + creatorId);
+                }
+            }
+
+            // If still no creatorId, get from authentication
+            if (creatorId == null && authentication != null) {
+                try {
+                    String email = authentication.getName();
+                    System.out.println("Trying to find user by email: " + email);
+                    Optional<User> userOpt = userService.findByEmail(email);
+                    if (userOpt.isPresent()) {
+                        creatorId = (long) userOpt.get().getUserId();
+                        System.out.println("Creator ID from authentication: " + creatorId);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Authentication error: " + e.getMessage());
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Authentication failed"));
+                }
+            }
+
+            // If still no creator ID, return error
+            if (creatorId == null) {
+                System.err.println("No creator ID found!");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "User not authenticated"));
+            }
+
+            final Long finalCreatorId = creatorId;
+            User creator = userRepository.findById(finalCreatorId)
+                    .orElseThrow(() -> new RuntimeException("Creator user not found with ID: " + finalCreatorId));
 
             // Khởi tạo câu hỏi
             Question question = new Question();
@@ -2207,6 +2336,58 @@ public class LecturerController {
             default:
                 // If no mapping found, return original course name
                 return courseName;
+        }
+    }
+
+    // API endpoint to get questions for task with filters
+    @GetMapping("/api/task/{taskId}/questions")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getQuestionsForTask(
+            @PathVariable Integer taskId,
+            @RequestParam(required = false) String difficulty) {
+        try {
+            // Get task info
+            LecTaskDTO taskInfo = taskService.getTaskDetailById(taskId);
+            String taskSubject = taskInfo.getCourseName();
+            
+            List<SendQuesDTO> questionList;
+            
+            System.out.println("=== GET QUESTIONS FOR TASK API ===");
+            System.out.println("Task ID: " + taskId);
+            System.out.println("Task Subject: " + taskSubject);
+            System.out.println("Difficulty Filter: " + difficulty);
+            
+            if (difficulty != null && !difficulty.isEmpty() && !difficulty.equals("ALL")) {
+                // Filter by difficulty
+                try {
+                    com.uth.quizclear.model.enums.DifficultyLevel diffLevel = 
+                        com.uth.quizclear.model.enums.DifficultyLevel.valueOf(difficulty.toUpperCase());
+                    questionList = taskService.getQuesForSendTaskBySubjectAndDifficulty(taskSubject, diffLevel);
+                    System.out.println("Using difficulty filter: " + difficulty);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Invalid difficulty level: " + difficulty + ", using no filter");
+                    questionList = taskService.getQuesForSendTaskBySubject(taskSubject);
+                }
+            } else {
+                // No difficulty filter, just subject
+                questionList = taskService.getQuesForSendTaskBySubject(taskSubject);
+                System.out.println("No difficulty filter, using subject filter only");
+            }
+            
+            System.out.println("Found " + questionList.size() + " questions");
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("questions", questionList);
+            response.put("taskInfo", taskInfo);
+            response.put("totalQuestions", questionList.size());
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            System.err.println("Error getting questions for task: " + e.getMessage());
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to load questions: " + e.getMessage());
+            return ResponseEntity.status(500).body(errorResponse);
         }
     }
 }
