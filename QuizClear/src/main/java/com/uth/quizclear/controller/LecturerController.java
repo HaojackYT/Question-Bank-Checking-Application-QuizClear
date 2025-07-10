@@ -1209,8 +1209,12 @@ public class LecturerController {
     @PostMapping("/task/send-task/{taskId}")
     public String assignQuestionsToTask(
             @PathVariable Long taskId,
-            @RequestParam("questionIds") List<Long> questionIds,
+            @RequestParam(value = "questionIds", required = false) List<Long> questionIds,
             RedirectAttributes redirectAttributes) {
+        if (questionIds == null || questionIds.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Vui lòng chọn ít nhất một câu hỏi để giao.");
+            return "redirect:/lecturer/task/show-task/" + taskId;
+        }
         try {
             taskService.assignQuestionsToTask(taskId, questionIds);
             redirectAttributes.addFlashAttribute("success", "Questions assigned successfully");

@@ -15,7 +15,7 @@
 
 <body>
     <!--header-->
-    <div th:replace="header_user"></div>
+    <div th:replace="~{header_user}"></div>
 
     <div id="overlay"> <!-- Modal Detail -->
         <div class="modal">
@@ -59,7 +59,7 @@
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div th:replace="Lecturer/Menu-Lecturer"></div>
+        <div th:replace="~{Lecturer/Menu-Lecturer}"></div>
 
 
         <!-- Main content -->
@@ -290,11 +290,22 @@
                 document.querySelector('.info-group div:nth-child(2)').innerHTML = `<strong>Deadline:</strong> ${task.dueDate?.split('T')[0] || ''}`;
                 document.querySelector('.info-group div:nth-child(3)').innerHTML = `<strong>Status:</strong> ${formatStatus(task.status)}`;
 
-                document.querySelector('.levels div:nth-child(1)').innerHTML = `<strong>Recognition</strong><br>${task.totalRecognition}`;
-                document.querySelector('.levels div:nth-child(2)').innerHTML = `<strong>Comprehension</strong><br>${task.totalComprehension}`;
-                document.querySelector('.levels div:nth-child(3)').innerHTML = `<strong>Basic</strong><br>${task.totalBasicApplication}`;
-                document.querySelector('.levels div:nth-child(4)').innerHTML = `<strong>Advanced</strong><br>${task.totalAdvancedApplication}`;
-
+                // Kiểm tra xem task có Plan hay không (tất cả giá trị mức độ khó đều bằng 0 hoặc null)
+                const hasPlan = (task.totalRecognition > 0) || (task.totalComprehension > 0) || 
+                               (task.totalBasicApplication > 0) || (task.totalAdvancedApplication > 0);
+                
+                const levelsDiv = document.querySelector('.levels');
+                if (hasPlan) {
+                    // Hiển thị phần levels và cập nhật giá trị
+                    levelsDiv.style.display = 'block';
+                    document.querySelector('.levels div:nth-child(1)').innerHTML = `<strong>Recognition</strong><br>${task.totalRecognition || 0}`;
+                    document.querySelector('.levels div:nth-child(2)').innerHTML = `<strong>Comprehension</strong><br>${task.totalComprehension || 0}`;
+                    document.querySelector('.levels div:nth-child(3)').innerHTML = `<strong>Basic</strong><br>${task.totalBasicApplication || 0}`;
+                    document.querySelector('.levels div:nth-child(4)').innerHTML = `<strong>Advanced</strong><br>${task.totalAdvancedApplication || 0}`;
+                } else {
+                    // Ẩn phần levels nếu task không có Plan
+                    levelsDiv.style.display = 'none';
+                }
 
                 openModal();
 

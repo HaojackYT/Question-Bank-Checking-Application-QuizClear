@@ -98,15 +98,15 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
                         t.description,
                         t.dueDate,
                         t.status,
-                        p.planId,
-                        p.totalQuestions,
-                        p.totalRecognition,
-                        p.totalComprehension,
-                        p.totalBasicApplication,
-                        p.totalAdvancedApplication
+                        COALESCE(p.planId, 0),
+                        COALESCE(p.totalQuestions, t.totalQuestions),
+                        COALESCE(p.totalRecognition, 0),
+                        COALESCE(p.totalComprehension, 0),
+                        COALESCE(p.totalBasicApplication, 0),
+                        COALESCE(p.totalAdvancedApplication, 0)
                 )
                 FROM Tasks t
-                JOIN t.plan p
+                LEFT JOIN t.plan p
                 JOIN t.course c
                 WHERE t.assignedTo.userId = :userId
                 AND t.taskType = 'create_questions'
@@ -122,15 +122,15 @@ public interface TasksRepository extends JpaRepository<Tasks, Integer> {
                         t.description,
                         t.dueDate,
                         t.status,
-                        p.planId,
-                        p.totalQuestions,
-                        p.totalRecognition,
-                        p.totalComprehension,
-                        p.totalBasicApplication,
-                        p.totalAdvancedApplication
+                        COALESCE(p.planId, 0),
+                        COALESCE(p.totalQuestions, t.totalQuestions),
+                        COALESCE(p.totalRecognition, 0),
+                        COALESCE(p.totalComprehension, 0),
+                        COALESCE(p.totalBasicApplication, 0),
+                        COALESCE(p.totalAdvancedApplication, 0)
                 )
                 FROM Tasks t
-                JOIN t.plan p
+                LEFT JOIN t.plan p
                 JOIN t.course c
                 WHERE t.taskId = :taskId
         """)
