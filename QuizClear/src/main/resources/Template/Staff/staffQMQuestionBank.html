@@ -1,160 +1,191 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}" />
-    <link rel="stylesheet" th:href="@{/Static/header.css}" />
-    <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
-    <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
-    <link rel="stylesheet" th:href="@{/Static/css/staff/staffQMQuestionBank.css}" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
-        rel="stylesheet">
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <title>Template</title>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" th:href="@{/fontawesome/css/all.css}" />
+        <link rel="stylesheet" th:href="@{/Static/header.css}" />
+        <link rel="stylesheet" th:href="@{/Static/web_styles.css}" />
+        <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}" />
+        <link rel="stylesheet"
+            th:href="@{/Static/css/staff/staffQMQuestionBank.css}" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
+            rel="stylesheet">
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+        <title>Template</title>
+    </head>
 
-<body>
+    <body>
 
-    <div th:replace="~{header_user}"></div>
-    <div id="Container-body" style="display: flex; min-height: 100vh;">
-        <div th:replace="~{Menu-Staff}" style="height: 100vh; min-height: 100vh;"></div>
-        <div id="main" style="flex: 1;">
-            <div class="main-content-wrapper">
-                <div class="page-title">
-                    <h1>Question Management</h1>
-                    <p>Manage, review, and organize questions in the
-                        question bank</p>
-                </div>
-
-                <div class="tab-buttons">
-                    <a th:href="@{/staff/questions/bank}" class="tab-button active"> <i class="fas fa-folder"></i>
-                        Question Bank
-                    </a>
-                    <a th:href="@{/staff/questions/planning}" class="tab-button"> <i class="fas fa-calendar-alt"></i>
-                        Question Planning
-                    </a>
-                    <a th:href="@{/staff/questions/reports-statistics}" class="tab-button"> <i class="fas fa-chart-bar"></i>
-                        Reports & Statistics
-                    </a>
-                </div>
-
-                <div class="search-export-section">
-                    <input type="text" placeholder="Search questions..."
-                        class="search-input" 
-                        th:value="${search}"
-                        id="searchInput" />
-                    <button class="export-btn">
-                        <i class="fas fa-download"></i>
-                        Export
-                    </button>
-                </div>
-
-                <div class="filter-bar">
-                    <select class="filter-select" name="subject" id="subjectFilter">
-                        <option value="">Subject</option>
-                        <option th:each="subjectOption : ${subjectOptions}" 
-                                th:value="${subjectOption}" 
-                                th:text="${subjectOption}"
-                                th:selected="${subjectOption == subject}">Subject Option</option>
-                    </select>
-                    <select class="filter-select" name="clo" id="cloFilter">
-                        <option value="">CLO</option>
-                        <option th:each="cloOption : ${cloOptions}" 
-                                th:value="${cloOption}" 
-                                th:text="${cloOption}"
-                                th:selected="${cloOption == clo}">CLO Option</option>
-                    </select>
-                    <select class="filter-select" name="difficulty" id="difficultyFilter">
-                        <option value="">Difficulty</option>
-                        <option th:each="difficultyOption : ${difficultyOptions}" 
-                                th:value="${difficultyOption}" 
-                                th:text="${difficultyOption}"
-                                th:selected="${difficultyOption == difficulty}">Difficulty Option</option>
-                    </select>
-                    <select class="filter-select" name="creator" id="creatorFilter">
-                        <option value="">Creator</option>
-                        <option th:each="creatorOption : ${creatorOptions}" 
-                                th:value="${creatorOption}" 
-                                th:text="${creatorOption}">Creator Option</option>
-                    </select>
-                </div>
-
-                <table class="question-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Question Content</th>
-                            <th>Subject</th>
-                            <th>CLO</th>
-                            <th>Difficulty</th>
-                            <th>Creator</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Dynamic data from database -->
-                        <tr th:if="${questions != null and !questions.isEmpty()}" 
-                            th:each="question : ${questions}"
-                            th:data-id="${question.questionId}"
-                            th:data-content="${question.content}"
-                            th:data-subject="${question.courseName}" 
-                            th:data-clo="${question.cloCode}"
-                            th:data-difficulty="${question.difficultyLevel}"
-                            th:data-creator="${question.creatorName}">
-                            <td th:text="${'Q' + question.questionId}">Q1001</td>
-                            <td th:text="${question.shortContent}">Question content...</td>
-                            <td th:text="${question.courseName}">Subject</td>
-                            <td th:text="${question.cloCode}">CLO</td>
-                            <td th:text="${question.difficultyLevel}">Difficulty</td>
-                            <td th:text="${question.creatorName}">Creator</td>
-                            <td th:text="${question.createdAt}">Date</td>
-                            <td class="action-icons">
-                                <i class="fas fa-eye view-details"></i>
-                                <i class="fas fa-lock"></i>
-                            </td>
-                        </tr>
-                        
-                        <!-- Empty state when no questions -->
-                        <tr th:if="${questions == null or questions.isEmpty()}">
-                            <td colspan="8" style="text-align: center; padding: 2rem; color: #666;">
-                                <i class="fas fa-question-circle" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
-                                <span th:if="${error}" th:text="${error}">No questions found</span>
-                                <span th:unless="${error}">No questions available</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div class="pagination" th:if="${questions != null and !questions.isEmpty()}">
-                    <div class="pagination-info">
-                        <i class="fas fa-thumbtack"></i>
-                        <span th:text="'Total Pages : ' + ${totalPages ?: 0}">Total Pages : 0</span>
-                        <span th:text="'(' + ${totalElements ?: 0} + ' questions)'"> (0 questions)</span>
+        <div th:replace="~{header_user}"></div>
+        <div id="Container-body" style="display: flex; min-height: 100vh;">
+            <div th:replace="~{Menu-Staff}"
+                style="height: 100vh; min-height: 100vh;"></div>
+            <div id="main" style="flex: 1;">
+                <div class="main-content-wrapper">
+                    <div class="page-title">
+                        <h1>Question Management</h1>
+                        <p>Manage, review, and organize questions in the
+                            question bank</p>
                     </div>
-                    <div class="pagination-controls">
-                        <button class="pagination-btn" 
+
+                    <div class="tab-buttons">
+                        <a th:href="@{/staff/questions/bank}"
+                            class="tab-button active"> <i
+                                class="fas fa-folder"></i>
+                            Question Bank
+                        </a>
+                        <a th:href="@{/staff/questions/planning}"
+                            class="tab-button"> <i
+                                class="fas fa-calendar-alt"></i>
+                            Question Planning
+                        </a>
+                    </div>
+
+                    <div class="search-export-section">
+                        <input type="text" placeholder="Search questions..."
+                            class="search-input"
+                            th:value="${search}"
+                            id="searchInput" />
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+
+                    <div class="filter-bar">
+                        <select class="filter-select" name="subject"
+                            id="subjectFilter">
+                            <option value>Subject</option>
+                            <option th:each="subjectOption : ${subjectOptions}"
+                                th:value="${subjectOption}"
+                                th:text="${subjectOption}"
+                                th:selected="${subjectOption == subject}">Subject
+                                Option</option>
+                        </select>
+                        <select class="filter-select" name="clo" id="cloFilter">
+                            <option value>CLO</option>
+                            <option th:each="cloOption : ${cloOptions}"
+                                th:value="${cloOption}"
+                                th:text="${cloOption}"
+                                th:selected="${cloOption == clo}">CLO
+                                Option</option>
+                        </select>
+                        <select class="filter-select" name="difficulty"
+                            id="difficultyFilter">
+                            <option value>Difficulty</option>
+                            <option
+                                th:each="difficultyOption : ${difficultyOptions}"
+                                th:value="${difficultyOption}"
+                                th:text="${difficultyOption}"
+                                th:selected="${difficultyOption == difficulty}">Difficulty
+                                Option</option>
+                        </select>
+                        <select class="filter-select" name="creator"
+                            id="creatorFilter">
+                            <option value>Creator</option>
+                            <option th:each="creatorOption : ${creatorOptions}"
+                                th:value="${creatorOption}"
+                                th:text="${creatorOption}">Creator
+                                Option</option>
+                        </select>
+                    </div>
+
+                    <table class="question-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Question Content</th>
+                                <th>Subject</th>
+                                <th>CLO</th>
+                                <th>Difficulty</th>
+                                <th>Creator</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic data from database -->
+                            <tr
+                                th:if="${questions != null and !questions.isEmpty()}"
+                                th:each="question : ${questions}"
+                                th:data-id="${question.questionId}"
+                                th:data-content="${question.content}"
+                                th:data-subject="${question.courseName}"
+                                th:data-clo="${question.cloCode}"
+                                th:data-difficulty="${question.difficultyLevel}"
+                                th:data-creator="${question.creatorName}">
+                                <td
+                                    th:text="${'Q' + question.questionId}">Q1001</td>
+                                <td th:text="${question.shortContent}">Question
+                                    content...</td>
+                                <td
+                                    th:text="${question.courseName}">Subject</td>
+                                <td th:text="${question.cloCode}">CLO</td>
+                                <td
+                                    th:text="${question.difficultyLevel}">Difficulty</td>
+                                <td
+                                    th:text="${question.creatorName}">Creator</td>
+                                <td th:text="${question.createdAt}">Date</td>
+                                <td class="action-icons">
+                                    <i class="fas fa-eye view-details"></i>
+                                    <i class="fas fa-lock"></i>
+                                </td>
+                            </tr>
+
+                            <!-- Empty state when no questions -->
+                            <tr
+                                th:if="${questions == null or questions.isEmpty()}">
+                                <td colspan="8"
+                                    style="text-align: center; padding: 2rem; color: #666;">
+                                    <i class="fas fa-question-circle"
+                                        style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                                    <span th:if="${error}" th:text="${error}">No
+                                        questions found</span>
+                                    <span th:unless="${error}">No questions
+                                        available</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="pagination"
+                        th:if="${questions != null and !questions.isEmpty()}">
+                        <div class="pagination-info">
+                            <i class="fas fa-thumbtack"></i>
+                            <span
+                                th:text="'Total Pages : ' + ${totalPages ?: 0}">Total
+                                Pages : 0</span>
+                            <span
+                                th:text="'(' + ${totalElements ?: 0} + ' questions)'">
+                                (0 questions)</span>
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn"
                                 th:disabled="${currentPage == 0}"
                                 onclick="changePage(0)"><< First</button>
-                        <button class="pagination-btn" 
+                            <button class="pagination-btn"
                                 th:disabled="${currentPage == 0}"
-                                th:onclick="'changePage(' + ${currentPage - 1} + ')'">< Previous</button>
-                        <span class="current-page" th:text="${currentPage + 1}">1</span>
-                        <span> of </span>
-                        <span th:text="${totalPages ?: 1}">1</span>
-                        <button class="pagination-btn" 
+                                th:onclick="'changePage(' + ${currentPage - 1} + ')'"><
+                                Previous</button>
+                            <span class="current-page"
+                                th:text="${currentPage + 1}">1</span>
+                            <span> of </span>
+                            <span th:text="${totalPages ?: 1}">1</span>
+                            <button class="pagination-btn"
                                 th:disabled="${currentPage >= totalPages - 1}"
-                                th:onclick="'changePage(' + ${currentPage + 1} + ')'">Next ></button>
-                        <button class="pagination-btn" 
+                                th:onclick="'changePage(' + ${currentPage + 1} + ')'">Next
+                                ></button>
+                            <button class="pagination-btn"
                                 th:disabled="${currentPage >= totalPages - 1}"
-                                th:onclick="'changePage(' + ${totalPages - 1} + ')'">Last >></button>
+                                th:onclick="'changePage(' + ${totalPages - 1} + ')'">Last
+                                >></button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
                 <div class="modal" id="questionModal">
                     <div class="modal-content">
