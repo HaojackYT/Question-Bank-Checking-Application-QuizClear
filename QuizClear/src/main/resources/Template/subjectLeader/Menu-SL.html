@@ -1,46 +1,50 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Menu Fragment</title>
 </head>
+
 <body>
 
-<div th:fragment="Menu-SL" id="Menu-Staff">
-    <div style="padding: 1rem;">
-        <div class="elements ">
-            <i class="fa-solid fa-house "></i>
-            <a th:href="@{/subject-leader/dashboard}">Dashboard</a>
-        </div>
-        <div class="elements">
-            <i class="fa-solid fa-list-check"></i>
-            <a th:href="@{/subject-leader/plans}">Plans</a>
-        </div>        <div class="elements">
-            <i class="fa-solid fa-comments"></i>
-            <a th:href="@{/subject-leader/task-management}">Task Management</a>
-        </div>
-        <div class="elements">
-            <i class="fa-solid fa-file"></i>
-            <a th:href="@{/subject-leader/exam-assignment}">Exam Assignment</a>
-        </div>
-        <div class="elements">
-            <i class="fa-solid fa-copy"></i>
-            <a th:href="@{/subject-leader/duplication-check}">Duplication Check</a>
-        </div>
-        <div class="elements">
-            <i class="fa-solid fa-thumbs-up"></i>
-            <a th:href="@{/subject-leader/review-approval}">Review & Approval</a>
-        </div>
-        <div class="elements">
-            <i class="fa-solid fa-flag"></i>
-            <a th:href="@{/subject-leader/summary-report}">Summary Report</a>
-        </div>
-        <div class="elements">
-            <i class="fa-solid fa-chart-simple"></i>
-            <a th:href="@{/subject-leader/feedback}">Feedback</a>
+    <div th:fragment="Menu-SL" id="Menu-Staff">
+        <div style="padding: 1rem;">
+            <div class="elements ">
+                <i class="fa-solid fa-house "></i>
+                <a th:href="@{/subject-leader/dashboard}">Dashboard</a>
+            </div>
+            <div class="elements">
+                <i class="fa-solid fa-list-check"></i>
+                <a th:href="@{/subject-leader/plans}">Plans</a>
+            </div>
+            <div class="elements">
+                <i class="fa-solid fa-comments"></i>
+                <a th:href="@{/subject-leader/task-management}">Task Management</a>
+            </div>
+            <div class="elements">
+                <i class="fa-solid fa-file"></i>
+                <a th:href="@{/subject-leader/exam-assignment}">Exam Assignment</a>
+            </div>
+            <div class="elements">
+                <i class="fa-solid fa-copy"></i>
+                <a th:href="@{/subject-leader/duplication-check}">Duplication Check</a>
+            </div>
+            <div class="elements">
+                <i class="fa-solid fa-thumbs-up"></i>
+                <a th:href="@{/subject-leader/review-approval}">Review & Approval</a>
+            </div>
+            <div class="elements">
+                <i class="fa-solid fa-flag"></i>
+                <a th:href="@{/subject-leader/summary-report}">Summary Report</a>
+            </div>
+            <div class="elements">
+                <i class="fa-solid fa-chart-simple"></i>
+                <a th:href="@{/subject-leader/feedback}">Feedback</a>
+            </div>
         </div>
     </div>
-</div>
 
 </body>
+
 </html>

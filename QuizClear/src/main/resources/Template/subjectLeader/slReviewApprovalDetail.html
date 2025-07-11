@@ -11,7 +11,7 @@
     <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/slReviewApprovalDetail.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <title>Review & Approval Details</title>
+    <title>Review&Approval</title>
 </head>
 
 <body>
@@ -21,7 +21,7 @@
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div th:replace="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
+        <div><div th:replace="~{subjectLeader/Menu-SL :: Menu-SL}"></div></div>
 
         <!-- Main content -->
         <div id="main">
@@ -133,7 +133,8 @@
         </div>
         <div class="modal-body">
             <p>Please provide any comments or edit suggestions for this question</p>
-            <textarea class="modal-textarea" id="editTextarea" placeholder="Enter your comments or suggestions here..."></textarea>
+            <textarea class="modal-textarea" id="editTextarea"
+                placeholder="Enter your comments or suggestions here..."></textarea>
         </div>
         <div class="modal-footer">
             <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
@@ -149,7 +150,8 @@
         </div>
         <div class="modal-body">
             <p>Provide a reason for declining this question.</p>
-            <textarea class="modal-textarea" id="declineTextarea" placeholder="Enter your decline reason here..."></textarea>
+            <textarea class="modal-textarea" id="declineTextarea"
+                placeholder="Enter your decline reason here..."></textarea>
         </div>
         <div class="modal-footer">
             <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
@@ -319,6 +321,12 @@
 
         // Initial load
         window.onload = fetchTaskDetails;
+    </script>
+    <script>
+        // Set active menu based on current page
+        document.addEventListener('DOMContentLoaded', function () {
+            setActiveMenu(document.title);
+        });
     </script>
     <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>

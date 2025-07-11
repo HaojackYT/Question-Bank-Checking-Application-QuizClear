@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../../Static/Menu-Staff.css">
     <link rel="stylesheet" href="../../Static/css/staff/staffReviewQuestion.css">
         <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-        <title>Template</title>
+        <title>Question Management</title>
     </head>
 
     <body>
@@ -142,5 +142,12 @@
                 });
 
         </script>
+        <script>
+    // Set active menu based on current page
+    document.addEventListener('DOMContentLoaded', function () {
+        setActiveMenu(document.title);
+    });
+</script>
+<script th:src="@{/Static/js/L_activeMenu.js}"></script>
     </body>
 </html>

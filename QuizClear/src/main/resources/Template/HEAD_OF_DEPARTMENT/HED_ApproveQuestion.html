@@ -11,30 +11,31 @@
     <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
     <link rel="stylesheet" th:href="@{/Static/css/HED/HED_ExamManagement.css}">
     <link rel="stylesheet" th:href="@{/Static/css/HED/HED_ApproveQuestion.css}">
-    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">    <title>Approve_Question</title>
-    
+    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
+    <title>Approve_Question</title>
+
     <style>
         .notification_item.hidden {
             display: none;
         }
-        
+
         .notification-section .see-more {
             color: #3b82f6;
             text-decoration: none;
             font-weight: 500;
             transition: color 0.2s;
         }
-        
+
         .notification-section .see-more:hover {
             color: #1d4ed8;
             text-decoration: underline;
         }
-        
+
         #seeMoreBtn {
             margin-top: 10px;
             display: inline-block;
         }
-        
+
         /* Pagination button styles */
         .prev-btn:disabled,
         .next-btn:disabled {
@@ -43,12 +44,13 @@
             background-color: #e5e7eb;
             color: #9ca3af;
         }
-          .prev-btn:disabled:hover,
+
+        .prev-btn:disabled:hover,
         .next-btn:disabled:hover {
             background-color: #e5e7eb;
             color: #9ca3af;
         }
-        
+
         /* Modal footer button styles */
         .close-modal-btn {
             background-color: #6b7280;
@@ -64,7 +66,7 @@
             transition: background-color 0.2s;
             margin: 0 auto;
         }
-        
+
         .close-modal-btn:hover {
             background-color: #4b5563;
         }
@@ -143,34 +145,39 @@
                 <div class="see-more">
                     <a href="#" class="see-more-link">See more...</a>
                 </div>
-            </div>            <div class="modal-footer">
+            </div>
+            <div class="modal-footer">
                 <button class="close-modal-btn">
                     <i class="fas fa-times"></i>
                     <span>Close</span>
                 </button>
-            </div></div>
+            </div>
+        </div>
     </div>
     <!-- body -->
     <div id="Container-body">
         <!-- Menu using Thymeleaf fragment -->
-        <div th:replace="~{HEAD_OF_DEPARTMENT/Menu-HED :: menu}"></div>
+        <div><div th:replace="~{HEAD_OF_DEPARTMENT/Menu-HED :: menu}"></div></div>
 
         <!-- Main content -->
         <div id="main">
             <div class="content-header">
                 <h1 class="title">Approve Questions</h1>
-            </div>            <!-- Notification Section -->
+            </div> <!-- Notification Section -->
             <div class="notification-section">
                 <h2>New Notification</h2>
-                <p class="notification-subtitle">Submission to be approved</p>                <div class="notification_items" id="notificationContainer">                    <!-- Dynamic notifications will be loaded here -->
+                <p class="notification-subtitle">Submission to be approved</p>
+                <div class="notification_items" id="notificationContainer">
+                    <!-- Dynamic notifications will be loaded here -->
                     <div th:if="${pendingExams != null and !pendingExams.isEmpty()}">
                         <!-- Only show first 3 notifications initially -->
-                        <div th:each="question, iterStat : ${pendingExams}" 
-                             th:class="${iterStat.index < 3} ? 'notification_item' : 'notification_item hidden'"
-                             class="notification_item">
+                        <div th:each="question, iterStat : ${pendingExams}"
+                            th:class="${iterStat.index < 3} ? 'notification_item' : 'notification_item hidden'"
+                            class="notification_item">
                             <input type="checkbox" checked>
                             <div class="notification-text">
-                                <strong th:text="'New Question: ' + ${question.createdByName} + ' has submitted a question for ' + ${question.subjectName}">
+                                <strong
+                                    th:text="'New Question: ' + ${question.createdByName} + ' has submitted a question for ' + ${question.subjectName}">
                                     Notification text
                                 </strong>
                                 <p th:text="'At: ' + ${question.updatedDate}">At: Time</p>
@@ -182,11 +189,12 @@
                             <strong>No pending approvals at this time</strong>
                             <p>All submissions have been processed</p>
                         </div>
-                    </div>                </div>
+                    </div>
+                </div>
                 <!-- Only show "See more" button if there are more than 3 notifications -->
-                <a href="#" class="see-more" onclick="toggleNotifications()" id="seeMoreBtn" 
-                   th:style="${pendingExams != null and #lists.size(pendingExams) > 3} ? 'display: inline-block;' : 'display: none;'">
-                   See more...
+                <a href="#" class="see-more" onclick="toggleNotifications()" id="seeMoreBtn"
+                    th:style="${pendingExams != null and #lists.size(pendingExams) > 3} ? 'display: inline-block;' : 'display: none;'">
+                    See more...
                 </a>
             </div>
 
@@ -198,7 +206,8 @@
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
-                <div class="filter-controls">                    <div class="filter-dropdown">
+                <div class="filter-controls">
+                    <div class="filter-dropdown">
                         <select class="filter-select">
                             <option value="">All Status</option>
                             <option value="ARCHIVED">Archived (Resubmitted by SL)</option>
@@ -220,7 +229,8 @@
 
             <!-- Exam Table -->
             <div class="table-container">
-                <table class="exam-table">                    <thead>
+                <table class="exam-table">
+                    <thead>
                         <tr>
                             <th>ID</th>
                             <th>Subject</th>
@@ -245,52 +255,55 @@
                             <td th:text="${#strings.abbreviate(question.content, 50)}">Content</td>
                             <td th:text="${question.updatedDate}">Updated Date</td>
                             <td>
-                                <span th:class="'status-badge ' + ${#strings.toLowerCase(question.status)}" 
-                                      th:text="${question.status}">Status</span>
+                                <span th:class="'status-badge ' + ${#strings.toLowerCase(question.status)}"
+                                    th:text="${question.status}">Status</span>
                             </td>
                             <td>
-                                <button class="action-btn view-btn" title="View" 
-                                        th:onclick="'viewQuestion(' + ${question.questionId} + ')'">
+                                <button class="action-btn view-btn" title="View"
+                                    th:onclick="'viewQuestion(' + ${question.questionId} + ')'">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button th:if="${question.status == 'SUBMITTED'}" 
-                                        class="action-btn edit-btn" title="Approve" 
-                                        th:onclick="'approveQuestion(' + ${question.questionId} + ')'">
+                                <button th:if="${question.status == 'SUBMITTED'}" class="action-btn edit-btn"
+                                    title="Approve" th:onclick="'approveQuestion(' + ${question.questionId} + ')'">
                                     <i class="fas fa-check"></i>
                                 </button>
-                                <button th:if="${question.status == 'SUBMITTED'}" 
-                                        class="action-btn delete-btn" title="Reject" 
-                                        th:onclick="'rejectQuestion(' + ${question.questionId} + ')'">
+                                <button th:if="${question.status == 'SUBMITTED'}" class="action-btn delete-btn"
+                                    title="Reject" th:onclick="'rejectQuestion(' + ${question.questionId} + ')'">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </td>
                         </tr>
-                    </tbody></table>
+                    </tbody>
+                </table>
             </div>
 
             <!-- Pagination -->
             <div class="pagination">
-                <i class="fa-solid fa-bullhorn" style="padding: 20px;"></i>                <p class="page-info" style="padding: 10px;">Page:</p>
+                <i class="fa-solid fa-bullhorn" style="padding: 20px;"></i>
+                <p class="page-info" style="padding: 10px;">Page:</p>
                 <p class="page-info" id="currentPageDisplay">1</p>
                 <p class="page-info" style="padding: 0px 5px;">of</p>
                 <p class="page-info" id="totalPagesDisplay">1</p>
-                <div class="page-controls">                    <button class="prev-btn" id="prevPageBtn" disabled><i class="fa-solid fa-chevron-left" style="padding: 0px 5px;"></i>
+                <div class="page-controls"> <button class="prev-btn" id="prevPageBtn" disabled><i
+                            class="fa-solid fa-chevron-left" style="padding: 0px 5px;"></i>
                         Previous</button>
                     <button class="next-btn" id="nextPageBtn" disabled>Next <i class="fa-solid fa-chevron-right"
                             style="padding: 0px 5px;"></i></button>
-                </div>            </div>            <script th:inline="javascript">
+                </div>
+            </div>
+            <script th:inline="javascript">
                 /*<![CDATA[*/
-                
+
                 // Toggle notifications visibility - GLOBAL FUNCTION
                 function toggleNotifications() {
                     console.log('toggleNotifications called');
                     const hiddenNotifications = document.querySelectorAll('.notification_item.hidden');
                     const seeMoreBtn = document.getElementById('seeMoreBtn');
                     const allNotifications = document.querySelectorAll('.notification_item');
-                    
+
                     console.log('Total notifications:', allNotifications.length);
                     console.log('Hidden notifications:', hiddenNotifications.length);
-                    
+
                     if (hiddenNotifications.length > 0) {
                         // Show all hidden notifications
                         console.log('Showing hidden notifications');
@@ -309,45 +322,45 @@
                         if (seeMoreBtn) seeMoreBtn.textContent = 'See more...';
                     }
                 }
-                  // Get department head ID from server (passed from controller)
+                // Get department head ID from server (passed from controller)
                 const hedId = /*[[${hedId}]]*/ null;
                 console.log("Using hedId:", hedId);
-                
+
                 // Pagination variables
                 let currentPage = 1;
                 let totalQuestions = 0;
                 const questionsPerPage = 10;
                 let allQuestions = []; // Store all questions for pagination
-                  // Check if user is authenticated
+                // Check if user is authenticated
                 if (!hedId) {
                     console.error("User not authenticated or hedId not provided");
                     window.location.href = '/login';
                     // Don't use return here - just redirect and continue
                 }
-                  // Load questions for approval with optional page reset
+                // Load questions for approval with optional page reset
                 function loadQuestionsForApproval(resetToFirstPage = false) {
                     if (resetToFirstPage) {
                         currentPage = 1; // Reset to first page for new searches/filters
                     }
-                    
+
                     const selects = document.querySelectorAll('.filter-controls select');
                     const status = selects[0] ? selects[0].value : '';
                     const subject = selects[1] ? selects[1].value : '';
                     const searchInput = document.querySelector('.search-input');
                     const search = searchInput ? searchInput.value : '';
-                      const params = new URLSearchParams();
+                    const params = new URLSearchParams();
                     if (status && status !== '') params.append('status', status);
                     if (subject && subject !== '') params.append('subject', subject);
                     if (search && search !== '') params.append('search', search);
                     // Note: hedId is now automatically determined by backend from session
-                    
+
                     const url = `/hed/api/questions/pending-approval?${params.toString()}`;
                     console.log("Fetching:", url);
-                    
+
                     // Show loading state  
                     const tbody = document.querySelector('#examTableBody');
                     tbody.innerHTML = '<tr><td colspan="7" class="loading">Loading questions for approval...</td></tr>';
-                    
+
                     fetch(url)
                         .then(response => {
                             console.log("Response status:", response.status);
@@ -355,18 +368,18 @@
                                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                             }
                             return response.json();
-                        })                        .then(data => {
+                        }).then(data => {
                             console.log("API Response:", data);
                             if (data.error) {
                                 showError('Server error: ' + data.error);
                                 return;
                             }
-                            
+
                             // Store questions data globally for notifications and pagination
                             window.currentQuestions = data.questions || [];
                             allQuestions = data.questions || [];
                             totalQuestions = allQuestions.length;
-                            
+
                             // Adjust current page if it's beyond the new total pages
                             const totalPages = Math.ceil(totalQuestions / questionsPerPage);
                             if (currentPage > totalPages && totalPages > 0) {
@@ -375,7 +388,7 @@
                                 currentPage = 1;
                             }
                             // Don't reset to page 1 on reload unless necessary
-                            
+
                             updatePagination();
                             displayCurrentPage();
                             updateNotifications(data.notifications || []);
@@ -399,7 +412,7 @@
                             const subjectSelect = selects[1]; // Second dropdown is subject
                             if (subjectSelect) {
                                 subjectSelect.innerHTML = '<option value="">All Subject</option>';
-                                
+
                                 if (Array.isArray(data)) {
                                     data.forEach(subject => {
                                         const option = document.createElement('option');
@@ -426,11 +439,11 @@
                             }
                         });
                 }
-                
+
                 // Update questions table
                 function updateQuestionsTable(questions) {
                     const tbody = document.querySelector('#examTableBody');
-                    
+
                     if (!questions || questions.length === 0) {
                         tbody.innerHTML = `
                             <tr>
@@ -442,9 +455,9 @@
                         `;
                         return;
                     }
-                    
+
                     tbody.innerHTML = '';
-                      questions.forEach(question => {
+                    questions.forEach(question => {
                         const row = document.createElement('tr');
                         row.setAttribute('data-exam-id', question.questionId);                        // Determine action buttons based on status - HoD only handles ARCHIVED questions
                         let actionButtons = '';
@@ -466,7 +479,7 @@
                                     <i class="fas fa-eye"></i>
                                 </button>
                             `;
-                        }row.innerHTML = `
+                        } row.innerHTML = `
                             <td>${question.questionId}</td>
                             <td>${question.subjectName || 'N/A'}</td>
                             <td>${question.createdByName || 'N/A'}</td>
@@ -481,15 +494,15 @@
                                 </div>
                             </td>
                         `;
-                        
+
                         tbody.appendChild(row);
                     });
                 }
-                  // Update notifications
+                // Update notifications
                 function updateNotifications(notifications) {
                     const container = document.getElementById('notificationContainer');
                     if (!container) return;
-                    
+
                     // If no notifications provided, try to get from questions data
                     if (!notifications || notifications.length === 0) {
                         // Try to get questions data and create notifications from them
@@ -508,7 +521,7 @@
                                 `;
                                 container.appendChild(item);
                             });
-                            
+
                             // Show/hide "See more" button
                             const seeMoreBtn = document.getElementById('seeMoreBtn');
                             if (seeMoreBtn) {
@@ -520,7 +533,7 @@
                             }
                             return;
                         }
-                        
+
                         // If no questions either, show no pending message
                         container.innerHTML = `
                             <div class="notification_item">
@@ -530,7 +543,7 @@
                                 </div>
                             </div>
                         `;
-                        
+
                         // Hide "See more" button
                         const seeMoreBtn = document.getElementById('seeMoreBtn');
                         if (seeMoreBtn) {
@@ -538,7 +551,7 @@
                         }
                         return;
                     }
-                    
+
                     // If notifications are provided, use them
                     container.innerHTML = '';
                     notifications.forEach((notif, index) => {
@@ -553,7 +566,7 @@
                         `;
                         container.appendChild(item);
                     });
-                    
+
                     // Show/hide "See more" button
                     const seeMoreBtn = document.getElementById('seeMoreBtn');
                     if (seeMoreBtn) {
@@ -564,7 +577,7 @@
                         }
                     }
                 }
-                
+
                 // View question details
                 function viewQuestion(questionId) {
                     fetch(`/hed/api/questions/${questionId}`)
@@ -590,11 +603,50 @@
                             },
                             body: JSON.stringify({ hedId: hedId })
                         })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.error) {
+                                    alert('Error: ' + data.error);
+                                } else {
+                                    alert('Question approved successfully!');
+                                    const currentPageToPreserve = currentPage; // Store current page
+                                    loadQuestionsForApproval(); // Reload to update the table
+                                    // Note: currentPage will be restored in loadQuestionsForApproval if still valid
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('Failed to approve question');
+                            });
+                    }
+                }                // Reject a question
+                function rejectQuestion(questionId, feedback) {
+                    if (!feedback) {
+                        feedback = prompt('Please provide feedback for rejection:');
+                        if (feedback === null) return; // User cancelled
+
+                        if (feedback.trim() === '') {
+                            alert('Please provide feedback before rejecting the question.');
+                            return;
+                        }
+                    }
+
+                    fetch(`/hed/api/questions/${questionId}/reject`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            hedId: hedId,
+                            feedback: feedback
+                        })
+                    })
                         .then(response => response.json())
                         .then(data => {
                             if (data.error) {
-                                alert('Error: ' + data.error);                        } else {
-                                alert('Question approved successfully!');
+                                alert('Error: ' + data.error);
+                            } else {
+                                alert('Question rejected successfully!');
                                 const currentPageToPreserve = currentPage; // Store current page
                                 loadQuestionsForApproval(); // Reload to update the table
                                 // Note: currentPage will be restored in loadQuestionsForApproval if still valid
@@ -602,73 +654,36 @@
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            alert('Failed to approve question');
+                            alert('Failed to reject question');
                         });
-                    }
-                }                // Reject a question
-                function rejectQuestion(questionId, feedback) {
-                    if (!feedback) {
-                        feedback = prompt('Please provide feedback for rejection:');
-                        if (feedback === null) return; // User cancelled
-                        
-                        if (feedback.trim() === '') {
-                            alert('Please provide feedback before rejecting the question.');
-                            return;
-                        }
-                    }
-                    
-                    fetch(`/hed/api/questions/${questionId}/reject`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ 
-                            hedId: hedId,
-                            feedback: feedback 
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            alert('Error: ' + data.error);                        } else {
-                            alert('Question rejected successfully!');
-                            const currentPageToPreserve = currentPage; // Store current page
-                            loadQuestionsForApproval(); // Reload to update the table
-                            // Note: currentPage will be restored in loadQuestionsForApproval if still valid
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Failed to reject question');
-                    });
                 }// Update pagination display and button states
                 function updatePagination() {
                     const totalPages = Math.ceil(totalQuestions / questionsPerPage);
-                    
+
                     // Update display
                     document.getElementById('currentPageDisplay').textContent = currentPage;
                     document.getElementById('totalPagesDisplay').textContent = totalPages;
-                    
+
                     // Update button states
                     const prevBtn = document.getElementById('prevPageBtn');
                     const nextBtn = document.getElementById('nextPageBtn');
-                    
+
                     prevBtn.disabled = currentPage <= 1;
                     nextBtn.disabled = currentPage >= totalPages;
-                    
+
                     console.log(`Pagination updated: ${currentPage}/${totalPages}, Total questions: ${totalQuestions}`);
                 }
-                
+
                 // Display questions for current page
                 function displayCurrentPage() {
                     const startIndex = (currentPage - 1) * questionsPerPage;
                     const endIndex = startIndex + questionsPerPage;
                     const questionsToShow = allQuestions.slice(startIndex, endIndex);
-                    
+
                     console.log(`Displaying page ${currentPage}: questions ${startIndex + 1}-${Math.min(endIndex, totalQuestions)} of ${totalQuestions}`);
                     updateQuestionsTable(questionsToShow);
                 }
-                
+
                 // Go to previous page
                 function goToPreviousPage() {
                     if (currentPage > 1) {
@@ -677,7 +692,7 @@
                         displayCurrentPage();
                     }
                 }
-                
+
                 // Go to next page
                 function goToNextPage() {
                     const totalPages = Math.ceil(totalQuestions / questionsPerPage);
@@ -690,9 +705,9 @@
                 function openQuestionModal(question) {
                     const modal = document.getElementById('examDetailsModal');
                     if (!modal) return;
-                      // Store question ID in modal for later use
+                    // Store question ID in modal for later use
                     modal.setAttribute('data-question-id', question.questionId);
-                    
+
                     // Populate modal with question data - using correct QuestionDTO properties
                     document.getElementById('modalDueDate').textContent = question.updatedDate || 'N/A';
                     document.getElementById('modalLecturer').textContent = `${question.createdByName || 'N/A'} - ${question.createdById || ''}`;
@@ -701,84 +716,92 @@
                     document.getElementById('modalSubject').textContent = question.subjectName || 'N/A';
                     document.getElementById('modalDeadline').textContent = question.updatedDate || 'N/A';
                     document.getElementById('modalDescription').textContent = question.content || 'No content available';
-                    
+
                     const modalStatus = document.getElementById('modalStatus');
                     modalStatus.textContent = question.status || 'Unknown';
                     modalStatus.className = `status-badge ${question.status ? question.status.toLowerCase() : 'unknown'}`;
-                      // Show modal
+                    // Show modal
                     modal.style.display = 'block';
                 }
-                
+
                 // Load more notifications (legacy function)
                 function loadMoreNotifications() {
                     toggleNotifications();
                 }
-                  // Initialize page
-                document.addEventListener('DOMContentLoaded', function() {
+                // Initialize page
+                document.addEventListener('DOMContentLoaded', function () {
                     loadSubjects();
                     loadQuestionsForApproval(true); // Reset to first page on initial load
-                    
+
                     // Add event listeners for filters and search
                     document.querySelectorAll('.filter-controls select').forEach(select => {
-                        select.addEventListener('change', function() {
+                        select.addEventListener('change', function () {
                             loadQuestionsForApproval(true); // Reset to first page when filters change
                         });
                     });
-                    
-                    document.querySelector('.search-input').addEventListener('input', function() {
+
+                    document.querySelector('.search-input').addEventListener('input', function () {
                         clearTimeout(this.searchTimeout);
-                        this.searchTimeout = setTimeout(function() {
+                        this.searchTimeout = setTimeout(function () {
                             loadQuestionsForApproval(true); // Reset to first page when search changes
                         }, 500); // Debounce search
                     });
-                    
-                    document.querySelector('.search-btn').addEventListener('click', function() {
+
+                    document.querySelector('.search-btn').addEventListener('click', function () {
                         loadQuestionsForApproval(true); // Reset to first page when search button clicked
                     });
-                    
+
                     // Modal functionality
                     const modal = document.getElementById('examDetailsModal');
                     if (modal) {
                         // Close modal events
                         const closeBtn = modal.querySelector('.close-btn');
                         if (closeBtn) {
-                            closeBtn.addEventListener('click', function() {
+                            closeBtn.addEventListener('click', function () {
                                 modal.style.display = 'none';
                             });
                         }
-                        
+
                         // Close modal when clicking outside
-                        window.addEventListener('click', function(e) {
+                        window.addEventListener('click', function (e) {
                             if (e.target === modal) {
                                 modal.style.display = 'none';
-                            }                        });
-                        
+                            }
+                        });
+
                         // Close modal button in footer
                         const closeModalBtn = modal.querySelector('.close-modal-btn');
                         if (closeModalBtn) {
-                            closeModalBtn.addEventListener('click', function() {
+                            closeModalBtn.addEventListener('click', function () {
                                 modal.style.display = 'none';
                             });
                         }
                     }
-                    
+
                     // Pagination button event listeners
                     const prevBtn = document.getElementById('prevPageBtn');
                     const nextBtn = document.getElementById('nextPageBtn');
-                    
+
                     if (prevBtn) {
                         prevBtn.addEventListener('click', goToPreviousPage);
                     }
-                    
+
                     if (nextBtn) {
                         nextBtn.addEventListener('click', goToNextPage);
                     }
                 });
                 /*]]>*/
-            </script>            <script th:src="@{/Static/js/HED_ExamManagement.js}"></script>
+            </script>
+            <script th:src="@{/Static/js/HED_ExamManagement.js}"></script>
             <script th:src="@{/Static/js/L_activeMenu.js}"></script>
         </div>
     </div>
 </body>
+<script>
+    // Set active menu based on current page
+    document.addEventListener('DOMContentLoaded', function () {
+        setActiveMenu(document.title);
+    });
+</script>
 
 </html>

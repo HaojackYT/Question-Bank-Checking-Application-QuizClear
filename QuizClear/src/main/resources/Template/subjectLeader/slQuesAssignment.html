@@ -77,12 +77,18 @@
                                 </td>
                                 <td class="actions-cell">
                                     <div class="actions">
-                                        <button class="action-button edit-button" data-id="1" title="Edit Question"><i class="fa fa-edit"></i></button>
-                                        <button class="action-button assign-button" data-id="1" title="Assign to Lecturer"><i class="fa fa-user-plus"></i></button>
-                                        <button class="action-button resubmit-button" data-id="1" title="Resubmit for Review"><i class="fa fa-redo"></i></button>
-                                        <button class="action-button reject-button" data-id="1" title="Reject Question"><i class="fa fa-times"></i></button>
-                                        <button class="action-button approve-button" data-id="1" title="Direct Approve to Database"><i class="fa fa-check"></i></button>
-                                        <button class="action-button view-button" data-id="1" title="View Details"><i class="fa fa-eye"></i></button>
+                                        <button class="action-button edit-button" data-id="1" title="Edit Question"><i
+                                                class="fa fa-edit"></i></button>
+                                        <button class="action-button assign-button" data-id="1"
+                                            title="Assign to Lecturer"><i class="fa fa-user-plus"></i></button>
+                                        <button class="action-button resubmit-button" data-id="1"
+                                            title="Resubmit for Review"><i class="fa fa-redo"></i></button>
+                                        <button class="action-button reject-button" data-id="1"
+                                            title="Reject Question"><i class="fa fa-times"></i></button>
+                                        <button class="action-button approve-button" data-id="1"
+                                            title="Direct Approve to Database"><i class="fa fa-check"></i></button>
+                                        <button class="action-button view-button" data-id="1" title="View Details"><i
+                                                class="fa fa-eye"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -97,12 +103,18 @@
                                 </td>
                                 <td class="actions-cell">
                                     <div class="actions">
-                                        <button class="action-button edit-button" data-id="2" title="Edit Question"><i class="fa fa-edit"></i></button>
-                                        <button class="action-button assign-button" data-id="2" title="Assign to Lecturer"><i class="fa fa-user-plus"></i></button>
-                                        <button class="action-button resubmit-button" data-id="2" title="Resubmit for Review"><i class="fa fa-redo"></i></button>
-                                        <button class="action-button reject-button" data-id="2" title="Reject Question"><i class="fa fa-times"></i></button>
-                                        <button class="action-button approve-button" data-id="2" title="Direct Approve to Database"><i class="fa fa-check"></i></button>
-                                        <button class="action-button view-button" data-id="2" title="View Details"><i class="fa fa-eye"></i></button>
+                                        <button class="action-button edit-button" data-id="2" title="Edit Question"><i
+                                                class="fa fa-edit"></i></button>
+                                        <button class="action-button assign-button" data-id="2"
+                                            title="Assign to Lecturer"><i class="fa fa-user-plus"></i></button>
+                                        <button class="action-button resubmit-button" data-id="2"
+                                            title="Resubmit for Review"><i class="fa fa-redo"></i></button>
+                                        <button class="action-button reject-button" data-id="2"
+                                            title="Reject Question"><i class="fa fa-times"></i></button>
+                                        <button class="action-button approve-button" data-id="2"
+                                            title="Direct Approve to Database"><i class="fa fa-check"></i></button>
+                                        <button class="action-button view-button" data-id="2" title="View Details"><i
+                                                class="fa fa-eye"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -117,12 +129,18 @@
                                 </td>
                                 <td class="actions-cell">
                                     <div class="actions">
-                                        <button class="action-button edit-button" data-id="3" title="Edit Question"><i class="fa fa-edit"></i></button>
-                                        <button class="action-button assign-button" data-id="3" title="Assign to Lecturer"><i class="fa fa-user-plus"></i></button>
-                                        <button class="action-button resubmit-button" data-id="3" title="Resubmit for Review"><i class="fa fa-redo"></i></button>
-                                        <button class="action-button reject-button" data-id="3" title="Reject Question"><i class="fa fa-times"></i></button>
-                                        <button class="action-button approve-button" data-id="3" title="Direct Approve to Database"><i class="fa fa-check"></i></button>
-                                        <button class="action-button view-button" data-id="3" title="View Details"><i class="fa fa-eye"></i></button>
+                                        <button class="action-button edit-button" data-id="3" title="Edit Question"><i
+                                                class="fa fa-edit"></i></button>
+                                        <button class="action-button assign-button" data-id="3"
+                                            title="Assign to Lecturer"><i class="fa fa-user-plus"></i></button>
+                                        <button class="action-button resubmit-button" data-id="3"
+                                            title="Resubmit for Review"><i class="fa fa-redo"></i></button>
+                                        <button class="action-button reject-button" data-id="3"
+                                            title="Reject Question"><i class="fa fa-times"></i></button>
+                                        <button class="action-button approve-button" data-id="3"
+                                            title="Direct Approve to Database"><i class="fa fa-check"></i></button>
+                                        <button class="action-button view-button" data-id="3" title="View Details"><i
+                                                class="fa fa-eye"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -351,7 +369,12 @@
         </div>
     </div>
 
-
+    <script>
+        // Set active menu based on current page
+        document.addEventListener('DOMContentLoaded', function () {
+            setActiveMenu(document.title);
+        });
+    </script>
     <script th:src="@{/Static/js/slQuesAssignment.js}"></script>
     <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>

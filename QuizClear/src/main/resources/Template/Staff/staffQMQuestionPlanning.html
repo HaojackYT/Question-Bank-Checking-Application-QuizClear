@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" th:href="@{/Static/css/staff/staffSubmissionTable.css}" />
     <link rel="stylesheet" th:href="@{/Static/css/staff/staffQMQuestionPlanning.css}" />
-    <title>Question Planning</title>
+    <title>Question Management</title>
 </head>
 
 <body>
@@ -563,5 +563,12 @@
             };
         });
     </script>
+    <script>
+    // Set active menu based on current page
+    document.addEventListener('DOMContentLoaded', function () {
+        setActiveMenu(document.title);
+    });
+</script>
+<script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 </html>

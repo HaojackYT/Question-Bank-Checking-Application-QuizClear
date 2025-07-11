@@ -3,37 +3,39 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/Static/header.css}">
     <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
     <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
-    <link rel="stylesheet" th:href="@{/Static/css/HED/HED_ExamManagement.css}">    <link rel="stylesheet" th:href="@{/Static/css/HED/HED_JoinTask.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/HED/HED_ExamManagement.css}">
+    <link rel="stylesheet" th:href="@{/Static/css/HED/HED_JoinTask.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <title>Join_Task</title>
-    
+
     <style>
         .notification_item.hidden {
             display: none;
         }
-        
+
         .notification-section .see-more {
             color: #3b82f6;
             text-decoration: none;
             font-weight: 500;
             transition: color 0.2s;
         }
-        
+
         .notification-section .see-more:hover {
             color: #1d4ed8;
             text-decoration: underline;
         }
-        
+
         #seeMoreBtn {
             margin-top: 10px;
             display: inline-block;
         }
-        
+
         /* Pagination button styles */
         .prev-btn:disabled,
         .next-btn:disabled {
@@ -42,12 +44,13 @@
             background-color: #e5e7eb;
             color: #9ca3af;
         }
-          .prev-btn:disabled:hover,
+
+        .prev-btn:disabled:hover,
         .next-btn:disabled:hover {
             background-color: #e5e7eb;
             color: #9ca3af;
         }
-        
+
         /* Status badge styles */
         .status-badge {
             padding: 4px 8px;
@@ -56,40 +59,42 @@
             font-weight: 500;
             text-transform: uppercase;
         }
-        
+
         .status-badge.completed {
             background-color: #10b981;
             color: white;
         }
-        
+
         .status-badge.pending {
             background-color: #f59e0b;
             color: white;
         }
-        
+
         .status-badge.assigned {
             background-color: #3b82f6;
             color: white;
         }
-        
+
         .status-badge.in_progress {
             background-color: #8b5cf6;
             color: white;
-        }        .status-badge.incomplete {
+        }
+
+        .status-badge.incomplete {
             background-color: #ef4444;
             color: white;
         }
-        
+
         .status-badge.cancelled {
             background-color: #f8d7da;
             color: #721c24;
         }
-        
+
         .status-badge.unknown {
             background-color: #6b7280;
             color: white;
         }
-        
+
         /* Modal footer button styles */
         .close-modal-btn {
             background-color: #6b7280;
@@ -104,11 +109,11 @@
             gap: 8px;
             transition: background-color 0.2s;
         }
-        
+
         .close-modal-btn:hover {
             background-color: #4b5563;
         }
-        
+
         .join-task-btn {
             background-color: #10b981;
             color: white;
@@ -122,7 +127,7 @@
             gap: 8px;
             transition: background-color 0.2s;
         }
-        
+
         .join-task-btn:hover {
             background-color: #059669;
         }
@@ -136,13 +141,15 @@
     <!-- body -->
     <div id="Container-body">
         <!-- Menu using Thymeleaf fragment -->
-        <div th:replace="~{HEAD_OF_DEPARTMENT/Menu-HED :: menu}"></div>
+        <div>
+            <div th:replace="~{HEAD_OF_DEPARTMENT/Menu-HED :: menu}"></div>
+        </div>
 
         <!-- Main content -->
         <div id="main">
             <div class="content-header">
                 <h1 class="title">Join Task</h1>
-            </div>            <!-- Notification Section -->
+            </div> <!-- Notification Section -->
             <div class="notification-section">
                 <h2>New Notification</h2>
                 <p class="notification-subtitle">New task assignments</p>
@@ -150,13 +157,14 @@
                     <!-- Dynamic notifications will be loaded here -->
                     <div th:if="${tasks != null and !tasks.isEmpty()}">
                         <!-- Only show first 3 notifications initially -->
-                        <div th:each="task, iterStat : ${tasks}" 
-                             th:if="${task.status == 'ASSIGNED' or task.status == 'PENDING'}"
-                             th:class="${iterStat.index < 3} ? 'notification_item' : 'notification_item hidden'"
-                             class="notification_item">
+                        <div th:each="task, iterStat : ${tasks}"
+                            th:if="${task.status == 'ASSIGNED' or task.status == 'PENDING'}"
+                            th:class="${iterStat.index < 3} ? 'notification_item' : 'notification_item hidden'"
+                            class="notification_item">
                             <input type="checkbox" checked>
                             <div class="notification-text">
-                                <strong th:text="'New Task: ' + ${task.subjectName} + ' - ' + ${task.totalQuestions} + ' questions assigned'">
+                                <strong
+                                    th:text="'New Task: ' + ${task.subjectName} + ' - ' + ${task.totalQuestions} + ' questions assigned'">
                                     Notification text
                                 </strong>
                                 <p th:text="'Deadline: ' + ${task.dueDate}">At: Time</p>
@@ -171,9 +179,9 @@
                     </div>
                 </div>
                 <!-- Only show "See more" button if there are more than 3 notifications -->
-                <a href="#" class="see-more" onclick="toggleNotifications()" id="seeMoreBtn" 
-                   th:style="${tasks != null and #lists.size(tasks) > 3} ? 'display: inline-block;' : 'display: none;'">
-                   See more...
+                <a href="#" class="see-more" onclick="toggleNotifications()" id="seeMoreBtn"
+                    th:style="${tasks != null and #lists.size(tasks) > 3} ? 'display: inline-block;' : 'display: none;'">
+                    See more...
                 </a>
             </div>
 
@@ -185,13 +193,15 @@
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
-                <div class="filter-controls">                    <div class="filter-dropdown">
+                <div class="filter-controls">
+                    <div class="filter-dropdown">
                         <select class="filter-select" id="statusFilter">
                             <option value="">All Status</option>
                             <!-- Options will be loaded dynamically -->
                         </select>
                         <i class="fas fa-chevron-down"></i>
-                    </div><div class="filter-dropdown">
+                    </div>
+                    <div class="filter-dropdown">
                         <select class="filter-select" id="subjectFilter">
                             <option value="">All Subject</option>
                             <!-- Options will be loaded dynamically -->
@@ -214,45 +224,50 @@
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
-                    </thead>                    <tbody id="taskTableBody">
+                    </thead>
+                    <tbody id="taskTableBody">
                         <!-- Dynamic data from database -->
                         <tr th:if="${tasks == null or tasks.isEmpty()}">
                             <td colspan="7" style="text-align: center; padding: 2rem; color: #666;">
                                 No tasks assigned to your department at this time
                             </td>
-                        </tr>                        <tr th:each="task : ${tasks}" th:attr="data-task-id=${task.taskId}">
+                        </tr>
+                        <tr th:each="task : ${tasks}" th:attr="data-task-id=${task.taskId}">
                             <td th:text="${task.taskId}">ID</td>
                             <td th:text="${task.subjectName}">Subject</td>
                             <td th:text="${task.dueDate}">Deadline</td>
                             <td th:text="${task.totalQuestions}">Questions</td>
-                            <td th:text="${task.planCreatedByName != null ? task.planCreatedByName : 'Catherine Davis'}">Staff</td>
+                            <td
+                                th:text="${task.planCreatedByName != null ? task.planCreatedByName : 'Catherine Davis'}">
+                                Staff</td>
                             <td>
-                                <span th:class="'status-badge ' + ${#strings.toLowerCase(task.status)}" 
-                                      th:text="${task.status}">Status</span>
-                            </td>                            <td>
-                                <button class="action-btn view-btn" title="View" 
-                                        th:onclick="'viewTask(' + ${task.taskId} + ')'">
+                                <span th:class="'status-badge ' + ${#strings.toLowerCase(task.status)}"
+                                    th:text="${task.status}">Status</span>
+                            </td>
+                            <td>
+                                <button class="action-btn view-btn" title="View"
+                                    th:onclick="'viewTask(' + ${task.taskId} + ')'">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button th:if="${task.status == 'PENDING' or task.status == 'pending'}" 
-                                        class="action-btn edit-btn" title="Join Task (Start Progress)" 
-                                        th:onclick="'joinTask(' + ${task.taskId} + ')'">
+                                <button th:if="${task.status == 'PENDING' or task.status == 'pending'}"
+                                    class="action-btn edit-btn" title="Join Task (Start Progress)"
+                                    th:onclick="'joinTask(' + ${task.taskId} + ')'">
                                     <i class="fas fa-user-plus"></i>
                                 </button>
-                                <button th:if="${task.status == 'CANCELLED' or task.status == 'cancelled'}" 
-                                        class="action-btn edit-btn" title="Resume Task" 
-                                        th:onclick="'joinTask(' + ${task.taskId} + ')'">
+                                <button th:if="${task.status == 'CANCELLED' or task.status == 'cancelled'}"
+                                    class="action-btn edit-btn" title="Resume Task"
+                                    th:onclick="'joinTask(' + ${task.taskId} + ')'">
                                     <i class="fas fa-redo"></i>
                                 </button>
-                                <button th:if="${task.status == 'COMPLETED'}" 
-                                        class="action-btn delete-btn" title="Remove" 
-                                        th:onclick="'removeTask(' + ${task.taskId} + ')'">
+                                <button th:if="${task.status == 'COMPLETED'}" class="action-btn delete-btn"
+                                    title="Remove" th:onclick="'removeTask(' + ${task.taskId} + ')'">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
                         </tr>
-                    </tbody></table>
-            </div>            <!-- Pagination -->
+                    </tbody>
+                </table>
+            </div> <!-- Pagination -->
             <div class="pagination">
                 <i class="fa-solid fa-bullhorn" style="padding: 20px;"></i>
                 <p class="page-info" style="padding: 10px;">Page:</p>
@@ -260,7 +275,8 @@
                 <p class="page-info" style="padding: 0px 5px;">of</p>
                 <p class="page-info" id="totalPagesDisplay">1</p>
                 <div class="page-controls">
-                    <button class="prev-btn" id="prevPageBtn" disabled><i class="fa-solid fa-chevron-left" style="padding: 0px 5px;"></i>
+                    <button class="prev-btn" id="prevPageBtn" disabled><i class="fa-solid fa-chevron-left"
+                            style="padding: 0px 5px;"></i>
                         Previous</button>
                     <button class="next-btn" id="nextPageBtn" disabled>Next <i class="fa-solid fa-chevron-right"
                             style="padding: 0px 5px;"></i></button>
@@ -350,16 +366,18 @@
                                 development technologies and best practices. Students will learn HTML, CSS, JavaScript,
                                 and
                                 various frameworks.</p>
-                        </div>                        <div class="details-section">
+                        </div>
+                        <div class="details-section">
                             <h3>Notes</h3>
-                            <textarea id="modalFeedback"
-                                placeholder="Add your notes about this task..." readonly></textarea>
+                            <textarea id="modalFeedback" placeholder="Add your notes about this task..."
+                                readonly></textarea>
                         </div>
 
                         <div class="see-more">
                             <a href="#" class="see-more-link">See more...</a>
                         </div>
-                    </div>                    <div class="modal-footer">
+                    </div>
+                    <div class="modal-footer">
                         <button class="close-modal-btn">
                             <i class="fas fa-times"></i>
                             <span>Close</span>
@@ -369,19 +387,21 @@
                             <span>Join Task</span>
                         </button>
                     </div>
-                </div>            </div>            <!-- Load header and menu -->            <script th:inline="javascript">
+                </div>
+            </div> <!-- Load header and menu -->
+            <script th:inline="javascript">
                 /*<![CDATA[*/
-                
+
                 // Toggle notifications visibility - GLOBAL FUNCTION
                 function toggleNotifications() {
                     console.log('toggleNotifications called');
                     const hiddenNotifications = document.querySelectorAll('.notification_item.hidden');
                     const seeMoreBtn = document.getElementById('seeMoreBtn');
                     const allNotifications = document.querySelectorAll('.notification_item');
-                    
+
                     console.log('Total notifications:', allNotifications.length);
                     console.log('Hidden notifications:', hiddenNotifications.length);
-                    
+
                     if (hiddenNotifications.length > 0) {
                         // Show all hidden notifications
                         console.log('Showing hidden notifications');
@@ -400,48 +420,48 @@
                         if (seeMoreBtn) seeMoreBtn.textContent = 'See more...';
                     }
                 }
-                
+
                 // Get department head ID from server (passed from controller)
                 const hedId = /*[[${hedId}]]*/ null;
                 console.log("Using hedId:", hedId);
-                
+
                 // Pagination variables
                 let currentPage = 1;
                 let totalTasks = 0;
                 const tasksPerPage = 10;
                 let allTasks = []; // Store all tasks for pagination
-                  // Check if user is authenticated
+                // Check if user is authenticated
                 if (!hedId) {
                     console.error("User not authenticated or hedId not provided");
                     window.location.href = '/login';
                     // Don't use return here - just redirect and continue
                 }
-                  // Load tasks data from API with optional page reset
+                // Load tasks data from API with optional page reset
                 function loadTasks(resetToFirstPage = false) {
                     if (resetToFirstPage) {
                         currentPage = 1; // Reset to first page for new searches/filters
-                    }                      const statusSelect = document.getElementById('statusFilter');
+                    } const statusSelect = document.getElementById('statusFilter');
                     const subjectSelect = document.getElementById('subjectFilter');
                     const status = statusSelect ? statusSelect.value : '';
                     const subject = subjectSelect ? subjectSelect.value : '';
                     const searchInput = document.querySelector('.search-input');
                     const search = searchInput ? searchInput.value : '';
-                    
+
                     console.log('Filter values:', { status, subject, search });
-                    
+
                     const params = new URLSearchParams();
                     if (status && status !== '') params.append('status', status);
                     if (subject && subject !== '') params.append('subject', subject);
                     if (search && search !== '') params.append('search', search);
                     // Note: hedId is now automatically determined by backend from session
-                    
+
                     const url = `/hed/api/tasks?${params.toString()}`;
                     console.log("Fetching:", url);
-                    
+
                     // Show loading state  
                     const tbody = document.querySelector('#taskTableBody');
                     tbody.innerHTML = '<tr><td colspan="7" class="loading">Loading tasks...</td></tr>';
-                      
+
                     fetch(url)
                         .then(response => {
                             console.log("Response status:", response.status);
@@ -466,12 +486,12 @@
                                 showError('Server error: ' + data.error);
                                 return;
                             }
-                            
+
                             // Store tasks data globally for notifications and pagination
                             window.currentTasks = data.tasks || [];
                             allTasks = data.tasks || [];
                             totalTasks = allTasks.length;
-                            
+
                             // Adjust current page if it's beyond the new total pages
                             const totalPages = Math.ceil(totalTasks / tasksPerPage);
                             if (currentPage > totalPages && totalPages > 0) {
@@ -479,7 +499,7 @@
                             } else if (totalPages === 0) {
                                 currentPage = 1;
                             }
-                            
+
                             updatePagination();
                             displayCurrentPage();
                             updateNotifications(data.notifications || []);
@@ -495,7 +515,7 @@
                 }                // Load dropdown options from backend
                 function loadDropdownOptions() {
                     console.log('Loading dropdown options...');
-                    
+
                     // Load status options
                     fetch('/hed/api/tasks/status-options')
                         .then(response => {
@@ -583,7 +603,7 @@
 
                 // Format status for display
                 function formatStatusDisplay(status) {
-                    switch(status) {
+                    switch (status) {
                         case 'IN_PROGRESS': return 'In Progress';
                         case 'PENDING': return 'Pending';
                         case 'COMPLETED': return 'Completed';
@@ -593,11 +613,11 @@
                         default: return status;
                     }
                 }
-                
+
                 // Update tasks table
                 function updateTasksTable(tasks) {
                     const tbody = document.querySelector('#taskTableBody');
-                    
+
                     if (!tasks || tasks.length === 0) {
                         tbody.innerHTML = `
                             <tr>
@@ -609,12 +629,12 @@
                         `;
                         return;
                     }
-                    
+
                     tbody.innerHTML = '';
-                      tasks.forEach(task => {
+                    tasks.forEach(task => {
                         const row = document.createElement('tr');
                         row.setAttribute('data-task-id', task.taskId);
-                          // Determine action buttons based on status
+                        // Determine action buttons based on status
                         let actionButtons = '';
                         if (task.status === 'ASSIGNED' || task.status === 'PENDING') {
                             actionButtons = `
@@ -665,16 +685,16 @@
                                     ${actionButtons}
                                 </div>
                             </td>
-                        `;                        
+                        `;
                         tbody.appendChild(row);
                     });
                 }
-                
+
                 // Update notifications
                 function updateNotifications(notifications) {
                     const container = document.getElementById('taskNotificationContainer');
                     if (!container) return;
-                    
+
                     // If no notifications provided, try to get from tasks data
                     if (!notifications || notifications.length === 0) {
                         // Try to get tasks data and create notifications from them
@@ -693,7 +713,7 @@
                                 `;
                                 container.appendChild(item);
                             });
-                            
+
                             // Show/hide "See more" button
                             const seeMoreBtn = document.getElementById('seeMoreBtn');
                             if (seeMoreBtn) {
@@ -711,7 +731,7 @@
                         }
                         return;
                     }
-                    
+
                     // If notifications are provided, use them
                     container.innerHTML = '';
                     notifications.forEach((notif, index) => {
@@ -726,42 +746,42 @@
                         `;
                         container.appendChild(item);
                     });
-                    
+
                     // Show/hide "See more" button
                     const seeMoreBtn = document.getElementById('seeMoreBtn');
                     if (seeMoreBtn) {
                         seeMoreBtn.style.display = notifications.length > 3 ? 'inline-block' : 'none';
                     }
                 }
-                
+
                 // Update pagination display and button states
                 function updatePagination() {
                     const totalPages = Math.ceil(totalTasks / tasksPerPage);
-                    
+
                     // Update display
                     document.getElementById('currentPageDisplay').textContent = currentPage;
                     document.getElementById('totalPagesDisplay').textContent = totalPages;
-                    
+
                     // Update button states
                     const prevBtn = document.getElementById('prevPageBtn');
                     const nextBtn = document.getElementById('nextPageBtn');
-                    
+
                     prevBtn.disabled = currentPage <= 1;
                     nextBtn.disabled = currentPage >= totalPages;
-                    
+
                     console.log(`Pagination updated: ${currentPage}/${totalPages}, Total tasks: ${totalTasks}`);
                 }
-                
+
                 // Display tasks for current page
                 function displayCurrentPage() {
                     const startIndex = (currentPage - 1) * tasksPerPage;
                     const endIndex = startIndex + tasksPerPage;
                     const tasksToShow = allTasks.slice(startIndex, endIndex);
-                    
+
                     console.log(`Displaying page ${currentPage}: tasks ${startIndex + 1}-${Math.min(endIndex, totalTasks)} of ${totalTasks}`);
                     updateTasksTable(tasksToShow);
                 }
-                
+
                 // Go to previous page
                 function goToPreviousPage() {
                     if (currentPage > 1) {
@@ -770,7 +790,7 @@
                         displayCurrentPage();
                     }
                 }
-                
+
                 // Go to next page
                 function goToNextPage() {
                     const totalPages = Math.ceil(totalTasks / tasksPerPage);
@@ -780,7 +800,7 @@
                         displayCurrentPage();
                     }
                 }
-                
+
                 // View task details
                 function viewTask(taskId) {
                     fetch(`/hed/api/tasks/${taskId}`)
@@ -797,7 +817,7 @@
                             alert('Failed to load task details');
                         });
                 }
-                  // Join a task
+                // Join a task
                 function joinTask(taskId) {
                     if (confirm('Are you sure you want to join this task? This will change the status from PENDING to IN_PROGRESS.')) {
                         fetch(`/hed/api/tasks/${taskId}/join`, {
@@ -807,49 +827,50 @@
                             },
                             body: JSON.stringify({ hedId: hedId })
                         })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.error) {
-                                alert('Error: ' + data.error);
-                            } else {
-                                alert('Successfully joined the task! Status changed to IN_PROGRESS.');
-                                loadTasks(); // Reload to update the table
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Failed to join task');
-                        });
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.error) {
+                                    alert('Error: ' + data.error);
+                                } else {
+                                    alert('Successfully joined the task! Status changed to IN_PROGRESS.');
+                                    loadTasks(); // Reload to update the table
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('Failed to join task');
+                            });
                     }
                 }
-                  // Remove a task
+                // Remove a task
                 function removeTask(taskId) {
                     if (confirm('Are you sure you want to remove this task?')) {
                         fetch(`/hed/api/tasks/${taskId}`, {
                             method: 'DELETE'
                         })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.error) {
-                                alert('Error: ' + data.error);
-                            } else {
-                                alert('Task removed successfully!');
-                                loadTasks(); // Reload to update the table
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Failed to remove task');
-                        });
-                    }                }
-                  // Open task modal with details
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.error) {
+                                    alert('Error: ' + data.error);
+                                } else {
+                                    alert('Task removed successfully!');
+                                    loadTasks(); // Reload to update the table
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('Failed to remove task');
+                            });
+                    }
+                }
+                // Open task modal with details
                 function openTaskModal(task) {
                     const modal = document.getElementById('courseDetailsModal');
                     if (!modal) return;
-                    
+
                     // Store task ID in modal for later use
                     modal.setAttribute('data-task-id', task.taskId);
-                    
+
                     // Populate modal with task data
                     document.getElementById('modalDueDate').textContent = task.dueDate || 'N/A';
                     // Display the Staff (RD) who created the original plan, not the assigned lecturer
@@ -859,23 +880,23 @@
                     document.getElementById('modalSubject').textContent = task.subjectName || 'N/A';
                     document.getElementById('modalDeadline').textContent = task.dueDate || 'N/A';
                     document.getElementById('modalDescription').textContent = task.description || 'No description available';
-                    
+
                     // Update difficulty breakdown from plan data - use correct field names from DTO
                     document.getElementById('modalRecognition').textContent = task.recognitionQuestions || '0';
                     document.getElementById('modalComprehension').textContent = task.comprehensionQuestions || '0';
                     document.getElementById('modalBasicApplication').textContent = task.basicApplicationQuestions || '0';
                     document.getElementById('modalAdvancedApplication').textContent = task.advancedApplicationQuestions || '0';
-                    
+
                     // Display existing notes/feedback if available
                     const modalFeedback = document.getElementById('modalFeedback');
                     if (modalFeedback) {
                         modalFeedback.value = task.notes || task.feedback || '';
                     }
-                    
+
                     const modalStatus = document.getElementById('modalStatus');
                     modalStatus.textContent = task.status || 'Unknown';
                     modalStatus.className = `status-badge ${task.status ? task.status.toLowerCase() : 'unknown'}`;
-                      // Show/hide Join Task button based on status
+                    // Show/hide Join Task button based on status
                     const joinTaskBtn = modal.querySelector('.join-task-btn');
                     if (joinTaskBtn) {
                         if (task.status === 'PENDING' || task.status === 'pending') {
@@ -896,31 +917,31 @@
                             joinTaskBtn.style.display = 'none'; // Default to hidden
                         }
                     }
-                    
+
                     // Show modal
                     modal.style.display = 'block';
                 }
-                  // Load more notifications (legacy function)
+                // Load more notifications (legacy function)
                 function loadMoreTaskNotifications() {
                     toggleNotifications();
                 }                  // Initialize page
-                document.addEventListener('DOMContentLoaded', function() {
+                document.addEventListener('DOMContentLoaded', function () {
                     console.log('DOM Content Loaded - Starting initialization...');
-                    
+
                     // Load dropdown options first, then load tasks
                     loadDropdownOptions();
-                    
+
                     // Add a small delay to ensure dropdowns are loaded before loading tasks
                     setTimeout(() => {
                         loadTasks(true); // Reset to first page on initial load
                     }, 500);
-                    
+
                     // Add event listeners for filters and search
                     const statusFilter = document.getElementById('statusFilter');
                     const subjectFilter = document.getElementById('subjectFilter');
-                    
+
                     if (statusFilter) {
-                        statusFilter.addEventListener('change', function() {
+                        statusFilter.addEventListener('change', function () {
                             console.log('Status filter changed to:', this.value);
                             loadTasks(true); // Reset to first page when filter changes
                         });
@@ -928,9 +949,9 @@
                     } else {
                         console.error('Status filter not found!');
                     }
-                    
+
                     if (subjectFilter) {
-                        subjectFilter.addEventListener('change', function() {
+                        subjectFilter.addEventListener('change', function () {
                             console.log('Subject filter changed to:', this.value);
                             loadTasks(true); // Reset to first page when filter changes
                         });
@@ -938,54 +959,54 @@
                     } else {
                         console.error('Subject filter not found!');
                     }
-                    
-                    document.querySelector('.search-input').addEventListener('input', function() {
+
+                    document.querySelector('.search-input').addEventListener('input', function () {
                         clearTimeout(this.searchTimeout);
                         this.searchTimeout = setTimeout(() => loadTasks(true), 500); // Debounce search and reset to first page
                     });
-                    
-                    document.querySelector('.search-btn').addEventListener('click', function() {
+
+                    document.querySelector('.search-btn').addEventListener('click', function () {
                         loadTasks(true); // Reset to first page when search button clicked
                     });
-                    
+
                     // Pagination button event listeners
                     const prevBtn = document.getElementById('prevPageBtn');
                     const nextBtn = document.getElementById('nextPageBtn');
-                    
+
                     if (prevBtn) {
                         prevBtn.addEventListener('click', goToPreviousPage);
                     }
-                    
+
                     if (nextBtn) {
                         nextBtn.addEventListener('click', goToNextPage);
                     }
-                    
+
                     // Modal functionality
                     const modal = document.getElementById('courseDetailsModal');
                     if (modal) {
                         // Close modal events
                         const closeBtn = modal.querySelector('.close-btn');
                         if (closeBtn) {
-                            closeBtn.addEventListener('click', function() {
+                            closeBtn.addEventListener('click', function () {
                                 modal.style.display = 'none';
                             });
                         }
-                        
+
                         // Close modal when clicking outside
-                        window.addEventListener('click', function(e) {
+                        window.addEventListener('click', function (e) {
                             if (e.target === modal) {
                                 modal.style.display = 'none';
                             }
                         });                          // Modal action buttons
                         const closeModalBtn = modal.querySelector('.close-modal-btn');
                         const joinTaskBtn = modal.querySelector('.join-task-btn');
-                          if (closeModalBtn) {
-                            closeModalBtn.addEventListener('click', function() {
+                        if (closeModalBtn) {
+                            closeModalBtn.addEventListener('click', function () {
                                 modal.style.display = 'none';
                             });
                         }
-                          if (joinTaskBtn) {
-                            joinTaskBtn.addEventListener('click', function() {
+                        if (joinTaskBtn) {
+                            joinTaskBtn.addEventListener('click', function () {
                                 const taskId = modal.getAttribute('data-task-id');
                                 if (taskId) {
                                     joinTask(parseInt(taskId));
@@ -996,7 +1017,14 @@
                     }
                 });
                 /*]]>*/
-            </script>            <script th:src="@{/Static/js/HED_ExamManagement.js}"></script>
+            </script>
+            <script>
+                // Set active menu based on current page
+                document.addEventListener('DOMContentLoaded', function () {
+                    setActiveMenu(document.title);
+                });
+            </script>
+            <script th:src="@{/Static/js/HED_ExamManagement.js}"></script>
             <script th:src="@{/Static/js/L_activeMenu.js}"></script>
         </div>
     </div>

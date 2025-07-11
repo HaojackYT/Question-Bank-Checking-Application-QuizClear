@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Duplication Check</title>
+    <title>Duplication</title>
     <!-- Prevent favicon 404 error -->
-    <link rel="icon" href="data:,">    <link rel="stylesheet" th:href="@{/Static/header.css}"> <!-- CSS riêng cho header -->
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="stylesheet" th:href="@{/Static/header.css}"> <!-- CSS riêng cho header -->
     <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}"> <!-- CSS riêng cho menu, nếu có -->
     <link rel="stylesheet" th:href="@{/Static/web_styles.css}"> <!-- CSS bổ sung -->
     <link rel="stylesheet" th:href="@{/Static/css/staff/staffDup.css}">
@@ -29,7 +31,8 @@
                     <div class="tab active" data-tab="detection">AI Detection</div>
                     <div class="tab" data-tab="stat">Statistics</div>
                     <div class="tab" data-tab="proc_log">Processing Logs</div>
-                </div>                <div id="tab-content"></div>
+                </div>
+                <div id="tab-content"></div>
                 <div id="comparison-container" style="display: none;"></div>
 
                 <div id="logDetailModal" style="display: none;">
@@ -43,11 +46,13 @@
                         </div>
                     </div>
                 </div>
-            </div>        </div>        <script th:src="@{/Static/js/staffDuplicationCheck.js}" defer></script>
+            </div>
+        </div>
+        <script th:src="@{/Static/js/staffDuplicationCheck.js}" defer></script>
         <script>
             // Suppress WebSocket connection errors if not needed
             const originalConsoleError = console.error;
-            console.error = function(...args) {
+            console.error = function (...args) {
                 const message = args.join(' ');
                 if (message.includes('WebSocket') || message.includes('ws://') || message.includes('Could not establish connection')) {
                     // Suppress WebSocket related errors
@@ -55,9 +60,9 @@
                 }
                 originalConsoleError.apply(console, args);
             };
-            
+
             // Global safe classList wrapper
-            window.safeClassList = function(elementId, method, className) {
+            window.safeClassList = function (elementId, method, className) {
                 try {
                     const element = document.getElementById(elementId);
                     if (element && element.classList && typeof element.classList[method] === 'function') {
@@ -72,21 +77,21 @@
                 }
                 return null;
             };
-            
+
             // Global error handler với better error handling
-            window.addEventListener('error', function(e) {
+            window.addEventListener('error', function (e) {
                 console.error('Global error caught:', e.error);
                 console.error('At line:', e.lineno, 'column:', e.colno);
                 console.error('In file:', e.filename);
                 console.error('Stack:', e.error?.stack);
             });
-            
+
             // DOM ready safety check
-            window.addEventListener('DOMContentLoaded', function() {
+            window.addEventListener('DOMContentLoaded', function () {
                 console.log('DOM ready at:', new Date().toISOString());
-                
+
                 // Safe classList operations - don't override built-in methods
-                window.safeToggle = function(element, className) {
+                window.safeToggle = function (element, className) {
                     try {
                         if (element && element.classList && typeof element.classList.toggle === 'function') {
                             return element.classList.toggle(className);
@@ -97,14 +102,20 @@
                     }
                 };
             });
-            
+
             // Log when page is fully loaded
-            window.addEventListener('load', function() {
+            window.addEventListener('load', function () {
                 console.log('Page fully loaded at:', new Date().toISOString());
             });
         </script>
     </div>
-
+    <script>
+        // Set active menu based on current page
+        document.addEventListener('DOMContentLoaded', function () {
+            setActiveMenu(document.title);
+        });
+    </script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 
 </html>

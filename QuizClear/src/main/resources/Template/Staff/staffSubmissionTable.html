@@ -12,7 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap"
         rel="stylesheet" />
-    <title>Staff Submission Table</title>
+    <title>Question Management</title>
 </head>
 <body>
     <div th:replace="~{header_user}"></div> <div id="Container-body" style="display: flex; min-height: 100vh;">
@@ -324,5 +324,12 @@
             });
         });
     </script>
+    <script>
+    // Set active menu based on current page
+    document.addEventListener('DOMContentLoaded', function () {
+        setActiveMenu(document.title);
+    });
+</script>
+<script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 </html>
