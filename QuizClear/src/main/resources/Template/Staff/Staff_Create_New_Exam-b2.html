@@ -46,13 +46,35 @@
                     <p style="font-size: 1.0625rem; font-weight: 600;">Exam Structure</p>
                     <p style="font-size: 0.75rem; color: #6B7280;">Define the structure and question distribution</p>
                 </div>
+            <div id="content-container">
                 <form th:action="@{/staff/exams/create/step2}" th:object="${examCreateDTO}" method="post">
-                    <div id="content" style="margin: 0;">
-                        <div id="conten-container">
-                            <div class="to-work">
-                                <p class="work">Difficulty Distribution</p>
-                                <p class="work">CLO Mapping</p>
-                            </div>
+                    <!-- Hidden fields to preserve Step 1 data -->
+                    <input type="hidden" th:field="*{examTitle}" />
+                    <input type="hidden" th:field="*{examCode}" />
+                    <input type="hidden" th:field="*{subjectId}" />
+                    <input type="hidden" th:field="*{courseId}" />
+                    <input type="hidden" th:field="*{semester}" />
+                    <input type="hidden" th:field="*{examType}" />
+                    <input type="hidden" th:field="*{deadlineDate}" />
+                    <input type="hidden" th:field="*{durationMinutes}" />
+                    <input type="hidden" th:field="*{description}" />
+                    <input type="hidden" th:field="*{instructions}" />
+                    
+                    <div id="content">
+                        <!-- Display data from Step 1 -->
+                        <div style="background-color: #F3F4F6; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.25rem;" th:if="${examCreateDTO.examTitle != null and !#strings.isEmpty(examCreateDTO.examTitle)}">
+                            <h3 style="margin: 0 0 0.5rem 0; font-size: 0.875rem; color: #374151;">Exam Information from Step 1:</h3>
+                            <p style="margin: 0.25rem 0; font-size: 0.75rem; color: #6B7280;">
+                                <strong>Title:</strong> <span th:text="${examCreateDTO.examTitle}">N/A</span> | 
+                                <strong>Code:</strong> <span th:text="${examCreateDTO.examCode}">N/A</span> | 
+                                <strong>Duration:</strong> <span th:text="${examCreateDTO.durationMinutes}">N/A</span> min
+                            </p>
+                        </div>
+                        
+                        <div class="to-work">
+                            <p class="work">Difficulty Distribution</p>
+                            <p class="work">CLO Mapping</p>
+                        </div>
                             <div id="total-container">
                                 <div class="total">
                                     <p>Total Number of Questions</p>
@@ -67,72 +89,79 @@
                             <div>
                                 <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 1.25rem;">
                                     <p style="font-size: 0.875rem; font-weight: 500;">Difficulty Distribution</p>
-                                    <p style="font-size: 0.75rem; color: #2563EB;">Total 
-                                        <span th:text="${(examCreateDTO.percentBasic ?: 0) + (examCreateDTO.percentIntermediate ?: 0) + (examCreateDTO.percentAdvanced ?: 0) + (examCreateDTO.percentExpert ?: 0)}">100</span>%
-                                    </p>
+                                    <p style="font-size: 0.75rem; color: #2563EB;">Total <span id="totalPercent">100</span>%</p>
                                 </div>
-                                <div class="range-container">
-                                    <div style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
-                                        <p>Basic (Recognition)</p>
-                                        <p>-<span th:text="*{percentBasic}">25</span>%</p>
+                                
+                                <!-- Basic Level -->
+                                <div class="difficulty-row" style="display: flex; align-items: center; margin-bottom: 1rem;">
+                                    <div style="width: 200px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                            <span style="font-size: 0.875rem;">Basic (Recognition)</span>
+                                            <span style="font-size: 0.875rem; color: #2563EB;"><span id="basicPercent" th:text="*{percentBasic}">25</span>%</span>
+                                        </div>
                                     </div>
-                                    <p class="range-value"><span th:text="*{percentBasic}">13</span> question</p>
-                                    <input type="range" th:field="*{percentBasic}" min="0" max="100" step="1" />
-                                </div>
-                                <div class="range-container">
-                                    <div style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
-                                        <p>Intermediate (Understanding)</p>
-                                        <p>-<span th:text="*{percentIntermediate}">25</span>%</p>
+                                    <div style="flex: 1; margin: 0 20px;">
+                                        <input type="range" th:field="*{percentBasic}" min="0" max="100" step="1" 
+                                               style="width: 100%; height: 6px; background: #ddd; border-radius: 5px;"
+                                               oninput="updateQuestionCount()" />
                                     </div>
-                                    <p class="range-value"><span th:text="*{percentIntermediate}">13</span> question</p>
-                                    <input type="range" th:field="*{percentIntermediate}" min="0" max="100" step="1" />
-                                </div>
-                                <div class="range-container">
-                                    <div style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
-                                        <p>Advanced (Application)</p>
-                                        <p>-<span th:text="*{percentAdvanced}">25</span>%</p>
+                                    <div style="width: 100px; text-align: right;">
+                                        <span id="basicQuestions" style="font-size: 0.875rem; color: #6B7280;">8 questions</span>
                                     </div>
-                                    <p class="range-value"><span th:text="*{percentAdvanced}">13</span> question</p>
-                                    <input type="range" th:field="*{percentAdvanced}" min="0" max="100" step="1" />
                                 </div>
-                                <div class="range-container">
-                                    <div style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
-                                        <p>Expert (High Application)</p>
-                                        <p>-<span th:text="*{percentExpert}">25</span>%</p>
+
+                                <!-- Intermediate Level -->
+                                <div class="difficulty-row" style="display: flex; align-items: center; margin-bottom: 1rem;">
+                                    <div style="width: 200px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                            <span style="font-size: 0.875rem;">Intermediate (Understanding)</span>
+                                            <span style="font-size: 0.875rem; color: #2563EB;"><span id="intermediatePercent" th:text="*{percentIntermediate}">25</span>%</span>
+                                        </div>
                                     </div>
-                                    <p class="range-value"><span th:text="*{percentExpert}">13</span> question</p>
-                                    <input type="range" th:field="*{percentExpert}" min="0" max="100" step="1" />
+                                    <div style="flex: 1; margin: 0 20px;">
+                                        <input type="range" th:field="*{percentIntermediate}" min="0" max="100" step="1"
+                                               style="width: 100%; height: 6px; background: #ddd; border-radius: 5px;"
+                                               oninput="updateQuestionCount()" />
+                                    </div>
+                                    <div style="width: 100px; text-align: right;">
+                                        <span id="intermediateQuestions" style="font-size: 0.875rem; color: #6B7280;">8 questions</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- Additional Settings -->
-                            <div style="display: flex; flex-direction: column; margin-top: 1.875rem;">
-                                <div class="tick-container">
-                                    <p>Check for Duplicate Questions</p>
-                                    <label class="switch">
-                                        <input type="checkbox" th:field="*{checkDuplicateQuestions}">
-                                        <span class="slider"></span>
-                                    </label>
+
+                                <!-- Advanced Level -->
+                                <div class="difficulty-row" style="display: flex; align-items: center; margin-bottom: 1rem;">
+                                    <div style="width: 200px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                            <span style="font-size: 0.875rem;">Advanced (Application)</span>
+                                            <span style="font-size: 0.875rem; color: #2563EB;"><span id="advancedPercent" th:text="*{percentAdvanced}">25</span>%</span>
+                                        </div>
+                                    </div>
+                                    <div style="flex: 1; margin: 0 20px;">
+                                        <input type="range" th:field="*{percentAdvanced}" min="0" max="100" step="1"
+                                               style="width: 100%; height: 6px; background: #ddd; border-radius: 5px;"
+                                               oninput="updateQuestionCount()" />
+                                    </div>
+                                    <div style="width: 100px; text-align: right;">
+                                        <span id="advancedQuestions" style="font-size: 0.875rem; color: #6B7280;">8 questions</span>
+                                    </div>
                                 </div>
-                                <div class="tick-container">
-                                    <p>Check CLO Coverage</p>
-                                    <label class="switch">
-                                        <input type="checkbox" th:field="*{checkCloCoverage}">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-                                <div class="tick-container">
-                                    <p>Randomize Question Order</p>
-                                    <label class="switch">
-                                        <input type="checkbox" th:field="*{randomizeQuestionOrder}">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-                                <div class="tick-container">
-                                    <p>Randomize Answer Options</p>
-                                    <label class="switch">
-                                        <input type="checkbox" th:field="*{randomizeAnswerOptions}">
-                                        <span class="slider"></span>
-                                    </label>
+
+                                <!-- Expert Level -->
+                                <div class="difficulty-row" style="display: flex; align-items: center; margin-bottom: 1rem;">
+                                    <div style="width: 200px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                            <span style="font-size: 0.875rem;">Expert (High Application)</span>
+                                            <span style="font-size: 0.875rem; color: #2563EB;"><span id="expertPercent" th:text="*{percentExpert}">25</span>%</span>
+                                        </div>
+                                    </div>
+                                    <div style="flex: 1; margin: 0 20px;">
+                                        <input type="range" th:field="*{percentExpert}" min="0" max="100" step="1"
+                                               style="width: 100%; height: 6px; background: #ddd; border-radius: 5px;"
+                                               oninput="updateQuestionCount()" />
+                                    </div>
+                                    <div style="width: 100px; text-align: right;">
+                                        <span id="expertQuestions" style="font-size: 0.875rem; color: #6B7280;">8 questions</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -142,7 +171,7 @@
                                 <i class="fa-solid fa-chevron-left"></i> Previous
                             </a>
                             <button type="submit" class="btn btn-primary" title="Next">
-                                Next <i class="fa-solid fa-chevron-right"></i>
+                                Next <i class="fa-solid fa-arrow-right"></i>
                             </button>
                         </div>
                     </div>
@@ -150,5 +179,80 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function updateQuestionCount() {
+            const totalQuestionsInput = document.querySelector('input[name="totalQuestions"]');
+            const totalQuestions = parseInt(totalQuestionsInput.value) || 50;
+            
+            const basicSlider = document.querySelector('input[name="percentBasic"]');
+            const intermediateSlider = document.querySelector('input[name="percentIntermediate"]');
+            const advancedSlider = document.querySelector('input[name="percentAdvanced"]');
+            const expertSlider = document.querySelector('input[name="percentExpert"]');
+            
+            const basicPercent = parseInt(basicSlider.value) || 0;
+            const intermediatePercent = parseInt(intermediateSlider.value) || 0;
+            const advancedPercent = parseInt(advancedSlider.value) || 0;
+            const expertPercent = parseInt(expertSlider.value) || 0;
+            
+            const totalPercent = basicPercent + intermediatePercent + advancedPercent + expertPercent;
+            
+            // Kiểm tra nếu tổng vượt quá 100%
+            if (totalPercent > 100) {
+                // Tìm slider đang được điều chỉnh và giảm giá trị
+                const currentSlider = event.target;
+                const currentValue = parseInt(currentSlider.value);
+                const otherTotal = totalPercent - currentValue;
+                const maxAllowed = 100 - otherTotal;
+                
+                if (maxAllowed >= 0) {
+                    currentSlider.value = maxAllowed;
+                } else {
+                    currentSlider.value = 0;
+                }
+                
+                // Cập nhật lại các giá trị sau khi điều chỉnh
+                updateQuestionCount();
+                return;
+            }
+            
+            // Cập nhật hiển thị phần trăm
+            document.getElementById('basicPercent').textContent = basicPercent;
+            document.getElementById('intermediatePercent').textContent = intermediatePercent;
+            document.getElementById('advancedPercent').textContent = advancedPercent;
+            document.getElementById('expertPercent').textContent = expertPercent;
+            document.getElementById('totalPercent').textContent = totalPercent;
+            
+            // Cập nhật số câu hỏi
+            const basicQuestions = Math.round((basicPercent / 100) * totalQuestions);
+            const intermediateQuestions = Math.round((intermediatePercent / 100) * totalQuestions);
+            const advancedQuestions = Math.round((advancedPercent / 100) * totalQuestions);
+            const expertQuestions = Math.round((expertPercent / 100) * totalQuestions);
+            
+            document.getElementById('basicQuestions').textContent = basicQuestions + ' questions';
+            document.getElementById('intermediateQuestions').textContent = intermediateQuestions + ' questions';
+            document.getElementById('advancedQuestions').textContent = advancedQuestions + ' questions';
+            document.getElementById('expertQuestions').textContent = expertQuestions + ' questions';
+            
+            // Thay đổi màu tổng phần trăm nếu không bằng 100%
+            const totalPercentElement = document.getElementById('totalPercent');
+            if (totalPercent === 100) {
+                totalPercentElement.style.color = '#22C55E'; // Green
+            } else if (totalPercent > 100) {
+                totalPercentElement.style.color = '#EF4444'; // Red
+            } else {
+                totalPercentElement.style.color = '#2563EB'; // Blue
+            }
+        }
+        
+        // Cập nhật khi thay đổi tổng số câu hỏi
+        document.addEventListener('DOMContentLoaded', function() {
+            const totalQuestionsInput = document.querySelector('input[name="totalQuestions"]');
+            totalQuestionsInput.addEventListener('input', updateQuestionCount);
+            
+            // Khởi tạo giá trị ban đầu
+            updateQuestionCount();
+        });
+    </script>
 </body>
 </html>

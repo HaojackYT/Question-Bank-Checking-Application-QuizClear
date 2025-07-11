@@ -155,4 +155,23 @@ public class ExamCreateDTO {
     public List<CloDistributionDTO> getCloDistributions() { return cloDistributions; }
     public void setCloDistributions(List<CloDistributionDTO> cloDistributions) { this.cloDistributions = cloDistributions; }
 
+    @Override
+    public String toString() {
+        return "ExamCreateDTO{" +
+                "examTitle='" + examTitle + '\'' +
+                ", examCode='" + examCode + '\'' +
+                ", subjectId=" + subjectId +
+                ", courseId=" + courseId +
+                ", semester='" + semester + '\'' +
+                ", examType='" + examType + '\'' +
+                ", deadlineDate=" + deadlineDate +
+                ", durationMinutes=" + durationMinutes +
+                ", totalQuestions=" + totalQuestions +
+                ", totalVersions=" + totalVersions +
+                ", percentBasic=" + percentBasic +
+                ", percentIntermediate=" + percentIntermediate +
+                ", percentAdvanced=" + percentAdvanced +
+                ", percentExpert=" + percentExpert +
+                '}';
+    }
 }

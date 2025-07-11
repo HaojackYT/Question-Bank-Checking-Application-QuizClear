@@ -602,3 +602,103 @@ input:focus {
 .ASS .Assign-name {
     color: #6B7280;
 }
+
+/* Enhanced range slider styles for step 2 */
+.difficulty-row input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: #E5E7EB;
+    border-radius: 5px;
+    outline: none;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.difficulty-row input[type="range"]:hover {
+    opacity: 1;
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+.difficulty-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #3B82F6;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.difficulty-row input[type="range"]::-webkit-slider-thumb:hover {
+    background: #2563EB;
+}
+
+/* Firefox */
+.difficulty-row input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #3B82F6;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+}
+
+.difficulty-row input[type="range"]::-moz-range-thumb:hover {
+    background: #2563EB;
+}
+
+.difficulty-row input[type="range"]::-moz-range-track {
+    background: #E5E7EB;
+    height: 6px;
+    border-radius: 5px;
+    border: none;
+}
+
+/* Additional styling for difficulty rows */
+.difficulty-row {
+    margin-bottom: 1.5rem !important;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.difficulty-row:last-child {
+    margin-bottom: 2rem !important;
+}
+
+/* Chart Column Styles for Step 4 */
+#colum-container #colum-basic,
+#colum-container #colum-intermediate,
+#colum-container #colum-advanced,
+#colum-container #colum-expert {
+    min-height: 10px;
+    transition: height 0.3s ease;
+    border-radius: 4px 4px 0 0;
+}
+
+#right-container [id^="colum-CLO"] {
+    width: 2.875rem;
+    min-height: 10px;
+    transition: height 0.3s ease;
+    border-radius: 4px 4px 0 0;
+}
+
+/* Assigned Team Icons */
+.ASS {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.ASS > div {
+    display: flex;
+    align-items: center;
+}
+
+.ASS .infor-user {
+    display: flex;
+    flex-direction: column;
+}

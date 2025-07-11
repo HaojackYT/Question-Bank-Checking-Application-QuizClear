@@ -47,7 +47,25 @@
                     <p style="font-size: 0.75rem; color: #6B7280;">Assign the exam creation task and set up notifications</p>
                 </div>
                 <form th:action="@{/staff/exams/create/step3}" th:object="${examCreateDTO}" method="post">
-                    <div id="content" style="margin: 0;">
+                    <!-- Hidden fields to preserve Step 1 & 2 data -->
+                    <input type="hidden" th:field="*{examTitle}" />
+                    <input type="hidden" th:field="*{examCode}" />
+                    <input type="hidden" th:field="*{subjectId}" />
+                    <input type="hidden" th:field="*{courseId}" />
+                    <input type="hidden" th:field="*{semester}" />
+                    <input type="hidden" th:field="*{examType}" />
+                    <input type="hidden" th:field="*{deadlineDate}" />
+                    <input type="hidden" th:field="*{durationMinutes}" />
+                    <input type="hidden" th:field="*{description}" />
+                    <input type="hidden" th:field="*{instructions}" />
+                    <input type="hidden" th:field="*{totalQuestions}" />
+                    <input type="hidden" th:field="*{totalVersions}" />
+                    <input type="hidden" th:field="*{percentBasic}" />
+                    <input type="hidden" th:field="*{percentIntermediate}" />
+                    <input type="hidden" th:field="*{percentAdvanced}" />
+                    <input type="hidden" th:field="*{percentExpert}" />
+                    
+                    <div id="content">
                         <!-- Assignment -->
                         <div>
                             <p style="font-size: 0.875rem; font-weight: 400;">Assign To</p>
@@ -113,65 +131,13 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Notification Settings -->
-                        <div>
-                            <p style="font-size: 0.875rem; font-weight: 450;">Notification Settings</p>
-                            <div id="Notification-Container">
-                                <div class="setting">
-                                    <div class="Text-Container">
-                                        <p class="text-Title">Email Notifications</p>
-                                        <p class="text-content">Send email notifications for task assignments and updates</p>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" th:field="*{notifyByEmail}">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-                                <div class="setting">
-                                    <div class="Text-Container">
-                                        <p class="text-Title">Deadline Reminders</p>
-                                        <p class="text-content">Send reminders as the deadline approaches</p>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" th:field="*{notifyDeadlineReminders}">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-                                <div class="setting">
-                                    <div class="Text-Container">
-                                        <p class="text-Title">Progress Updates</p>
-                                        <p class="text-content">Notify when significant progress is made</p>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" th:field="*{notifyProgressUpdates}">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-                                <div class="setting">
-                                    <div class="Text-Container">
-                                        <p class="text-Title">Feedback Notifications</p>
-                                        <p class="text-content">Notify when feedback is provided on the exam</p>
-                                    </div>
-                                    <label class="switch">
-                                        <input type="checkbox" th:field="*{notifyFeedback}">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div style="margin-top: 1.25rem;">
-                                <p style="font-size: 0.875rem; font-weight: 450;">Additional Instructions</p>
-                                <input type="text" th:field="*{additionalInstructions}"
-                                    placeholder="Enter any additional instructions or notes for the assignees"
-                                    style="width: 100%; margin-top: 0.625rem;">
-                            </div>
-                        </div>
                         <!-- Buttons -->
                         <div id="button-container">
                             <a th:href="@{/staff/exams/create/step2}" class="btn btn-secondary" title="Previous">
                                 <i class="fa-solid fa-chevron-left"></i> Previous
                             </a>
                             <button type="submit" class="btn btn-primary" title="Next">
-                                Next <i class="fa-solid fa-chevron-right"></i>
+                                Next <i class="fa-solid fa-arrow-right"></i>
                             </button>
                         </div>
                     </div>

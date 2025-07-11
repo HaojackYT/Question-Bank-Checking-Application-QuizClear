@@ -85,4 +85,10 @@ Optional<Exam> findByPlanId(@Param("planId") Long planId);
      + "(:status IS NULL OR e.examStatus = :status) "
      + "AND (:department IS NULL OR c.department = :department)")
 List<Exam> findByStatusAndDepartment(@Param("status") ExamStatus status, @Param("department") String department);
+
+    // Check if exam code already exists
+    boolean existsByExamCode(String examCode);
+    
+    // Find exam by exam code
+    Optional<Exam> findByExamCode(String examCode);
 }

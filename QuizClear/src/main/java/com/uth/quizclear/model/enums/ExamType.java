@@ -38,6 +38,18 @@ public enum ExamType {
     }
 
     /**
+     * Get ExamType from display name
+     */
+    public static ExamType fromDisplayName(String displayName) {
+        for (ExamType type : ExamType.values()) {
+            if (type.displayName.equals(displayName)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown ExamType displayName: " + displayName);
+    }
+
+    /**
      * Check if this exam type is graded
      */
     public boolean isGraded() {

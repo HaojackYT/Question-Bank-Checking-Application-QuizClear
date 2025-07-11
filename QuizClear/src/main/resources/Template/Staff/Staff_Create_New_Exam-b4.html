@@ -42,6 +42,17 @@
                 </div>
             </div>
             <div id="content-container" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <!-- Error Message Display -->
+                <div th:if="${param.error}" class="alert alert-danger" style="background-color: #fee; border: 1px solid #fcc; color: #c00; padding: 10px; border-radius: 4px;">
+                    <strong>Error:</strong> 
+                    <span th:if="${param.error[0] == 'save_failed'}">Failed to save exam. Please check your data and try again.</span>
+                    <span th:if="${param.error[0] == 'missing_title'}">Exam title is required.</span>
+                    <span th:if="${param.error[0] == 'missing_course'}">Course selection is required.</span>
+                    <span th:if="${param.error[0] == 'missing_subject'}">Subject selection is required.</span>
+                    <span th:if="${param.error[0] == 'true'}">An error occurred while processing your request.</span>
+                    <span th:if="${param.message}" th:text="${param.message}"></span>
+                </div>
+                
                 <div>
                     <p style="font-size: 1.0625rem; font-weight: 600;">Review & Create</p>
                     <p style="font-size: 0.75rem; color: #6B7280;">Review your exam details before creating</p>
@@ -130,7 +141,7 @@
                             <p style="font-size: 0.9375rem; font-weight: bold;">Assigned Team</p>
                             <div class="ASS">
                                 <div>
-                                    <img th:src="${departmentHeadAvatar}" alt="">
+                                    <i class="fa-regular fa-user" style="font-size: 2rem; color: #6B7280; margin-right: 0.75rem;"></i>
                                     <div class="infor-user">
                                         <p class="name-user" th:text="${departmentHeadName}">Dr. Smith</p>
                                         <p class="Assign-name">Department Head</p>
@@ -139,7 +150,7 @@
                             </div>
                             <div class="ASS">
                                 <div>
-                                    <img th:src="${subjectExpertAvatar}" alt="">
+                                    <i class="fa-regular fa-user" style="font-size: 2rem; color: #6B7280; margin-right: 0.75rem;"></i>
                                     <div class="infor-user">
                                         <p class="name-user" th:text="${subjectExpertName}">Prof. Davis</p>
                                         <p class="Assign-name">Subject Expert</p>
@@ -148,7 +159,7 @@
                             </div>
                             <div class="ASS">
                                 <div>
-                                    <img th:src="${reviewerAvatar}" alt="">
+                                    <i class="fa-regular fa-user" style="font-size: 2rem; color: #6B7280; margin-right: 0.75rem;"></i>
                                     <div class="infor-user">
                                         <p class="name-user" th:text="${reviewerName}">Dr. Brown</p>
                                         <p class="Assign-name">Reviewer</p>
@@ -171,5 +182,66 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        // Difficulty Distribution Chart
+        function updateDifficultyChart() {
+            const basic = parseInt(document.getElementById('value-basic').textContent) || 0;
+            const intermediate = parseInt(document.getElementById('value-Intermediate').textContent) || 0;
+            const advanced = parseInt(document.getElementById('value-Advanced').textContent) || 0;
+            const expert = parseInt(document.getElementById('value-Expert').textContent) || 0;
+            
+            const maxHeight = 100; // Maximum height in pixels
+            const maxValue = Math.max(basic, intermediate, advanced, expert, 1); // Avoid division by zero
+            
+            // Calculate heights proportionally
+            const basicHeight = (basic / maxValue) * maxHeight;
+            const intermediateHeight = (intermediate / maxValue) * maxHeight;
+            const advancedHeight = (advanced / maxValue) * maxHeight;
+            const expertHeight = (expert / maxValue) * maxHeight;
+            
+            // Update column heights
+            document.getElementById('colum-basic').style.height = basicHeight + 'px';
+            document.getElementById('colum-intermediate').style.height = intermediateHeight + 'px';
+            document.getElementById('colum-advanced').style.height = advancedHeight + 'px';
+            document.getElementById('colum-expert').style.height = expertHeight + 'px';
+            
+            // Set colors
+            document.getElementById('colum-basic').style.backgroundColor = '#10B981'; // Green
+            document.getElementById('colum-intermediate').style.backgroundColor = '#3B82F6'; // Blue
+            document.getElementById('colum-advanced').style.backgroundColor = '#F59E0B'; // Orange
+            document.getElementById('colum-expert').style.backgroundColor = '#EF4444'; // Red
+        }
+        
+        // CLO Distribution Chart
+        function updateCLOChart() {
+            const cloElements = document.querySelectorAll('[id^="value-CLO"]');
+            let maxValue = 1;
+            const values = [];
+            
+            cloElements.forEach((element, index) => {
+                const value = parseInt(element.textContent) || 0;
+                values.push(value);
+                maxValue = Math.max(maxValue, value);
+            });
+            
+            const maxHeight = 100;
+            
+            values.forEach((value, index) => {
+                const height = (value / maxValue) * maxHeight;
+                const columnElement = document.getElementById('colum-CLO' + (index + 1));
+                if (columnElement) {
+                    columnElement.style.height = height + 'px';
+                    columnElement.style.backgroundColor = '#8B5CF6'; // Purple
+                }
+            });
+        }
+        
+        // Initialize charts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDifficultyChart();
+            updateCLOChart();
+        });
+    </script>
 </body>
 </html>

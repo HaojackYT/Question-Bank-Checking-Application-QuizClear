@@ -7,13 +7,17 @@ import com.uth.quizclear.model.entity.Exam;
 import com.uth.quizclear.model.entity.User;
 import com.uth.quizclear.model.entity.Department;
 import com.uth.quizclear.model.entity.Subject;
+import com.uth.quizclear.model.entity.Course;
 import com.uth.quizclear.model.enums.ExamStatus;
+import com.uth.quizclear.model.enums.ExamType;
+import com.uth.quizclear.model.enums.ExamReviewStatus;
 import com.uth.quizclear.model.enums.UserRole;
 import com.uth.quizclear.repository.ExamRepository;
 import com.uth.quizclear.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +39,9 @@ public class ExamService {
     
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CourseService courseService;
 
     // Scope-based exam retrieval methods
 
@@ -655,11 +662,120 @@ public class ExamService {
 
 
     public Exam saveExam(ExamCreateDTO dto) {
-        Exam exam = new Exam();
-        exam.setExamTitle(dto.getExamTitle());
-        exam.setExamCode(dto.getExamCode());
-        // set các trường khác
-        return examRepository.save(exam);
+        logger.info("Starting saveExam with DTO: {}", dto);
+        
+        try {
+            // Validate required fields
+            if (dto.getExamCode() == null || dto.getExamCode().trim().isEmpty()) {
+                throw new IllegalArgumentException("Exam code is required");
+            }
+            
+            // Check for duplicate exam code BEFORE creating the exam
+            String examCode = dto.getExamCode().trim();
+            if (examRepository.existsByExamCode(examCode)) {
+                logger.error("Duplicate exam code detected: {}", examCode);
+                throw new IllegalArgumentException("Exam code '" + examCode + "' already exists. Please choose a different exam code.");
+            }
+            
+            logger.info("Validation passed, creating new exam with code: {}", examCode);
+            
+            Exam exam = new Exam();
+            
+            // Basic info from Step 1
+            exam.setExamTitle(dto.getExamTitle());
+            exam.setExamCode(examCode);
+            exam.setDurationMinutes(dto.getDurationMinutes() != null ? dto.getDurationMinutes() : 120);
+            exam.setInstructions(dto.getInstructions());
+            exam.setSemester(dto.getSemester());
+            
+            logger.info("Basic info set for exam: {}", exam.getExamTitle());
+            
+            // Set exam type from DTO
+            if (dto.getExamType() != null) {
+                try {
+                    ExamType examType = ExamType.fromDisplayName(dto.getExamType());
+                    exam.setExamType(examType);
+                    logger.info("Exam type set to: {}", examType);
+                } catch (IllegalArgumentException e) {
+                    exam.setExamType(ExamType.QUIZ); // default
+                    logger.warn("Invalid exam type, using default QUIZ: {}", dto.getExamType());
+                }
+            } else {
+                exam.setExamType(ExamType.QUIZ);
+                logger.info("No exam type provided, using default QUIZ");
+            }
+            
+            // Set course if provided
+            if (dto.getCourseId() != null) {
+                try {
+                    Course course = courseService.getCourseById(dto.getCourseId());
+                    if (course != null) {
+                        exam.setCourse(course);
+                        logger.info("Course set: {} (ID: {})", course.getCourseName(), course.getCourseId());
+                    } else {
+                        logger.warn("Course not found for ID: {}", dto.getCourseId());
+                    }
+                } catch (Exception e) {
+                    logger.error("Error setting course: {}", e.getMessage());
+                }
+            }
+            
+            // Set exam date from deadline
+            if (dto.getDeadlineDate() != null) {
+                exam.setExamDate(dto.getDeadlineDate().atStartOfDay());
+                logger.info("Exam date set to: {}", exam.getExamDate());
+            }
+            
+            // Set default status
+            exam.setExamStatus(ExamStatus.DRAFT);
+            exam.setReviewStatus(ExamReviewStatus.PENDING);
+            logger.info("Status set to DRAFT/PENDING");
+            
+            // Set creator - try to find any user or create without creator for now
+            try {
+                List<User> users = userRepository.findAll();
+                if (!users.isEmpty()) {
+                    User creator = users.get(0); // Get first available user
+                    exam.setCreatedBy(creator);
+                    logger.info("Creator set to: {} (ID: {})", creator.getFullName(), creator.getUserId());
+                } else {
+                    logger.warn("No users found in database, creating exam without creator");
+                }
+            } catch (Exception e) {
+                logger.error("Error setting creator: {}", e.getMessage());
+            }
+            
+            // Set default values
+            exam.setTotalMarks(java.math.BigDecimal.valueOf(10.0));
+            exam.setHidden(true);
+            
+            logger.info("Attempting to save exam to database...");
+            
+            // Save to database
+            Exam savedExam = examRepository.save(exam);
+            logger.info("Exam saved successfully with ID: {}", savedExam.getExamId());
+            
+            return savedExam;
+            
+        } catch (IllegalArgumentException e) {
+            // Handle validation errors (like duplicate exam code)
+            logger.error("Validation error in saveExam: {}", e.getMessage());
+            throw e; // Re-throw as-is to preserve the specific error message
+        } catch (DataIntegrityViolationException e) {
+            // Handle database constraint violations
+            logger.error("Database constraint violation in saveExam: {}", e.getMessage(), e);
+            String message = e.getMessage().toLowerCase();
+            if (message.contains("duplicate") && message.contains("exam_code")) {
+                throw new IllegalArgumentException("Exam code already exists. Please choose a different exam code.");
+            } else if (message.contains("duplicate")) {
+                throw new IllegalArgumentException("A record with this information already exists.");
+            } else {
+                throw new RuntimeException("Database constraint violation: " + e.getMessage(), e);
+            }
+        } catch (Exception e) {
+            logger.error("Unexpected error in saveExam: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to save exam: " + e.getMessage(), e);
+        }
     }
 
     /**
