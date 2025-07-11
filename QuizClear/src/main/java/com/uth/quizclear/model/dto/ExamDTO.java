@@ -9,6 +9,7 @@ public class ExamDTO {
     private String examTitle;
     private String subject;
     private String status;
+    private String reviewStatus;
     private LocalDateTime createdAt;
     private LocalDateTime dueDate;
     private String createdBy;
@@ -59,6 +60,9 @@ public class ExamDTO {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getReviewStatus() { return reviewStatus; }
+    public void setReviewStatus(String reviewStatus) { this.reviewStatus = reviewStatus; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
@@ -122,5 +126,65 @@ public class ExamDTO {
     
     public String getRequestingUserRole() { return requestingUserRole; }
     public void setRequestingUserRole(String requestingUserRole) { this.requestingUserRole = requestingUserRole; }
+
+    /**
+     * Get combined display status based on both exam_status and review_status
+     * Business logic:
+     * - If review_status is "needs_revision" → show "Needs revision" 
+     * - If review_status is "approved" AND exam_status is "approved" → show "Approved"
+     * - If review_status is "approved" AND exam_status is "finalized" → show "Finalized"
+     * - Otherwise, show review_status display name
+     */
+    public String getCombinedDisplayStatus() {
+        if (reviewStatus == null) {
+            return status != null ? status : "Unknown";
+        }
+        
+        switch (reviewStatus.toLowerCase()) {
+            case "needs revision":
+            case "needs_revision":
+                return "Needs revision";
+                
+            case "approved":
+                // If review approved, check exam_status for final state
+                if (status != null) {
+                    String examStatusLower = status.toLowerCase();
+                    if (examStatusLower.equals("finalized")) {
+                        return "Finalized";
+                    } else if (examStatusLower.equals("approved")) {
+                        return "Approved";
+                    }
+                }
+                return "Approved";
+                
+            case "rejected":
+                return "Rejected";
+                
+            case "pending":
+                return "Pending";
+                
+            default:
+                return reviewStatus;
+        }
+    }
+    
+    /**
+     * Get CSS class for status styling
+     */
+    public String getStatusCssClass() {
+        String displayStatus = getCombinedDisplayStatus().toLowerCase();
+        switch (displayStatus) {
+            case "approved":
+            case "finalized":
+                return "approved";
+            case "rejected":
+                return "rejected";
+            case "needs revision":
+                return "needs-revision";
+            case "pending":
+            default:
+                return "pending";
+        }
+    }
 
 }

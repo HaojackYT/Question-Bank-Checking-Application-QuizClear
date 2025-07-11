@@ -20,4 +20,8 @@ public interface CourseRepository extends JpaRepository<Course, Long>, JpaSpecif
 
     // Lấy các khóa học mà lecturer là người tạo
     List<Course> findByCreatedBy_UserId(Long userId);
+
+    // Lấy course thuộc department có user HoD
+    @Query("SELECT c FROM Course c WHERE c.department IN (SELECT d.departmentName FROM Department d WHERE EXISTS (SELECT u FROM User u WHERE u.department = d.departmentName AND u.role = com.uth.quizclear.model.enums.UserRole.HOD))")
+    List<Course> findCoursesWithHoDDepartment();
 }
