@@ -16,6 +16,10 @@ public class HODDashboardChartsDTO {
         return subject;
     }
 
+    public String getSubjectName() {
+        return subject;
+    }
+
     public int getCreated() {
         return created;
     }

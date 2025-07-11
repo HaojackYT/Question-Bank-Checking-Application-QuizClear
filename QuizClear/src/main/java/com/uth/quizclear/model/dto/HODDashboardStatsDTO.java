@@ -87,6 +87,39 @@ public class HODDashboardStatsDTO {
         this.rejectedChange = rejectedChange;
     }
 
+    // Additional getters for frontend compatibility
+    public long getTotalLecturers() {
+        return lecturerCount;
+    }
+
+    public long getLecturersChange() {
+        return lecturerChange;
+    }
+
+    public long getPendingApprovals() {
+        return pendingCount;
+    }
+
+    public long getApprovedThisMonth() {
+        return approvedCount;
+    }
+
+    public long getTotalSubjects() {
+        return rejectedCount;
+    }
+
+    public long getSubjectCount() {
+        return rejectedCount;
+    }
+
+    public long getSubjectChange() {
+        return rejectedChange;
+    }
+
+    public long getActiveSubjects() {
+        return rejectedCount;
+    }
+
     @Override
     public String toString() {
         return "HODDashboardStatsDTO{" +

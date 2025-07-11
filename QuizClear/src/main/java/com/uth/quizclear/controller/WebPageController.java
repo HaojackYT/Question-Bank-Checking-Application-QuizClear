@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.uth.quizclear.service.StaffDashboardService;
 import com.uth.quizclear.service.UserService;
 import com.uth.quizclear.service.QuestionService;
+import com.uth.quizclear.service.HODDashboardService;
 import com.uth.quizclear.model.dto.StaffDashboardDTO;
 import com.uth.quizclear.model.entity.User;
 import com.uth.quizclear.model.dto.QuestionDTO;
@@ -31,6 +32,9 @@ public class WebPageController {
     
     @Autowired
     private QuestionService questionService;
+    
+    @Autowired
+    private HODDashboardService hodDashboardService;
     // ========== UNIVERSAL ENDPOINTS TO PREVENT 404 FOR FRAGMENTS, MENUS, WS, SL DASHBOARD ===========
 
     // Universal mapping for header_user.html fragment (for all roles)
@@ -441,57 +445,150 @@ public class WebPageController {
 
     @GetMapping("/api/dashboard/hed/stats")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getHedStats() {
-        Map<String, Object> stats = new HashMap<>();
-        stats.put("lecturerCount", 15);
-        stats.put("lecturerChange", 2);
-        stats.put("pendingCount", 8);
-        stats.put("pendingChange", 3);
-        stats.put("approvedCount", 42);
-        stats.put("approvedChange", 5);
-        stats.put("rejectedCount", 2);
-        stats.put("rejectedChange", -1);
-        return ResponseEntity.ok(stats);
+    public ResponseEntity<Map<String, Object>> getHedStats(org.springframework.security.core.Authentication authentication) {
+        try {
+            Long userId = getCurrentUserIdFromAuth(authentication);
+            if (userId == null) {
+                return ResponseEntity.status(403).body(null);
+            }
+            
+            com.uth.quizclear.model.dto.HODDashboardStatsDTO statsDto = hodDashboardService.getStats(userId);
+            
+            Map<String, Object> stats = new HashMap<>();
+            stats.put("lecturerCount", statsDto.getLecturerCount());
+            stats.put("lecturerChange", statsDto.getLecturerChange());
+            stats.put("pendingCount", statsDto.getPendingCount());
+            stats.put("pendingChange", statsDto.getPendingChange());
+            stats.put("approvedCount", statsDto.getApprovedCount());
+            stats.put("approvedChange", statsDto.getApprovedChange());
+            stats.put("rejectedCount", statsDto.getRejectedCount());
+            stats.put("rejectedChange", statsDto.getRejectedChange());
+            
+            return ResponseEntity.ok(stats);
+        } catch (Exception e) {
+            // Fallback data
+            Map<String, Object> stats = new HashMap<>();
+            stats.put("lecturerCount", 0);
+            stats.put("lecturerChange", 0);
+            stats.put("pendingCount", 0);
+            stats.put("pendingChange", 0);
+            stats.put("approvedCount", 0);
+            stats.put("approvedChange", 0);
+            stats.put("rejectedCount", 0);
+            stats.put("rejectedChange", 0);
+            return ResponseEntity.ok(stats);
+        }
     }
 
     @GetMapping("/api/dashboard/hed/activities")
     @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getHedActivities() {
-        List<Map<String, Object>> activities = new ArrayList<>();
-        
-        Map<String, Object> activity1 = new HashMap<>();
-        activity1.put("title", "Question Approved");
-        activity1.put("description", "5 mathematics questions approved by Dr. Smith");
-        activity1.put("actionUrl", "/hed-approve-questions");
-        activities.add(activity1);
-        
-        Map<String, Object> activity2 = new HashMap<>();
-        activity2.put("title", "New Assignment");
-        activity2.put("description", "Physics question creation assigned to Prof. Johnson");
-        activity2.put("actionUrl", "/hed-join-task");
-        activities.add(activity2);
-        
-        return ResponseEntity.ok(activities);
+    public ResponseEntity<List<Map<String, Object>>> getHedActivities(org.springframework.security.core.Authentication authentication) {
+        try {
+            Long userId = getCurrentUserIdFromAuth(authentication);
+            if (userId == null) {
+                return ResponseEntity.ok(new ArrayList<>());
+            }
+            
+            List<com.uth.quizclear.model.dto.HODDashboardActivityDTO> activityDtos = hodDashboardService.getRecentActivities(userId);
+            
+            List<Map<String, Object>> activities = new ArrayList<>();
+            for (com.uth.quizclear.model.dto.HODDashboardActivityDTO dto : activityDtos) {
+                Map<String, Object> activity = new HashMap<>();
+                activity.put("title", dto.getTitle());
+                activity.put("description", dto.getDescription());
+                activity.put("actionUrl", dto.getActionUrl());
+                activities.add(activity);
+            }
+            
+            return ResponseEntity.ok(activities);
+        } catch (Exception e) {
+            return ResponseEntity.ok(new ArrayList<>());
+        }
     }
 
     @GetMapping("/api/dashboard/hed/deadlines")
     @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getHedDeadlines() {
-        List<Map<String, Object>> deadlines = new ArrayList<>();
-        
-        Map<String, Object> deadline1 = new HashMap<>();
-        deadline1.put("title", "Math Question Review");
-        deadline1.put("description", "Review and approve mathematics questions");
-        deadline1.put("actionUrl", "/hed-approve-questions");
-        deadlines.add(deadline1);
-        
-        Map<String, Object> deadline2 = new HashMap<>();
-        deadline2.put("title", "Physics Assignment");
-        deadline2.put("description", "Assign physics question creation tasks");
-        deadline2.put("actionUrl", "/hed-join-task");
-        deadlines.add(deadline2);
-        
-        return ResponseEntity.ok(deadlines);
+    public ResponseEntity<List<Map<String, Object>>> getHedDeadlines(org.springframework.security.core.Authentication authentication) {
+        try {
+            Long userId = getCurrentUserIdFromAuth(authentication);
+            if (userId == null) {
+                return ResponseEntity.ok(new ArrayList<>());
+            }
+            
+            List<com.uth.quizclear.model.dto.HODDashboardDeadlineDTO> deadlineDtos = hodDashboardService.getDeadlines(userId);
+            
+            List<Map<String, Object>> deadlines = new ArrayList<>();
+            for (com.uth.quizclear.model.dto.HODDashboardDeadlineDTO dto : deadlineDtos) {
+                Map<String, Object> deadline = new HashMap<>();
+                deadline.put("title", dto.getTitle());
+                deadline.put("description", dto.getDescription());
+                deadline.put("actionUrl", dto.getActionUrl());
+                deadline.put("dueDate", java.time.LocalDateTime.now().plusDays(7).toString()); // Mock due date
+                deadlines.add(deadline);
+            }
+            
+            return ResponseEntity.ok(deadlines);
+        } catch (Exception e) {
+            return ResponseEntity.ok(new ArrayList<>());
+        }
+    }
+
+    @GetMapping("/api/dashboard/hed/subject-progress")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getHedSubjectProgress(org.springframework.security.core.Authentication authentication) {
+        try {
+            Long userId = getCurrentUserIdFromAuth(authentication);
+            if (userId == null) {
+                return ResponseEntity.status(403).body(null);
+            }
+            
+            List<com.uth.quizclear.model.dto.HODDashboardChartsDTO> charts = hodDashboardService.getBarCharts(userId);
+            
+            List<Map<String, Object>> progress = new ArrayList<>();
+            for (com.uth.quizclear.model.dto.HODDashboardChartsDTO chart : charts) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("subject", chart.getSubject());
+                item.put("subjectName", chart.getSubjectName());
+                item.put("created", Math.min(chart.getCreated(), 100));
+                item.put("target", Math.min(chart.getTarget(), 100));
+                progress.add(item);
+            }
+            
+            return ResponseEntity.ok(progress);
+        } catch (Exception e) {
+            // Fallback data nếu có lỗi
+            List<Map<String, Object>> fallback = new ArrayList<>();
+            Map<String, Object> item = new HashMap<>();
+            item.put("subject", "No Data");
+            item.put("subjectName", "No Data");
+            item.put("created", 0);
+            item.put("target", 0);
+            fallback.add(item);
+            return ResponseEntity.ok(fallback);
+        }
+    }
+
+    @GetMapping("/api/dashboard/hed/overall-progress")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getHedOverallProgress(org.springframework.security.core.Authentication authentication) {
+        try {
+            Long userId = getCurrentUserIdFromAuth(authentication);
+            if (userId == null) {
+                Map<String, Object> fallback = new HashMap<>();
+                fallback.put("percentage", 0.0);
+                return ResponseEntity.ok(fallback);
+            }
+            
+            double percentage = hodDashboardService.getOverallProgress(userId);
+            
+            Map<String, Object> progress = new HashMap<>();
+            progress.put("percentage", Math.round(percentage * 10.0) / 10.0);
+            return ResponseEntity.ok(progress);
+        } catch (Exception e) {
+            Map<String, Object> fallback = new HashMap<>();
+            fallback.put("percentage", 0.0);
+            return ResponseEntity.ok(fallback);
+        }
     }
 
     // ========== LECTURER API ENDPOINTS ==========

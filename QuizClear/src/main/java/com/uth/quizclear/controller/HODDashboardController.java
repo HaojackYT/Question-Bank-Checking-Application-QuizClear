@@ -2,6 +2,7 @@ package com.uth.quizclear.controller;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import com.uth.quizclear.model.dto.HODDashboardStatsDTO;
 import com.uth.quizclear.service.HODDashboardService;
 
 @RestController
-@RequestMapping("/api/dashboard/hod")
+@RequestMapping("/api")
 
 public class HODDashboardController {
 
@@ -78,6 +79,21 @@ public class HODDashboardController {
             Long userId = (Long) session.getAttribute("userId");
             double progress = dashboardService.getOverallProgress(userId);
             return ResponseEntity.ok(progress);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to load progress.");
+        }
+    }
+
+    @GetMapping("/overall-progress")
+    public ResponseEntity<?> getOverallProgress(HttpSession session) {
+        if (!isHOD(session)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied: Not HOD or not logged in");
+        }
+
+        try {
+            Long userId = (Long) session.getAttribute("userId");
+            double progress = dashboardService.getOverallProgress(userId);
+            return ResponseEntity.ok(Map.of("percentage", progress));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to load progress.");
         }
