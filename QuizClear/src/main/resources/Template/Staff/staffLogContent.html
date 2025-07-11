@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>    <link rel="stylesheet" th:href="@{/Static/css/staff/staffLogs.css}">
+
+<head>
+    <link rel="stylesheet" th:href="@{/Static/css/staff/staffLogs.css}">
     <link rel="stylesheet" th:href="@{/Static/css/staff/staffLogsDetails.css}">
     <link rel="stylesheet" th:href="@{/Static/css/staff/staffLogsModal.css}">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <title>Statistics & Reporting</title>
 </head>
+
 <body>
     <div class="search-export">
         <input type="text" class="search-input" placeholder="Search logs..." oninput="filterLogs(this.value)">
@@ -92,58 +97,58 @@
         async function showLogDetails(logId) {
             try {
                 console.log('Loading log details for ID:', logId);
-                
+
                 // Fetch log details from API
                 const response = await fetch(`/api/staff/duplications/processing-logs/${logId}`);
                 if (!response.ok) {
                     throw new Error(`Failed to load log details: ${response.status}`);
                 }
-                
+
                 const log = await response.json();
-                
+
                 // Populate modal with log data
                 populateModal(log);
-                
+
                 // Show modal
                 document.getElementById('logDetailsModal').style.display = 'flex';
-                
+
             } catch (error) {
                 console.error('Error loading log details:', error);
                 alert('Failed to load log details: ' + error.message);
             }
         }
-        
+
         function populateModal(log) {
             // Basic info
             document.getElementById('modal-log-id').textContent = log.logId || 'N/A';
-            
+
             // Action with badge styling
             const actionElement = document.getElementById('modal-action');
             const action = log.action || 'UNKNOWN';
             actionElement.textContent = action;
             actionElement.className = 'action-badge ' + action.toLowerCase();
-            
+
             document.getElementById('modal-processor').textContent = log.processorName || 'Unknown';
             document.getElementById('modal-date').textContent = formatDateTime(log.processedAt);
             document.getElementById('modal-similarity').textContent = log.similarity || 'N/A';
-            
+
             // Questions content
             document.getElementById('modal-new-question').textContent = log.newQuestion || 'No content available';
             document.getElementById('modal-similar-question').textContent = log.similarQuestion || 'No content available';
             document.getElementById('modal-feedback').textContent = log.feedback || 'No feedback provided';
         }
-        
+
         function closeLogModal() {
             document.getElementById('logDetailsModal').style.display = 'none';
         }
-        
+
         // Make functions available globally
         window.populateModal = populateModal;
         window.closeLogModal = closeLogModal;
-        
+
         function formatDateTime(dateTimeStr) {
             if (!dateTimeStr) return 'N/A';
-            
+
             try {
                 const date = new Date(dateTimeStr);
                 return date.toLocaleString('en-CA', {
@@ -158,21 +163,29 @@
                 return dateTimeStr;
             }
         }
-        
+
         // Close modal when clicking outside
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             const modal = document.getElementById('logDetailsModal');
             if (event.target === modal) {
                 closeLogModal();
             }
         });
-        
+
         // Close modal with Escape key
-        document.addEventListener('keydown', function(event) {
+        document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
                 closeLogModal();
             }
         });
     </script>
+    <script>
+    // Set active menu based on current page
+    document.addEventListener('DOMContentLoaded', function () {
+        setActiveMenu(document.title);
+    });
+</script>
+<script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
+
 </html>

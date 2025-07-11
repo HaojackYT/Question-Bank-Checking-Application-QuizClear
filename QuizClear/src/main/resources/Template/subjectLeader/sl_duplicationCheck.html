@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet" />
     <title>DuplicationCheck</title>
 </head>
+
 <body>
     <header class="header" th:insert="~{header_user :: header}"></header>
     <div id="Container-body">
@@ -22,7 +24,8 @@
                 <p>Detect duplicate questions automatically</p>
                 <div class="automatic-duplication-detection">
                     <h3>Automatic Duplication Detection</h3>
-                    <p style="color:#555; font-size: 13px; margin-top: 4px;">Review questions our AI system has flagged as potential duplicates</p>
+                    <p style="color:#555; font-size: 13px; margin-top: 4px;">Review questions our AI system has flagged
+                        as potential duplicates</p>
                     <table>
                         <thead>
                             <tr>
@@ -35,39 +38,51 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="dup : ${duplications}">
-                            <td th:text="'Q' + ${dup.newQuestionId}"></td>
-                            <td th:text="${dup.newQuestionContent}"></td>
-                            <td>
-                                <span th:text="'Q' + ${dup.similarQuestionId} + ': ' + ${dup.similarQuestionContent}"></span>
-                            </td>
-                            <td>
-                                <span th:class="${dup.similarityScore >= 0.8 ? 'high' : 'medium'}"
-                                      th:text="${dup.similarityScore >= 0.8 ? 'High (' : 'Medium ('} + ${#numbers.formatDecimal(dup.similarityScore * 100, 0, 0)} + '%)'"></span>
-                            </td>
-                            <td th:text="${dup.submitterName}"></td>
-                            <td>
-                                <span>
-                                    <form th:action="@{/subject-leader/duplication-check/accept}" method="post" style="display:inline;">
-                                        <input type="hidden" name="detectionId" th:value="${dup.detectionId}" />
-                                        <button type="submit" title="Accept"><i class="fa-solid fa-check"></i></button>
-                                    </form>
-                                    <form th:action="@{/subject-leader/duplication-check/reject}" method="post" style="display:inline;">
-                                        <input type="hidden" name="detectionId" th:value="${dup.detectionId}" />
-                                        <button type="submit" title="Reject"><i class="fa-solid fa-xmark"></i></button>
-                                    </form>
-                                </span>
-                            </td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(duplications)}">
-                            <td colspan="6" style="text-align:center;">No duplicate detections found.</td>
-                        </tr>
+                            <tr th:each="dup : ${duplications}">
+                                <td th:text="'Q' + ${dup.newQuestionId}"></td>
+                                <td th:text="${dup.newQuestionContent}"></td>
+                                <td>
+                                    <span
+                                        th:text="'Q' + ${dup.similarQuestionId} + ': ' + ${dup.similarQuestionContent}"></span>
+                                </td>
+                                <td>
+                                    <span th:class="${dup.similarityScore >= 0.8 ? 'high' : 'medium'}"
+                                        th:text="${dup.similarityScore >= 0.8 ? 'High (' : 'Medium ('} + ${#numbers.formatDecimal(dup.similarityScore * 100, 0, 0)} + '%)'"></span>
+                                </td>
+                                <td th:text="${dup.submitterName}"></td>
+                                <td>
+                                    <span>
+                                        <form th:action="@{/subject-leader/duplication-check/accept}" method="post"
+                                            style="display:inline;">
+                                            <input type="hidden" name="detectionId" th:value="${dup.detectionId}" />
+                                            <button type="submit" title="Accept"><i
+                                                    class="fa-solid fa-check"></i></button>
+                                        </form>
+                                        <form th:action="@{/subject-leader/duplication-check/reject}" method="post"
+                                            style="display:inline;">
+                                            <input type="hidden" name="detectionId" th:value="${dup.detectionId}" />
+                                            <button type="submit" title="Reject"><i
+                                                    class="fa-solid fa-xmark"></i></button>
+                                        </form>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(duplications)}">
+                                <td colspan="6" style="text-align:center;">No duplicate detections found.</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        // Set active menu based on current page
+        document.addEventListener('DOMContentLoaded', function () {
+            setActiveMenu(document.title);
+        });
+    </script>
     <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
+
 </html>

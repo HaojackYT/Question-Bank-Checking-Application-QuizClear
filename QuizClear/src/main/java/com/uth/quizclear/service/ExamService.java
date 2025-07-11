@@ -360,6 +360,7 @@ public class ExamService {
         dto.setExamTitle(exam.getExamTitle());
         dto.setSubject(exam.getCourse().getCourseName());
         dto.setStatus(exam.getExamStatus().getDisplayName());
+        dto.setReviewStatus(exam.getReviewStatus().getDisplayName());
         dto.setCreatedAt(exam.getCreatedAt());
         dto.setDueDate(exam.getExamDate());
         dto.setCreatedBy(exam.getCreatedBy() != null ? exam.getCreatedBy().getFullName() : "");

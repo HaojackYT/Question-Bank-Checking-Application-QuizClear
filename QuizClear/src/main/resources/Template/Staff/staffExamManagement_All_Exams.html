@@ -82,16 +82,24 @@
 
             <!-- Navigation Tabs -->
             <div class="tab-navigation">
-                <a class="nav-tab active" th:href="@{/staff/exams/all-exams}">All Exams</a>
-                <a class="nav-tab" th:href="@{/staff/exams/pending-approval}">Pending Approval</a>
-                <a class="nav-tab" th:href="@{/staff/exams/approved}">Approved</a>
-                <a class="nav-tab" th:href="@{/staff/exams/needs-revision}">Needs Revision</a>
+                <button class="nav-tab active" data-filter="all">
+                    All Exams <span class="count" th:text="'(' + ${totalExams} + ')'"></span>
+                </button>
+                <button class="nav-tab" data-filter="pending">
+                    Pending <span class="count" th:text="'(' + ${pendingCount} + ')'"></span>
+                </button>
+                <button class="nav-tab" data-filter="approved">
+                    Approved <span class="count" th:text="'(' + ${approvedCount} + ')'"></span>
+                </button>
+                <button class="nav-tab" data-filter="needs_revision">
+                    Needs Revision <span class="count" th:text="'(' + ${needsRevisionCount} + ')'"></span>
+                </button>
             </div>
 
             <!-- Content Header -->
             <div class="content-header">
-                <h3>All Exams</h3>
-                <p>Manage all exams in the system</p>
+                <h3 th:text="${contentTitle != null ? contentTitle : 'All Exams'}">All Exams</h3>
+                <p th:text="${contentDescription != null ? contentDescription : 'Manage all exams in the system'}">Manage all exams in the system</p>
             </div>
 
             <!-- Exam List -->
@@ -99,17 +107,17 @@
                 <div th:each="exam : ${exams}" class="exam-card">
                     <div class="exam-header">
                         <div class="exam-status" 
-                             th:classappend="${exam.status == 'Approved'} ? 'approved' :
-                                           (${exam.status == 'Rejected'} ? 'rejected' : 'pending')">
+                             th:classappend="${exam.statusCssClass}">
                             <i class="fas" 
-                               th:classappend="${exam.status == 'Approved'} ? 'fa-check-circle' :
-                                             (${exam.status == 'Rejected'} ? 'fa-times-circle' : 'fa-clock')"></i>
-                            <span th:text="${exam.status}">Pending</span>
+                               th:classappend="${exam.combinedDisplayStatus == 'Approved' || exam.combinedDisplayStatus == 'Finalized'} ? 'fa-check-circle' :
+                                             (${exam.combinedDisplayStatus == 'Rejected'} ? 'fa-times-circle' : 
+                                             (${exam.combinedDisplayStatus == 'Needs revision'} ? 'fa-edit' : 'fa-clock'))"></i>
+                            <span th:text="${exam.combinedDisplayStatus}">Pending</span>
                         </div>
                         <div class="exam-actions">
                             <a th:href="@{'/staff/exams/' + ${exam.examId} + '/overview-questions'}" 
                                class="action-btn view-btn">View</a>
-                            <a th:if="${exam.status == 'Submitted for Review'}" 
+                            <a th:if="${exam.reviewStatus == 'Pending'}" 
                                th:href="@{'/staff/exams/' + ${exam.examId} + '/review'}" 
                                class="action-btn review-btn">Review</a>
                         </div>
@@ -131,6 +139,56 @@
             </div>
         </div>
     </div>
+    <script>
+    // Set active menu based on current page
+    document.addEventListener('DOMContentLoaded', function () {
+        setActiveMenu(document.title);
+    });
+</script>
+<script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle tab navigation filtering
+    const tabButtons = document.querySelectorAll('.nav-tab');
+    const statusSelect = document.querySelector('select[name="status"]');
+    const searchForm = document.querySelector('.search-form');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all tabs
+            tabButtons.forEach(tab => tab.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('active');
+            
+            // Set the status filter based on data-filter attribute
+            const filterValue = this.getAttribute('data-filter');
+            if (filterValue === 'all') {
+                statusSelect.value = '';
+            } else {
+                statusSelect.value = filterValue;
+            }
+            
+            // Submit the form to filter results
+            searchForm.submit();
+        });
+    });
+    
+    // Set active tab based on current status filter
+    const currentStatus = statusSelect.value;
+    tabButtons.forEach(tab => {
+        const tabFilter = tab.getAttribute('data-filter');
+        if ((currentStatus === '' && tabFilter === 'all') || 
+            (currentStatus === tabFilter)) {
+            tab.classList.add('active');
+        } else {
+            tab.classList.remove('active');
+        }
+    });
+});
+</script>
+
 </body>
 </html>

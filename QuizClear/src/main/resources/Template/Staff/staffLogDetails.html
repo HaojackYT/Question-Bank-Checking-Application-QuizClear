@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Processing Log Details</title>
+    <title>Statistics & Reporting</title>
     <link rel="stylesheet" th:href="@{/Static/css/staff/staffLogDetails.css}">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
     <script th:src="@{/Static/js/staffLogDetails.js}"></script>
 </head>
+
 <body>
     <div class="log-details-container">
         <div class="log-header">
@@ -179,5 +182,13 @@
             window.URL.revokeObjectURL(url);
         }
     </script>
+    <script>
+    // Set active menu based on current page
+    document.addEventListener('DOMContentLoaded', function () {
+        setActiveMenu(document.title);
+    });
+</script>
+<script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
+
 </html>

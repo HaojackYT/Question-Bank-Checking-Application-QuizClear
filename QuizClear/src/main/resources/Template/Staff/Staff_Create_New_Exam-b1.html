@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +10,9 @@
     <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
     <link rel="stylesheet" th:href="@{/Static/css/staff/Staff_Create_New_Exam.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Create New Exam - Step 1</title>
+    <title>Exam Management</title>
 </head>
+
 <body>
     <header class="header" th:insert="~{header_user :: header}"></header>
     <div id="Container-body">
@@ -18,7 +20,8 @@
         <div id="main">
             <!-- Step indicator -->
             <div style="display: flex; align-items: center; gap: 0.625rem;">
-                <a th:href="@{/staff/exams/all-exams}" style="color: black; width: 2.5rem; height: 2.5rem; font-size: 2.5rem;">
+                <a th:href="@{/staff/exams/all-exams}"
+                    style="color: black; width: 2.5rem; height: 2.5rem; font-size: 2.5rem;">
                     <i class="fa-solid fa-arrow-left"></i>
                 </a>
                 <p style="color: #120368; font-size: 2.25rem; font-weight: 600;">Create New Exam</p>
@@ -53,13 +56,13 @@
                             <div id="left-content">
                                 <div>
                                     <p>Exam Title</p>
-                                    <input type="text" th:field="*{examTitle}" placeholder="e.g., Midterm Exam, Final Exam" required>
+                                    <input type="text" th:field="*{examTitle}"
+                                        placeholder="e.g., Midterm Exam, Final Exam" required>
                                 </div>
                                 <div>
                                     <p>Subject</p>
                                     <select th:field="*{subjectId}" required>
-                                        <option th:each="subject : ${subjects}"
-                                            th:value="${subject.subjectId}"
+                                        <option th:each="subject : ${subjects}" th:value="${subject.subjectId}"
                                             th:text="${subject.subjectName}"></option>
                                     </select>
                                 </div>
@@ -67,30 +70,32 @@
                                     <p>Semester</p>
                                     <select th:field="*{semester}" required>
                                         <option value="">Select Semester</option>
-                                        <option th:each="sem : ${semesters}" th:value="${sem}" th:text="${sem}"></option>
+                                        <option th:each="sem : ${semesters}" th:value="${sem}" th:text="${sem}">
+                                        </option>
                                     </select>
                                 </div>
                                 <div>
                                     <p>Exam Type</p>
                                     <select th:field="*{examType}" required>
                                         <option value="">Select Exam Type</option>
-                                        <option th:each="type : ${examTypes}" th:value="${type}" th:text="${type}"></option>
+                                        <option th:each="type : ${examTypes}" th:value="${type}" th:text="${type}">
+                                        </option>
                                     </select>
                                 </div>
                             </div>
                             <div id="right-content">
                                 <div>
                                     <p>Exam Code</p>
-                                    <input type="text" th:field="*{examCode}" placeholder="e.g., CS101-FINAL-2023" required>
+                                    <input type="text" th:field="*{examCode}" placeholder="e.g., CS101-FINAL-2023"
+                                        required>
                                 </div>
                                 <div>
                                     <p>Course/Module</p>
                                     <select th:field="*{courseId}" required>
-                                    <option value="">Select Course</option>
-                                        <option th:each="course : ${courses}"
-                                            th:value="${course.courseId}"
+                                        <option value="">Select Course</option>
+                                        <option th:each="course : ${courses}" th:value="${course.courseId}"
                                             th:text="${course.courseName}"></option>
-                                </select>
+                                    </select>
                                 </div>
                                 <div>
                                     <p>Deadline Date</p>
@@ -98,31 +103,32 @@
                                 </div>
                                 <div>
                                     <p>Duration (minutes)</p>
-                                    <input type="number" th:field="*{durationMinutes}" placeholder="e.g., 120" min="1" required>
+                                    <input type="number" th:field="*{durationMinutes}" placeholder="e.g., 120" min="1"
+                                        required>
                                 </div>
                             </div>
                         </div>
                         <div style="padding-right: 2.1875rem;">
                             <div>
                                 <p style="font-size: 0.75rem;">Exam Description</p>
-                                <textarea th:field="*{description}"
-                                        placeholder="Enter a brief description of the exam"
-                                        style="min-height: 5rem; max-height: 5rem; height: 5rem; border: 1px solid #ccc; border-radius: 6px; resize: none; width: 100%;"></textarea>
+                                <textarea th:field="*{description}" placeholder="Enter a brief description of the exam"
+                                    style="min-height: 5rem; max-height: 5rem; height: 5rem; border: 1px solid #ccc; border-radius: 6px; resize: none; width: 100%;"></textarea>
                             </div>
                             <div>
                                 <p style="font-size: 0.75rem;">
                                     Exam Instructions
-                                    <span title="Instructions for students"><i class="fa-regular fa-circle-question"></i></span>
+                                    <span title="Instructions for students"><i
+                                            class="fa-regular fa-circle-question"></i></span>
                                 </p>
-                                <textarea th:field="*{instructions}"
-                                        placeholder="1. Read all questions carefully before answering.
+                                <textarea th:field="*{instructions}" placeholder="1. Read all questions carefully before answering.
 2. Each question has only one correct answer.
 3. There is no negative marking for wrong answers.
 4. You have the entire duration to complete the exam."
-                                        style="min-height: 7.125rem; max-height: 7.125rem; height: 7.125rem; border: 1px solid #ccc; border-radius: 6px; resize: none; width: 100%;"></textarea>
+                                    style="min-height: 7.125rem; max-height: 7.125rem; height: 7.125rem; border: 1px solid #ccc; border-radius: 6px; resize: none; width: 100%;"></textarea>
                             </div>
                             <div id="button-container">
-                                <a th:href="@{/staff/exams/all-exams}" class="btn btn-secondary" title="Cancel">Cancel</a>
+                                <a th:href="@{/staff/exams/all-exams}" class="btn btn-secondary"
+                                    title="Cancel">Cancel</a>
                                 <button type="submit" class="btn btn-primary" title="Next">
                                     Next <i class="fa-solid fa-arrow-right"></i>
                                 </button>
@@ -134,4 +140,13 @@
         </div>
     </div>
 </body>
+
+<script>
+    // Set active menu based on current page
+    document.addEventListener('DOMContentLoaded', function () {
+        setActiveMenu(document.title);
+    });
+</script>
+<script th:src="@{/Static/js/L_activeMenu.js}"></script>
+
 </html>

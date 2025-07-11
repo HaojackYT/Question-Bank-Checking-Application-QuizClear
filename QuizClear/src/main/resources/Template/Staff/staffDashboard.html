@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>QuizClear - Staff Dashboard</title>
+        <title>Dashboard_staff</title>
         <link rel="icon" href="data:;base64,=">
         <link rel="stylesheet" th:href="@{/Static/css/staff/staffDashboard.css}">
         <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
@@ -227,5 +227,13 @@
             }
         }
         </script>
+
+        <script>
+    // Set active menu based on current page
+    document.addEventListener('DOMContentLoaded', function () {
+        setActiveMenu(document.title);
+    });
+</script>
+<script th:src="@{/Static/js/L_activeMenu.js}"></script>
     </body>
 </html>

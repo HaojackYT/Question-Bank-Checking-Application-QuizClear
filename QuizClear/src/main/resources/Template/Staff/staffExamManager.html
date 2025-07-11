@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="../../Static/css/staff/staffExamManagement_All_Exams.css">
         <link rel="stylesheet" href="../../Static/Menu-Staff.css">
         <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-        <title>Template</title>
+        <title>Exam Management</title>
     </head>
 
     <body>
@@ -180,5 +180,12 @@
                     document.getElementById('menu-HTML').innerHTML = data;
                 });
         </script>
+        <script>
+    // Set active menu based on current page
+    document.addEventListener('DOMContentLoaded', function () {
+        setActiveMenu(document.title);
+    });
+</script>
+<script th:src="@{/Static/js/L_activeMenu.js}"></script>
     </body>
 </html>
