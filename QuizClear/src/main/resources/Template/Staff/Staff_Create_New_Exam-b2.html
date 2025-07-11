@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +10,9 @@
     <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
     <link rel="stylesheet" th:href="@{/Static/css/staff/Staff_Create_New_Exam.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Create New Exam - Step 2</title>
+    <title>Exam Management</title>
 </head>
+
 <body>
     <header class="header" th:insert="~{header_user :: header}"></header>
     <div id="Container-body">
@@ -18,7 +20,8 @@
         <div id="main">
             <!-- Step indicator -->
             <div style="display: flex; align-items: center; gap: 0.625rem;">
-                <a th:href="@{/staff/exams/create/step1}" style="color: black; width: 2.5rem; height: 2.5rem; font-size: 2.5rem;">
+                <a th:href="@{/staff/exams/create/step1}"
+                    style="color: black; width: 2.5rem; height: 2.5rem; font-size: 2.5rem;">
                     <i class="fa-solid fa-arrow-left"></i>
                 </a>
                 <p style="color: #120368; font-size: 2.25rem; font-weight: 600;">Create New Exam</p>
@@ -87,8 +90,10 @@
                             </div>
                             <!-- Difficulty Distribution -->
                             <div>
-                                <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 1.25rem;">
+                                <div
+                                    style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 1.25rem;">
                                     <p style="font-size: 0.875rem; font-weight: 500;">Difficulty Distribution</p>
+<<<<<<< HEAD
                                     <p style="font-size: 0.75rem; color: #2563EB;">Total <span id="totalPercent">100</span>%</p>
                                 </div>
                                 
@@ -107,8 +112,39 @@
                                     </div>
                                     <div style="width: 100px; text-align: right;">
                                         <span id="basicQuestions" style="font-size: 0.875rem; color: #6B7280;">8 questions</span>
+=======
+                                    <p style="font-size: 0.75rem; color: #2563EB;">Total
+                                        <span
+                                            th:text="${(examCreateDTO.percentBasic ?: 0) + (examCreateDTO.percentIntermediate ?: 0) + (examCreateDTO.percentAdvanced ?: 0) + (examCreateDTO.percentExpert ?: 0)}">100</span>%
+                                    </p>
+                                </div>
+                                <div class="range-container">
+                                    <div
+                                        style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
+                                        <p>Basic (Recognition)</p>
+                                        <p>-<span th:text="*{percentBasic}">25</span>%</p>
+                                    </div>
+                                    <p class="range-value"><span th:text="*{percentBasic}">13</span> question</p>
+                                    <input type="range" th:field="*{percentBasic}" min="0" max="100" step="1" />
+                                </div>
+                                <div class="range-container">
+                                    <div
+                                        style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
+                                        <p>Intermediate (Understanding)</p>
+                                        <p>-<span th:text="*{percentIntermediate}">25</span>%</p>
+                                    </div>
+                                    <p class="range-value"><span th:text="*{percentIntermediate}">13</span> question</p>
+                                    <input type="range" th:field="*{percentIntermediate}" min="0" max="100" step="1" />
+                                </div>
+                                <div class="range-container">
+                                    <div
+                                        style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
+                                        <p>Advanced (Application)</p>
+                                        <p>-<span th:text="*{percentAdvanced}">25</span>%</p>
+>>>>>>> 707c8fff48f91d241477e2b08a810030c4db9d18
                                     </div>
                                 </div>
+<<<<<<< HEAD
 
                                 <!-- Intermediate Level -->
                                 <div class="difficulty-row" style="display: flex; align-items: center; margin-bottom: 1rem;">
@@ -125,6 +161,13 @@
                                     </div>
                                     <div style="width: 100px; text-align: right;">
                                         <span id="intermediateQuestions" style="font-size: 0.875rem; color: #6B7280;">8 questions</span>
+=======
+                                <div class="range-container">
+                                    <div
+                                        style="display: flex; flex-direction: row; gap: 0.625rem; margin-bottom: 0.3125rem;">
+                                        <p>Expert (High Application)</p>
+                                        <p>-<span th:text="*{percentExpert}">25</span>%</p>
+>>>>>>> 707c8fff48f91d241477e2b08a810030c4db9d18
                                     </div>
                                 </div>
 
@@ -255,4 +298,11 @@
         });
     </script>
 </body>
+<script>
+    // Set active menu based on current page
+    document.addEventListener('DOMContentLoaded', function () {
+        setActiveMenu(document.title);
+    });
+</script>
+<script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </html>

@@ -11,7 +11,7 @@
     <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/slReviewApproval.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <title>Review & Approval</title>
+    <title>Review&Approval</title>
     <style>
         .status.cancelled {
             background-color: #4d0a11;
@@ -26,7 +26,7 @@
     <!-- body -->
     <div id="Container-body">
         <!-- Menu -->
-        <div th:replace="~{subjectLeader/Menu-SL :: Menu-SL}"></div>
+        <div><div th:replace="~{subjectLeader/Menu-SL :: Menu-SL}"></div></div>
 
         <!-- Main content -->
         <div id="main">
@@ -195,6 +195,12 @@
         // Initial load
         window.onload = fetchTasks;
     </script>
+    <script>
+                // Set active menu based on current page
+                document.addEventListener('DOMContentLoaded', function () {
+                    setActiveMenu(document.title);
+                });
+            </script>
     <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 

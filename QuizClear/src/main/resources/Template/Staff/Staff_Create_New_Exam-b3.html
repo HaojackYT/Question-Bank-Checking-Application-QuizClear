@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +10,9 @@
     <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
     <link rel="stylesheet" th:href="@{/Static/css/staff/Staff_Create_New_Exam.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>Create New Exam - Step 3</title>
+    <title>Exam Management</title>
 </head>
+
 <body>
     <header class="header" th:insert="~{header_user :: header}"></header>
     <div id="Container-body">
@@ -18,7 +20,8 @@
         <div id="main">
             <!-- Step indicator -->
             <div style="display: flex; align-items: center; gap: 0.625rem;">
-                <a th:href="@{/staff/exams/create/step2}" style="color: black; width: 2.5rem; height: 2.5rem; font-size: 2.5rem;">
+                <a th:href="@{/staff/exams/create/step2}"
+                    style="color: black; width: 2.5rem; height: 2.5rem; font-size: 2.5rem;">
                     <i class="fa-solid fa-arrow-left"></i>
                 </a>
                 <p style="color: #120368; font-size: 2.25rem; font-weight: 600;">Create New Exam</p>
@@ -44,7 +47,8 @@
             <div id="content-container" style="display: flex; flex-direction: column; gap: 1.25rem;">
                 <div>
                     <p style="font-size: 1.0625rem; font-weight: 600;">Assignment & Notification</p>
-                    <p style="font-size: 0.75rem; color: #6B7280;">Assign the exam creation task and set up notifications</p>
+                    <p style="font-size: 0.75rem; color: #6B7280;">Assign the exam creation task and set up
+                        notifications</p>
                 </div>
                 <form th:action="@{/staff/exams/create/step3}" th:object="${examCreateDTO}" method="post">
                     <!-- Hidden fields to preserve Step 1 & 2 data -->
@@ -79,7 +83,8 @@
                                 </div>
                                 <select th:field="*{departmentHeadId}">
                                     <option value="">Select Department Head</option>
-                                    <option th:each="user : ${departmentHeads}" th:value="${user.id}" th:text="${user.name}"></option>
+                                    <option th:each="user : ${departmentHeads}" th:value="${user.id}"
+                                        th:text="${user.name}"></option>
                                 </select>
                             </div>
                             <div class="Assign-Container">
@@ -91,7 +96,8 @@
                                 </div>
                                 <select th:field="*{subjectExpertId}">
                                     <option value="">Select Subject Expert</option>
-                                    <option th:each="user : ${subjectExperts}" th:value="${user.id}" th:text="${user.name}"></option>
+                                    <option th:each="user : ${subjectExperts}" th:value="${user.id}"
+                                        th:text="${user.name}"></option>
                                 </select>
                             </div>
                             <div class="Assign-Container">
@@ -104,7 +110,8 @@
                                 </div>
                                 <select th:field="*{reviewerId}">
                                     <option value="">Select Reviewer</option>
-                                    <option th:each="user : ${reviewers}" th:value="${user.id}" th:text="${user.name}"></option>
+                                    <option th:each="user : ${reviewers}" th:value="${user.id}" th:text="${user.name}">
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -124,13 +131,72 @@
                             <div id="warning">
                                 <i class="fa-solid fa-triangle-exclamation"></i>
                                 <div id="text">
-                                    <p style="font-size: 0.75rem; font-weight: 450; color: #854D0E;">Deadline Warning</p>
-                                    <p style="font-size: 0.75rem; font-weight: 450; color: #A16207; margin-top: 0.3125rem;">
-                                        Ensure all deadlines are set before the final exam date to allow sufficient time for review and approval.
+                                    <p style="font-size: 0.75rem; font-weight: 450; color: #854D0E;">Deadline Warning
+                                    </p>
+                                    <p
+                                        style="font-size: 0.75rem; font-weight: 450; color: #A16207; margin-top: 0.3125rem;">
+                                        Ensure all deadlines are set before the final exam date to allow sufficient time
+                                        for review and approval.
                                     </p>
                                 </div>
                             </div>
                         </div>
+<<<<<<< HEAD
+=======
+                        <!-- Notification Settings -->
+                        <div>
+                            <p style="font-size: 0.875rem; font-weight: 450;">Notification Settings</p>
+                            <div id="Notification-Container">
+                                <div class="setting">
+                                    <div class="Text-Container">
+                                        <p class="text-Title">Email Notifications</p>
+                                        <p class="text-content">Send email notifications for task assignments and
+                                            updates</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" th:field="*{notifyByEmail}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting">
+                                    <div class="Text-Container">
+                                        <p class="text-Title">Deadline Reminders</p>
+                                        <p class="text-content">Send reminders as the deadline approaches</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" th:field="*{notifyDeadlineReminders}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting">
+                                    <div class="Text-Container">
+                                        <p class="text-Title">Progress Updates</p>
+                                        <p class="text-content">Notify when significant progress is made</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" th:field="*{notifyProgressUpdates}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting">
+                                    <div class="Text-Container">
+                                        <p class="text-Title">Feedback Notifications</p>
+                                        <p class="text-content">Notify when feedback is provided on the exam</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" th:field="*{notifyFeedback}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="margin-top: 1.25rem;">
+                                <p style="font-size: 0.875rem; font-weight: 450;">Additional Instructions</p>
+                                <input type="text" th:field="*{additionalInstructions}"
+                                    placeholder="Enter any additional instructions or notes for the assignees"
+                                    style="width: 100%; margin-top: 0.625rem;">
+                            </div>
+                        </div>
+>>>>>>> 707c8fff48f91d241477e2b08a810030c4db9d18
                         <!-- Buttons -->
                         <div id="button-container">
                             <a th:href="@{/staff/exams/create/step2}" class="btn btn-secondary" title="Previous">
@@ -145,5 +211,13 @@
             </div>
         </div>
     </div>
+    <script>
+        // Set active menu based on current page
+        document.addEventListener('DOMContentLoaded', function () {
+            setActiveMenu(document.title);
+        });
+    </script>
+    <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
+
 </html>

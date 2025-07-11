@@ -416,6 +416,12 @@
         }
 
     </script>
+    <script>
+                // Set active menu based on current page
+                document.addEventListener('DOMContentLoaded', function () {
+                    setActiveMenu(document.title);
+                });
+            </script>
     <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
 

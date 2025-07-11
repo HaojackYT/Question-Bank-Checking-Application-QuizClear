@@ -4,16 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="data:,">    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
     <link rel="stylesheet" th:href="@{/Static/header.css}">
     <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
     <link rel="stylesheet" th:href="@{/Static/Menu-Staff.css}">
     <link rel="stylesheet" th:href="@{/Static/css/subjectLeader/sl_FB_viewDetails.css}">
     <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>SL Plans</title>
+    <title>Plans</title>
 </head>
 
-<body>    <!-- Header -->
+<body> <!-- Header -->
     <header class="header" th:insert="~{header_user :: header}"></header>
 
     <!-- Body -->
@@ -23,7 +24,8 @@
 
         <!-- Main content -->
         <div id="main">
-            <div class="details-container">                <div class="page-header">
+            <div class="details-container">
+                <div class="page-header">
                     <a href="/subject-leader/feedback">
                         <button class="back-btn">
                             <i class="fas fa-arrow-left"></i>
@@ -64,13 +66,13 @@
                                 <label>Status</label>
                                 <input type="text" value="Received" readonly>
                             </div>
-                        </div>                        <div class="info-row">
+                        </div>
+                        <div class="info-row">
                             <div class="info-field">
                                 <label>Notes <span style="color: #666; font-size: 0.8em;">(Editable)</span></label>
-                                <textarea placeholder="Enter your feedback notes here..." 
-                                         style="border: 1px solid #ddd; background-color: #fafafa;"
-                                         onchange="markNotesAsModified()"
-                                         id="feedbackNotes"></textarea>
+                                <textarea placeholder="Enter your feedback notes here..."
+                                    style="border: 1px solid #ddd; background-color: #fafafa;"
+                                    onchange="markNotesAsModified()" id="feedbackNotes"></textarea>
                             </div>
                         </div>
                     </div>
@@ -78,7 +80,8 @@
 
                 <div class="question-list-section">
                     <h2>Related Question</h2>
-                    <p class="section-subtitle">Display the question and all related information</p>                    <div class="questions-table">
+                    <p class="section-subtitle">Display the question and all related information</p>
+                    <div class="questions-table">
                         <table>
                             <thead>
                                 <tr>
@@ -100,7 +103,8 @@
                                         </div>
                                     </td>
                                 </tr>
-                            </tbody>                        </table>
+                            </tbody>
+                        </table>
                     </div>
 
                     <!-- Correct Answer Explanation section -->
@@ -112,7 +116,8 @@
                                 <span id="explanationText">No explanation provided.</span>
                             </div>
                         </div>
-                    </div>                    <div class="action-buttons">
+                    </div>
+                    <div class="action-buttons">
                         <button title="Approve Question" class="btn btn--approve"
                             onclick="approveQuestion()">Approve</button>
                         <button title="Reject Question" class="btn btn--reject"
@@ -120,27 +125,28 @@
                         <button title="Edit Question Content" class="btn btn--edit"
                             onclick="openEditModal()">Edit</button>
                         <button title="Assign to Another Lecturer" class="btn btn--assign"
-                            onclick="openAssignModal()">Assign</button>                        <button title="Resubmit for Higher Review" class="btn btn--resubmit">Resubmit</button>
-                        <button title="Save Feedback Notes" class="btn btn--save-notes" 
-                            onclick="saveFeedbackNotes()" 
-                            id="saveNotesBtn" 
-                            style="background: #28a745; display: none;">Save Notes</button>
+                            onclick="openAssignModal()">Assign</button> <button title="Resubmit for Higher Review"
+                            class="btn btn--resubmit">Resubmit</button>
+                        <button title="Save Feedback Notes" class="btn btn--save-notes" onclick="saveFeedbackNotes()"
+                            id="saveNotesBtn" style="background: #28a745; display: none;">Save Notes</button>
                     </div>
-                    
+
                     <!-- Status-dependent action message -->
-                    <div id="actionMessage" class="action-message" style="display: none; text-align: center; padding: 1rem; margin: 1rem 0; background-color: #f8f9fa; border-radius: 0.5rem; color: #6c757d; font-style: italic;">
+                    <div id="actionMessage" class="action-message"
+                        style="display: none; text-align: center; padding: 1rem; margin: 1rem 0; background-color: #f8f9fa; border-radius: 0.5rem; color: #6c757d; font-style: italic;">
                         <!-- Message will be populated by JavaScript based on status -->
                     </div>
                 </div>
             </div>
-        </div>        <!-- Modal for New Assignment -->
+        </div> <!-- Modal for New Assignment -->
         <div id="assignModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeAssignModal()">×</span>
                 <h2 class="modal-title">Reassign Question</h2>
                 <p style="color: #666; margin-bottom: 20px;">Assign this question to another lecturer for revision</p>
 
-                <div class="modal-row">                    <div class="modal-item">
+                <div class="modal-row">
+                    <div class="modal-item">
                         <label class="modal-label">Target Department</label>
                         <select id="assignDepartment" class="modal-select" onchange="loadLecturersByDepartment()">
                             <option value="">Select Department</option>
@@ -168,7 +174,8 @@
 
                 <div class="modal-notes">
                     <label class="modal-label">Assignment Instructions</label>
-                    <textarea id="assignNotes" class="modal-input" rows="3" placeholder="Please review and improve this question. Focus on: clarity, difficulty level, answer options..."></textarea>
+                    <textarea id="assignNotes" class="modal-input" rows="3"
+                        placeholder="Please review and improve this question. Focus on: clarity, difficulty level, answer options..."></textarea>
                 </div>
 
                 <div class="modal-buttons">
@@ -190,7 +197,7 @@
                 </div>
 
                 <div class="modal-item" style="display: flex;flex-direction: row;gap:1rem">
-                    <div class ="answer-contain">
+                    <div class="answer-contain">
                         <label class="modal-label">Answers</label>
                         <div class="edit-options">
                             <div class="option-row">
@@ -234,7 +241,7 @@
                 </div>
             </div>
         </div>
-    </div>    <!-- Scripts for loading header, menu, and modal functionality -->
+    </div> <!-- Scripts for loading header, menu, and modal functionality -->
     <script>
         // Global variables
         let currentFeedbackId = null;
@@ -244,8 +251,9 @@
         // Get URL parameters
         function getUrlParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);        }        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
+            return urlParams.get(name);
+        }        // Initialize page
+        document.addEventListener('DOMContentLoaded', function () {
             // For path: /subject-leader/feedback/{id}/details?type={type}
             // Extract ID from path
             const pathSegments = window.location.pathname.split('/');
@@ -253,16 +261,16 @@
             if (feedbackIndex >= 0 && pathSegments[feedbackIndex + 1]) {
                 currentFeedbackId = pathSegments[feedbackIndex + 1];
             }
-            
+
             // Get type from URL parameters
             currentFeedbackType = getUrlParameter('type');
-            
+
             if (currentFeedbackId) {
                 loadFeedbackDetail(currentFeedbackId);
             } else {
                 showErrorMessage('No feedback ID provided');
             }
-            
+
             // Add event listeners for buttons
             const assignButton = document.querySelector('.modal-btn--assign');
             if (assignButton) {
@@ -285,7 +293,7 @@
             if (currentFeedbackType) {
                 apiUrl += `?type=${currentFeedbackType}`;
             }
-            
+
             fetch(apiUrl)
                 .then(response => {
                     if (!response.ok) {
@@ -312,7 +320,7 @@
 
             // Update information section
             const infoInputs = document.querySelectorAll('.info-field input, .info-field textarea');
-            
+
             // No. field
             const noInput = infoInputs[0];
             if (noInput) {
@@ -328,16 +336,16 @@
             // Feedback Content field
             const contentInput = infoInputs[2];
             if (contentInput) {
-                const shortContent = data.title && data.title.length > 50 ? 
-                                   data.title.substring(0, 50) + '...' : 
-                                   (data.title || 'No content');
+                const shortContent = data.title && data.title.length > 50 ?
+                    data.title.substring(0, 50) + '...' :
+                    (data.title || 'No content');
                 contentInput.value = shortContent;
             }            // Created Date field
             const dateInput = infoInputs[3];
             if (dateInput) {
                 let formattedDate = 'N/A';
                 let dateToFormat = null;
-                
+
                 // Priority: submittedAt > createdAt > reviewedAt
                 if (data.submittedAt) {
                     dateToFormat = new Date(data.submittedAt);
@@ -346,7 +354,7 @@
                 } else if (data.reviewedAt) {
                     dateToFormat = new Date(data.reviewedAt);
                 }
-                
+
                 if (dateToFormat && !isNaN(dateToFormat.getTime())) {
                     formattedDate = dateToFormat.toLocaleDateString('en-GB', {
                         day: '2-digit',
@@ -371,28 +379,28 @@
             } else if (data.type === 'exam') {
                 populateExamContent(data);
             }
-            
+
             // Update action buttons based on status
             updateActionButtons(data.status);
         }
-          // Update action buttons based on feedback status
+        // Update action buttons based on feedback status
         function updateActionButtons(status) {
             const editBtn = document.querySelector('.btn--edit');
             const assignBtn = document.querySelector('.btn--assign');
             const resubmitBtn = document.querySelector('.btn--resubmit');
             const actionMessage = document.getElementById('actionMessage');
-            
+
             // Hide all buttons by default
             if (editBtn) editBtn.style.display = 'none';
             if (assignBtn) assignBtn.style.display = 'none';
             if (resubmitBtn) resubmitBtn.style.display = 'none';
             if (actionMessage) actionMessage.style.display = 'none';
-            
+
             // Show buttons based on status
             if (status) {
                 const upperStatus = status.toUpperCase();
-                
-                switch(upperStatus) {
+
+                switch (upperStatus) {
                     case 'REJECTED':
                         // For rejected: can edit and reassign
                         if (editBtn) editBtn.style.display = 'inline-block';
@@ -403,7 +411,7 @@
                             actionMessage.style.borderLeft = '4px solid #dc3545';
                         }
                         break;
-                        
+
                     case 'SUBMITTED':
                     case 'SUBMITTED_FOR_REVIEW':
                         // For submitted: can edit, assign, or resubmit for higher review
@@ -416,7 +424,7 @@
                             actionMessage.style.borderLeft = '4px solid #ffc107';
                         }
                         break;
-                        
+
                     case 'APPROVED':
                         // For approved: no actions needed (already processed)
                         if (actionMessage) {
@@ -425,7 +433,7 @@
                             actionMessage.style.borderLeft = '4px solid #28a745';
                         }
                         break;
-                        
+
                     default:
                         // For unknown status: show all options
                         if (editBtn) editBtn.style.display = 'inline-block';
@@ -484,7 +492,7 @@
         // Populate exam content (if needed)
         function populateExamContent(data) {
             const questionText = document.getElementById('questionText');
-            
+
             if (questionText && data.content) {
                 questionText.innerText = `Exam: ${data.title}`;
             }
@@ -528,11 +536,11 @@
         function markNotesAsModified() {
             const notesTextarea = document.getElementById('feedbackNotes') || document.querySelector('.info-field textarea');
             const saveNotesBtn = document.getElementById('saveNotesBtn');
-            
+
             if (notesTextarea && saveNotesBtn) {
                 const originalNotes = notesTextarea.getAttribute('data-original') || '';
                 const currentNotes = notesTextarea.value.trim();
-                
+
                 if (currentNotes !== originalNotes) {
                     saveNotesBtn.style.display = 'inline-block';
                     notesTextarea.style.borderColor = '#ffc107';
@@ -547,14 +555,14 @@
 
         function saveFeedbackNotes() {
             const notesTextarea = document.getElementById('feedbackNotes') || document.querySelector('.info-field textarea');
-            
+
             if (!notesTextarea) {
                 alert('Error: Could not find notes field');
                 return;
             }
 
             const feedbackNotes = notesTextarea.value.trim();
-            
+
             if (!currentFeedbackId) {
                 alert('Error: No feedback ID found');
                 return;
@@ -572,39 +580,39 @@
                 },
                 body: JSON.stringify(notesData)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('✅ Feedback notes saved successfully!');
-                    
-                    // Update original data
-                    notesTextarea.setAttribute('data-original', feedbackNotes);
-                    if (currentFeedbackData) {
-                        currentFeedbackData.feedback = feedbackNotes;
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ Feedback notes saved successfully!');
+
+                        // Update original data
+                        notesTextarea.setAttribute('data-original', feedbackNotes);
+                        if (currentFeedbackData) {
+                            currentFeedbackData.feedback = feedbackNotes;
+                        }
+
+                        // Reset visual indicators
+                        const saveNotesBtn = document.getElementById('saveNotesBtn');
+                        if (saveNotesBtn) {
+                            saveNotesBtn.style.display = 'none';
+                        }
+                        notesTextarea.style.borderColor = '#28a745';
+                        notesTextarea.style.backgroundColor = '#f8fff9';
+
+                        // Reset to normal after 2 seconds
+                        setTimeout(() => {
+                            notesTextarea.style.borderColor = '#ddd';
+                            notesTextarea.style.backgroundColor = '#fafafa';
+                        }, 2000);
+
+                    } else {
+                        alert('❌ Error saving notes:\n' + (data.message || 'Unknown error occurred'));
                     }
-                    
-                    // Reset visual indicators
-                    const saveNotesBtn = document.getElementById('saveNotesBtn');
-                    if (saveNotesBtn) {
-                        saveNotesBtn.style.display = 'none';
-                    }
-                    notesTextarea.style.borderColor = '#28a745';
-                    notesTextarea.style.backgroundColor = '#f8fff9';
-                    
-                    // Reset to normal after 2 seconds
-                    setTimeout(() => {
-                        notesTextarea.style.borderColor = '#ddd';
-                        notesTextarea.style.backgroundColor = '#fafafa';
-                    }, 2000);
-                    
-                } else {
-                    alert('❌ Error saving notes:\n' + (data.message || 'Unknown error occurred'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('❌ Network Error:\nFailed to save notes. Please check your connection and try again.');
-            });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('❌ Network Error:\nFailed to save notes. Please check your connection and try again.');
+                });
         }        // Assign Modal functionality
         function openAssignModal() {
             // Check if assigning is allowed for current status
@@ -615,7 +623,7 @@
                     return;
                 }
             }
-            
+
             // Set Assign Date to current date
             const assignDateInput = document.getElementById('assignDate');
             const currentDate = new Date();
@@ -636,13 +644,13 @@
 
         function loadAccessibleDepartments() {
             const departmentSelect = document.getElementById('assignDepartment');
-            
+
             fetch('/subject-leader/api/departments')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && data.departments) {
                         departmentSelect.innerHTML = '<option value="">Select Department</option>';
-                        
+
                         if (data.departments.length === 0) {
                             departmentSelect.innerHTML += '<option value="">No departments available</option>';
                         } else {
@@ -667,7 +675,7 @@
         function loadLecturersByDepartment() {
             const departmentSelect = document.getElementById('assignDepartment');
             const lecturerSelect = document.getElementById('assignLecturer');
-            
+
             if (!departmentSelect.value) {
                 lecturerSelect.innerHTML = '<option value="">First select department</option>';
                 lecturerSelect.disabled = true;
@@ -684,7 +692,7 @@
                 .then(data => {
                     if (data.success && data.lecturers) {
                         lecturerSelect.innerHTML = '<option value="">Select Lecturer</option>';
-                        
+
                         if (data.lecturers.length === 0) {
                             lecturerSelect.innerHTML += '<option value="">No lecturers available</option>';
                         } else {
@@ -692,7 +700,7 @@
                                 lecturerSelect.innerHTML += `<option value="${lecturer.id}">${lecturer.name} (${lecturer.email})</option>`;
                             });
                         }
-                        
+
                         lecturerSelect.disabled = false;
                     } else {
                         lecturerSelect.innerHTML = '<option value="">Error loading lecturers</option>';
@@ -716,12 +724,12 @@
                 alert('Please select a target department');
                 return;
             }
-            
+
             if (!lecturerSelect.value) {
                 alert('Please select a lecturer to assign to');
                 return;
             }
-            
+
             if (!dueDateInput.value) {
                 alert('Please set a due date');
                 return;
@@ -744,11 +752,11 @@
             // Confirm assignment
             const selectedLecturer = lecturerSelect.options[lecturerSelect.selectedIndex].text;
             const confirmMessage = `Are you sure you want to reassign this question to:\n\n` +
-                                 `Lecturer: ${selectedLecturer}\n` +
-                                 `Department: ${departmentSelect.options[departmentSelect.selectedIndex].text}\n` +
-                                 `Due Date: ${dueDateInput.value}\n\n` +
-                                 `The question will be moved to the assigned lecturer for revision.`;
-            
+                `Lecturer: ${selectedLecturer}\n` +
+                `Department: ${departmentSelect.options[departmentSelect.selectedIndex].text}\n` +
+                `Due Date: ${dueDateInput.value}\n\n` +
+                `The question will be moved to the assigned lecturer for revision.`;
+
             if (!confirm(confirmMessage)) {
                 return;
             }
@@ -760,49 +768,49 @@
                 },
                 body: JSON.stringify(assignmentData)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('✅ Question successfully reassigned!\n\n' +
-                          `The question has been assigned to ${selectedLecturer} ` +
-                          `for revision. They will receive a notification with ` +
-                          `your instructions and the due date.`);
-                    closeAssignModal();
-                      // Update status display
-                    const statusInput = document.querySelector('.info-field input[readonly]');
-                    if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
-                        statusInput.value = 'REASSIGNED';
-                    }
-                    
-                    // Update current feedback data
-                    if (currentFeedbackData) {
-                        currentFeedbackData.status = 'REASSIGNED';
-                    }
-                      // Optional: redirect back to feedback list
-                    setTimeout(() => {
-                        if (confirm('✅ Question assigned successfully!\n\n' +
-                                  'The question has been reassigned to another lecturer for revision. ' +
-                                  'It will no longer appear in your feedback list since it\'s now under the assigned lecturer\'s responsibility.\n\n' +
-                                  'Do you want to return to feedback list?')) {
-                            window.location.href = '/subject-leader/feedback';
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ Question successfully reassigned!\n\n' +
+                            `The question has been assigned to ${selectedLecturer} ` +
+                            `for revision. They will receive a notification with ` +
+                            `your instructions and the due date.`);
+                        closeAssignModal();
+                        // Update status display
+                        const statusInput = document.querySelector('.info-field input[readonly]');
+                        if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
+                            statusInput.value = 'REASSIGNED';
                         }
-                    }, 1500);
-                    
-                } else {
-                    alert('❌ Error assigning question:\n' + (data.message || 'Unknown error occurred'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('❌ Network Error:\nFailed to assign question. Please check your connection and try again.');
-            });
+
+                        // Update current feedback data
+                        if (currentFeedbackData) {
+                            currentFeedbackData.status = 'REASSIGNED';
+                        }
+                        // Optional: redirect back to feedback list
+                        setTimeout(() => {
+                            if (confirm('✅ Question assigned successfully!\n\n' +
+                                'The question has been reassigned to another lecturer for revision. ' +
+                                'It will no longer appear in your feedback list since it\'s now under the assigned lecturer\'s responsibility.\n\n' +
+                                'Do you want to return to feedback list?')) {
+                                window.location.href = '/subject-leader/feedback';
+                            }
+                        }, 1500);
+
+                    } else {
+                        alert('❌ Error assigning question:\n' + (data.message || 'Unknown error occurred'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('❌ Network Error:\nFailed to assign question. Please check your connection and try again.');
+                });
         }        // Edit Modal functionality
         function openEditModal() {
             if (!currentFeedbackData || currentFeedbackData.type !== 'question') {
                 alert('Edit is only available for questions');
                 return;
             }
-            
+
             // Check if editing is allowed for current status
             const status = currentFeedbackData.status ? currentFeedbackData.status.toUpperCase() : '';
             if (status === 'APPROVED') {
@@ -838,7 +846,7 @@
 
         function closeEditModal() {
             document.getElementById('editModal').style.display = 'none';
-        }        function saveQuestion() {
+        } function saveQuestion() {
             if (!currentFeedbackId) {
                 alert('Error: No feedback ID found');
                 return;
@@ -864,7 +872,7 @@
             }
 
             // Set answerKey based on correct answer selection
-            switch(questionData.correctAnswer) {
+            switch (questionData.correctAnswer) {
                 case 'A':
                     questionData.answerKey = questionData.answerF1;
                     break;
@@ -904,52 +912,53 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(questionData)
-            })            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('✅ Question updated and approved successfully!\n' +
-                          'Changes have been saved and the question has been approved.');
-                    closeEditModal();
-                    
-                    // Update the display with new values
-                    document.getElementById('questionText').innerText = questionData.content;
-                    document.getElementById('optionA').innerText = questionData.answerF1;
-                    document.getElementById('optionB').innerText = questionData.answerF2;
-                    document.getElementById('optionC').innerText = questionData.answerF3;
-                    document.getElementById('optionD').innerText = questionData.answerKey;
-                    
-                    // Update status to approved
-                    const statusInput = document.querySelector('.info-field input[readonly]');
-                    if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
-                        statusInput.value = 'APPROVED';
-                    }
-                    
-                    // Update current data for future comparisons
-                    if (currentFeedbackData) {
-                        currentFeedbackData.content = questionData.content;
-                        currentFeedbackData.answerF1 = questionData.answerF1;
-                        currentFeedbackData.answerF2 = questionData.answerF2;
-                        currentFeedbackData.answerF3 = questionData.answerF3;
-                        currentFeedbackData.answerKey = questionData.answerKey;
-                        currentFeedbackData.status = 'APPROVED';
-                    }
-                      // Optional: redirect back to feedback list after a delay
-                    setTimeout(() => {
-                        if (confirm('✅ Question approved successfully!\n\n' +
-                                  'The question has been edited and automatically approved. ' +
-                                  'It will no longer appear in your pending feedback list since it has been processed.\n\n' +
-                                  'Do you want to return to feedback list?')) {
-                            window.location.href = '/subject-leader/feedback';
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ Question updated and approved successfully!\n' +
+                            'Changes have been saved and the question has been approved.');
+                        closeEditModal();
+
+                        // Update the display with new values
+                        document.getElementById('questionText').innerText = questionData.content;
+                        document.getElementById('optionA').innerText = questionData.answerF1;
+                        document.getElementById('optionB').innerText = questionData.answerF2;
+                        document.getElementById('optionC').innerText = questionData.answerF3;
+                        document.getElementById('optionD').innerText = questionData.answerKey;
+
+                        // Update status to approved
+                        const statusInput = document.querySelector('.info-field input[readonly]');
+                        if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
+                            statusInput.value = 'APPROVED';
                         }
-                    }, 1000);
-                    
-                } else {
-                    alert('❌ Error updating question:\n' + (data.message || 'Unknown error occurred'));
-                }            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('❌ Network Error:\nFailed to update question. Please check your connection and try again.');
-            });
+
+                        // Update current data for future comparisons
+                        if (currentFeedbackData) {
+                            currentFeedbackData.content = questionData.content;
+                            currentFeedbackData.answerF1 = questionData.answerF1;
+                            currentFeedbackData.answerF2 = questionData.answerF2;
+                            currentFeedbackData.answerF3 = questionData.answerF3;
+                            currentFeedbackData.answerKey = questionData.answerKey;
+                            currentFeedbackData.status = 'APPROVED';
+                        }
+                        // Optional: redirect back to feedback list after a delay
+                        setTimeout(() => {
+                            if (confirm('✅ Question approved successfully!\n\n' +
+                                'The question has been edited and automatically approved. ' +
+                                'It will no longer appear in your pending feedback list since it has been processed.\n\n' +
+                                'Do you want to return to feedback list?')) {
+                                window.location.href = '/subject-leader/feedback';
+                            }
+                        }, 1000);
+
+                    } else {
+                        alert('❌ Error updating question:\n' + (data.message || 'Unknown error occurred'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('❌ Network Error:\nFailed to update question. Please check your connection and try again.');
+                });
         }
 
         // Resubmit functionality
@@ -958,7 +967,7 @@
                 alert('Error: No question ID found');
                 return;
             }
-            
+
             // Check if resubmitting is allowed for current status
             if (currentFeedbackData) {
                 const status = currentFeedbackData.status ? currentFeedbackData.status.toUpperCase() : '';
@@ -974,12 +983,12 @@
 
             // Get current notes for resubmission
             const notesTextarea = document.querySelector('.info-field textarea');
-            const resubmitNotes = notesTextarea ? notesTextarea.value.trim() : '';            const confirmMessage = `Are you sure you want to resubmit this question for higher-level review?\n\n` +
-                                 `This action will:\n` +
-                                 `• Send the question to Head of Department\n` +
-                                 `• Include your feedback notes for context\n` +
-                                 `• Change status to "ARCHIVED"\n\n` +
-                                 `Current feedback notes:\n"${resubmitNotes || 'No notes provided'}"`;
+            const resubmitNotes = notesTextarea ? notesTextarea.value.trim() : ''; const confirmMessage = `Are you sure you want to resubmit this question for higher-level review?\n\n` +
+                `This action will:\n` +
+                `• Send the question to Head of Department\n` +
+                `• Include your feedback notes for context\n` +
+                `• Change status to "ARCHIVED"\n\n` +
+                `Current feedback notes:\n"${resubmitNotes || 'No notes provided'}"`;
 
             if (!confirm(confirmMessage)) {
                 return;
@@ -998,91 +1007,92 @@
                 },
                 body: JSON.stringify(resubmitData)
             })
-            .then(response => response.json())
-            .then(data => {                if (data.success) {
-                    alert('✅ Question resubmitted successfully!\n\n' +
-                          'The question has been escalated to Head of Department ' +
-                          'for higher-level review. You will be notified of their decision.');
-                    
-                    // Update status display
-                    const statusInput = document.querySelector('.info-field input[readonly]');
-                    if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
-                        statusInput.value = 'ARCHIVED';
-                    }// Optional: redirect back to feedback list
-                    setTimeout(() => {
-                        if (confirm('✅ Question resubmitted successfully!\n\n' +
-                                  'The question has been escalated to Head of Department for final review. ' +
-                                  'It will no longer appear in your feedback list since it\'s now under higher-level review.\n\n' +
-                                  'Do you want to return to feedback list?')) {
-                            window.location.href = '/subject-leader/feedback';
-                        }
-                    }, 1500);
-                      } else {
-                    alert('❌ Error resubmitting question:\n' + (data.message || 'Unknown error occurred'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('❌ Network Error:\nFailed to resubmit question. Please check your connection and try again.');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ Question resubmitted successfully!\n\n' +
+                            'The question has been escalated to Head of Department ' +
+                            'for higher-level review. You will be notified of their decision.');
+
+                        // Update status display
+                        const statusInput = document.querySelector('.info-field input[readonly]');
+                        if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
+                            statusInput.value = 'ARCHIVED';
+                        }// Optional: redirect back to feedback list
+                        setTimeout(() => {
+                            if (confirm('✅ Question resubmitted successfully!\n\n' +
+                                'The question has been escalated to Head of Department for final review. ' +
+                                'It will no longer appear in your feedback list since it\'s now under higher-level review.\n\n' +
+                                'Do you want to return to feedback list?')) {
+                                window.location.href = '/subject-leader/feedback';
+                            }
+                        }, 1500);
+                    } else {
+                        alert('❌ Error resubmitting question:\n' + (data.message || 'Unknown error occurred'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('❌ Network Error:\nFailed to resubmit question. Please check your connection and try again.');
+                });
         }
-        
+
         // Approve question functionality
         function approveQuestion() {
             if (!currentFeedbackId) {
                 alert('Error: No question ID found');
                 return;
             }
-            
+
             if (!confirm('Are you sure you want to approve this question?\n\nThis action will mark the question as APPROVED and complete the review process.')) {
                 return;
             }
-            
+
             fetch(`/subject-leader/api/feedback/${currentFeedbackId}/approve`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('✅ Question approved successfully!');
-                    // Update status display
-                    const statusInput = document.querySelector('.info-field input[readonly]');
-                    if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
-                        statusInput.value = 'APPROVED';
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ Question approved successfully!');
+                        // Update status display
+                        const statusInput = document.querySelector('.info-field input[readonly]');
+                        if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
+                            statusInput.value = 'APPROVED';
+                        }
+                        // Refresh page or redirect
+                        setTimeout(() => {
+                            window.location.href = '/subject-leader/feedback';
+                        }, 1500);
+                    } else {
+                        alert('❌ Error approving question:\n' + (data.message || 'Unknown error occurred'));
                     }
-                    // Refresh page or redirect
-                    setTimeout(() => {
-                        window.location.href = '/subject-leader/feedback';
-                    }, 1500);
-                } else {
-                    alert('❌ Error approving question:\n' + (data.message || 'Unknown error occurred'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('❌ Network Error:\nFailed to approve question. Please check your connection and try again.');
-            });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('❌ Network Error:\nFailed to approve question. Please check your connection and try again.');
+                });
         }
-        
+
         // Reject question functionality
         function rejectQuestion() {
             if (!currentFeedbackId) {
                 alert('Error: No question ID found');
                 return;
             }
-            
+
             const feedback = prompt('Please provide feedback for rejection (optional):');
             if (feedback === null) {
                 return; // User cancelled
             }
-            
+
             if (!confirm('Are you sure you want to reject this question?\n\nThis will send it back to the lecturer for revision.')) {
                 return;
             }
-            
+
             fetch(`/subject-leader/api/feedback/${currentFeedbackId}/reject`, {
                 method: 'POST',
                 headers: {
@@ -1090,38 +1100,45 @@
                 },
                 body: JSON.stringify({ feedback: feedback })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('✅ Question rejected successfully!\n\nThe question has been returned to the lecturer for revision.');
-                    // Update status display
-                    const statusInput = document.querySelector('.info-field input[readonly]');
-                    if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
-                        statusInput.value = 'REJECTED';
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ Question rejected successfully!\n\nThe question has been returned to the lecturer for revision.');
+                        // Update status display
+                        const statusInput = document.querySelector('.info-field input[readonly]');
+                        if (statusInput && statusInput.parentElement.querySelector('label').textContent === 'Status') {
+                            statusInput.value = 'REJECTED';
+                        }
+                        // Refresh page or redirect
+                        setTimeout(() => {
+                            window.location.href = '/subject-leader/feedback';
+                        }, 1500);
+                    } else {
+                        alert('❌ Error rejecting question:\n' + (data.message || 'Unknown error occurred'));
                     }
-                    // Refresh page or redirect
-                    setTimeout(() => {
-                        window.location.href = '/subject-leader/feedback';
-                    }, 1500);
-                } else {
-                    alert('❌ Error rejecting question:\n' + (data.message || 'Unknown error occurred'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('❌ Network Error:\nFailed to reject question. Please check your connection and try again.');
-            });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('❌ Network Error:\nFailed to reject question. Please check your connection and try again.');
+                });
         }
 
         // Close modals when clicking outside of them
         window.onclick = function (event) {
             const assignModal = document.getElementById('assignModal');
-            const editModal = document.getElementById('editModal');            if (event.target == assignModal) {
+            const editModal = document.getElementById('editModal'); if (event.target == assignModal) {
                 assignModal.style.display = 'none';
             }
             if (event.target == editModal) {
                 editModal.style.display = 'none';
-            }        };
+            }
+        };
+    </script>
+    <script>
+        // Set active menu based on current page
+        document.addEventListener('DOMContentLoaded', function () {
+            setActiveMenu(document.title);
+        });
     </script>
     <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>

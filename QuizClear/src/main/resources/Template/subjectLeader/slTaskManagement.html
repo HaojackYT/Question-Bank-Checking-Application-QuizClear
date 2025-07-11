@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Management - Subject Leader</title>
+    <title>TaskManagement</title>
     <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
     <link rel="stylesheet" th:href="@{/Static/header.css}">
     <link rel="stylesheet" th:href="@{/Static/web_styles.css}">
@@ -156,7 +156,12 @@
     <div id="messageToast" class="toast">
         <span id="messageText"></span>
     </div>
-
+    <script>
+                // Set active menu based on current page
+                document.addEventListener('DOMContentLoaded', function () {
+                    setActiveMenu(document.title);
+                });
+            </script>
     <script th:src="@{/Static/js/slTaskManagement.js}"></script>
     <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>

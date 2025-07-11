@@ -55,7 +55,8 @@
             <!-- Action Buttons -->
             <div class="action-controls time">
                 <span id="countdown">10</span>
-                <a href="/lecturer/L-EXE_FeedbackExam_OneQuestion"><button class="action-button draft"> Skip the exercise</button></a>
+                <a href="/lecturer/L-EXE_FeedbackExam_OneQuestion"><button class="action-button draft"> Skip the
+                        exercise</button></a>
             </div>
             <!-- Question Content -->
             <div class="question-container">
@@ -97,7 +98,7 @@
                         <!--dien dap an trong csdl vao day -->
                         <span answer-input>Day la dap an(hay chon 1 trong 4).</span>
                     </div>
-                    
+
                 </div>
                 <p id="page">Page :<span id="thisPage">1</span>/ <span id="totalPage">90</span></p>
             </div>
@@ -146,6 +147,12 @@
 
                 // Bắt đầu đếm
                 startCountdown();
+            </script>
+            <script>
+                // Set active menu based on current page
+                document.addEventListener('DOMContentLoaded', function () {
+                    setActiveMenu(document.title);
+                });
             </script>
             <script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>

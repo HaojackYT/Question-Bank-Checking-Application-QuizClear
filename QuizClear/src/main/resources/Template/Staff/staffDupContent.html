@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <link rel="stylesheet" th:href="@{/Static/css/staff/staffDup.css}">
+    <link rel="stylesheet" th:href="@{/Static/fontawesome/css/all.css}">
+    <title>Duplication</title>
 </head>
-<body>    <div class="filters">        <select class="filter-select subject">
+
+<body>
+    <div class="filters"> <select class="filter-select subject">
             <option value="">All Subjects</option>
             <!-- Options will be loaded by JavaScript -->
-        </select>        <select class="filter-select submitter">
+        </select> <select class="filter-select submitter">
             <option value="">All Submitters</option>
             <!-- Options will be loaded by JavaScript -->
         </select>
@@ -18,7 +23,8 @@
     <!-- AI-Powered Duplicate Detection Header Card -->
     <div class="ai-detection-header-card">
         <h2 class="section-title">AI-Powered Duplicate Detection</h2>
-        <p class="section-subtitle">Our AI system has identified these questions as potential duplicates based on lexical and semantic analysis</p>
+        <p class="section-subtitle">Our AI system has identified these questions as potential duplicates based on
+            lexical and semantic analysis</p>
     </div>
 
     <!-- Duplicate Detection Table Card -->
@@ -40,40 +46,47 @@
                         <td class="question-cell" th:text="${d.newQuestion?.content} ?: 'N/A'"></td>
                         <td class="question-cell" th:text="${d.similarQuestion.content}"></td>
                         <td>
-                            <div th:classappend="${d.similarityScore >= 0.9} ? 'similarity-complete' : 'similarity-high'" class="similarity-badge">
-                                <span th:text="${d.similarityScore >= 0.9} ? 'Complete Duplicate' : 'High Similarity'"></span>
+                            <div th:classappend="${d.similarityScore >= 0.9} ? 'similarity-complete' : 'similarity-high'"
+                                class="similarity-badge">
+                                <span
+                                    th:text="${d.similarityScore >= 0.9} ? 'Complete Duplicate' : 'High Similarity'"></span>
                                 (<span th:text="${#numbers.formatDecimal(d.similarityScore * 100, 1, 1)} + '%'"></span>)
                             </div>
                         </td>
                         <td>
                             <div class="subject-badge" th:text="${d.newQuestion?.courseName} ?: 'N/A'"></div>
                         </td>
-                        <td class="submitter-name" th:text="${d.newQuestion?.creatorName} ?: 'N/A'"></td>                        <td class="action-buttons">
-                            <button class="action-icon view-icon" 
-                                    th:attr="data-detection-id=${d.detectionId}"
-                                    th:disabled="${d.status == 'INVALID'}"
-                                    th:title="${d.status == 'INVALID'} ? 'Detection lỗi, không thể xem chi tiết' : 'View Details'"
-                                    onclick="viewDuplication(this)">
+                        <td class="submitter-name" th:text="${d.newQuestion?.creatorName} ?: 'N/A'"></td>
+                        <td class="action-buttons">
+                            <button class="action-icon view-icon" th:attr="data-detection-id=${d.detectionId}"
+                                th:disabled="${d.status == 'INVALID'}"
+                                th:title="${d.status == 'INVALID'} ? 'Detection lỗi, không thể xem chi tiết' : 'View Details'"
+                                onclick="viewDuplication(this)">
                                 🔍
                             </button>
-                            <button class="action-icon accept-icon" 
-                                    th:attr="data-detection-id=${d.detectionId}"
-                                    th:disabled="${d.status == 'INVALID'}"
-                                    title="Accept Question"
-                                    onclick="acceptDuplication(this)">
+                            <button class="action-icon accept-icon" th:attr="data-detection-id=${d.detectionId}"
+                                th:disabled="${d.status == 'INVALID'}" title="Accept Question"
+                                onclick="acceptDuplication(this)">
                                 ✅
                             </button>
-                            <button class="action-icon reject-icon" 
-                                    th:attr="data-detection-id=${d.detectionId}"
-                                    th:disabled="${d.status == 'INVALID'}"
-                                    title="Reject Question"
-                                    onclick="rejectDuplication(this)">
+                            <button class="action-icon reject-icon" th:attr="data-detection-id=${d.detectionId}"
+                                th:disabled="${d.status == 'INVALID'}" title="Reject Question"
+                                onclick="rejectDuplication(this)">
                                 ❌
                             </button>
                         </td>
-                    </tr>                </tbody>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>
+    <script>
+    // Set active menu based on current page
+    document.addEventListener('DOMContentLoaded', function () {
+        setActiveMenu(document.title);
+    });
+</script>
+<script th:src="@{/Static/js/L_activeMenu.js}"></script>
 </body>
+
 </html>
